@@ -1,0 +1,11 @@
+<tr class="text-sm leading-6 text-gray-900">
+  <th scope="colgroup" colspan="3" class="relative isolate py-2 font-semibold">
+    <time datetime="2023-03-22"><%= name %></time>
+    <div class="absolute inset-y-0 right-full -z-10 w-screen border-b border-gray-200 bg-gray-50"></div>
+    <div class="absolute inset-y-0 left-0 -z-10 w-screen border-b border-gray-200 bg-gray-50"></div>
+  </th>
+</tr>
+
+<% products.each do |product| %>
+  <%= render 'products/product', product: product %>
+<% end %>

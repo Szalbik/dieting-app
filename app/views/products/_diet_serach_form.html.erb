@@ -1,0 +1,82 @@
+<%= form_tag products_path, method: :get, html: { class: "space-y-12 sm:space-y-16" }, data: { turbo: false } do |f| %>
+  <div>
+    <h2 class="text-base font-semibold leading-7 text-gray-900">Filter Options</h2>
+    <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">Select the options to filter the results.</p>
+
+    <div class="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+      <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+        <%# day_collection = [
+          ['Zestaw 1', 1],
+          ['Zestaw 2', 2],
+          ['Zestaw 3', 3],
+          ['Zestaw 4', 4],
+          ['Zestaw 5', 5],
+          ['Zestaw 6', 6],
+          ['Zestaw 7', 7],
+          ['Zestaw 8', 8],
+          ['Zestaw 9', 9],
+          ['Zestaw 10', 10],
+          ['Zestaw 11', 11],
+          ['Zestaw 12', 12],
+          ['Zestaw 13', 13],
+          ['Zestaw 14', 14]
+        ] %>
+
+        <%#= collection_check_boxes(:product, :days, day_collection, :last, :first, { class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5' }, { class: 'mt-2 sm:col-span-2 sm:mt-0' }) %>
+
+
+        
+         <%= collection_check_boxes(:product, :diet_set_ids, DietSet.all, :id, :name, { class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5' }, { class: 'mt-2 sm:col-span-2 sm:mt-0' }) %>
+
+
+        <%= label_tag :user_id, "User", class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5' %>
+        <div class="mt-2 sm:col-span-2 sm:mt-0">
+          <%= select_tag :user_id, options_from_collection_for_select(User.all, :id, :first_name, params[:user_id]), {include_blank: true, class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5'} %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <%= submit_tag "Filter", class: 'inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
+  </div>
+<% end %>
+
+<%= form_tag todoist_create_path, method: :post, html: { class: "space-y-12 sm:space-y-16" } do |f| %>
+  <div>
+    <h2 class="text-base font-semibold leading-7 text-gray-900">Form used connection with Todoist</h2>
+    <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">Select the options to filter the results.</p>
+
+    <div class="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+      <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+        <% day_collection = [
+          ['Zestaw 1', 1],
+          ['Zestaw 2', 2],
+          ['Zestaw 3', 3],
+          ['Zestaw 4', 4],
+          ['Zestaw 5', 5],
+          ['Zestaw 6', 6],
+          ['Zestaw 7', 7],
+          ['Zestaw 8', 8],
+          ['Zestaw 9', 9],
+          ['Zestaw 10', 10],
+          ['Zestaw 11', 11],
+          ['Zestaw 12', 12],
+          ['Zestaw 13', 13],
+          ['Zestaw 14', 14]
+        ] %>
+
+        <%= collection_check_boxes(:product, :days, day_collection, :last, :first, { class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5' }, { class: 'mt-2 sm:col-span-2 sm:mt-0' }) %>
+
+        <%= label_tag :user_id, "User", class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5' %>
+        <div class="mt-2 sm:col-span-2 sm:mt-0">
+          <%= select_tag :user_id, options_from_collection_for_select(User.all, :id, :first_name, params[:user_id]), {include_blank: true, class: 'block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5'} %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <%= submit_tag "Filter", class: 'inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
+  </div>
+<% end %>

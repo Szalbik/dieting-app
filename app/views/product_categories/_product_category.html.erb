@@ -1,0 +1,32 @@
+<%= content_tag :div, id: dom_id(pc), class: "grid grid-cols-5 gap-4" do %>
+  <div class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= pc.product.name %></div>
+  <div class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+    <%= pc.category.name %>
+  </div>
+  <div x-data='' class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+    <%#= pc.state %>
+
+    <!-- Enabled: "bg-indigo-600", Not Enabled: "bg-gray-200" -->
+    
+<!--<button type="button" class="<%#= pc.state ? 'bg-indigo-600' : 'bg-gray-200' %> relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2" role="switch" aria-checked="false">-->
+  <!--<span class="sr-only">State</span>-->
+   <!--Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+  <!--<span aria-hidden="true" class="<%#= pc.state ? 'translate-x-5' : 'translate-x-0' %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>-->
+<!--</button>-->
+
+<%= button_to product_category_path(pc, product_category: { state: !pc.state }),
+              method: :patch,
+              remote: true,
+              form: { 'data-controller': 'toggle', 'data-action': 'click->toggle#toggle' },
+              class: "#{pc.state ? 'bg-indigo-600' : 'bg-gray-200'} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2" do %>
+  <span class="sr-only">state</span>
+  <span class="<%= pc.state ? 'translate-x-5' : 'translate-x-0' %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out" data-target="toggle.element"></span>
+<% end %>
+
+
+  </div>
+  <div class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= pc.updated_at.strftime("%B %d, %Y") %></div>
+  <div class="relative whitespace-nowrap border-b border-gray-200 py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8">
+    <%= link_to 'Edit', edit_product_category_path(pc), class: 'text-indigo-600 hover:text-indigo-900' %>
+  </div>
+<% end %>

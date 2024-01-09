@@ -1,0 +1,2186 @@
+{:product=>"jajka ugotowane na miękko", :category=>"Nabiał"}
+{:product=>"serek śmietankowy typu Almette", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"bułka grahamka", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Woda mineralna", :category=>"Napoje"}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pietruszka liście", :category=>"Warzywa"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Woda mineralna", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"buraki ugotowane", :category=>"Warzywa"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"awokado", :category=>"Warzywa"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"musztarda", :category=>"Przyprawy"}
+{:product=>"syrop klonowy", :category=>"Inne"}
+{:product=>"ocet balsamiczny", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, bazylia, oregano", :category=>"Przyprawy"}
+{:product=>"jaja", :category=>"Nabiał"}
+{:product=>"szpinak", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"ser żółty tarty", :category=>"Nabiał"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"otręby żytnie", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka parmeńska (cienkie plastry)", :category=>"Wędliny"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ciecierzyca ze słoika", :category=>"Inne"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"przyprawy: oregano, tymianek, sól, pieprz, słodka mielona papryka, płatki chili", :category=>"Przyprawy"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pomidory krojone", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"cukier", :category=>"Słodycze"}
+{:product=>"bazylia świeża", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, oregano suszone", :category=>"Przyprawy"}
+{:product=>"ogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Woda mineralna", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"fasolka szparagowa", :category=>"Warzywa"}
+{:product=>"groszek zielony", :category=>"Warzywa"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"szczypiorek posiekany", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser mozzarella light", :category=>"Nabiał"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jajka", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"mleko 1,5% tł.", :category=>nil}
+{:product=>"mąka pszenna, razowa", :category=>nil}
+{:product=>"powidła", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"Woda mineralna", :category=>nil}
+{:product=>"udka kurczaka", :category=>nil}
+{:product=>"pietruszka korzeń", :category=>nil}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"seler", :category=>"Warzywa"}
+{:product=>"makaron nitki", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"siemię lniane", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"Jogurt pitny Twist, owoce leśne", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"oliwki czarne", :category=>"Inne"}
+{:product=>"suszone pomidory", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"śmietana", :category=>"Nabiał"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"płatki owsiane", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"czerwona pasta curry", :category=>"Przyprawy"}
+{:product=>"dynia hokkaido", :category=>"Warzywa"}
+{:product=>"bulion warzywny", :category=>"Inne"}
+{:product=>"mleczko kokosowe z puszki", :category=>"Inne"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz czarny mielony, kurkuma mielona,", :category=>"Przyprawy"}
+{:product=>"jajka", :category=>"Inne"}
+{:product=>"mąka orkiszowa", :category=>"Inne"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"proszek do pieczenia", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jajko", :category=>"Inne"}
+{:product=>"masło", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"kefir", :category=>nil}
+{:product=>"wiśnie mrożone", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"nasionka chia", :category=>"Inne"}
+{:product=>"filet z piersi kurczaka bez skóry", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"płatki migdałów", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"mąka pszenna", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"parówki z szynki", :category=>"Wędliny"}
+{:product=>"keczup", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mango", :category=>nil}
+{:product=>"kiwi", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"pstrąg strumieniowy", :category=>nil}
+{:product=>"ziemianki", :category=>nil}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"suszone pomidory", :category=>"Warzywa"}
+{:product=>"koperek", :category=>"Warzywa"}
+{:product=>"sól, pieprz, słodka mielona papryka", :category=>"Przyprawy"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pasztet pieczony", :category=>"Wędliny"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"płatki owsiane", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"pietruszka nać", :category=>"Warzywa"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz, kurkuma, słodka papryka, suszone oregano, szczypta", :category=>"Przyprawy"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"tuńczyk w sosie własnym", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"majonez lekki", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Słodycze"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"Jogurt pitny Twist, owoce leśne", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"wieprzowina schab", :category=>"Mięso"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"bułka tarta", :category=>"Pieczywo"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"ziemniaki", :category=>"Warzywa"}
+{:product=>"kapusta biała", :category=>"Warzywa"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"cukier", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"szpinak świeży", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"boczek w plastrach", :category=>nil}
+{:product=>"jajko", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pasztet pieczony", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"mango", :category=>"Owoce"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"mleczko kokosowe", :category=>"Inne"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"sos rybny", :category=>"Inne"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"imbir świeży", :category=>"Przyprawy"}
+{:product=>"papryczka chili", :category=>"Przyprawy"}
+{:product=>"przyprawy", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Przyprawy"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jajko ugotowane na twardo", :category=>"Mięso"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso mielone wołowe", :category=>nil}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"pomidory krojone z puszki", :category=>"Warzywa"}
+{:product=>"czerwona fasola z puszki", :category=>"Inne"}
+{:product=>"przeprawy", :category=>"Przyprawy"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"polędwica sopocka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"polędwica sopocka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mango", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"mięso mielone z indyka", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"makaron penne", :category=>"Inne"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"panierka panko", :category=>"Inne"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"bulion warzywny", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"przyprawy: sól, pieprz, tymianek suszony", :category=>"Przyprawy"}
+{:product=>"łyżeczki, papryka ostra", :category=>"Przyprawy"}
+{:product=>"papier ryżowy", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"kapusta czerwona lub sałata lodowa", :category=>"Warzywa"}
+{:product=>"kalarepa", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kiełki lucerny", :category=>"Warzywa"}
+{:product=>"sos sojowy ciemny", :category=>"Przyprawy"}
+{:product=>"miód pszczeli", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"makaron ryżowy", :category=>"Inne"}
+{:product=>"jajko", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"kiełki fasoli mung", :category=>"Warzywa"}
+{:product=>"orzechy ziemnie", :category=>"Orzechy"}
+{:product=>"płatki chili", :category=>"Przyprawy"}
+{:product=>"pasta z tamaryndowca", :category=>"Inne"}
+{:product=>"sos sojowy", :category=>"Inne"}
+{:product=>"sos rybny", :category=>"Inne"}
+{:product=>"cukier brązowy", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"bagietka", :category=>"Pieczywo"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"rukola", :category=>"Warzywa"}
+{:product=>"szynka parmeńska", :category=>"Wędliny"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ser brie", :category=>"Nabiał"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pasztet pieczony", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"ser parmezan", :category=>nil}
+{:product=>"cytryna", :category=>nil}
+{:product=>"jogurt grecki 0% tł.", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pomidory", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"pomarańcza", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mieszanka meksykańska, mrożona Hortex", :category=>"Warzywa"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"przyprawy: sól, pieprz, chili", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"sól, pieprz, bazylia", :category=>"Przyprawy"}
+{:product=>"bagietka", :category=>"Pieczywo"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"curry, przyprawa", :category=>"Przyprawy"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"zioła prowansalskie, sól, pieprz", :category=>nil}
+{:product=>"pomarańcza", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"marchew", :category=>nil}
+{:product=>"pietruszka korzeń", :category=>nil}
+{:product=>"seler korzeń", :category=>nil}
+{:product=>"mąka pszenna", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"przyprawy: sól, pieprz", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"pesto z bazylii", :category=>"Przyprawy"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"szpinak świeży", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pasztet pieczony", :category=>"Wędliny"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka suszona", :category=>"Wędliny"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"pomidory krojone, bez skórki w soku pomidorowym", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>"Warzywa"}
+{:product=>"przyprawy: sól, pieprz, oregano suszone, bazylia świeża, papryka wędzona lub", :category=>"Przyprawy"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pieczarki", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"przyprawy: czosnek granulowany, kmin rzymski, oregano suszone, pieprz, sól,", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"Skyr pitny, truskawkowy", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"pomarańcza", :category=>nil}
+{:product=>"mięso z piersi indyka", :category=>nil}
+{:product=>"kluski jajeczne lub kopytka", :category=>nil}
+{:product=>"por", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"sok z limonki", :category=>nil}
+{:product=>"skórka otartej limonki", :category=>nil}
+{:product=>"śmietanka", :category=>nil}
+{:product=>"woda", :category=>"Napoje"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"skrobia kukurydziana", :category=>"Inne"}
+{:product=>"przyprawy: papryka słodka mielona, pieprz cayenne mielonego, sól", :category=>"Przyprawy"}
+{:product=>"jajka ugotowane na miękko", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"płatki owsiane", :category=>"Inne"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"cynamon", :category=>"Przyprawy"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"makaron chow men", :category=>"Inne"}
+{:product=>"kapusta chińska pak", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"imbir, świeży", :category=>"Przyprawy"}
+{:product=>"sezam", :category=>"Przyprawy"}
+{:product=>"kiełki stir fry", :category=>"Warzywa"}
+{:product=>"sos sriracha", :category=>"Przyprawy"}
+{:product=>"sos sojowy", :category=>"Przyprawy"}
+{:product=>"woda", :category=>nil}
+{:product=>"cukier trzcinowy", :category=>nil}
+{:product=>"dymka", :category=>"Warzywa"}
+{:product=>"pieprz, sól", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Skyr pitny, waniliowy", :category=>"Nabiał"}
+{:product=>"jajka ugotowane na miękko", :category=>"Nabiał"}
+{:product=>"serek śmietankowy typu Almette", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"bułka grahamka", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pietruszka liście", :category=>"Warzywa"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"ogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"buraki ugotowane", :category=>"Warzywa"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"awokado", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"musztarda", :category=>"Przyprawy"}
+{:product=>"syrop klonowy", :category=>"Inne"}
+{:product=>"ocet balsamiczny", :category=>"Inne"}
+{:product=>"sól, pieprz, bazylia, oregano", :category=>"Przyprawy"}
+{:product=>"jaja", :category=>"Nabiał"}
+{:product=>"szpinak", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"ser żółty tarty", :category=>"Nabiał"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"otręby żytnie", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka parmeńska (cienkie plastry)", :category=>"Wędliny"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ciecierzyca ze słoika", :category=>"Inne"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"przyprawy: oregano, tymianek, sól, pieprz, słodka mielona papryka, płatki chili", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pomidory krojone", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"cukier", :category=>nil}
+{:product=>"bazylia świeża", :category=>nil}
+{:product=>"sól, pieprz, oregano suszone", :category=>nil}
+{:product=>"ogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"pomarańcza", :category=>nil}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"fasolka szparagowa", :category=>"Warzywa"}
+{:product=>"groszek zielony", :category=>"Warzywa"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"szczypiorek posiekany", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser mozzarella light", :category=>"Nabiał"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajka", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"mleko 1,5% tł.", :category=>"Nabiał"}
+{:product=>"mąka pszenna, razowa", :category=>"Inne"}
+{:product=>"powidła", :category=>"Inne"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"udka kurczaka", :category=>"Mięso"}
+{:product=>"pietruszka korzeń", :category=>"Warzywa"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"seler", :category=>"Warzywa"}
+{:product=>"makaron nitki", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"siemię lniane", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr waniliowy, pitny", :category=>nil}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"oliwki czarne", :category=>"Inne"}
+{:product=>"suszone pomidory", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"śmietana", :category=>"Nabiał"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"czerwona pasta curry", :category=>"Przyprawy"}
+{:product=>"dynia hokkaido", :category=>"Warzywa"}
+{:product=>"bulion warzywny", :category=>"Przyprawy"}
+{:product=>"mleczko kokosowe z puszki", :category=>"Inne"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz czarny mielony, kurkuma mielona,", :category=>"Przyprawy"}
+{:product=>"jajka", :category=>"Nabiał"}
+{:product=>"mąka orkiszowa", :category=>"Inne"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"proszek do pieczenia", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"kefir", :category=>"Nabiał"}
+{:product=>"wiśnie mrożone", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"nasionka chia", :category=>"Inne"}
+{:product=>"filet z piersi kurczaka bez skóry", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"płatki migdałów", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"mąka pszenna", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"kiwi", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"pstrąg strumieniowy", :category=>"Ryby"}
+{:product=>"ziemianki", :category=>"Warzywa"}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"suszone pomidory", :category=>"Warzywa"}
+{:product=>"koperek", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, słodka mielona papryka", :category=>"Przyprawy"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"hummus klasyczny", :category=>"Inne"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"płatki owsiane", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"pietruszka nać", :category=>"Warzywa"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, kurkuma, słodka papryka, suszone oregano, szczypta", :category=>nil}
+{:product=>"kasza jęczmienna perłowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"tuńczyk w sosie własnym", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"majonez lekki", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr truskawkowy, pitny", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"wieprzowina schab", :category=>"Mięso"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"bułka tarta", :category=>"Pieczywo"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"ziemniaki", :category=>"Warzywa"}
+{:product=>"kapusta biała", :category=>"Warzywa"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"cukier", :category=>"Słodycze"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"szpinak świeży", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"boczek w plastrach", :category=>"Mięso"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"kawa", :category=>"Inne"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"hummus klasyczny", :category=>"Inne"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"gruszka", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"mango", :category=>"Owoce"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"mleczko kokosowe", :category=>"Inne"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"sos rybny", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"imbir świeży", :category=>nil}
+{:product=>"papryczka chili", :category=>"Przyprawy"}
+{:product=>"przyprawy", :category=>"Inne"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko ugotowane na twardo", :category=>"Nabiał"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso mielone wołowe", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"pomidory krojone z puszki", :category=>"Warzywa"}
+{:product=>"czerwona fasola z puszki", :category=>"Inne"}
+{:product=>"przeprawy", :category=>"Przyprawy"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"polędwica sopocka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"polędwica sopocka", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr truskawkowy, pitny", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso mielone z indyka", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"makaron penne", :category=>"Inne"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"panierka panko", :category=>"Inne"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"bulion warzywny", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"przyprawy: sól, pieprz, tymianek suszony", :category=>"Przyprawy"}
+{:product=>"łyżeczki, papryka ostra", :category=>"Przyprawy"}
+{:product=>"papier ryżowy", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"kapusta czerwona lub sałata lodowa", :category=>"Warzywa"}
+{:product=>"kalarepa", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kiełki lucerny", :category=>"Warzywa"}
+{:product=>"sos sojowy ciemny", :category=>"Przyprawy"}
+{:product=>"miód pszczeli", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"makaron ryżowy", :category=>"Inne"}
+{:product=>"jajko", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"kiełki fasoli mung", :category=>"Warzywa"}
+{:product=>"orzechy ziemnie", :category=>"Orzechy"}
+{:product=>"płatki chili", :category=>"Przyprawy"}
+{:product=>"pasta z tamaryndowca", :category=>"Inne"}
+{:product=>"sos sojowy", :category=>"Inne"}
+{:product=>"sos rybny", :category=>"Inne"}
+{:product=>"cukier brązowy", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"bagietka", :category=>"Pieczywo"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"rukola", :category=>"Warzywa"}
+{:product=>"szynka parmeńska", :category=>"Wędliny"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ser brie", :category=>"Nabiał"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"hummus klasyczny", :category=>"Inne"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"jogurt grecki 0% tł.", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"mandarynki", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mieszanka meksykańska, mrożona Hortex", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"limonka", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, chili", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"sól, pieprz, bazylia", :category=>"Przyprawy"}
+{:product=>"bagietka", :category=>"Pieczywo"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"curry, przyprawa", :category=>"Przyprawy"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"zioła prowansalskie, sól, pieprz", :category=>"Przyprawy"}
+{:product=>"pomarańcza", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"pietruszka korzeń", :category=>"Warzywa"}
+{:product=>"seler korzeń", :category=>"Warzywa"}
+{:product=>"mąka pszenna", :category=>"Inne"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"przyprawy: sól, pieprz", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"pesto z bazylii", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"szpinak świeży", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"hummus klasyczny", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"mandarynki", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka suszona", :category=>"Wędliny"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"pomidory krojone, bez skórki w soku pomidorowym", :category=>"Warzywa"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz, oregano suszone, bazylia świeża, papryka wędzona lub", :category=>"Przyprawy"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pieczarki", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"przyprawy: czosnek granulowany, kmin rzymski, oregano suszone, pieprz, sól,", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi indyka", :category=>"Mięso"}
+{:product=>"kluski jajeczne lub kopytka", :category=>"Inne"}
+{:product=>"por", :category=>"Warzywa"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"sok z limonki", :category=>"Napoje"}
+{:product=>"skórka otartej limonki", :category=>"Przyprawy"}
+{:product=>"śmietanka", :category=>"Nabiał"}
+{:product=>"woda", :category=>"Napoje"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"skrobia kukurydziana", :category=>"Inne"}
+{:product=>"przyprawy: papryka słodka mielona, pieprz cayenne mielonego, sól", :category=>"Przyprawy"}
+{:product=>"jajka ugotowane na miękko", :category=>"Inne"}
+{:product=>"masło", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"cynamon", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"makaron chow men", :category=>"Inne"}
+{:product=>"kapusta chińska pak", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"imbir, świeży", :category=>"Warzywa"}
+{:product=>"sezam", :category=>"Przyprawy"}
+{:product=>"kiełki stir fry", :category=>"Warzywa"}
+{:product=>"sos sriracha", :category=>"Przyprawy"}
+{:product=>"sos sojowy", :category=>"Przyprawy"}
+{:product=>"woda", :category=>"Napoje"}
+{:product=>"cukier trzcinowy", :category=>"Słodycze"}
+{:product=>"dymka", :category=>"Warzywa"}
+{:product=>"pieprz, sól", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajka ugotowane na miękko", :category=>"Nabiał"}
+{:product=>"serek śmietankowy typu Almette", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"bułka grahamka", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Woda mineralna", :category=>"Napoje"}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pietruszka liście", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"sałata", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"Woda mineralna", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"buraki ugotowane", :category=>"Warzywa"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"awokado", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"musztarda", :category=>"Przyprawy"}
+{:product=>"syrop klonowy", :category=>"Inne"}
+{:product=>"ocet balsamiczny", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, bazylia, oregano", :category=>"Przyprawy"}
+{:product=>"jaja", :category=>"Nabiał"}
+{:product=>"szpinak", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"ser żółty tarty", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"otręby żytnie", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"szynka parmeńska (cienkie plastry)", :category=>"Wędliny"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ciecierzyca ze słoika", :category=>"Warzywa"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"przyprawy: oregano, tymianek, sól, pieprz, słodka mielona papryka, płatki chili", :category=>"Przyprawy"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pomidory krojone", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"cukier", :category=>nil}
+{:product=>"bazylia świeża", :category=>nil}
+{:product=>"sól, pieprz, oregano suszone", :category=>nil}
+{:product=>"ogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"Woda mineralna", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"fasolka szparagowa", :category=>"Warzywa"}
+{:product=>"groszek zielony", :category=>"Warzywa"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"szczypiorek posiekany", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ser mozzarella light", :category=>"Nabiał"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jajka", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"mleko 1,5% tł.", :category=>nil}
+{:product=>"mąka pszenna, razowa", :category=>nil}
+{:product=>"powidła", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"Woda mineralna", :category=>nil}
+{:product=>"udka kurczaka", :category=>nil}
+{:product=>"pietruszka korzeń", :category=>nil}
+{:product=>"marchew", :category=>nil}
+{:product=>"seler", :category=>nil}
+{:product=>"makaron nitki", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Słodycze"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"siemię lniane", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"Jogurt pitny Twist, owoce leśne", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"oliwki czarne", :category=>"Inne"}
+{:product=>"suszone pomidory", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"szalotka", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"curry w proszku", :category=>nil}
+{:product=>"śmietana", :category=>nil}
+{:product=>"ser typu feta", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"ser mozzarella, light", :category=>nil}
+{:product=>"pomidory", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"czerwona pasta curry", :category=>nil}
+{:product=>"dynia hokkaido", :category=>nil}
+{:product=>"bulion warzywny", :category=>nil}
+{:product=>"mleczko kokosowe z puszki", :category=>"Inne"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz czarny mielony, kurkuma mielona,", :category=>"Przyprawy"}
+{:product=>"jajka", :category=>"Nabiał"}
+{:product=>"mąka orkiszowa", :category=>"Inne"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"proszek do pieczenia", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"kefir", :category=>"Nabiał"}
+{:product=>"wiśnie mrożone", :category=>"Owoce"}
+{:product=>"banan", :category=>nil}
+{:product=>"nasionka chia", :category=>nil}
+{:product=>"filet z piersi kurczaka bez skóry", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"płatki migdałów", :category=>nil}
+{:product=>"jajko", :category=>nil}
+{:product=>"mąka pszenna", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"parówki z szynki", :category=>nil}
+{:product=>"keczup", :category=>"Przyprawy"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mango", :category=>"Owoce"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"pstrąg strumieniowy", :category=>"Ryby"}
+{:product=>"ziemianki", :category=>"Warzywa"}
+{:product=>"cytryna", :category=>"Warzywa"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"suszone pomidory", :category=>"Przyprawy"}
+{:product=>"koperek", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, słodka mielona papryka", :category=>"Przyprawy"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"pasztet pieczony", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"pietruszka nać", :category=>"Warzywa"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz, kurkuma, słodka papryka, suszone oregano, szczypta", :category=>"Przyprawy"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"tuńczyk w sosie własnym", :category=>"Ryby"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"Jogurt pitny Twist, owoce leśne", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"wieprzowina schab", :category=>nil}
+{:product=>"jajko", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"bułka tarta", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"ziemniaki", :category=>nil}
+{:product=>"kapusta biała", :category=>nil}
+{:product=>"marchew", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"cukier", :category=>nil}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"szpinak świeży", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"boczek w plastrach", :category=>"Mięso"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pasztet pieczony", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"mango", :category=>nil}
+{:product=>"ryż brązowy", :category=>nil}
+{:product=>"mleczko kokosowe", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"sos rybny", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"imbir świeży", :category=>nil}
+{:product=>"papryczka chili", :category=>nil}
+{:product=>"przyprawy", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko ugotowane na twardo", :category=>"Nabiał"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Słodycze"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mięso mielone wołowe", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"pomidory krojone z puszki", :category=>nil}
+{:product=>"czerwona fasola z puszki", :category=>nil}
+{:product=>"przeprawy", :category=>nil}
+{:product=>"ryż brązowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"polędwica sopocka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"polędwica sopocka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mango", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"mięso mielone z indyka", :category=>"Mięso"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"makaron penne", :category=>"Inne"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"panierka panko", :category=>nil}
+{:product=>"passata pomidorowa", :category=>nil}
+{:product=>"bulion warzywny", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, tymianek suszony", :category=>nil}
+{:product=>"łyżeczki, papryka ostra", :category=>nil}
+{:product=>"papier ryżowy", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"marchew", :category=>nil}
+{:product=>"kapusta czerwona lub sałata lodowa", :category=>nil}
+{:product=>"kalarepa", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"kiełki lucerny", :category=>nil}
+{:product=>"sos sojowy ciemny", :category=>nil}
+{:product=>"miód pszczeli", :category=>"Słodycze"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ser żółty", :category=>"Nabiał"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"makaron ryżowy", :category=>"Inne"}
+{:product=>"jajko", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"kiełki fasoli mung", :category=>"Warzywa"}
+{:product=>"orzechy ziemnie", :category=>"Orzechy"}
+{:product=>"płatki chili", :category=>nil}
+{:product=>"pasta z tamaryndowca", :category=>nil}
+{:product=>"sos sojowy", :category=>nil}
+{:product=>"sos rybny", :category=>nil}
+{:product=>"cukier brązowy", :category=>nil}
+{:product=>"limonka", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"bagietka", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"rukola", :category=>nil}
+{:product=>"szynka parmeńska", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"ser brie", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"pasztet pieczony", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"jogurt grecki 0% tł.", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"pomarańcza", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mieszanka meksykańska, mrożona Hortex", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"limonka", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, chili", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"sól, pieprz, bazylia", :category=>"Przyprawy"}
+{:product=>"bagietka", :category=>"Pieczywo"}
+{:product=>"mięso mielone drobiowe", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"ser mozzarella, light", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"curry, przyprawa", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"orzechy włoskie", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"zioła prowansalskie, sól, pieprz", :category=>"Przyprawy"}
+{:product=>"pomarańcza", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"pietruszka korzeń", :category=>"Warzywa"}
+{:product=>"seler korzeń", :category=>"Warzywa"}
+{:product=>"mąka pszenna", :category=>"Inne"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"przyprawy: sól, pieprz", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"pesto z bazylii", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"szpinak świeży", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"pasztet pieczony", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka suszona", :category=>"Wędliny"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"pomidory krojone, bez skórki w soku pomidorowym", :category=>"Warzywa"}
+{:product=>"kasza orkiszowa", :category=>"Inne"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz, oregano suszone, bazylia świeża, papryka wędzona lub", :category=>"Przyprawy"}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pieczarki", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"przyprawy: czosnek granulowany, kmin rzymski, oregano suszone, pieprz, sól,", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"pomidory", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"Skyr pitny, truskawkowy", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"pomarańcza", :category=>"Owoce"}
+{:product=>"mięso z piersi indyka", :category=>"Mięso"}
+{:product=>"kluski jajeczne lub kopytka", :category=>"Inne"}
+{:product=>"por", :category=>"Warzywa"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"sok z limonki", :category=>"Napoje"}
+{:product=>"skórka otartej limonki", :category=>"Inne"}
+{:product=>"śmietanka", :category=>"Nabiał"}
+{:product=>"woda", :category=>"Napoje"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"skrobia kukurydziana", :category=>"Inne"}
+{:product=>"przyprawy: papryka słodka mielona, pieprz cayenne mielonego, sól", :category=>"Przyprawy"}
+{:product=>"jajka ugotowane na miękko", :category=>"Inne"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"cynamon", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"makaron chow men", :category=>nil}
+{:product=>"kapusta chińska pak", :category=>nil}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"imbir, świeży", :category=>"Warzywa"}
+{:product=>"sezam", :category=>"Inne"}
+{:product=>"kiełki stir fry", :category=>"Warzywa"}
+{:product=>"sos sriracha", :category=>"Przyprawy"}
+{:product=>"sos sojowy", :category=>"Przyprawy"}
+{:product=>"woda", :category=>"Napoje"}
+{:product=>"cukier trzcinowy", :category=>"Inne"}
+{:product=>"dymka", :category=>"Warzywa"}
+{:product=>"pieprz, sól", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"Skyr pitny, waniliowy", :category=>nil}
+{:product=>"jajka ugotowane na miękko", :category=>"Nabiał"}
+{:product=>"serek śmietankowy typu Almette", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"bułka grahamka", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pietruszka liście", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"ogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"sałata", :category=>nil}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"buraki ugotowane", :category=>"Warzywa"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"awokado", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"orzechy włoskie", :category=>"Orzechy"}
+{:product=>"oliwa z oliwek", :category=>"Przyprawy"}
+{:product=>"musztarda", :category=>"Przyprawy"}
+{:product=>"syrop klonowy", :category=>nil}
+{:product=>"ocet balsamiczny", :category=>nil}
+{:product=>"sól, pieprz, bazylia, oregano", :category=>nil}
+{:product=>"jaja", :category=>nil}
+{:product=>"szpinak", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"ser żółty tarty", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"otręby żytnie", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka parmeńska (cienkie plastry)", :category=>"Wędliny"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"ciecierzyca ze słoika", :category=>"Inne"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"przyprawy: oregano, tymianek, sól, pieprz, słodka mielona papryka, płatki chili", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"mix sałat", :category=>"Warzywa"}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pomidory krojone", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"cukier", :category=>nil}
+{:product=>"bazylia świeża", :category=>nil}
+{:product=>"sól, pieprz, oregano suszone", :category=>nil}
+{:product=>"ogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"pomarańcza", :category=>nil}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"fasolka szparagowa", :category=>"Warzywa"}
+{:product=>"groszek zielony", :category=>"Warzywa"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"curry w proszku", :category=>"Przyprawy"}
+{:product=>"szczypiorek posiekany", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser mozzarella light", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jajka", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"mleko 1,5% tł.", :category=>nil}
+{:product=>"mąka pszenna, razowa", :category=>nil}
+{:product=>"powidła", :category=>nil}
+{:product=>"kiwi", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"udka kurczaka", :category=>nil}
+{:product=>"pietruszka korzeń", :category=>nil}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"seler", :category=>"Warzywa"}
+{:product=>"makaron nitki", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"siemię lniane", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr waniliowy, pitny", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"cukinia", :category=>nil}
+{:product=>"oliwki czarne", :category=>nil}
+{:product=>"suszone pomidory", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"szalotka", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"curry w proszku", :category=>nil}
+{:product=>"śmietana", :category=>nil}
+{:product=>"ser typu feta", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"płatki owsiane", :category=>"Inne"}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Inne"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"czerwona pasta curry", :category=>nil}
+{:product=>"dynia hokkaido", :category=>nil}
+{:product=>"bulion warzywny", :category=>nil}
+{:product=>"mleczko kokosowe z puszki", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"przyprawy: sól, pieprz czarny mielony, kurkuma mielona,", :category=>nil}
+{:product=>"jajka", :category=>nil}
+{:product=>"mąka orkiszowa", :category=>nil}
+{:product=>"banan", :category=>"Owoce"}
+{:product=>"proszek do pieczenia", :category=>"Przyprawy"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"kefir", :category=>"Nabiał"}
+{:product=>"wiśnie mrożone", :category=>"Owoce"}
+{:product=>"banan", :category=>nil}
+{:product=>"nasionka chia", :category=>"Inne"}
+{:product=>"filet z piersi kurczaka bez skóry", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"płatki migdałów", :category=>nil}
+{:product=>"jajko", :category=>nil}
+{:product=>"mąka pszenna", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"orzechy włoskie", :category=>nil}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Napoje"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"pstrąg strumieniowy", :category=>"Ryby"}
+{:product=>"ziemianki", :category=>"Warzywa"}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"cebula czerwona", :category=>"Warzywa"}
+{:product=>"suszone pomidory", :category=>"Inne"}
+{:product=>"koperek", :category=>"Przyprawy"}
+{:product=>"sól, pieprz, słodka mielona papryka", :category=>"Przyprawy"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"hummus klasyczny", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"borówka amerykańska", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"rzodkiewki", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"pietruszka nać", :category=>"Warzywa"}
+{:product=>"ser typu feta", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"oliwa z oliwek", :category=>"Inne"}
+{:product=>"przyprawy: sól, pieprz, kurkuma, słodka papryka, suszone oregano, szczypta", :category=>"Przyprawy"}
+{:product=>"kasza jęczmienna perłowa", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"tuńczyk w sosie własnym", :category=>"Ryby"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kukurydza konserwowa", :category=>"Warzywa"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"Skyr truskawkowy, pitny", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"wieprzowina schab", :category=>nil}
+{:product=>"jajko", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"bułka tarta", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"ziemniaki", :category=>"Warzywa"}
+{:product=>"kapusta biała", :category=>"Warzywa"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"cukier", :category=>"Inne"}
+{:product=>"sól, pieprz", :category=>"Przyprawy"}
+{:product=>"tortilla pełnoziarnista", :category=>"Pieczywo"}
+{:product=>"szpinak świeży", :category=>"Warzywa"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"boczek w plastrach", :category=>"Mięso"}
+{:product=>"jajko", :category=>"Nabiał"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"masło", :category=>"Nabiał"}
+{:product=>"jogurt naturalny", :category=>"Nabiał"}
+{:product=>"musli z owocami liofilizowanymi", :category=>"Inne"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"hummus klasyczny", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"gruszka", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"mango", :category=>nil}
+{:product=>"ryż brązowy", :category=>nil}
+{:product=>"mleczko kokosowe", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"sos rybny", :category=>"Przyprawy"}
+{:product=>"sok z cytryny", :category=>"Napoje"}
+{:product=>"imbir świeży", :category=>"Warzywa"}
+{:product=>"papryczka chili", :category=>"Przyprawy"}
+{:product=>"przyprawy", :category=>"Przyprawy"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"szczypiorek", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"jajko ugotowane na twardo", :category=>"Nabiał"}
+{:product=>"ser feta", :category=>"Nabiał"}
+{:product=>"majonez lekki", :category=>"Inne"}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi, karmelowe", :category=>nil}
+{:product=>"jabłko", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso mielone wołowe", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"pomidory krojone z puszki", :category=>nil}
+{:product=>"czerwona fasola z puszki", :category=>nil}
+{:product=>"przeprawy", :category=>"Przyprawy"}
+{:product=>"ryż brązowy", :category=>"Inne"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"polędwica sopocka", :category=>"Wędliny"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"polędwica sopocka", :category=>"Wędliny"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr truskawkowy, pitny", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso mielone z indyka", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"makaron penne", :category=>nil}
+{:product=>"cukinia", :category=>nil}
+{:product=>"ser parmezan", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"panierka panko", :category=>nil}
+{:product=>"passata pomidorowa", :category=>nil}
+{:product=>"bulion warzywny", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, tymianek suszony", :category=>nil}
+{:product=>"łyżeczki, papryka ostra", :category=>nil}
+{:product=>"papier ryżowy", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"kapusta czerwona lub sałata lodowa", :category=>"Warzywa"}
+{:product=>"kalarepa", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"kiełki lucerny", :category=>"Warzywa"}
+{:product=>"sos sojowy ciemny", :category=>"Przyprawy"}
+{:product=>"miód pszczeli", :category=>"Inne"}
+{:product=>"limonka", :category=>"Owoce"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"makaron ryżowy", :category=>"Inne"}
+{:product=>"jajko", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"szalotka", :category=>"Warzywa"}
+{:product=>"kiełki fasoli mung", :category=>"Warzywa"}
+{:product=>"orzechy ziemnie", :category=>nil}
+{:product=>"płatki chili", :category=>nil}
+{:product=>"pasta z tamaryndowca", :category=>nil}
+{:product=>"sos sojowy", :category=>nil}
+{:product=>"sos rybny", :category=>nil}
+{:product=>"cukier brązowy", :category=>nil}
+{:product=>"limonka", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"bagietka", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"rukola", :category=>nil}
+{:product=>"szynka parmeńska", :category=>nil}
+{:product=>"pomidor", :category=>nil}
+{:product=>"ser brie", :category=>"Nabiał"}
+{:product=>"Herbata, gorzka", :category=>"Napoje"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"hummus klasyczny", :category=>"Inne"}
+{:product=>"ogórek kiszony", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"ser parmezan", :category=>"Nabiał"}
+{:product=>"cytryna", :category=>"Owoce"}
+{:product=>"jogurt grecki 0% tł.", :category=>"Nabiał"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"mandarynki", :category=>nil}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mieszanka meksykańska, mrożona Hortex", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"ryż basmati", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"limonka", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, chili", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"serek ziarnisty typu grani", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>"Wędliny"}
+{:product=>"papryka czerwona", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"kiwi", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"makaron spaghetti", :category=>"Inne"}
+{:product=>"mięso mielone drobiowe", :category=>"Mięso"}
+{:product=>"passata pomidorowa", :category=>"Inne"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"sól, pieprz, bazylia", :category=>nil}
+{:product=>"bagietka", :category=>nil}
+{:product=>"mięso mielone drobiowe", :category=>nil}
+{:product=>"cebula", :category=>nil}
+{:product=>"czosnek", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"ser mozzarella, light", :category=>nil}
+{:product=>"szczypiorek", :category=>nil}
+{:product=>"curry, przyprawa", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"musli z owocami liofilizowanymi", :category=>nil}
+{:product=>"borówka amerykańska", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"ser mozzarella, light", :category=>"Nabiał"}
+{:product=>"pomidor", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"zioła prowansalskie, sól, pieprz", :category=>"Przyprawy"}
+{:product=>"pomarańcza", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"ryż basmati", :category=>"Inne"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"marchew", :category=>"Warzywa"}
+{:product=>"pietruszka korzeń", :category=>"Warzywa"}
+{:product=>"seler korzeń", :category=>nil}
+{:product=>"mąka pszenna", :category=>nil}
+{:product=>"jogurt naturalny", :category=>nil}
+{:product=>"sok z cytryny", :category=>nil}
+{:product=>"przyprawy: sól, pieprz", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"pesto z bazylii", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"szpinak świeży", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"hummus klasyczny", :category=>nil}
+{:product=>"ogórek zielony", :category=>nil}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"chleb razowy", :category=>"Pieczywo"}
+{:product=>"szynka z indyka", :category=>"Mięso"}
+{:product=>"ogórek zielony", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"mandarynki", :category=>"Owoce"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"mięso z piersi kurczaka", :category=>"Mięso"}
+{:product=>"szynka suszona", :category=>"Wędliny"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"cukinia", :category=>"Warzywa"}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"pomidory krojone, bez skórki w soku pomidorowym", :category=>nil}
+{:product=>"kasza orkiszowa", :category=>nil}
+{:product=>"oliwa z oliwek", :category=>nil}
+{:product=>"przyprawy: sól, pieprz, oregano suszone, bazylia świeża, papryka wędzona lub", :category=>nil}
+{:product=>"mięso z piersi kurczaka", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"pieczarki", :category=>nil}
+{:product=>"papryka czerwona", :category=>nil}
+{:product=>"kukurydza konserwowa", :category=>nil}
+{:product=>"ser żółty", :category=>nil}
+{:product=>"tortilla pełnoziarnista", :category=>nil}
+{:product=>"przyprawy: czosnek granulowany, kmin rzymski, oregano suszone, pieprz, sól,", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"pomidory", :category=>"Warzywa"}
+{:product=>"sałata lodowa", :category=>"Warzywa"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"Skyr pitny, truskawkowy", :category=>"Nabiał"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"mięso z piersi indyka", :category=>"Mięso"}
+{:product=>"kluski jajeczne lub kopytka", :category=>"Inne"}
+{:product=>"por", :category=>"Warzywa"}
+{:product=>"cebula", :category=>"Warzywa"}
+{:product=>"czosnek", :category=>"Przyprawy"}
+{:product=>"sok z limonki", :category=>"Napoje"}
+{:product=>"skórka otartej limonki", :category=>"Przyprawy"}
+{:product=>"śmietanka", :category=>nil}
+{:product=>"woda", :category=>nil}
+{:product=>"olej rzepakowy", :category=>nil}
+{:product=>"skrobia kukurydziana", :category=>nil}
+{:product=>"przyprawy: papryka słodka mielona, pieprz cayenne mielonego, sól", :category=>nil}
+{:product=>"jajka ugotowane na miękko", :category=>nil}
+{:product=>"masło", :category=>nil}
+{:product=>"sól, pieprz", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"płatki owsiane", :category=>nil}
+{:product=>"banan", :category=>nil}
+{:product=>"cynamon", :category=>"Przyprawy"}
+{:product=>"kawa", :category=>"Napoje"}
+{:product=>"mleko owsiane", :category=>"Nabiał"}
+{:product=>"serek ziarnisty typu grani", :category=>"Nabiał"}
+{:product=>"rzodkiewki", :category=>"Warzywa"}
+{:product=>"jabłko", :category=>"Owoce"}
+{:product=>"kawa", :category=>nil}
+{:product=>"mleko owsiane", :category=>nil}
+{:product=>"makaron chow men", :category=>"Inne"}
+{:product=>"kapusta chińska pak", :category=>"Warzywa"}
+{:product=>"olej rzepakowy", :category=>"Inne"}
+{:product=>"czosnek", :category=>"Warzywa"}
+{:product=>"imbir, świeży", :category=>"Warzywa"}
+{:product=>"sezam", :category=>"Inne"}
+{:product=>"kiełki stir fry", :category=>"Warzywa"}
+{:product=>"sos sriracha", :category=>nil}
+{:product=>"sos sojowy", :category=>nil}
+{:product=>"woda", :category=>nil}
+{:product=>"cukier trzcinowy", :category=>nil}
+{:product=>"dymka", :category=>nil}
+{:product=>"pieprz, sól", :category=>nil}
+{:product=>"chleb razowy", :category=>nil}
+{:product=>"szynka z indyka", :category=>nil}
+{:product=>"ogórek kiszony", :category=>nil}
+{:product=>"sałata lodowa", :category=>nil}
+{:product=>"Herbata, gorzka", :category=>nil}

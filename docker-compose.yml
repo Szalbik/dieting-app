@@ -1,0 +1,50 @@
+version: '3.8'
+
+x-base: &base
+  build:
+    context: .
+    dockerfile: ./Dockerfile.dev
+    args:
+      RUBY_VERSION: '3.2.2'
+  stdin_open: true
+  tty: true
+  volumes:
+    - .:/app:cached
+  depends_on:
+    - redis
+    - postgres
+
+services:
+  app:
+    <<: *base
+    command: bash -c "bin/rails server -p 3000 -b 0.0.0.0"
+    ports:
+      - '3000:3000'
+
+  css:
+    <<: *base
+    command: bash -c "yarn build:css --watch"
+
+  js:
+    <<: *base
+    command: bash -c "yarn build --watch"
+
+  sidekiq:
+    <<: *base
+    command: bundle exec sidekiq -C config/sidekiq.yml
+
+  redis:
+    image: redis:latest
+    restart: always
+
+  postgres:
+    image: postgres:14-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432
+
+volumes:
+  postgres:

@@ -1,0 +1,13 @@
+<tr>
+  <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900">
+    <%= name %>
+  </td>
+  <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900">
+    <%= category %>
+  </td>
+  <% measurements.to_a.each do |measure| %>
+    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+      <%= measure.present? ? "#{measure[:amount]} #{measure[:unit]}" : 'Dowolna ilość' %>
+    </td>
+  <% end %>
+</tr>

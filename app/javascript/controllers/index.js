@@ -6,3 +6,11 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import FilterController from "./filter_controller"
+application.register("filter", FilterController)
+import ToggleController from "./toggle_controller"
+application.register("toggle", ToggleController)
+
+import { Dropdown } from "tailwindcss-stimulus-components"
+application.register('dropdown', Dropdown)

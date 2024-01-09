@@ -1,0 +1,39 @@
+<%= form_with(model: product_category, class: '') do |form| %>
+<% if product_category.errors.any? %>
+  <div style="color: red">
+    <h2><%= pluralize(product_category.errors.count, "error") %> prohibited this product_category from being saved:</h2>
+
+    <ul>
+      <% product_category.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+  <tr>
+    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+      <%= product_category.product.name %>
+    </td>
+    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+      <%#= form_with(model: product_category) do |form| %>
+      <div>
+        <%= form.select :category_id, Category.all.collect { |c| [ c.name, c.id ] } %>
+      </div>
+      <%# end %>
+    </td>
+    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+      <%#= form_with(model: product_category) do |form| %>
+        <div class="mt-2">
+          <%= form.check_box :state, class: 'block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6', onchange: 'this.form.submit()' %>
+        </div>
+      <%# end %>
+    </td>
+    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+      <%= product_category.updated_at.strftime("%B %d, %Y") %>
+    </td>
+    <td class="relative whitespace-nowrap border-b border-gray-200 py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8">
+      <%= form.submit 'Update', class: 'text-indigo-600 hover:text-indigo-900' %>
+      <%= link_to "Cancel", product_category, class: "text-indigo-600 hover:text-indigo-900", "data-turbo-stream": true %>
+    </td>
+  </tr>
+<% end %>

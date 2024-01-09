@@ -1,0 +1,3 @@
+<% products.each do |name, options| %>
+  <%= render 'products/product', name: name, measurements: options[:measurements], category: options[:category] %>
+<% end %>

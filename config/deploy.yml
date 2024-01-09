@@ -1,0 +1,136 @@
+# Name of your application. Used to uniquely configure containers.
+service: diet-app
+
+# Name of the container image.
+image: damianszalbik/diet-app
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - 159.89.14.207
+    labels:
+      traefik.http.routers.web.rule: Host(`diety.damianszalbierz.pl`)
+      traefik.http.routers.web.entrypoints: web
+      traefik.http.routers.metabase.middlewares: web-redirectscheme
+      traefik.http.routers.web_secure.entrypoints: websecure
+      traefik.http.routers.web_secure.rule: Host(`diety.damianszalbierz.pl`)
+      traefik.http.routers.web_secure.tls: true
+      traefik.http.routers.web_secure.tls.certresolver: letsencrypt
+      traefik.http.middlewares.web-redirectscheme.redirectscheme.scheme: https
+      traefik.http.middlewares.web-redirectscheme.redirectscheme.permanent: true
+    options:
+      network: "private"
+  job:
+    hosts:
+      - 159.89.14.207
+    # Or something like bin/job
+    cmd: bundle exec sidekiq -C config/sidekiq.yml
+    # Limit workers resources
+    #
+    # options:
+    #   cap-add: true
+    #   cpu-count: 2
+    options:
+      network: "private"
+
+volumes:
+  - storage:/rails/storage
+# Credentials for your image host.
+registry:
+  username: damianszalbik
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Inject ENV variables into containers (secrets come from .env).
+# Remember to run `kamal env push` after making changes!
+env:
+  # clear:
+    # DB_HOST: 192.168.0.2
+  secret:
+    - RAILS_MASTER_KEY
+
+
+# Use a different ssh user than root
+# ssh:
+#   user: app
+
+# Configure builder setup.
+# builder:
+#   args:
+#     RUBY_VERSION: 3.2.0
+#   secrets:
+#     - GITHUB_TOKEN
+#   remote:
+#     arch: amd64
+#     host: ssh://app@192.168.0.1
+
+# Use accessory services (secrets come from .env).
+accessories:
+  db:
+    image: postgres:latest
+    # host: 159.89.14.207
+    # port: 172.17.0.1:5432:5432
+    roles:
+      - web
+      - job
+    env:
+      secret:
+        - POSTGRES_USER
+        - POSTGRES_PASSWORD
+        - POSTGRES_DB
+    directories:
+      - data:/var/lib/postgresql/data
+    options:
+      network: "private"
+  redis:
+    image: redis:latest
+    # host: 159.89.14.207
+    roles:
+      - web
+      - job
+    # port: 172.17.0.1:5432:5432
+    volumes:
+      - redis_data:/data
+    options:
+      network: "private"
+
+
+# Configure custom arguments for Traefik
+traefik:
+  options:
+    publish:
+      - "443:443"
+      # - "80:80"
+    volume:
+      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
+    network: "private"
+  args:
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    certificatesResolvers.letsencrypt.acme.email: "szalbierz.d.k@gmail.com"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpchallenge: true
+    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
+
+# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
+# hitting 404 on in-flight requests. Combines all files from new and old
+# version inside the asset_path.
+# asset_path: /rails/public/assets
+
+# Configure rolling deploys by setting a wait time between batches of restarts.
+# boot:
+#   limit: 10 # Can also specify as a percentage of total hosts, such as "25%"
+#   wait: 2
+
+# Configure the role used to determine the primary_host. This host takes
+# deploy locks, runs health checks during the deploy, and follow logs, etc.
+#
+# Caution: there's no support for role renaming yet, so be careful to cleanup
+#          the previous role on the deployed hosts.
+# primary_role: web
+
+# Controls if we abort when see a role with no hosts. Disabling this may be
+# useful for more complex deploy configurations.
+#
+# allow_empty_roles: false

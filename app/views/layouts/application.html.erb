@@ -11,6 +11,12 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= turbo_frame_tag :modal %>
+    <div class="flex h-full flex-col">
+      <%= render(NavbarComponent.new(current_user: current_user)) %>
+      <%= yield %>
+      <%= render(FooterComponent.new) %>
+    </div>
+    <%= render(FlashComponent.new(flash: flash)) %>
   </body>
 </html>
