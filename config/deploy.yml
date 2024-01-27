@@ -12,7 +12,7 @@ servers:
     labels:
       traefik.http.routers.web.rule: Host(`diety.damianszalbierz.pl`)
       traefik.http.routers.web.entrypoints: web
-      traefik.http.routers.metabase.middlewares: web-redirectscheme
+      traefik.http.routers.web.middlewares: web-redirectscheme
       traefik.http.routers.web_secure.entrypoints: websecure
       traefik.http.routers.web_secure.rule: Host(`diety.damianszalbierz.pl`)
       traefik.http.routers.web_secure.tls: true
