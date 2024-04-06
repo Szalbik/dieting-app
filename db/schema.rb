@@ -44,7 +44,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_174253) do
 
   create_table "audit_logs", force: :cascade do |t|
     t.string "trackable_type", null: false
-    t.integer "trackable_id", null: false
+    t.bigint "trackable_id", null: false
     t.string "action"
     t.text "description"
     t.datetime "created_at", null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_174253) do
 
   create_table "diet_sets", force: :cascade do |t|
     t.string "name"
-    t.integer "diet_id", null: false
+    t.bigint "diet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["diet_id"], name: "index_diet_sets_on_diet_id"
@@ -69,7 +69,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_174253) do
   create_table "diets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "name"
     t.boolean "active", default: true, null: false
     t.index ["user_id"], name: "index_diets_on_user_id"
@@ -78,15 +78,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_174253) do
   create_table "ingredient_measures", force: :cascade do |t|
     t.float "amount"
     t.string "unit"
-    t.integer "product_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_ingredient_measures_on_product_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
-    t.integer "product_id", null: false
-    t.integer "category_id", null: false
+    t.bigint "product_id", null: false
+    t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "state", default: false, null: false
@@ -98,7 +98,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_174253) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "unit_id"
+    t.bigint "unit_id"
     t.integer "diet_set_id"
     t.index ["diet_set_id"], name: "index_products_on_diet_set_id"
     t.index ["unit_id"], name: "index_products_on_unit_id"

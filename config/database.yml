@@ -2,7 +2,6 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url:  <%= ENV.fetch("DATABASE_URL") { 'localhost' } %>
 
 development:
   <<: *default
@@ -11,6 +10,9 @@ development:
 
 test:
   <<: *default
+  host: postgres
+  username: postgres
+  password: postgres
   database: diet_app_test
 
 production:

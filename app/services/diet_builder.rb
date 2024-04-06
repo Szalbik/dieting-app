@@ -26,11 +26,12 @@ class DietBuilder
     @line_processing_value = true if line.strip =~ /^2\) Przekąska$/
     @line_processing_value = true if line.strip =~ /^3\) Obiad$/
     @line_processing_value = true if line.strip =~ /^4\) Kolacja$/
-    @line_processing_value = false if line.strip =~ /^Sposób wykonania:$/
-    @line_processing_value = true if line.strip =~ /^Owoce?$|^Owoc$/
     return false unless @line_processing_value
 
     return false if line.strip.blank?
+    return false if line.strip =~ /^\d+\.\s/
+    return false if line.strip =~ /\d+\s-\s\d+/
+    return false if line.strip =~ /\d+-\d+/
     return false unless line.strip.include?('-')
     return false if line.strip.include?('tel.:')
 
