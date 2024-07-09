@@ -7,10 +7,10 @@ Rails.application.routes.draw do
 
   get 'up', to: 'health#show'
 
-  constraints ->(request) { 
-      user_id = request.session[:user_id]  
-      user_id && User.find_by(id: user_id)&.admin?
-    } do
+  constraints lambda { |request|
+                user_id = request.session[:user_id]
+                user_id && User.find_by(id: user_id)&.admin?
+              } do
     mount RailsPerformance::Engine, at: 'rails/performance'
     mount Sidekiq::Web => '/sidekiq'
   end
@@ -24,12 +24,11 @@ Rails.application.routes.draw do
   resources :users, only: :update
 
   resources :product_categories, only: %i[index edit update show]
-  resources :diets, only: %i[edit update show new]
+  resources :diets, only: %i[edit update show new destroy]
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
   get 'diets', to: 'diets#index'
   get 'diets/:id/load_pdf', to: 'diets#load_pdf', as: 'load_pdf'
-
 
   namespace :todoist do
     resources :projects, only: :index

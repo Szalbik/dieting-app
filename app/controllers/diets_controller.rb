@@ -6,7 +6,10 @@ class DietsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @diets = Diet.all
+    if params[:active].present? && params[:active] == 'false'
+      return @diets = current_user.diets.inactive
+    end
+    @diets = current_user.diets.active
   end
 
   def show
@@ -58,6 +61,17 @@ class DietsController < ApplicationController
         format.html { redirect_to diets_path, notice: 'Diet was successfully updated.' }
       else
         format.html { render :edit, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    diet = Diet.find(params[:id])
+    respond_to do |format|
+      if diet.destroy
+        format.html { redirect_to diets_path, notice: 'Dieta została usunięta.' }
+      else
+        format.html { render :index, status: :unprocessable_entity }
       end
     end
   end
