@@ -40,7 +40,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                <% current_user.diets.each do |diet| %>
+                <% current_user.diets.active.each do |diet| %>
                   <tr>
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= diet.name %></td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= diet.diet_sets.count %></td>
@@ -68,7 +68,6 @@
         </div>
       </div>
     </div>
-
     <div class="mt-10 px-4 sm:px-6 lg:px-8">
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
@@ -88,7 +87,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <% logs = Diet.all.flat_map(&:audit_logs).sort_by(&:created_at).reverse %>
+                <% logs = current_user.diets.flat_map(&:audit_logs).sort_by(&:created_at).reverse %>
                 <% logs.each do |log| %>
                   <tr class="divide-x divide-gray-200">
                     <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-500 sm:pl-0"><%= log.action %></td>
@@ -96,7 +95,6 @@
                     <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= log.created_at.strftime("%B %d, %Y") %></td>
                   </tr>
                 <% end %>
-
                 <!-- More people... -->
               </tbody>
             </table>

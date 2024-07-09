@@ -10,14 +10,17 @@ class Diet < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
 
+  scope :active, -> { where(active: true) }
+  scope :inactive, -> { where(active: false) }
+
   def classify_products!
     return unless products.any?
 
     products.each do |product|
       product_category = Classifier::Category.predict(product.name)
       ProductCategory.create(
-        category: Category.find_by(name: product_category[:name]), 
-        product: product, 
+        category: Category.find_by(name: product_category[:name]),
+        product: product,
         state: product_category[:state]
       )
     end
