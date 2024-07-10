@@ -10,7 +10,7 @@ class TodoistController < ApplicationController
       SendToTodoistJob.perform_later(
         params[:diet][:project_id],
         params[:diet][:diet_set_ids],
-        params[:diet][:diet_set_quantities],
+        diet_set_quantities_params[:diet_set_quantities],
         session[:todoist_token],
         current_user.id
       )
@@ -62,6 +62,10 @@ class TodoistController < ApplicationController
 
   def diet_params
     params.require(:diet).permit(:id, :project_id)
+  end
+
+  def diet_set_quantities_params
+    params.permit(diet_set_quantities: {})
   end
 
   def search_params
