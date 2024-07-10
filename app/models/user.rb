@@ -18,7 +18,7 @@ class User < ApplicationRecord
   end
 
   def active_diets
-    diets.where(active: true)
+    diets.active
   end
 
   def active_diet_set_ids
