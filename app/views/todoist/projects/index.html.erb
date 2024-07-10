@@ -11,7 +11,6 @@
         To: "opacity-0"
     -->
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
       <div x-show="isOpen" class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
         <!--
@@ -40,6 +39,9 @@
                   <% @diet_set_ids.each do |diet_set_id| %>
                     <%= form.hidden_field :diet_set_ids, multiple: true, value: diet_set_id %>
                   <% end %>
+                  <% @diet_set_quantities.each do |diet_set_id, quantity| %>
+                    <%= hidden_field_tag "diet_set_quantities[#{diet_set_id}]", quantity, id: nil %>
+                  <% end %>
                   <%#= render 'projects', projects: @projects %>
                   <fieldset>
                     <legend class="sr-only">Todoist projects</legend>
@@ -61,7 +63,7 @@
                                 Udostępniony
                               </span>
                             <% else %>
-                            <!-- Checked: "text-indigo-700", Not Checked: "text-gray-500" -->
+                              <!-- Checked: "text-indigo-700", Not Checked: "text-gray-500" -->
                               <span>
                                 Prywatny
                               </span>

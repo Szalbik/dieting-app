@@ -6,13 +6,28 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
-    products = if params[:diet].present?
-      current_user.active_products.where(diet_set_id: search_params[:diet_set_ids])
+    @diet_set_ids = search_params[:diet][:diet_set_ids].reject(&:empty?) rescue []
+    @diet_set_quantities = search_params[:diet][:diet_set_quantities] rescue {}
+
+    # Step 1: Filter products based on selected diet sets
+    products = current_user.active_products.where(diet_set_id: @diet_set_ids)
+
+    # Step 2: Prepare products with quantities
+    multiplied_products = []
+    if @diet_set_quantities.present?
+      @diet_set_quantities.each do |diet_set_id, quantity|
+        next unless @diet_set_ids.include?(diet_set_id)
+        quantity = quantity.to_i
+        # Assuming each product should be duplicated based on the quantity
+        products.where(diet_set_id: diet_set_id).each do |product|
+          quantity.times { multiplied_products << product}
+        end
+      end
     else
-      current_user.active_products
+      multiplied_products = products
     end
 
-    @products = Product.group_and_sum_by_name_then_category(products)
+    @products = Product.group_and_sum_by_name_then_category(multiplied_products)
   end
 
   # GET /products/1 or /products/1.json
@@ -77,6 +92,6 @@ class ProductsController < ApplicationController
   end
 
   def search_params
-    params.require(:diet).permit(diet_set_ids: [])
+    params.permit(diet: {diet_set_ids: [], diet_set_quantities: {}})
   end
 end

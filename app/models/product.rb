@@ -85,13 +85,12 @@ class Product < ApplicationRecord
     summed_products
   end
 
-
   def self.group_and_sum_by_name_then_category(scope = Product)
     # Eager load ingredient measures and category
-    products_with_measures = scope.includes(:ingredient_measures, :category)
+    # products_with_measures = scope.includes(:ingredient_measures, :category)
 
     # Group products by name
-    grouped_by_name = products_with_measures.group_by(&:name)
+    grouped_by_name = scope.group_by(&:name)
 
     # Initialize a hash to store the summed products
     summed_products = {}

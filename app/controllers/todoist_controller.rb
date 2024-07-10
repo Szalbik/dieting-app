@@ -10,6 +10,7 @@ class TodoistController < ApplicationController
       SendToTodoistJob.perform_later(
         params[:diet][:project_id],
         params[:diet][:diet_set_ids],
+        params[:diet][:diet_set_quantities],
         session[:todoist_token],
         current_user.id
       )

@@ -1,9 +1,27 @@
 class SendToTodoistJob < ApplicationJob
   queue_as :default
 
-  def perform(project_id, diet_set_ids, token, user_id)
-    products = Product.where(diet_set_id: diet_set_ids)
-    grouped_products = Product.group_and_sum_by_name_and_unit(products)
+  def perform(project_id, diet_set_ids, diet_set_quantities, token, user_id)
+      # Step 1: Filter products based on selected diet sets
+    selected_diet_set_ids = diet_set_ids.reject(&:empty?) rescue []
+    products = current_user.active_products.where(diet_set_id: selected_diet_set_ids)
+
+    # Step 2: Prepare products with quantities
+    multiplied_products = []
+    if diet_set_quantities.present?
+      diet_set_quantities.each do |diet_set_id, quantity|
+        next unless selected_diet_set_ids.include?(diet_set_id)
+        quantity = quantity.to_i
+        # Assuming each product should be duplicated based on the quantity
+        products.where(diet_set_id: diet_set_id).each do |product|
+          quantity.times { multiplied_products << product}
+        end
+      end
+    else
+      multiplied_products = products
+    end
+
+    grouped_products = Product.group_and_sum_by_name_and_unit(multiplied_products)
 
     sections = Todoist::Api.fetch_sections(token, project_id)
 

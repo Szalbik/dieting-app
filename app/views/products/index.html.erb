@@ -292,9 +292,15 @@
                 <div class="flex flex-col">
                   <h2 class="text-base font-semibold leading-6 text-gray-900">Integracje:</h2>
                   <%= link_to "Wyślij listę do #{image_tag('icons/todoist.svg', size: '16x16', class: 'ml-2')}".html_safe,
-                              todoist_projects_path(diet_set_ids: params.dig('diet', 'diet_set_ids')&.reject(&:empty?) ),
-                              data: { turbo_frame: 'modal' },
-                              class: "flex text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-2 mt-2 disabled:text-gray-500" %>
+                    todoist_projects_path(
+                      # diet_set_ids: params[:diet].present? ? params[:diet][:diet_set_ids] : [],
+                      # diet_set_quantities: params[:diet].present? ? params[:diet][:diet_set_quantities] : {}
+                      diet_set_ids: @diet_set_ids,
+                      diet_set_quantities: @diet_set_quantities
+                    ),
+                    data: { turbo_frame: 'modal' },
+                    class: "flex text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-2 mt-2 disabled:text-gray-500" 
+                  %>
                 </div>
               </li>
             </ul>
@@ -325,7 +331,7 @@
                         <div class="flex items-center">
                           <%= b.check_box class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500", onchange: 'this.form.submit()' %>
                           <%= b.label class: "ml-3 text-sm text-gray-600" %>
-                          <input type="text" name="diet_set[quantity]" />
+                          <%= number_field_tag("diet[diet_set_quantities][#{b.object.id}]", 1, min: 1, max: 4, value: params[:diet].present? ? params[:diet][:diet_set_quantities][b.object.id.to_s] : "1", class: "ml-3 h-8 w-14 rounded border-gray-300", onchange: 'this.form.submit()') %>
                         </div>
                       <% end %>
                     </div>
@@ -333,7 +339,7 @@
                 </div>
               <% end %>
               <div class="mt-6 flex items-center justify-end gap-x-6">
-                <%#= submit_tag "Filtruj", class: 'inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600', data: { turbo_frame: 'dupa' } %>
+                <%= submit_tag "Filtruj", class: 'inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600', data: { turbo_frame: 'dupa' } %>
               </div>
             <% end %>
           </div>
