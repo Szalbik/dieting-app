@@ -83,18 +83,21 @@
             <table class="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr class="divide-x divide-gray-200">
-                  <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-0">Action</th>
                   <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
                   <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
                 <% logs = @diets.flat_map(&:audit_logs).sort_by(&:created_at).reverse %>
-                <% logs.each do |log| %>
+                <% current_user.diet_history_by_date.each do |diet_history| %>
                   <tr class="divide-x divide-gray-200">
-                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-500 sm:pl-0"><%= log.action %></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= log.description %></td>
-                    <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= log.created_at.strftime("%B %d, %Y") %></td>
+                    <td class="whitespace-nowrap p-4 text-base text-gray-500 align-middle">
+                      <% diet_history.second.each do |dh| %>
+                        <p class="py-1"><%= dh.description %></p>
+                        <br />
+                      <% end %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-base text-gray-500"><%= diet_history.first %></td>
                   </tr>
                 <% end %>
                 <!-- More people... -->

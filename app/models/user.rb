@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   has_many :diets, dependent: :nullify
   has_many :products, through: :diets
+  has_many :audit_logs, through: :diets
 
   has_secure_password
 
@@ -12,6 +13,10 @@ class User < ApplicationRecord
   normalizes :email, with: -> email { email.strip.downcase }
 
   # scope :active_diets, -> { diets.where(active: true) }
+
+  def diet_history_by_date
+    audit_logs.order(created_at: :desc).group_by(&:date)
+  end
 
   def admin?
     admin
