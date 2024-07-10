@@ -4,7 +4,8 @@ class SendToTodoistJob < ApplicationJob
   def perform(project_id, diet_set_ids, diet_set_quantities, token, user_id)
       # Step 1: Filter products based on selected diet sets
     selected_diet_set_ids = diet_set_ids.reject(&:empty?) rescue []
-    products = current_user.active_products.where(diet_set_id: selected_diet_set_ids)
+    user = User.find(user_id)
+    products = user.active_products.where(diet_set_id: selected_diet_set_ids)
 
     # Step 2: Prepare products with quantities
     multiplied_products = []
@@ -37,9 +38,9 @@ class SendToTodoistJob < ApplicationJob
 
     response = Todoist::Api.create_task(grouped_products, categories_with_section_ids, token, project_id)
 
-    diets = User.find(user_id).active_diets.select{ |diet| diet.diet_sets.where(id: diet_set_ids).present? }
+    diets = user.active_diets.select{ |diet| diet.diet_sets.where(id: selected_diet_set_ids).present? }
     diets.each do |diet|
-      diet_sets_names = diet.diet_sets.where(id: diet_set_ids).pluck(:name).join(', ')
+      diet_sets_names = diet.diet_sets.where(id: selected_diet_set_ids).pluck(:name).join(', ')
       diet.audit_logs.create(action: 'create', description: "Sent products to Todoist #{diet.name} diet with sets: #{diet_sets_names}")
     end
   end
