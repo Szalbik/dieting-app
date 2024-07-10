@@ -88,7 +88,6 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <% logs = @diets.flat_map(&:audit_logs).sort_by(&:created_at).reverse %>
                 <% current_user.diet_history_by_date.each do |diet_history| %>
                   <tr class="divide-x divide-gray-200">
                     <td class="whitespace-nowrap p-4 text-base text-gray-500 align-middle">
