@@ -2,20 +2,17 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url:  <%= ENV.fetch("DATABASE_URL") { 'localhost' } %>
 
 development:
   <<: *default
   database: diet_app_development
-  url: <%= Rails.application.credentials.database_url %>
+  url: <%= ENV.fetch("DATABASE_URL") { Rails.application.credentials.fetch(:database_url, 'postgres://localhost/diet_app_development') } %>
 
 test:
   <<: *default
-  host: postgres
-  username: postgres
-  password: postgres
   database: diet_app_test
 
 production:
   <<: *default
-  database: diet_app_production
-  url: <%= Rails.application.credentials.database_url %>
+  url: <%= ENV.fetch("DATABASE_URL") { Rails.application.credentials.fetch(:database_url, 'postgres://localhost/diet_app_production') } %>

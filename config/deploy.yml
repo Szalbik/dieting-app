@@ -8,39 +8,68 @@ image: damianszalbik/diet-app
 servers:
   web:
     hosts:
-      - 159.89.14.207
-    labels:
-      traefik.http.routers.web.rule: Host(`diety.damianszalbierz.pl`)
-      traefik.http.routers.web.entrypoints: web
-      traefik.http.routers.web.middlewares: web-redirectscheme
-      traefik.http.routers.web_secure.entrypoints: websecure
-      traefik.http.routers.web_secure.rule: Host(`diety.damianszalbierz.pl`)
-      traefik.http.routers.web_secure.tls: true
-      traefik.http.routers.web_secure.tls.certresolver: letsencrypt
-      traefik.http.middlewares.web-redirectscheme.redirectscheme.scheme: https
-      traefik.http.middlewares.web-redirectscheme.redirectscheme.permanent: true
-    options:
-      network: "private"
+      - 167.99.137.233
+
   job:
     hosts:
-      - 159.89.14.207
+      - 167.99.137.233
     # Or something like bin/job
     cmd: bundle exec sidekiq -C config/sidekiq.yml
-    # Limit workers resources
-    #
-    # options:
-    #   cap-add: true
-    #   cpu-count: 2
-    options:
-      network: "private"
 
-volumes:
-  - storage:/rails/storage
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+#
+# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
+proxy:
+  app_port: 3000
+  ssl: true
+  host: diety.rubydive.com
+  healthcheck:
+    interval: 5
+    path: /up
+    timeout: 30
+
 # Credentials for your image host.
 registry:
   username: damianszalbik
   password:
     - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  arch:
+    - amd64
+  # Pass in additional build args needed for your Dockerfile.
+  # args:
+  #   RUBY_VERSION: <%= File.read('.ruby-version').strip %>
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+#
+env:
+  secret:
+    - RAILS_MASTER_KEY
+#   clear:
+#     DB_HOST: 192.168.0.2
+
+# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
+# "bin/kamal logs -r job" will tail logs from the first server in the job section.
+#
+aliases:
+  shell: app exec --interactive --reuse "bash"
+  console: app exec --interactive --reuse "bin/rails console"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+# Use a different ssh user than root
+#
+# ssh:
+#   user: app
+
+# Use a persistent storage volume.
+#
+volumes:
+  - storage:/rails/storage
+
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
@@ -81,8 +110,6 @@ accessories:
         - POSTGRES_DB
     directories:
       - data:/var/lib/postgresql/data
-    options:
-      network: "private"
   redis:
     image: redis:latest
     # host: 159.89.14.207
@@ -92,45 +119,3 @@ accessories:
     # port: 172.17.0.1:5432:5432
     volumes:
       - redis_data:/data
-    options:
-      network: "private"
-
-
-# Configure custom arguments for Traefik
-traefik:
-  options:
-    publish:
-      - "443:443"
-      # - "80:80"
-    volume:
-      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
-    network: "private"
-  args:
-    entryPoints.web.address: ":80"
-    entryPoints.websecure.address: ":443"
-    certificatesResolvers.letsencrypt.acme.email: "szalbierz.d.k@gmail.com"
-    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
-    certificatesResolvers.letsencrypt.acme.httpchallenge: true
-    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
-
-# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
-# hitting 404 on in-flight requests. Combines all files from new and old
-# version inside the asset_path.
-# asset_path: /rails/public/assets
-
-# Configure rolling deploys by setting a wait time between batches of restarts.
-# boot:
-#   limit: 10 # Can also specify as a percentage of total hosts, such as "25%"
-#   wait: 2
-
-# Configure the role used to determine the primary_host. This host takes
-# deploy locks, runs health checks during the deploy, and follow logs, etc.
-#
-# Caution: there's no support for role renaming yet, so be careful to cleanup
-#          the previous role on the deployed hosts.
-# primary_role: web
-
-# Controls if we abort when see a role with no hosts. Disabling this may be
-# useful for more complex deploy configurations.
-#
-# allow_empty_roles: false

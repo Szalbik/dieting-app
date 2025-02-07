@@ -95,7 +95,7 @@ gem 'ruby-openai'
 gem 'tailwindcss-rails', '~> 2.0'
 gem 'view_component'
 gem 'sidekiq'
-gem "kamal", "~> 1.3"
+gem "kamal"
 gem 'nbayes'
 
 gem "honeybadger", "~> 5.4"
