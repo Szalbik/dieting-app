@@ -100,7 +100,7 @@ accessories:
   db:
     image: postgres:latest
     host: "167.99.137.233"
-    port: "127.0.0.1:5432:5433"
+    port: "127.0.0.1:5432:5432"
     env:
       secret:
         - POSTGRES_USER
@@ -111,7 +111,7 @@ accessories:
   redis:
     image: redis:latest
     host: "167.99.137.233"
-    port: "127.0.0.1:6379:6380"
+    port: "127.0.0.1:6379:6379"
     cmd: --maxmemory 200m --maxmemory-policy allkeys-lru
     options:
       memory: 250m
