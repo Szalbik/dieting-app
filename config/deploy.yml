@@ -100,7 +100,7 @@ accessories:
   db:
     image: postgres:16
     host: "167.99.137.233"
-    port: "127.0.0.1:5432:5432"
+    port: "127.0.0.1:5432:5433"
     env:
       secret:
         - POSTGRES_USER
@@ -111,9 +111,9 @@ accessories:
   redis:
     image: redis:7
     host: "167.99.137.233"
-    port: "127.0.0.1:6379:6379"
+    port: "127.0.0.1:6379:6380"
     cmd: --maxmemory 200m --maxmemory-policy allkeys-lru
     options:
       memory: 250m
     volumes:
-      - redis_data:/data
+      - diet_app_redis_data:/data
