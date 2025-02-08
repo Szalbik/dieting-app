@@ -112,5 +112,8 @@ accessories:
     image: redis:latest
     host: "167.99.137.233"
     port: "127.0.0.1:6379:6380"
+    cmd: --maxmemory 200m --maxmemory-policy allkeys-lru
+    options:
+      memory: 250m
     volumes:
       - redis_data:/data
