@@ -59,6 +59,7 @@ aliases:
   console: app exec --interactive --reuse "bin/rails console"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  apps: server exec docker exec kamal-proxy kamal-proxy list
 
 # Use a different ssh user than root
 #
