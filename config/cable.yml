@@ -1,5 +1,6 @@
 development:
   adapter: redis
+  # 6379 for local, 63790 for Docker Compose
   url: <%= Rails.application.credentials.redis_url %>
 
 test:

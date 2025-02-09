@@ -1,50 +1,55 @@
-x-base: &base
-  build:
-    context: .
-    dockerfile: ./Dockerfile.dev
-    args:
-      RUBY_VERSION: '3.2.2'
-  stdin_open: true
-  tty: true
-  volumes:
-    - .:/app:cached
-  depends_on:
-    - redis
-    - postgres
-
-services:
-  app:
-    <<: *base
-    command: bash -c "bin/rails server -p 3000 -b 0.0.0.0"
-    ports:
-      - '3000:3000'
-
-  css:
-    <<: *base
-    command: bash -c "yarn build:css --watch"
-
-  js:
-    <<: *base
-    command: bash -c "yarn build --watch"
-
-  sidekiq:
-    <<: *base
-    command: bundle exec sidekiq -C config/sidekiq.yml
-
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - '6379:6379'
-
-  postgres:
-    image: postgres:14-alpine
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5432:5432'
+# x-base: &base
+#   build:
+#     context: .
+#     dockerfile: ./Dockerfile.dev
+#     args:
+#       RUBY_VERSION: '3.2.2'
+#   stdin_open: true
+#   tty: true
+#   volumes:
+#     - .:/app:cached
+#   depends_on:
+#     - redis
+#     - postgres
 
 volumes:
   postgres:
+  redis:
+
+services:
+  redis:
+    image: redis:6
+    restart: unless-stopped
+    ports:
+      - '63790:6379'
+    volumes:
+      - redis:/data
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 54320:5432
+
+  # app:
+  #   <<: *base
+  #   command: bash -c "bin/rails server -p 3000 -b 0.0.0.0"
+  #   ports:
+  #     - '3000:3000'
+
+  # css:
+  #   <<: *base
+  #   command: bash -c "yarn build:css --watch"
+
+  # js:
+  #   <<: *base
+  #   command: bash -c "yarn build --watch"
+
+  # sidekiq:
+  #   <<: *base
+  #   command: bundle exec sidekiq -C config/sidekiq.yml

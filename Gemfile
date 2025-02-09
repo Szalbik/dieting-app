@@ -8,58 +8,42 @@ ruby '3.2.2'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.2'
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
-
-# Use postgresql as the database for Active Record
-gem 'pg', '~> 1.5', '>= 1.5.4'
-# gem 'sqlite3'
-
-# Use the Puma web server [https://github.com/puma/puma]
-gem 'pdf-reader'
-gem 'pry-rails'
-gem 'puma', '~> 6.0'
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'jsbundling-rails'
-
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
-
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
-
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem 'cssbundling-rails'
-
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem 'jbuilder'
-
-# Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 5.0'
-
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.12'
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', require: false
-
-gem 'httparty'
+# Asssets pipeline
+gem 'cssbundling-rails' # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
+gem 'jsbundling-rails' # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
+gem 'sprockets-rails' # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 
 # Monitoring
+gem 'honeybadger', '~> 5.4'
 gem 'rails_performance'
 # gem 'lograge'
 # gem 'bullet'
 # gem 'rack-mini-profiler'
 # gem 'pg_hero'
 
-# Use Sass to process CSS
-# gem "sassc-rails"
+gem 'bcrypt', '~> 3.1.12'
+gem 'bootsnap', require: false # Reduces boot times through caching; required in config/boot.rb
+gem 'httparty'
+gem 'jbuilder'
+gem 'kamal'
+gem 'nbayes'
+gem 'pdf-reader'
+gem 'pg', '~> 1.5', '>= 1.5.4' # gem 'sqlite3'
+gem 'pry-rails'
+gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
+gem 'redis', '~> 5.0'
+gem 'ruby-openai'
+gem 'sidekiq'
+gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+gem 'tailwindcss-rails', '~> 2.0'
+gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem 'view_component'
+
+# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+# gem "kredis"
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -67,9 +51,6 @@ gem 'rails_performance'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'rspec-rails'
   gem 'rubocop', require: false
   # gem 'rubocop-minitest', require: false
   gem 'rubocop-rails', require: false
@@ -78,6 +59,9 @@ end
 
 group :test do
   gem 'shoulda-matchers'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -90,12 +74,3 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-
-gem 'ruby-openai'
-gem 'tailwindcss-rails', '~> 2.0'
-gem 'view_component'
-gem 'sidekiq'
-gem "kamal"
-gem 'nbayes'
-
-gem "honeybadger", "~> 5.4"
