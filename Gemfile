@@ -35,7 +35,6 @@ gem 'redis', '~> 5.0'
 gem 'ruby-openai'
 gem 'sidekiq'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'tailwindcss-rails', '~> 2.0'
 gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'view_component'
 
