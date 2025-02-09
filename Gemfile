@@ -11,7 +11,7 @@ gem 'rails', '~> 7.1.2'
 # Asssets pipeline
 gem 'cssbundling-rails' # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'jsbundling-rails' # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'sprockets-rails' # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+gem 'propshaft' 
 
 # Monitoring
 gem 'honeybadger', '~> 5.4'
