@@ -3,8 +3,6 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  root 'main#index'
-
   get 'up', to: 'health#show'
 
   constraints lambda { |request|
@@ -14,6 +12,14 @@ Rails.application.routes.draw do
     mount RailsPerformance::Engine, at: 'rails/performance'
     mount Sidekiq::Web => '/sidekiq'
   end
+
+  # constraints lambda { |request| 
+  #   user_id = request.session[:user_id]
+  #   user_id.nil? && User.find_by(id: user_id).nil?
+  # } do
+  #   root to: 'main#index'
+  # end 
+  root to: 'meal_plans#show'
 
   resource :registration
   resource :session
@@ -25,6 +31,9 @@ Rails.application.routes.draw do
 
   resources :product_categories, only: %i[index edit update show]
   resources :diets, only: %i[edit update show new destroy]
+  
+  resource :meal_plans, only: :show
+  
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
   get 'diets', to: 'diets#index'

@@ -6,6 +6,7 @@ class Diet < ApplicationRecord
   has_many :diet_sets, dependent: :destroy
   has_many :products, through: :diet_sets
   has_many :audit_logs, as: :trackable
+  has_many :meal_plans
   has_one_attached :pdf
 
   validates :name, presence: true, uniqueness: { scope: :user_id }

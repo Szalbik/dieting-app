@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2023_12_06_174253) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_09_214202) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -84,6 +84,14 @@ ActiveRecord::Schema[7.2].define(version: 2023_12_06_174253) do
     t.index ["product_id"], name: "index_ingredient_measures_on_product_id"
   end
 
+  create_table "meal_plans", force: :cascade do |t|
+    t.bigint "diet_id", null: false
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["diet_id"], name: "index_meal_plans_on_diet_id"
+  end
+
   create_table "product_categories", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "category_id", null: false
@@ -124,6 +132,7 @@ ActiveRecord::Schema[7.2].define(version: 2023_12_06_174253) do
   add_foreign_key "diet_sets", "diets"
   add_foreign_key "diets", "users"
   add_foreign_key "ingredient_measures", "products"
+  add_foreign_key "meal_plans", "diets"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
   add_foreign_key "products", "diet_sets"
