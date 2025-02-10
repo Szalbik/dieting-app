@@ -30,7 +30,6 @@ gem 'pdf-reader'
 gem "sqlite3", ">= 2.1"
 gem 'pry-rails'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
-gem 'redis', '~> 5.0'
 gem 'ruby-openai'
 gem 'sidekiq'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
@@ -39,6 +38,7 @@ gem 'view_component'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
+gem 'redis', '~> 5.0'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
