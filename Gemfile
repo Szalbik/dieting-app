@@ -31,17 +31,18 @@ gem 'httparty'
 gem 'jbuilder'
 gem 'kamal'
 gem 'mission_control-jobs'
-gem 'nbayes'
-gem 'pdf-reader'
 gem "sqlite3", ">= 2.1"
 gem 'pry-rails'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
- 
-gem 'ruby-openai'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "thruster", require: false # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'view_component'
+
+# Dieting app related gems
+gem 'ruby-openai'
+gem 'nbayes'
+gem 'pdf-reader'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
