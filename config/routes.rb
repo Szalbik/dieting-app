@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   get 'up', to: 'health#show'
 
-  mount MissionControl::Jobs::Engine, at: "/jobs"
+  mount MissionControl::Jobs::Engine, at: '/jobs'
 
   constraints lambda { |request|
                 user_id = request.session[:user_id]
@@ -14,19 +14,18 @@ Rails.application.routes.draw do
                 mount RailsPerformance::Engine, at: 'rails/performance'
               end
 
-  resource :registration
-  resource :session
-  resource :password
-  resource :password_reset
+  resource :session, only: %i[new create destroy]
+  resources :passwords, param: :token, only: %i[new create edit update]
+  resources :registrations, only: %i[new create]
 
   resources :products, only: :index
   resources :users, only: :update
 
   resources :product_categories, only: %i[index edit update show]
   resources :diets, only: %i[edit update show new destroy]
-  
+
   resource :meal_plans, only: :show
-  
+
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
   get 'diets', to: 'diets#index'

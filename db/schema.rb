@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_09_214202) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
-
+ActiveRecord::Schema[8.0].define(version: 2025_02_10_184741) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -112,6 +109,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_09_214202) do
     t.index ["unit_id"], name: "index_products_on_unit_id"
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -122,9 +128,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_09_214202) do
     t.string "first_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "email"
-    t.string "password_digest"
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
     t.boolean "admin", default: false, null: false
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -137,4 +144,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_09_214202) do
   add_foreign_key "product_categories", "products"
   add_foreign_key "products", "diet_sets"
   add_foreign_key "products", "units"
+  add_foreign_key "sessions", "users"
 end

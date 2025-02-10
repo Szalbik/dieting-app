@@ -20,8 +20,8 @@
   </head>
   <body class="h-full>
     <%= turbo_frame_tag :modal %>
-    <div class="flex h-full flex-col">
-      <%= render(NavbarComponent.new(current_user: current_user)) %>
+    <div class="flex flex-col h-full">
+      <%= render(NavbarComponent.new(current_user: Current.user)) %>
       <%= yield %>
       <%= render(FooterComponent.new) %>
     </div>
