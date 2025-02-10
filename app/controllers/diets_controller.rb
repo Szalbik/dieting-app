@@ -3,13 +3,12 @@
 require 'pdf/reader'
 
 class DietsController < ApplicationController
-  before_action :authenticate_user!
-
   def index
     if params[:active].present? && params[:active] == 'false'
-      return @diets = current_user.diets.inactive
+      return @diets = Current.user.diets.inactive
     end
-    @diets = current_user.diets.active
+
+    @diets = Current.user.diets.active
   end
 
   def show

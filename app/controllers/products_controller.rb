@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProductsController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_product, only: %i[show edit update destroy]
 
   # GET /products or /products.json
@@ -10,17 +9,18 @@ class ProductsController < ApplicationController
     @diet_set_quantities = search_params[:diet][:diet_set_quantities] rescue {}
 
     # Step 1: Filter products based on selected diet sets
-    products = current_user.active_products.where(diet_set_id: @diet_set_ids)
+    products = Current.user.active_products.where(diet_set_id: @diet_set_ids)
 
     # Step 2: Prepare products with quantities
     multiplied_products = []
     if @diet_set_quantities.present?
       @diet_set_quantities.each do |diet_set_id, quantity|
         next unless @diet_set_ids.include?(diet_set_id)
+
         quantity = quantity.to_i
         # Assuming each product should be duplicated based on the quantity
         products.where(diet_set_id: diet_set_id).each do |product|
-          quantity.times { multiplied_products << product}
+          quantity.times { multiplied_products << product }
         end
       end
     else
@@ -92,6 +92,6 @@ class ProductsController < ApplicationController
   end
 
   def search_params
-    params.permit(diet: {diet_set_ids: [], diet_set_quantities: {}})
+    params.permit(diet: { diet_set_ids: [], diet_set_quantities: {} })
   end
 end

@@ -8,10 +8,14 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
-password_diegst = BCrypt::Password.create('foobar')
-User.create(email_address: 'damian@example.com', first_name: 'Damian', password_digest: password_diegst)
-User.create(email_address: 'kasia@example.com', first_name: 'Kasia', password_digest: password_diegst)
-
+password = 'foobar'
+password_diegst = BCrypt::Password.create(password)
+User.create(email_address: 'damian@example.com', first_name: 'Damian', password_digest: password_diegst,
+            password: password, password_confirmation: password)
+User.create(email_address: 'kasia@example.com', first_name: 'Kasia', password_digest: password_diegst,
+            password: password, password_confirmation: password)
+User.create(email_address: 'admin@example.com', first_name: 'Admin', password_digest: password_diegst,
+            password: password, password_confirmation: password, admin: true)
 Category.create(name: 'Warzywa')
 Category.create(name: 'Owoce')
 Category.create(name: 'Mięso i Ryby')

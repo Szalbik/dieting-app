@@ -4,7 +4,7 @@ class RegistrationsController < ApplicationController
   layout 'registration'
 
   # Include Authentication module unless it's already in ApplicationController
-  include Authentication
+  # include Authentication
   allow_unauthenticated_access
 
   rate_limit to: 10,

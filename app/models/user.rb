@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  after_create -> (first_name) { email.split('@').first }
+  after_create -> (first_name) { email_address.split('@').first }
 
   has_many :diets, dependent: :nullify
   has_many :products, through: :diets
@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
 
   validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: true
-  validates :password, length: { minimum: 10 }, if: -> { new_record? || changes[:password_digest] }
+  validates :password, length: { minimum: 6 }, if: -> { new_record? || changes[:password_digest] }
   validates :password, confirmation: true, if: -> { new_record? || changes[:password_digest] }
   validates :password_confirmation, presence: true, if: -> { new_record? || changes[:password_digest] }
 

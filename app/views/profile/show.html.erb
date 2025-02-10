@@ -1,11 +1,11 @@
-<div class="mx-auto flex w-full max-w-7xl items-start gap-x-8 px-4 py-10 sm:px-6 lg:px-8">
+<div class="flex items-start w-full px-4 py-10 mx-auto max-w-7xl gap-x-8 sm:px-6 lg:px-8">
   <main class="flex-1">
     <!-- Main area -->
-    <div class="mt-2 flow-root">  
+    <div class="flow-root mt-2">  
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">  
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">  
           <div class="relative">  
-            <div class="border-b border-gray-900/10 pb-12">
+            <div class="pb-12 border-b border-gray-900/10">
               <h2 class="text-base font-semibold leading-7 text-gray-900">Integrations</h2>
               <p class="mt-1 mb-1 text-sm leading-6 text-gray-600">Authorize this app with other libraries in order to make use of them.</p>
 
@@ -26,13 +26,13 @@
               <% end %>
             </div>
 
-            <%= form_with model: current_user do |f| %>
+            <%= form_with model: Current.user do |f| %>
               <div class="space-y-12">
-      <!--          <div class="border-b border-gray-900/10 pb-12">
+                <!-- <div class="pb-12 border-b border-gray-900/10">
                   <h2 class="text-base font-semibold leading-7 text-gray-900">Profile</h2>
                   <p class="mt-1 text-sm leading-6 text-gray-600">This information will be displayed publicly so be careful what you share.</p>
 
-                  <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div class="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="col-span-full">
                       <label for="about" class="block text-sm font-medium leading-6 text-gray-900">About</label>
                       <div class="mt-2">
@@ -43,11 +43,11 @@
                   </div>
                 </div>-->
 
-                <div class="border-b border-gray-900/10 pb-12">
+                <div class="pb-12 border-b border-gray-900/10">
                   <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
                   <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
 
-                  <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div class="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-3">
                       <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
                       <div class="mt-2">
@@ -65,9 +65,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="mt-6 flex items-center justify-end gap-x-6">
+                <div class="flex items-center justify-end mt-6 gap-x-6">
                   <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-                  <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+                  <button type="submit" class="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                 </div>
               </div>
             <% end %>

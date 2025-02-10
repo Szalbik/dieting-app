@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 class MainController < ApplicationController
-  before_action :user_authenticated?
+  allow_unauthenticated_access
 
-  def index;end
-
-  private
-
-  def user_authenticated?
-    redirect_to meal_plans_path if user_signed_in?
+  def index
+    redirect_to meal_plans_path if authenticated?
   end
 end

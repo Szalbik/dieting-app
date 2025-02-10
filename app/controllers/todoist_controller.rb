@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class TodoistController < ApplicationController
-  before_action :authenticate_user!
-
   def create
     if session[:todoist_token].blank?
       redirect_to profile_path, alert: 'Please authorize Todoist first in your profile'
@@ -12,7 +10,7 @@ class TodoistController < ApplicationController
         params[:diet][:diet_set_ids],
         diet_set_quantities_params[:diet_set_quantities],
         session[:todoist_token],
-        current_user.id
+        Current.user.id
       )
       redirect_to diets_path, notice: 'Products sent to Todoist'
     end
