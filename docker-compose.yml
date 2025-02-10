@@ -13,8 +13,8 @@
 #     - postgres
 
 volumes:
-  postgres:
   redis:
+  # postgres:
 
 services:
   redis:
@@ -25,16 +25,16 @@ services:
     volumes:
       - redis:/data
 
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - 54320:5432
+  # postgres:
+  #   image: postgres:16-alpine
+  #   restart: unless-stopped
+  #   volumes:
+  #     - postgres:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - 54320:5432
 
   # app:
   #   <<: *base

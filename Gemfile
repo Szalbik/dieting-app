@@ -27,7 +27,7 @@ gem 'jbuilder'
 gem 'kamal'
 gem 'nbayes'
 gem 'pdf-reader'
-gem 'pg' # gem 'sqlite3'
+gem "sqlite3", ">= 2.1"
 gem 'pry-rails'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'redis', '~> 5.0'

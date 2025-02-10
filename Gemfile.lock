@@ -208,7 +208,6 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    pg (1.5.9)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -331,6 +330,10 @@ GEM
       logger
       rack (>= 2.2.4)
       redis-client (>= 0.22.2)
+    sqlite3 (2.5.0-aarch64-linux-gnu)
+    sqlite3 (2.5.0-arm64-darwin)
+    sqlite3 (2.5.0-x86_64-darwin)
+    sqlite3 (2.5.0-x86_64-linux-gnu)
     sshkit (1.24.0)
       base64
       logger
@@ -392,7 +395,6 @@ DEPENDENCIES
   kamal
   nbayes
   pdf-reader
-  pg
   propshaft
   pry-rails
   puma (~> 6.0)
@@ -406,6 +408,7 @@ DEPENDENCIES
   ruby-openai
   shoulda-matchers
   sidekiq
+  sqlite3 (>= 2.1)
   stimulus-rails
   turbo-rails
   tzinfo-data
