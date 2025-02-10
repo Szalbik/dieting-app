@@ -22,6 +22,8 @@ module DietingApp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
+    config.mission_control.jobs.base_controller_class = "AdminController"
+    config.mission_control.jobs.http_basic_auth_enabled = false
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -38,8 +40,5 @@ module DietingApp
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-
-    # Use a real queuing backend for Active Job (and separate queues per environment).
-    config.active_job.queue_adapter = :sidekiq
   end
 end

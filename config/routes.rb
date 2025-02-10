@@ -1,25 +1,18 @@
 # frozen_string_literal: true
 
-require 'sidekiq/web'
-
 Rails.application.routes.draw do
+  root to: 'main#index'
+
   get 'up', to: 'health#show'
+
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 
   constraints lambda { |request|
                 user_id = request.session[:user_id]
                 user_id && User.find_by(id: user_id)&.admin?
               } do
-    mount RailsPerformance::Engine, at: 'rails/performance'
-    mount Sidekiq::Web => '/sidekiq'
-  end
-
-  # constraints lambda { |request| 
-  #   user_id = request.session[:user_id]
-  #   user_id.nil? && User.find_by(id: user_id).nil?
-  # } do
-  #   root to: 'main#index'
-  # end 
-  root to: 'meal_plans#show'
+                mount RailsPerformance::Engine, at: 'rails/performance'
+              end
 
   resource :registration
   resource :session

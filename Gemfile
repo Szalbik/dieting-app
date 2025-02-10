@@ -12,6 +12,11 @@ gem 'cssbundling-rails' # Bundle and process CSS [https://github.com/rails/cssbu
 gem 'jsbundling-rails' # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'propshaft' 
 
+# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem "solid_cache"
+gem "solid_queue"
+# gem "solid_cable"
+
 # Monitoring
 gem 'honeybadger', '~> 5.4'
 gem 'rails_performance'
@@ -25,20 +30,20 @@ gem 'bootsnap', require: false # Reduces boot times through caching; required in
 gem 'httparty'
 gem 'jbuilder'
 gem 'kamal'
+gem 'mission_control-jobs'
 gem 'nbayes'
 gem 'pdf-reader'
 gem "sqlite3", ">= 2.1"
 gem 'pry-rails'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'ruby-openai'
-gem 'sidekiq'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'view_component'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
-gem 'redis', '~> 5.0'
+gem 'redis', '~> 5.2'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
