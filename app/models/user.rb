@@ -4,6 +4,7 @@ class User < ApplicationRecord
   after_create -> (first_name) { email_address.split('@').first }
 
   has_many :diets, dependent: :nullify
+  has_many :meal_plans, through: :diets
   has_many :products, through: :diets
   has_many :audit_logs, through: :diets
 

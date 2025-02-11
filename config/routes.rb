@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   resources :product_categories, only: %i[index edit update show]
   resources :diets, only: %i[edit update show new destroy]
 
-  resource :meal_plans, only: :show
+  resource :meal_plans, only: %i[show create]
 
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'

@@ -2,20 +2,27 @@
 
 class LineParserFactory
   def self.parser_for(line)
-    # if found '-' example 'string-string' in sentence "Jogurt pitny Twist, brzoskwinia-mango -1szt. (380g) np. Bakoma" then do not count '-'
-    return unless line.include?('-')
+    normalized = line.strip
+    # Check for spice lines: they start with a dash and optionally "przyprawy:" and contain commas.
+    if normalized =~ /^-\s*(przyprawy:)?/i && normalized.include?(',')
+      return SpiceLineParser.new
+    end
 
-    case line.count('-')
+    return nil unless normalized.include?('-')
+
+    case normalized.count('-')
     when 1
       OneDashLineParser.new
     when 2
-      return OneDashLineParser.new if line.strip =~ /[a-z]+-[a-z]+/
-
-      TwoDashLineParser.new
+      if normalized =~ /[a-z]+-[a-z]+/
+        OneDashLineParser.new
+      else
+        TwoDashLineParser.new
+      end
     when 3
       ThreeDashLineParser.new
     else
-      raise "No parser for line: #{line}"
+      raise "No parser available for line: #{line}"
     end
   end
 end

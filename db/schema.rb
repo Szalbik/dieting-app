@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_10_184741) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_10_235704) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -86,7 +86,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_184741) do
     t.date "date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "diet_set_id", null: false
     t.index ["diet_id"], name: "index_meal_plans_on_diet_id"
+    t.index ["diet_set_id"], name: "index_meal_plans_on_diet_set_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
@@ -139,6 +141,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_184741) do
   add_foreign_key "diet_sets", "diets"
   add_foreign_key "diets", "users"
   add_foreign_key "ingredient_measures", "products"
+  add_foreign_key "meal_plans", "diet_sets"
   add_foreign_key "meal_plans", "diets"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"

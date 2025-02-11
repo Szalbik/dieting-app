@@ -1,171 +1,203 @@
 <!-- Header: Date Picker -->
-<div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
+<div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
     <button class="text-gray-500">&lt;</button>
     <div class="flex space-x-3">
-        <button class="w-8 h-8 rounded-full text-sm bg-gray-200 text-gray-600">9</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-green-600 text-white font-bold">10</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-gray-200 text-gray-600">11</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-red-500 text-white">12</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-gray-200 text-gray-600">13</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-gray-200 text-gray-600">14</button>
-        <button class="w-8 h-8 rounded-full text-sm bg-gray-200 text-gray-600">15</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">9</button>
+        <button class="w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full">10</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">11</button>
+        <button class="w-8 h-8 text-sm text-white bg-red-500 rounded-full">12</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">13</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">14</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">15</button>
     </div>
     <button class="text-gray-500">&gt;</button>
 </div>
 
-<!-- Meal Card -->
-<div class="mt-6 space-y-4">
-    
-    <!-- Breakfast Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">🥣 Śniadanie</h3>
-            <span class="text-gray-500 text-sm">8:00 - 9:00</span>
-        </div>
+<!-- Assign Diet form or button -->
 
-        <!-- Food Item -->
-        <div class="flex flex-col mt-4">
-            <div class="flex items-center">
+<% unless @meal_plan.diet %>
+    <div class="flex items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md">
+        <%= form_with model: @meal_plan, url: meal_plans_path, method: :post do |f| %>
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">🥗 Przypisz zestaw</h3>
+                </div>
+                <% Current.user.diets.each do |diet| %>
+                    <% diet.diet_sets.each do |diet_set| %>
+                        <div class="flex flex-col space-y-4">
+                            <div class="flex items -center">
+                                <div class="flex items -center">
+                                    <div class="ml-3">
+                                        <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, diet_set.name %>
+                                        <p class="font-semibold"><%= diet_set.name %></p>
+                                        <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                                        <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% end %>
+                <% end %>
+            </div>
+            <div class="flex justify-center mt-4">
+                <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md" %>
+            </div>
+        <% end %>
+    </div>
+<% else %>
+    <!-- Meal Card -->
+    <div class="mt-6 space-y-4">
+        
+        <!-- Breakfast Section -->
+        <div class="p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">🥣 Śniadanie</h3>
+                <span class="text-sm text-gray-500">8:00 - 9:00</span>
+            </div>
+
+            <!-- Food Item -->
+            <div class="flex flex-col mt-4">
                 <div class="flex items-center">
-                    <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jajecznica' %>
-                    <div class="ml-3">
-                        <p class="font-semibold">Jajecznica z pieczywem</p>
-                        <p class="text-gray-500 text-sm">B: 9g, T: 32g, W: 75g</p>
-                        <p class="text-gray-600 text-sm font-semibold">72 kcal • 150g</p>
+                    <div class="flex items-center">
+                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jajecznica' %>
+                        <div class="ml-3">
+                            <p class="font-semibold">Jajecznica z pieczywem</p>
+                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                        </div>
                     </div>
                 </div>
+                <!--<div class="ml-auto space-x-2">
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
+                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
+                </div>-->
             </div>
-            <!--<div class="ml-auto space-x-2">
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Zmień</button>
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Pomiń</button>
-                <button class="bg-green-500 text-white px-3 py-1 rounded-md">Zjedzony</button>
-            </div>-->
-        </div>
-    </div>
-
-    <!-- Lunch Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">🥣 Lunch</h3>
-            <span class="text-gray-500 text-sm">11:00-12:00</span>
         </div>
 
-        <!-- Food Item -->
-        <div class="flex flex-col mt-4">
-            <div class="flex items-center">
+        <!-- Lunch Section -->
+        <div class="p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">🥣 Lunch</h3>
+                <span class="text-sm text-gray-500">11:00-12:00</span>
+            </div>
+
+            <!-- Food Item -->
+            <div class="flex flex-col mt-4">
                 <div class="flex items-center">
-                    <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jogurt' %>
-                    <div class="ml-3">
-                        <p class="font-semibold">Jogurt z dodatkami</p>
-                        <p class="text-gray-500 text-sm">B: 9g, T: 32g, W: 75g</p>
-                        <p class="text-gray-600 text-sm font-semibold">72 kcal • 150g</p>
+                    <div class="flex items-center">
+                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jogurt' %>
+                        <div class="ml-3">
+                            <p class="font-semibold">Jogurt z dodatkami</p>
+                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                        </div>
                     </div>
                 </div>
+                <!--<div class="ml-auto space-x-2">
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
+                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
+                </div>-->
             </div>
-            <!--<div class="ml-auto space-x-2">
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Zmień</button>
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Pomiń</button>
-                <button class="bg-green-500 text-white px-3 py-1 rounded-md">Zjedzony</button>
-            </div>-->
-        </div>
-    </div>
-
-    <!-- Dinner Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">🥣 Dinner</h3>
-            <span class="text-gray-500 text-sm">14:00-15:00</span>
         </div>
 
-        <!-- Food Item -->
-        <div class="flex flex-col mt-4">
-            <div class="flex items-center">
+        <!-- Dinner Section -->
+        <div class="p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">🥣 Dinner</h3>
+                <span class="text-sm text-gray-500">14:00-15:00</span>
+            </div>
+
+            <!-- Food Item -->
+            <div class="flex flex-col mt-4">
                 <div class="flex items-center">
-                    <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Zapiekanka' %>
-                    <div class="ml-3">
-                        <p class="font-semibold">Zapiekanka makaronowa</p>
-                        <p class="text-gray-500 text-sm">B: 9g, T: 32g, W: 75g</p>
-                        <p class="text-gray-600 text-sm font-semibold">72 kcal • 150g</p>
+                    <div class="flex items-center">
+                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Zapiekanka' %>
+                        <div class="ml-3">
+                            <p class="font-semibold">Zapiekanka makaronowa</p>
+                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                        </div>
                     </div>
                 </div>
+                <!--<div class="ml-auto space-x-2">
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
+                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
+                </div>-->
             </div>
-            <!--<div class="ml-auto space-x-2">
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Zmień</button>
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Pomiń</button>
-                <button class="bg-green-500 text-white px-3 py-1 rounded-md">Zjedzony</button>
-            </div>-->
-        </div>
-    </div>
-
-    <!-- Supper Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">🥣 Supper</h3>
-            <span class="text-gray-500 text-sm">18:00-19:00</span>
         </div>
 
-        <!-- Food Item -->
-        <div class="flex flex-col mt-4">
-            <div class="flex items-center">
+        <!-- Supper Section -->
+        <div class="p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">🥣 Supper</h3>
+                <span class="text-sm text-gray-500">18:00-19:00</span>
+            </div>
+
+            <!-- Food Item -->
+            <div class="flex flex-col mt-4">
                 <div class="flex items-center">
-                    <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Serek' %>
-                    <div class="ml-3">
-                        <p class="font-semibold">Serek wiejski</p>
-                        <p class="text-gray-500 text-sm">B: 9g, T: 32g, W: 75g</p>
-                        <p class="text-gray-600 text-sm font-semibold">72 kcal • 150g</p>
+                    <div class="flex items-center">
+                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Serek' %>
+                        <div class="ml-3">
+                            <p class="font-semibold">Serek wiejski</p>
+                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                        </div>
                     </div>
                 </div>
+                <!--<div class="ml-auto space-x-2">
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
+                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
+                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
+                </div>-->
             </div>
-            <!--<div class="ml-auto space-x-2">
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Zmień</button>
-                <button class="text-gray-500 px-3 py-1 border rounded-md">Pomiń</button>
-                <button class="bg-green-500 text-white px-3 py-1 rounded-md">Zjedzony</button>
-            </div>-->
+        </div>
+
+        <!-- Additional Meal Section -->
+        <div class="p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">🍫 Dodatkowy posiłek</h3>
+                <span class="text-sm text-gray-500">12:22</span>
+            </div>
+
+            <!-- Total Calories -->
+            <div class="flex items-center mt-2 text-lg font-semibold text-red-600">
+                🔥 486 kcal
+            </div>
+
+            <!-- Food Items -->
+            <div class="mt-4 space-y-3">
+                <!-- Lays -->
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/50" alt="Lays" class="w-12 h-12 rounded-md">
+                    <div class="ml-3">
+                        <p class="font-semibold">Lays Oven Baked - salted</p>
+                        <p class="text-sm text-gray-500">B: 5.9g, T: 14g, W: 70g</p>
+                        <p class="text-sm font-semibold text-gray-600">221 kcal • 50g</p>
+                    </div>
+                    <button class="ml-auto text-lg text-gray-500">❤️</button>
+                </div>
+
+                <!-- Prince Polo -->
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/50" alt="Prince Polo" class="w-12 h-12 rounded-md">
+                    <div class="ml-3">
+                        <p class="font-semibold">Prince Polo</p>
+                        <p class="text-sm text-gray-500">B: 2.7g, T: 15g, W: 75g</p>
+                        <p class="text-sm font-semibold text-gray-600">265 kcal • 50g</p>
+                    </div>
+                    <button class="ml-auto text-lg text-gray-500">❤️</button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Additional Meal Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">🍫 Dodatkowy posiłek</h3>
-            <span class="text-gray-500 text-sm">12:22</span>
-        </div>
-
-        <!-- Total Calories -->
-        <div class="flex items-center text-red-600 font-semibold text-lg mt-2">
-            🔥 486 kcal
-        </div>
-
-        <!-- Food Items -->
-        <div class="space-y-3 mt-4">
-            <!-- Lays -->
-            <div class="flex items-center">
-                <img src="https://via.placeholder.com/50" alt="Lays" class="w-12 h-12 rounded-md">
-                <div class="ml-3">
-                    <p class="font-semibold">Lays Oven Baked - salted</p>
-                    <p class="text-gray-500 text-sm">B: 5.9g, T: 14g, W: 70g</p>
-                    <p class="text-gray-600 text-sm font-semibold">221 kcal • 50g</p>
-                </div>
-                <button class="ml-auto text-gray-500 text-lg">❤️</button>
-            </div>
-
-            <!-- Prince Polo -->
-            <div class="flex items-center">
-                <img src="https://via.placeholder.com/50" alt="Prince Polo" class="w-12 h-12 rounded-md">
-                <div class="ml-3">
-                    <p class="font-semibold">Prince Polo</p>
-                    <p class="text-gray-500 text-sm">B: 2.7g, T: 15g, W: 75g</p>
-                    <p class="text-gray-600 text-sm font-semibold">265 kcal • 50g</p>
-                </div>
-                <button class="ml-auto text-gray-500 text-lg">❤️</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<% end %>
 <!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-md flex justify-around">
-    <button class="text-green-600 font-semibold">🥗 Twoja dieta</button>
+<div class="fixed bottom-0 left-0 right-0 flex justify-around p-4 bg-white shadow-md">
+    <button class="font-semibold text-green-600">🥗 Twoja dieta</button>
     <!--<button class="text-gray-500">👥 Dieta pary</button>-->
     <button class="text-gray-500">🛒 Lista zakupów</button>
 </div>
