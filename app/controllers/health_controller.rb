@@ -2,6 +2,8 @@
 
 # HealthController is used to check if the application is up and running.
 class HealthController < ApplicationController
+  allow_unauthenticated_access
+
   rescue_from(Exception) { render_down }
 
   def show
