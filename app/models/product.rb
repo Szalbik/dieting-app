@@ -6,6 +6,8 @@ class Product < ApplicationRecord
   has_many :ingredient_measures, dependent: :destroy
   has_one :product_category
   has_one :category, through: :product_category
+  belongs_to :meal
+  belongs_to :associated_product, class_name: 'Product', foreign_key: 'associated_product_id', optional: true
 
   def self.group_and_sum_by_name_and_unit(scope = Product)
     # Eager load ingredient measures
@@ -22,7 +24,6 @@ class Product < ApplicationRecord
 
       # Initialize a hash to store the summed amounts for each unit
       unit_hash = {}
-
 
       products.each do |product|
         # Fetch ingredient measurements for the product
@@ -129,5 +130,4 @@ class Product < ApplicationRecord
       products.flat_map { |_name, data| data }
     end
   end
-
 end

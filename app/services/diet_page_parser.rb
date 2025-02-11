@@ -3,15 +3,16 @@
 class DietPageParser
   def initialize(diet)
     @diet = diet
-    @current_set = nil
-    @current_section = :ingredients   # Can be :ingredients or :preparation
-    @prep_parser = nil
+    @current_set = nil           # current DietSet
+    @current_meal = nil          # current Meal
+    @current_section = :ingredients  # or :instructions
+    @current_instructions = String.new   # accumulator for instructions text
   end
 
-  # Expects a page object with a `#text` method.
   def process(page)
     lines = page.text.split("\n")
     lines.each { |line| process_line(line) }
+    flush_instructions if @current_section == :instructions && @current_meal.present? && @current_instructions.present?
   end
 
   private
@@ -20,46 +21,46 @@ class DietPageParser
     normalized = line.strip
     return if normalized.empty?
 
-    # Skip meta lines regardless of whether a diet set is active
+    # --- Skip meta or schedule lines ---
     return if normalized.match?(/^(tel\.|Poradnia Dietetyczna|dietetyk\.)/i)
-
-    # Skip lines that look like time schedules, e.g. "08:00 - 09:00 ..."
     return if normalized.match?(/^\d{1,2}:\d{2}/)
-
-    # ---- Guard: Skip meta/header lines until a diet set is active ----
-    if @current_set.nil? && normalized.match?(/^(Dieta dla|Godziny spożywania posiłków|Poradnia Dietetyczna|tel\.:|dietetyk\.)/)
+    if @current_set.nil? && normalized.match?(/^(Dieta dla|Godziny spożywania posiłków)/i)
       return
     end
 
-    # ---- New Diet Set header (e.g. "Zestaw 1") ----
+    # --- Diet Set header: e.g. "Zestaw 1" ---
     if diet_set_header?(normalized)
       process_diet_set_header(normalized)
       return
     end
 
-    # ---- Meal headers (e.g. "1) Śniadanie", "2) Przekąska", etc.) ----
+    # --- Meal header: e.g. "1) Śniadanie", "2) Przekąska", etc. ---
     if meal_header?(normalized)
-      # Exit any active preparation mode
-      @current_section = :ingredients
-      @prep_parser = nil
-      # (Optionally, you can log the meal header.)
-    end
-
-    # ---- Preparation section header ----
-    if normalized.downcase.include?('sposób wykonania')
-      @current_section = :preparation
-      @prep_parser = PreparationSectionParser.new(@current_set)
+      flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
+      process_meal_header(normalized)
       return
     end
 
-    # ---- Delegate processing based on section ----
-    if @current_section == :preparation
-      # Use a heuristic: if the line contains a dash and a digit, treat it as a product.
-      if normalized =~ /-.*\d/
-        @prep_parser.process(normalized)
-      end
+    # --- Instructions header: e.g. "Sposób przygotowania:" ---
+    if normalized =~ /^Sposób (wykonania|przygotowania):/
+      @current_section = :instructions
+      @current_instructions = String.new
+      return
+    end
+
+    # --- Process line based on current section ---
+    if @current_section == :instructions
+      @current_instructions << normalized + "\n"
     else
       process_ingredient_line(normalized)
+    end
+  end
+
+  def flush_instructions
+    if @current_meal && @current_instructions.strip.present?
+      @current_meal.instructions = @current_instructions.strip
+      @current_instructions = String.new
+      @current_section = :ingredients
     end
   end
 
@@ -72,15 +73,21 @@ class DietPageParser
       set_name = "Zestaw #{$1}"
       @current_set = @diet.diet_sets.find_by(name: set_name) ||
                      @diet.diet_sets.build(name: set_name)
-      # Reset section to ingredients
+      # Reset current meal and instructions for new set.
+      @current_meal = nil
       @current_section = :ingredients
-      @prep_parser = nil
+      @current_instructions = String.new
     end
   end
 
   def meal_header?(line)
-    # Example meal headers: "1) Śniadanie", "2) Przekąska", "3) Obiad", "4) Kolacja"
-    line.match?(/^(1\) Śniadanie|2\) Przekąska|3\) Obiad|4\) Kolacja)$/)
+    line.match?(/^\d+\)\s*(Śniadanie|Przekąska|Obiad|Kolacja)(\s+[IVX]+)?$/)
+  end
+
+  def process_meal_header(line)
+    # Create a new Meal within the current DietSet.
+    @current_meal = @current_set.meals.build(name: line)
+    @current_section = :ingredients
   end
 
   def process_ingredient_line(line)
@@ -97,12 +104,12 @@ class DietPageParser
   end
 
   def create_product(ingredient_name, measurements)
-    return unless @current_set && ingredient_name.present?
+    return unless @current_meal && ingredient_name.present?
 
-    product = @current_set.products.build(name: ingredient_name)
+    product = @current_meal.products.build(name: ingredient_name)
     if measurements
       measurements.each do |amount, unit|
-        product.ingredient_measures.build(amount: amount, unit: unit)
+        product.ingredient_measures.build(amount: amount.to_f, unit: unit)
       end
     end
   end
