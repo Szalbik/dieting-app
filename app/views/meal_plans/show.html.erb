@@ -2,13 +2,17 @@
 <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
     <button class="text-gray-500">&lt;</button>
     <div class="flex space-x-3">
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">9</button>
+        <!--<button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">9</button>
         <button class="w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full">10</button>
         <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">11</button>
         <button class="w-8 h-8 text-sm text-white bg-red-500 rounded-full">12</button>
         <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">13</button>
         <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">14</button>
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">15</button>
+        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">15</button>-->
+        <% (0..6).each do |i| %>
+            <% date = Date.today + i.days %>
+            <button class="w-8 h-8 text-sm <%= i == 0 ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200' %> rounded-full"><%= date.day %></button>
+        <% end %>
     </div>
     <button class="text-gray-500">&gt;</button>
 </div>
