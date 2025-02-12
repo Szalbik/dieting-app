@@ -3,16 +3,17 @@
 class DietPageParser
   def initialize(diet)
     @diet = diet
-    @current_set = nil           # current DietSet
-    @current_meal = nil          # current Meal
-    @current_section = :ingredients  # or :instructions
-    @current_instructions = String.new   # accumulator for instructions text
+    @current_set = nil       # current DietSet
+    @current_meal = nil      # current Meal
+    @current_section = :ingredients   # can be :ingredients or :instructions
+    @current_instructions = String.new
+    @expecting_meal_name = false
   end
 
   def process(page)
     lines = page.text.split("\n")
     lines.each { |line| process_line(line) }
-    flush_instructions if @current_section == :instructions && @current_meal.present? && @current_instructions.present?
+    flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
   end
 
   private
@@ -21,34 +22,44 @@ class DietPageParser
     normalized = line.strip
     return if normalized.empty?
 
-    # --- Skip meta or schedule lines ---
+    # Skip meta/schedule lines
     return if normalized.match?(/^(tel\.|Poradnia Dietetyczna|dietetyk\.)/i)
     return if normalized.match?(/^\d{1,2}:\d{2}/)
     if @current_set.nil? && normalized.match?(/^(Dieta dla|Godziny spożywania posiłków)/i)
       return
     end
 
-    # --- Diet Set header: e.g. "Zestaw 1" ---
+    # Diet Set header (e.g. "Zestaw 1")
     if diet_set_header?(normalized)
       process_diet_set_header(normalized)
       return
     end
 
-    # --- Meal header: e.g. "1) Śniadanie", "2) Przekąska", etc. ---
+    # Meal header (e.g. "1) Śniadanie", "2) Przekąska I", etc.)
     if meal_header?(normalized)
       flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
-      process_meal_header(normalized)
+      # Set flag so that the very next non-dashed line becomes the meal name.
+      @expecting_meal_name = true
       return
     end
 
-    # --- Instructions header: e.g. "Sposób przygotowania:" ---
+    # If we are expecting a meal name, and the line does NOT start with a dash,
+    # then treat this line as the meal name.
+    if @expecting_meal_name && !normalized.start_with?('-')
+      @current_meal = @current_set.meals.build(name: normalized)
+      @current_section = :ingredients
+      @expecting_meal_name = false
+      return
+    end
+
+    # Instructions header: e.g., "Sposób wykonania:" or "Sposób przygotowania:"
     if normalized =~ /^Sposób (wykonania|przygotowania):/
       @current_section = :instructions
       @current_instructions = String.new
       return
     end
 
-    # --- Process line based on current section ---
+    # Process based on current section:
     if @current_section == :instructions
       @current_instructions << normalized + "\n"
     else
@@ -73,21 +84,18 @@ class DietPageParser
       set_name = "Zestaw #{$1}"
       @current_set = @diet.diet_sets.find_by(name: set_name) ||
                      @diet.diet_sets.build(name: set_name)
-      # Reset current meal and instructions for new set.
+      # Reset meal and instructions when starting a new set.
       @current_meal = nil
       @current_section = :ingredients
       @current_instructions = String.new
+      @expecting_meal_name = false
     end
   end
 
   def meal_header?(line)
+    # Adjust this regex as needed. For example, it should match:
+    # "1) Śniadanie", "2) Przekąska", "3) Obiad", "4) Kolacja", possibly with extra suffix (e.g., "Przekąska I")
     line.match?(/^\d+\)\s*(Śniadanie|Przekąska|Obiad|Kolacja)(\s+[IVX]+)?$/)
-  end
-
-  def process_meal_header(line)
-    # Create a new Meal within the current DietSet.
-    @current_meal = @current_set.meals.build(name: line)
-    @current_section = :ingredients
   end
 
   def process_ingredient_line(line)

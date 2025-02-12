@@ -2,5 +2,5 @@
 
 class Meal < ApplicationRecord
   belongs_to :diet_set
-  has_many :products, dependent: :destroy
+  has_many :products, dependent: :nullify
 end

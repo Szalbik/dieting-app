@@ -1,207 +1,91 @@
-<!-- Header: Date Picker -->
+<!-- app/views/meal_plans/show.html.erb -->
+
+<!-- Header: Date Picker (mobile-friendly, horizontal scrolling) -->
 <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-    <button class="text-gray-500">&lt;</button>
-    <div class="flex space-x-3">
-        <!--<button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">9</button>
-        <button class="w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full">10</button>
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">11</button>
-        <button class="w-8 h-8 text-sm text-white bg-red-500 rounded-full">12</button>
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">13</button>
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">14</button>
-        <button class="w-8 h-8 text-sm text-gray-600 bg-gray-200 rounded-full">15</button>-->
-        <% (0..6).each do |i| %>
-            <% date = Date.today + i.days %>
-            <button class="w-8 h-8 text-sm <%= i == 0 ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200' %> rounded-full"><%= date.day %></button>
-        <% end %>
-    </div>
-    <button class="text-gray-500">&gt;</button>
+  <button class="text-gray-500 focus:outline-none">&lt;</button>
+  <div class="flex space-x-3 overflow-x-auto no-scrollbar">
+    <% (0..6).each do |i| %>
+      <% date = Date.current + i.days %>
+      <%= link_to date.day, meal_plans_path(date: date.to_s), 
+                  data: { turbo_frame: "meal_plan_details" },
+                  class: "flex-shrink-0 w-10 h-10 text-sm rounded-full flex items-center justify-center #{i.zero? ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
+    <% end %>
+  </div>
+  <button class="text-gray-500 focus:outline-none">&gt;</button>
 </div>
 
-<!-- Assign Diet form or button -->
-
-<% unless @meal_plan.diet %>
-    <div class="flex items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md">
-        <%= form_with model: @meal_plan, url: meal_plans_path, method: :post do |f| %>
-            <div class="flex flex-col space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold">🥗 Przypisz zestaw</h3>
+<turbo-frame id="meal_plan_details">
+  <% if @meal_plan.diet.blank? %>
+    <!-- Diet Assignment Form -->
+    <div class="flex flex-col items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md">
+      <%= form_with model: @meal_plan, url: meal_plans_path, method: :post, data: { turbo_frame: "meal_plan_details" } do |f| %>
+        <%= hidden_field_tag :date, params[:date] %>
+        <div class="w-full space-y-4">
+          <h3 class="text-lg font-semibold text-center">🥗 Przypisz zestaw</h3>
+          <% Current.user.diets.each do |diet| %>
+            <% diet.diet_sets.each do |diet_set| %>
+              <div class="flex items-center p-2 space-x-3 border rounded-md">
+                <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, false, class: "form-radio h-5 w-5 text-green-600" %>
+                <div>
+                  <p class="font-semibold"><%= diet_set.name %></p>
+                  <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
+                  <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
                 </div>
-                <% Current.user.diets.each do |diet| %>
-                    <% diet.diet_sets.each do |diet_set| %>
-                        <div class="flex flex-col space-y-4">
-                            <div class="flex items -center">
-                                <div class="flex items -center">
-                                    <div class="ml-3">
-                                        <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, diet_set.name %>
-                                        <p class="font-semibold"><%= diet_set.name %></p>
-                                        <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                                        <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% end %>
-                <% end %>
-            </div>
-            <div class="flex justify-center mt-4">
-                <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md" %>
-            </div>
-        <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="flex justify-center mt-4">
+          <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md w-full sm:w-auto" %>
+        </div>
+      <% end %>
     </div>
-<% else %>
-    <!-- Meal Card -->
+  <% else %>
+    <!-- Meal Plan Details -->
     <div class="mt-6 space-y-4">
-        
-        <!-- Breakfast Section -->
-        <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">🥣 Śniadanie</h3>
-                <span class="text-sm text-gray-500">8:00 - 9:00</span>
+      <%# Assume that @meal_plan.diet.diet_sets.first is the chosen set %>
+      <% current_set = @meal_plan.diet_set %>
+        <h3 class="text-lg font-semibold text-center">🥗 <%= current_set.name %></h3>
+      <% if current_set.meals.any? %>
+        <% current_set.meals.each do |meal| %>
+          <!-- Each meal card is clickable and toggles its details using our Stimulus controller -->
+          <div class="p-4 bg-white rounded-lg shadow-md cursor-pointer"
+               data-controller="toggle"
+               data-action="click->toggle#toggle">
+            <div class="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <h3 class="text-lg font-semibold"><%= meal.name %></h3>
+              <span class="mt-2 text-sm text-gray-500 sm:mt-0"><%= meal_time_for(meal) %></span>
             </div>
-
-            <!-- Food Item -->
-            <div class="flex flex-col mt-4">
-                <div class="flex items-center">
+            <!-- Details: ingredients and instructions (initially hidden) -->
+            <div data-toggle-target="toggle" data-toggle-animation-value="slide" class="hidden mt-2 overflow-hidden">
+              <% if meal.instructions.present? %>
+                <div class="p-2 text-sm prose bg-gray-100 rounded">
+                  <%= simple_format(meal.instructions) %>
+                </div>
+              <% end %>
+              <ul class="list-disc">
+                <% meal.products.each do |product| %>
+                    <li class="flex flex-col mt-4">
                     <div class="flex items-center">
-                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jajecznica' %>
                         <div class="ml-3">
-                            <p class="font-semibold">Jajecznica z pieczywem</p>
-                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                        <p class="text-base font-semibold"><%= product.name %></p>
                         </div>
                     </div>
-                </div>
-                <!--<div class="ml-auto space-x-2">
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
-                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
-                </div>-->
+                    </li>
+                <% end %>
+              </ul>
             </div>
-        </div>
-
-        <!-- Lunch Section -->
-        <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">🥣 Lunch</h3>
-                <span class="text-sm text-gray-500">11:00-12:00</span>
-            </div>
-
-            <!-- Food Item -->
-            <div class="flex flex-col mt-4">
-                <div class="flex items-center">
-                    <div class="flex items-center">
-                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Jogurt' %>
-                        <div class="ml-3">
-                            <p class="font-semibold">Jogurt z dodatkami</p>
-                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
-                        </div>
-                    </div>
-                </div>
-                <!--<div class="ml-auto space-x-2">
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
-                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
-                </div>-->
-            </div>
-        </div>
-
-        <!-- Dinner Section -->
-        <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">🥣 Dinner</h3>
-                <span class="text-sm text-gray-500">14:00-15:00</span>
-            </div>
-
-            <!-- Food Item -->
-            <div class="flex flex-col mt-4">
-                <div class="flex items-center">
-                    <div class="flex items-center">
-                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Zapiekanka' %>
-                        <div class="ml-3">
-                            <p class="font-semibold">Zapiekanka makaronowa</p>
-                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
-                        </div>
-                    </div>
-                </div>
-                <!--<div class="ml-auto space-x-2">
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
-                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
-                </div>-->
-            </div>
-        </div>
-
-        <!-- Supper Section -->
-        <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">🥣 Supper</h3>
-                <span class="text-sm text-gray-500">18:00-19:00</span>
-            </div>
-
-            <!-- Food Item -->
-            <div class="flex flex-col mt-4">
-                <div class="flex items-center">
-                    <div class="flex items-center">
-                        <%= image_tag 'logo-128.png', class: "size-12 rounded-md", alt: 'Serek' %>
-                        <div class="ml-3">
-                            <p class="font-semibold">Serek wiejski</p>
-                            <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                            <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
-                        </div>
-                    </div>
-                </div>
-                <!--<div class="ml-auto space-x-2">
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Zmień</button>
-                    <button class="px-3 py-1 text-gray-500 border rounded-md">Pomiń</button>
-                    <button class="px-3 py-1 text-white bg-green-500 rounded-md">Zjedzony</button>
-                </div>-->
-            </div>
-        </div>
-
-        <!-- Additional Meal Section -->
-        <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold">🍫 Dodatkowy posiłek</h3>
-                <span class="text-sm text-gray-500">12:22</span>
-            </div>
-
-            <!-- Total Calories -->
-            <div class="flex items-center mt-2 text-lg font-semibold text-red-600">
-                🔥 486 kcal
-            </div>
-
-            <!-- Food Items -->
-            <div class="mt-4 space-y-3">
-                <!-- Lays -->
-                <div class="flex items-center">
-                    <img src="https://via.placeholder.com/50" alt="Lays" class="w-12 h-12 rounded-md">
-                    <div class="ml-3">
-                        <p class="font-semibold">Lays Oven Baked - salted</p>
-                        <p class="text-sm text-gray-500">B: 5.9g, T: 14g, W: 70g</p>
-                        <p class="text-sm font-semibold text-gray-600">221 kcal • 50g</p>
-                    </div>
-                    <button class="ml-auto text-lg text-gray-500">❤️</button>
-                </div>
-
-                <!-- Prince Polo -->
-                <div class="flex items-center">
-                    <img src="https://via.placeholder.com/50" alt="Prince Polo" class="w-12 h-12 rounded-md">
-                    <div class="ml-3">
-                        <p class="font-semibold">Prince Polo</p>
-                        <p class="text-sm text-gray-500">B: 2.7g, T: 15g, W: 75g</p>
-                        <p class="text-sm font-semibold text-gray-600">265 kcal • 50g</p>
-                    </div>
-                    <button class="ml-auto text-lg text-gray-500">❤️</button>
-                </div>
-            </div>
-        </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="mt-6 text-center text-gray-500">Brak posiłków dla wybranego zestawu.</p>
+      <% end %>
     </div>
-<% end %>
+  <% end %>
+</turbo-frame>
+
 <!-- Bottom Navigation -->
 <div class="fixed bottom-0 left-0 right-0 flex justify-around p-4 bg-white shadow-md">
-    <button class="font-semibold text-green-600">🥗 Twoja dieta</button>
-    <!--<button class="text-gray-500">👥 Dieta pary</button>-->
-    <button class="text-gray-500">🛒 Lista zakupów</button>
+    <%= link_to '🥗 Twoja dieta', meal_plans_path, class: 'font-semibold text-green-600' %>
+  <button class="text-gray-500">🛒 Lista zakupów</button>
 </div>
