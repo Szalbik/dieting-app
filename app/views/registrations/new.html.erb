@@ -20,14 +20,14 @@
   <body class="h-full">
   ```
 -->
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+<div class="flex flex-col justify-center min-h-full px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
-    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign up for new account</h2>
+    <img class="w-auto h-10 mx-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
+    <h2 class="mt-10 text-2xl font-bold leading-9 tracking-tight text-center text-gray-900">Sign up for new account</h2>
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <%= form_with model: @user, url: registration_path, data: { turbo: false }, class: 'space-y-6' do |form| %>
+    <%= form_with model: @user, url: registrations_path, data: { turbo: false }, class: 'space-y-6' do |form| %>
       <% if form.object.errors.any? %>
         <% form.object.errors.full_messages.each do |message| %>
           <div class="error"><%= message %></div>
@@ -62,7 +62,7 @@
       </div>
     <% end %>
 
-    <p class="mt-10 text-center text-sm text-gray-500">
+    <p class="mt-10 text-sm text-center text-gray-500">
       Not a member?
       <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Start a 14 day free trial</a>
     </p>
