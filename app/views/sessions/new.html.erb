@@ -22,7 +22,9 @@
 -->
 <div class="flex flex-col justify-center min-h-full px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <%= image_tag 'logo-128.png', alt: 'Logo', class: 'mx-auto h-10 w-auto' %>
+    <%= link_to root_path do %>
+      <%= image_tag 'logo-128.png', alt: 'Logo', class: 'mx-auto h-10 w-auto' %>
+    <% end %>
     <h2 class="mt-10 text-2xl font-bold leading-9 tracking-tight text-center text-gray-900">Sign in for new account</h2>
   </div>
 
@@ -46,7 +48,7 @@
         </div>
       </div>
       <div>
-        <%= form.submit 'Sign in', class: 'flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
+        <%= form.submit 'Sign in', data: { turbo: false }, class: 'flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
       </div>
     <% end %>
 

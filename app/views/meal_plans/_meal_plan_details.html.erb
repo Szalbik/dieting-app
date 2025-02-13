@@ -1,6 +1,6 @@
 <% if @meal_plan.diet.blank? %>
   <!-- Diet Assignment Form -->
-  <div class="flex flex-col items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md">
+  <div class="flex flex-col items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md md:shadow-none">
   <%= form_with model: @meal_plan, url: meal_plans_path, method: :post, data: { turbo_frame: "meal_plan_details" } do |f| %>
       <%= hidden_field_tag :date, params[:date] %>
       <div class="w-full space-y-4">

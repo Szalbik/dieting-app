@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RegistrationsController < ApplicationController
-  layout 'registration'
+  layout 'authentication'
 
   # Include Authentication module unless it's already in ApplicationController
   # include Authentication
