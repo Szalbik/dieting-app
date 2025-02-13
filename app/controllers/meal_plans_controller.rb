@@ -44,6 +44,7 @@ class MealPlansController < ApplicationController
   # This method will extract all products from the meal plan's diet set and add them to the shopping cart.
   def add_meal_plan_products_to_cart(meal_plan)
     cart = Current.user.shopping_cart
+    cart.shopping_cart_items.where(product_id: meal_plan.diet_set.products.ids).destroy_all
     # Assuming your associations:
     # MealPlan belongs_to :diet_set
     # DietSet has_many :meals
