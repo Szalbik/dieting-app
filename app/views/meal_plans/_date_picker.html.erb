@@ -1,0 +1,13 @@
+  <!-- Header: Date Picker (mobile-friendly, horizontal scrolling) -->
+  <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
+    <button class="text-gray-500 focus:outline-none">&lt;</button>
+    <div class="flex space-x-3 overflow-x-auto no-scrollbar">
+      <% (0..6).each do |i| %>
+        <% date = Date.current + i.days %>
+        <% is_selected = date.to_s == @date %>
+        <%= link_to date.day, meal_plans_path(date: date.to_s), 
+                    class: "flex-shrink-0 w-10 h-10 text-sm rounded-full flex items-center justify-center #{is_selected ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
+      <% end %>
+    </div>
+    <button class="text-gray-500 focus:outline-none">&gt;</button>
+  </div>

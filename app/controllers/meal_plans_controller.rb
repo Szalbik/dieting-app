@@ -7,6 +7,11 @@ class MealPlansController < ApplicationController
     if Current.user.active_diets.empty?
       redirect_to new_diet_path, alert: 'You need to create a diet first.'
     end
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html
+    end
   end
 
   def create
@@ -29,7 +34,7 @@ class MealPlansController < ApplicationController
   end
 
   def date
-    params['date'].present? ? Date.parse(params['date']).to_s : Date.current.to_s
+    @date = params['date'].present? ? Date.parse(params['date']).to_s : Date.current.to_s
   end
 
   def meal_plan_params
