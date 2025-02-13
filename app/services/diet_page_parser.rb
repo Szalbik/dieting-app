@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# frozen_string_literal: true
+
 class DietPageParser
   def initialize(diet)
     @diet = diet
@@ -8,6 +10,7 @@ class DietPageParser
     @current_section = :ingredients   # can be :ingredients or :instructions
     @current_instructions = String.new
     @expecting_meal_name = false
+    @current_meal_header = nil  # stores the meal header text (e.g., "1) Śniadanie")
   end
 
   def process(page)
@@ -38,17 +41,21 @@ class DietPageParser
     # Meal header (e.g. "1) Śniadanie", "2) Przekąska I", etc.)
     if meal_header?(normalized)
       flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
-      # Set flag so that the very next non-dashed line becomes the meal name.
+      # Store the meal header (we'll concatenate it with the next non-dashed line)
+      @current_meal_header = normalized
       @expecting_meal_name = true
       return
     end
 
     # If we are expecting a meal name, and the line does NOT start with a dash,
-    # then treat this line as the meal name.
+    # then treat this line as the meal name, concatenating with the header.
     if @expecting_meal_name && !normalized.start_with?('-')
-      @current_meal = @current_set.meals.build(name: normalized)
+      meal_name = "#{@current_meal_header} #{normalized}".strip
+      @current_meal = @current_set.meals.build(name: meal_name)
       @current_section = :ingredients
       @expecting_meal_name = false
+      # Clear the stored header after using it.
+      @current_meal_header = nil
       return
     end
 
@@ -84,17 +91,17 @@ class DietPageParser
       set_name = "Zestaw #{$1}"
       @current_set = @diet.diet_sets.find_by(name: set_name) ||
                      @diet.diet_sets.build(name: set_name)
-      # Reset meal and instructions when starting a new set.
+      # Reset meal, instructions, and header when starting a new set.
       @current_meal = nil
       @current_section = :ingredients
       @current_instructions = String.new
       @expecting_meal_name = false
+      @current_meal_header = nil
     end
   end
 
   def meal_header?(line)
-    # Adjust this regex as needed. For example, it should match:
-    # "1) Śniadanie", "2) Przekąska", "3) Obiad", "4) Kolacja", possibly with extra suffix (e.g., "Przekąska I")
+    # Matches lines like "1) Śniadanie", "2) Przekąska I", "3) Obiad", "4) Kolacja"
     line.match?(/^\d+\)\s*(Śniadanie|Przekąska|Obiad|Kolacja)(\s+[IVX]+)?$/)
   end
 
