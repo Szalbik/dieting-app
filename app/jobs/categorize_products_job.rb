@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class CategorizeProductsJob < ApplicationJob
   queue_as :default
 
-  def perform(diet_id)
-    diet = Diet.find(diet_id)
-    diet.categorize_products!
+  def perform
+    Product.uncategorized.each do |product|
+      CategorizeProductJob.perform_later(product.id)
+    end
   end
 end

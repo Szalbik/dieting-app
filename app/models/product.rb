@@ -9,6 +9,9 @@ class Product < ApplicationRecord
   belongs_to :meal, optional: true
   belongs_to :associated_product, class_name: 'Product', foreign_key: 'associated_product_id', optional: true
 
+  # products without category
+  scope :uncategorized, -> { includes(:product_category).where(product_categories: { id: nil }) }
+
   def self.group_and_sum_by_name_and_unit(scope = Product)
     # Eager load ingredient measures
     # products_with_measures = scope.includes(:ingredient_measures, :category)
