@@ -32,7 +32,6 @@ gem 'jbuilder'
 gem 'kamal'
 gem 'mission_control-jobs'
 gem "sqlite3", ">= 2.1"
-gem 'pry-rails'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "thruster", require: false # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
