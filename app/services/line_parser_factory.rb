@@ -3,11 +3,13 @@
 class LineParserFactory
   def self.parser_for(line)
     normalized = line.strip
-    # Check for spice lines: they start with a dash and optionally "przyprawy:" and contain commas.
-    if normalized =~ /^-\s*(przyprawy:)?/i && normalized.include?(',')
-      return SpiceLineParser.new
-    end
 
+    # Use SpiceLineParser only if the line explicitly starts with "-przyprawy:" (case-insensitive)
+    # if normalized =~ /^-\s*przyprawy:/i
+    #   return SpiceLineParser.new
+    # end
+
+    # Otherwise, if the line contains a dash, use OneDashLineParser.
     return nil unless normalized.include?('-')
 
     case normalized.count('-')

@@ -2,22 +2,23 @@
 
 class OneDashLineParser < LineParser
   def parse(line)
-    parts = " #{line}".split(' -')
-    # If we don't have at least two parts, return the entire line as the ingredient.
-    return [line.strip, nil] if parts.size < 2
+    # Remove the leading dash and whitespace.
+    text = line.sub(/\A-\s*/, '').strip
 
-    if line.start_with?('-')
-      # Use a safe navigation in case parts[1] is nil (shouldn't happen due to the guard above)
-      ingredient = parts[1]&.slice(/[\p{L}\s]+/)&.strip || parts[1].to_s.strip
-      measurement = parts[1].sub(ingredient, '').strip
-      # Fallback: if no digits are found, use the whole parts[1] as ingredient.
-      ingredient = parts[1].strip unless include_number?(line)
+    # Case 1: Look for measurement info enclosed in parentheses at the end.
+    if text =~ /^(?<ingredient>.+?)\s*\((?<measurement>[^)]+)\)\s*\z/
+      ingredient = Regexp.last_match(:ingredient).strip
+      measurement_str = Regexp.last_match(:measurement).strip
+      measurements = include_number?(measurement_str) ? split_measurement(measurement_str) : nil
+      [ingredient, measurements]
+    # Case 2: Otherwise, try splitting at the first space before a digit.
+    elsif text =~ /^(?<ingredient>.+?)\s+(?<measurement>\d.*)$/
+      ingredient = Regexp.last_match(:ingredient).strip
+      measurement_str = Regexp.last_match(:measurement).strip
+      measurements = include_number?(measurement_str) ? split_measurement(measurement_str) : nil
+      [ingredient, measurements]
     else
-      ingredient = parts[0].strip
-      measurement = parts[1].strip
+      [text, nil]
     end
-
-    measurements = include_number?(measurement) ? split_measurement(measurement) : nil
-    [ingredient, measurements]
   end
 end
