@@ -82,7 +82,9 @@
       <div class="mt-4 text-center">
         <%= link_to "Przypisz nowy zestaw", meal_plans_path(reassign: true), class: "text-xs text-gray-400 hover:underline" %>
       </div>
-      <%= render 'shared/buy_coffee' %>
+      <div class="mt-4 mb-4 text-center">
+        <%= render 'shared/buy_coffee' %>
+      </div>
     </div>
   <% end %>
 </turbo-frame>
