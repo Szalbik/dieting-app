@@ -7,4 +7,9 @@ class DietSet < ApplicationRecord
   has_many :meals, dependent: :destroy
 
   validates :name, presence: true
+
+  def derrivated_name_from_meal
+    meal = meals.where('name LIKE ?', '%Obiad%').first
+    meal ? meal.name[10..-1].strip : name
+  end
 end

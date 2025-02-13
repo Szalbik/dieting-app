@@ -18,27 +18,25 @@
   <% if @meal_plan.diet.blank? %>
     <!-- Diet Assignment Form -->
     <div class="flex flex-col items-center justify-center p-4 mb-12 bg-white rounded-lg shadow-md">
-      <%= form_with model: @meal_plan, url: meal_plans_path, method: :post, data: { turbo_frame: "meal_plan_details" } do |f| %>
+    <%= form_with model: @meal_plan, url: meal_plans_path, method: :post, data: { turbo_frame: "meal_plan_details" } do |f| %>
         <%= hidden_field_tag :date, params[:date] %>
         <div class="w-full space-y-4">
-          <h3 class="text-lg font-semibold text-center">🥗 Przypisz zestaw</h3>
-          <% Current.user.diets.each do |diet| %>
+        <h3 class="text-lg font-semibold text-center">🥗 Przypisz zestaw</h3>
+        <% Current.user.diets.each do |diet| %>
             <% diet.diet_sets.each do |diet_set| %>
-              <div class="flex items-center p-2 space-x-3 border rounded-md">
-                <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, false, class: "form-radio h-5 w-5 text-green-600" %>
+            <label class="flex items-center p-2 space-x-3 rounded-md cursor-pointer">
+                <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, false, id: "meal_plan_diet_set_#{diet_set.id}", class: "form-radio h-5 w-5 text-green-600" %>
                 <div>
-                  <p class="font-semibold"><%= diet_set.name %></p>
-                  <p class="text-sm text-gray-500">B: 9g, T: 32g, W: 75g</p>
-                  <p class="text-sm font-semibold text-gray-600">72 kcal • 150g</p>
+                    <p class="font-semibold"><%= diet_set.derrivated_name_from_meal %></p>
                 </div>
-              </div>
+            </label>
             <% end %>
-          <% end %>
+        <% end %>
         </div>
         <div class="flex justify-center mt-4">
-          <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md w-full sm:w-auto" %>
+        <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md w-full sm:w-auto" %>
         </div>
-      <% end %>
+    <% end %>
     </div>
   <% else %>
     <!-- Meal Plan Details -->
@@ -80,12 +78,16 @@
       <% else %>
         <p class="mt-6 text-center text-gray-500">Brak posiłków dla wybranego zestawu.</p>
       <% end %>
+       <!-- New Set Button (subdued) -->
+      <div class="mt-4 text-center">
+        <%= link_to "Przypisz nowy zestaw", meal_plans_path(reassign: true), class: "text-xs text-gray-400 hover:underline" %>
+      </div>
+      <%= render 'shared/buy_coffee' %>
     </div>
   <% end %>
 </turbo-frame>
 
 <!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 flex justify-around p-4 bg-white shadow-md">
-    <%= link_to '🥗 Twoja dieta', meal_plans_path, class: 'font-semibold text-green-600' %>
-  <button class="text-gray-500">🛒 Lista zakupów</button>
+<div class="fixed fixed bottom-0 left-0 right-0 flex justify-around p-4 bg-white shadow-md <%= link_to '🥗 Twoja dieta', meal_plans_path, class: 'font-semibold text-green-600' %>
+    <%= link_to '🛒 Lista zakupów', shopping_cart_path, class: 'text-gray-500' %>
 </div>

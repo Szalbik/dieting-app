@@ -1,0 +1,34 @@
+<turbo-frame id="shopping_cart">
+  <% if shopping_cart.shopping_cart_items.empty? %>
+    <div class="p-4 text-center text-gray-500">
+      Your shopping cart is empty.
+    </div>
+  <% else %>
+    <% grouped_items = shopping_cart.shopping_cart_items.group_by { |item| item.product.category&.name || "Inne" } %>
+    <% grouped_items.each do |category, items| %>
+      <div class="mb-6">
+        <h2 class="mb-2 text-lg font-bold text-gray-800"><%= category %></h2>
+        <ul class="space-y-2">
+          <% items.each do |item| %>
+            <li id="shopping_cart_item_<%= item.id %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+              <div>
+                <p class="text-base font-semibold"><%= item.product.name %></p>
+                <% if item.product.ingredient_measures.present? %>
+                  <p class="text-sm text-gray-600">
+                    Measurements:
+                    <% item.product.ingredient_measures.each do |measurement| %>
+                      <%= (measurement.amount * item.quantity).round(2) %> <%= measurement.unit %>
+                    <% end %>
+                  </p>
+                <% end %>
+              </div>
+              <%= button_to 'Remove', shopping_cart_item_path(item), method: :delete,
+                    form: { data: { turbo_stream: true } },
+                    class: "px-2 py-1 text-xs text-white bg-red-500 rounded" %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  <% end %>
+</turbo-frame>

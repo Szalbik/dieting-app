@@ -25,6 +25,11 @@ Rails.application.routes.draw do
   resources :diets, only: %i[edit update show new destroy]
 
   resource :meal_plans, only: %i[show create]
+  
+  resource :shopping_cart, only: [:show] do
+    patch :update_from_meal_plans, on: :collection
+  end
+  resources :shopping_cart_items, only: [:destroy]
 
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'

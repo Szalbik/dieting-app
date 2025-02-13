@@ -10,7 +10,7 @@ class DietPageParser
     @current_section = :ingredients   # can be :ingredients or :instructions
     @current_instructions = String.new
     @expecting_meal_name = false
-    @current_meal_header = nil  # stores the meal header text (e.g., "1) Śniadanie")
+    @current_meal_header = nil  # stores the meal header text (e.g., "2) Przekąska I")
   end
 
   def process(page)
@@ -41,26 +41,34 @@ class DietPageParser
     # Meal header (e.g. "1) Śniadanie", "2) Przekąska I", etc.)
     if meal_header?(normalized)
       flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
-      # Store the meal header (we'll concatenate it with the next non-dashed line)
-      @current_meal_header = normalized
+      @current_meal_header = normalized  # store the header (e.g. "2) Przekąska I")
       @expecting_meal_name = true
       return
     end
 
-    # If we are expecting a meal name, and the line does NOT start with a dash,
-    # then treat this line as the meal name, concatenating with the header.
+    # If we are expecting a meal name and the line does NOT start with a dash,
+    # then treat this line as the meal name AND as an ingredient.
     if @expecting_meal_name && !normalized.start_with?('-')
-      meal_name = "#{@current_meal_header} #{normalized}".strip
-      @current_meal = @current_set.meals.build(name: meal_name)
+      # Build meal title from header and cleaned meal name.
+      meal_title = "#{@current_meal_header}: #{clean_meal_name(normalized)}".strip
+      @current_meal = @current_set.meals.build(name: meal_title)
       @current_section = :ingredients
       @expecting_meal_name = false
-      # Clear the stored header after using it.
+
+      # Now also process the raw line as an ingredient.
+      # Prepend a dash so that it goes through the same parser as a normal ingredient line.
+      if contains_measurement_info?(normalized)
+        product_line = "-#{normalized}"
+        process_ingredient_line(product_line)
+      end
+
+      # Clear stored header.
       @current_meal_header = nil
       return
     end
 
     # Instructions header: e.g., "Sposób wykonania:" or "Sposób przygotowania:"
-    if normalized =~ /^Sposób (wykonania|przygotowania):/
+    if normalized =~ /^Sposób\b.*:/
       @current_section = :instructions
       @current_instructions = String.new
       return
@@ -127,5 +135,17 @@ class DietPageParser
         product.ingredient_measures.build(amount: amount.to_f, unit: unit)
       end
     end
+  end
+
+  # A simple helper to clean meal names by removing trailing measurement info.
+  # You can adjust this logic if needed.
+  def clean_meal_name(name)
+    name.sub(/\s*-\s*\([^)]*\)\s*$/, '').strip
+  end
+
+  # Check if the meal name line contains measurement info in parentheses
+  # or a dash followed by a digit.
+  def contains_measurement_info?(text)
+    !!(text =~ /^(?<ingredient>.+?)\s*\((?<measurement>[^)]+)\)\s*\z/ || text =~ /-\s*\d/)
   end
 end

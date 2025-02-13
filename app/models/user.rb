@@ -2,6 +2,9 @@
 
 class User < ApplicationRecord
   after_create -> (first_name) { email_address.split('@').first }
+  after_create :create_shopping_cart
+
+  has_one :shopping_cart, dependent: :destroy
 
   has_many :diets, dependent: :nullify
   has_many :meal_plans, through: :diets
@@ -38,5 +41,11 @@ class User < ApplicationRecord
 
   def active_products
     products.where(diet_set_id: active_diet_set_ids)
+  end
+
+  private
+
+  def create_shopping_cart
+    ShoppingCart.create!(user: self)
   end
 end
