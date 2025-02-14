@@ -5,7 +5,7 @@ class MealPlansController < ApplicationController
 
   def show
     if Current.user.active_diets.empty?
-      redirect_to new_diet_path, alert: 'You need to create a diet first.'
+      redirect_to new_diet_path, warning: 'You need to create a diet first.'
     end
 
     respond_to do |format|
