@@ -33,9 +33,14 @@
         <div class="p-4 bg-white rounded-lg shadow-md cursor-pointer"
               data-controller="toggle-meal"
               data-action="click->toggle-meal#toggle">
-          <div class="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-            <h3 class="text-lg font-semibold"><%= meal.name %></h3>
-            <span class="mt-2 text-sm text-gray-500 sm:mt-0"><%= meal_time_for(meal) %></span>
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold"><%= meal.name %></h3>
+              <span class="text-sm text-gray-500"><%= meal_time_for(meal) %></span>
+            </div>
+            <div id="<%= dom_id(meal, :shopping_bag) %>">
+              <%= render partial: "meal_plans/shopping_bag_icon", locals: { meal: meal } %>
+            </div>
           </div>
           <!-- Details: ingredients and instructions (initially hidden) -->
           <div data-toggle-meal-target="toggle" data-toggle-meal-animation-value="slide" class="hidden mt-2 overflow-hidden">

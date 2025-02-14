@@ -24,7 +24,9 @@ Rails.application.routes.draw do
   resources :product_categories, only: %i[index edit update show]
   resources :diets, only: %i[edit update show new destroy]
 
-  resource :meal_plans, only: %i[show create]
+  resource :meal_plans, only: %i[show create] do
+    post 'toggle_shopping_bag/:id', to: 'meal_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
+  end
   
   resource :shopping_cart, only: [:show]
   resources :shopping_cart_items, only: [:destroy]

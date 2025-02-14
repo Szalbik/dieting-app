@@ -1,2 +1,2 @@
-<%= turbo_stream.remove("shopping_cart_item_#{@item.id}") %>
-<%= turbo_stream.remove("category_#{(@item.product.category.name || 'Inne').parameterize}") if category_empty?(@item.product.category) %>
+<%= turbo_stream.remove("#{shopping_cart_item_id_for(@product.category, @product)}") %>
+<%= turbo_stream.remove("category_#{(@product.category.name || 'Inne').parameterize}") if category_empty?(@product.category) %>

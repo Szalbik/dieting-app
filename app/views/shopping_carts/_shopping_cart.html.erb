@@ -10,7 +10,7 @@
           <h2 class="mb-2 text-lg font-bold text-gray-800"><%= group[:category]&.name || 'Inne' %></h2>
           <ul class="space-y-2">
             <% group[:products].each do |product_group| %>
-              <li id="shopping_cart_item_<%= product_group[:product].id %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+              <li id="<%= shopping_cart_item_id_for(group[:category], product_group[:product]) %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
                 <div>
                   <p class="text-base font-semibold"><%= product_group[:product].name %></p>
                   <% if product_group[:product].ingredient_measures.present? %>

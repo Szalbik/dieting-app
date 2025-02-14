@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
 class MealPlansController < ApplicationController
-  before_action :set_meal_plan, only: [:show]
+  before_action :set_meal_plan, only: [:show, :toggle_shopping_bag]
+
+  def toggle_shopping_bag
+    @meal = Meal.find(params[:id])
+    @meal.update(selected_for_cart: !@meal.selected_for_cart)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to meal_plans_path(date: date) }
+    end
+  end
 
   def show
     if Current.user.active_diets.empty?

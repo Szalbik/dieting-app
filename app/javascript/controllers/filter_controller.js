@@ -15,8 +15,6 @@ export default class extends Controller {
   filter() {  
     const checkedBoxes = this.checkboxTargets.filter(checkbox => checkbox.checked)  
     const checkedValues = checkedBoxes.map(checkbox => checkbox.value)  
-  
-    debugger;
 
     console.log('Values: ', checkedValues)
 
