@@ -47,10 +47,18 @@
             <ul class="list-disc">
               <% meal.products.each do |product| %>
                   <li class="flex flex-col mt-4">
-                  <div class="flex items-center">
-                      <div class="ml-3">
+                  <div class="flex items-center justify-between">
+                    <div class="ml-3">
                       <p class="text-base font-semibold"><%= product.name %></p>
+                    </div>
+                    <% if product.ingredient_measures.present? %>
+                      <div class="flex-col text-sm text-gray-600 felx">
+                        <% product.ingredient_measures.each do |measurement| %>
+                          <p class="text-right text-nowrap"><%= (measurement.amount).round(2) %> <%= measurement.unit %></p>
+                          
+                        <% end %>
                       </div>
+                    <% end %>
                   </div>
                   </li>
               <% end %>
