@@ -9,8 +9,9 @@ application.register("hello", HelloController)
 
 import FilterController from "./filter_controller"
 application.register("filter", FilterController)
-import ToggleController from "./toggle_controller"
-application.register("toggle", ToggleController)
+import ToggleMealController from "./toggle_meal_controller"
+application.register("toggle-meal", ToggleMealController)
 
-import { Dropdown } from "tailwindcss-stimulus-components"
+import { Dropdown, Toggle } from "tailwindcss-stimulus-components"
 application.register('dropdown', Dropdown)
+application.register('toggle', Toggle)

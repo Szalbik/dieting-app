@@ -1,4 +1,4 @@
-<header class="bg-white border-b border-gray-200 shrink-0">
+<header data-controller="toggle" class="bg-white border-b border-gray-200 shrink-0">
   <div class="flex items-center justify-between h-16 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
     <%= link_to root_path do %>
       <%= image_tag 'logo-128.png', alt: 'Logo', class: 'h-10 w-auto'  %>
@@ -23,7 +23,7 @@
         </button>-->
 
         <div class="relative inline-block text-left" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
-          <div>
+          <div data-action='click->toggle#toggle touch->toggle#toggle'>
             <button type="button" class="flex items-center text-gray-400 bg-gray-100 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100" id="menu-button" aria-expanded="true" aria-haspopup="true" data-dropdown-target="button">
               <span class="sr-only">Open options</span>
               <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -41,7 +41,7 @@
               From: "transform opacity-100 scale-100"
               To: "transform opacity-0 scale-95"
           -->
-          <div class="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
+          <div data-toggle-target='toggleable' class="absolute right-0 z-10 hidden w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
                role="menu" 
                aria-orientation="vertical" 
                aria-labelledby="menu-button" 
