@@ -4,7 +4,7 @@ class DietPageParser
   INGREDIENT_REGEX = /
     ^-?\s*                              # Optional leading dash and spaces
     (?<name>[\p{L}\s,]+?)                # Ingredient name: letters, spaces, commas
-    (?:\s*-\s*(?<amount>\d+(?:[\/.,]\d+)?)(?<unit>[^\s]+))?   # Optional: " - amountunit"
+    (?:\s*-\s*(?<amount>\d+(?:[\/.,]\d+)?)(\s*(?<unit>[^\s]+))?)?   # Optional: " - amount[optional space]unit"
     (?:\s*\((?<volume>[^)]+)\))?         # Optional volume in parentheses
     (?:\s*np\.\s*(?<note>[\p{L}\s]+))?    # Optional note (e.g., "np. Bakoma")
   $/xu
