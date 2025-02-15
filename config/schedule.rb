@@ -6,7 +6,11 @@
 # set :output, "/path/to/my/cron_log.log"
 
 every 1.day, at: '12:00 am' do
-  runner "CategorizeProductsJob.perform_later"
+  runner 'CategorizeProductsJob.perform_later'
+end
+
+every 1.day, at: '01:00 am' do
+  runner 'TrainCategoryModelJob.perform_later'
 end
 
 # Example:

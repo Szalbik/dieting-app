@@ -6,6 +6,6 @@ module ShoppingCartItemsHelper
   end
 
   def shopping_cart_item_id_for(category, product)
-    "shopping-cart-item-#{category&.name.parameterize || 'inne'}-#{product.name.parameterize}"
+    "shopping-cart-item-#{category&.name&.parameterize || 'inne'}-#{product.name.parameterize}"
   end
 end

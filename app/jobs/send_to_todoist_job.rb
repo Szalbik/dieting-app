@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class SendToTodoistJob < ApplicationJob
   queue_as :default
 
   def perform(project_id, diet_set_ids, diet_set_quantities, token, user_id)
-      # Step 1: Filter products based on selected diet sets
+    # Step 1: Filter products based on selected diet sets
     selected_diet_set_ids = diet_set_ids.reject(&:empty?) rescue []
     user = User.find(user_id)
     products = user.active_products.where(diet_set_id: selected_diet_set_ids)
@@ -12,10 +14,11 @@ class SendToTodoistJob < ApplicationJob
     if diet_set_quantities.present?
       diet_set_quantities.each do |diet_set_id, quantity|
         next unless selected_diet_set_ids.include?(diet_set_id)
+
         quantity = quantity.to_i
         # Assuming each product should be duplicated based on the quantity
         products.where(diet_set_id: diet_set_id).each do |product|
-          quantity.times { multiplied_products << product}
+          quantity.times { multiplied_products << product }
         end
       end
     else
@@ -38,7 +41,7 @@ class SendToTodoistJob < ApplicationJob
 
     response = Todoist::Api.create_task(grouped_products, categories_with_section_ids, token, project_id)
 
-    diets = user.active_diets.select{ |diet| diet.diet_sets.where(id: selected_diet_set_ids).present? }
+    diets = user.active_diets.select { |diet| diet.diet_sets.where(id: selected_diet_set_ids).present? }
     diets.each do |diet|
       diet_sets_names = diet.diet_sets.where(id: selected_diet_set_ids).pluck(:name).join(', ')
       diet.audit_logs.create(action: 'create', description: "Sent products to Todoist #{diet.name} diet with sets: #{diet_sets_names}")
