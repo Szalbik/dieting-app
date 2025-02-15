@@ -30,6 +30,8 @@ class ProductCategoriesController < ApplicationController
 
   def update
     if @product_category.update(product_category_params)
+      product = @product_category.product
+      ProductCategory.confirm_state_for(product.name, @product_category.category.name)
       render turbo_stream: turbo_stream.remove(
         "product_category_#{@product_category.id}"
         # partial: 'product_categories/product_category',

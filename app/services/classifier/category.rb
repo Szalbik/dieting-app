@@ -26,7 +26,7 @@ module Classifier
       products = ProductCategory.joins(:product, :category).where(state: true).where('products.name = ?', "#{product_name}")
       if products.present?
         category_name = products.first.category.name
-        { name: category_name, state: true }
+        { name: category_name, state: products.first.state }
       else
         category_name = @nbayes.classify(product_name.split(/\s+/)).max_class
         { name: category_name, state: false }
@@ -48,7 +48,7 @@ module Classifier
       @nbayes = NBayes::Base.new
 
       ProductCategory.where(state: true).includes(:product, :category).find_each do |pc|
-        100.times do
+        10.times do
           @nbayes.train(pc.product.name.split(/\s+/), pc.category.name)
         end
       end
