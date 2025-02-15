@@ -127,7 +127,7 @@ class DietPageParser
   end
 
   def clean_meal_name(name)
-    name.sub(/\s*-\s*\([^)]*\)\s*$/, '').strip
+    name.gsub(/\s*-\s*\d+(?:[\/.,]\d+)?\s*\S+(?:\s*\([^)]*\))?/, '').strip
   end
 
   def contains_measurement_info?(text)
