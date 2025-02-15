@@ -6,12 +6,12 @@ class DietBuilder
     @page_parser = DietPageParser.new(@diet)
   end
 
-  # Processes a PDF::Reader::Page (or any object that responds to #text)
+  # Process a PDF page using the refactored parser.
   def process_page(page)
     @page_parser.process(page)
   end
 
-  # When finished, persist the diet (or do additional processing as needed)
+  # Persist the diet (or perform additional processing).
   def save_ingredients
     @diet.save
   end

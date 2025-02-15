@@ -1,93 +1,109 @@
 # frozen_string_literal: true
 
-# frozen_string_literal: true
-
 class DietPageParser
+  INGREDIENT_REGEX = /
+    (?<name>[\p{L}\s,]+?)\s*-\s*         # Ingredient name: letters, spaces, commas
+    (?<amount>\d+(?:[.,]\d+)?)\s*         # Amount: digits with optional decimal
+    (?<unit>[^\s]+)                      # Unit (e.g., "szkl.", "szt.")
+    (?:\s*\((?<volume>[^)]+)\))?          # Optional volume in parentheses
+    (?:\s*np\.\s*(?<note>[\p{L}\s]+))?     # Optional note (e.g., "np. Bakoma")
+  /x
+
+  META_LINES_COUNT = 4  # Change this value if necessary
+
   def initialize(diet)
     @diet = diet
-    @current_set = nil       # current DietSet
-    @current_meal = nil      # current Meal
-    @current_section = :ingredients   # can be :ingredients or :instructions
-    @current_instructions = String.new
+    @current_set = nil       # Current DietSet
+    @current_meal = nil      # Current Meal
+    @current_section = :ingredients   # Can be :ingredients or :instructions
+    @current_instructions = String.new  # Mutable string for instructions
     @expecting_meal_name = false
-    @current_meal_header = nil  # stores the meal header text (e.g., "2) Przekąska I")
+    @current_meal_header = nil  # Stores meal header text (e.g., "1) Śniadanie")
   end
 
+  # Process a PDF page.
+  # Splits the page into lines, then removes the last META_LINES_COUNT lines (assumed meta lines),
+  # then normalizes and processes the remaining lines.
   def process(page)
-    lines = page.text.split("\n")
-    lines.each { |line| process_line(line) }
+    raw_content = page.text.split("\n")
+    raw_content = raw_content.size >= META_LINES_COUNT ? raw_content[0...-META_LINES_COUNT] : raw_content
+
+    normalized_content = raw_content.map(&:strip).reject(&:empty?)
+    normalized_content.each { |line| process_line(line) }
     flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
   end
 
   private
 
   def process_line(line)
-    normalized = line.strip
-    return if normalized.empty?
+    # Skip common meta/schedule lines.
+    return if line.match?(/^(tel\.|Poradnia Dietetyczna|dietetyk\.)/i)
+    return if line.match?(/^\d{1,2}:\d{2}/)
+    return if @current_set.nil? && line.match?(/^(Dieta dla|Godziny spożywania posiłków)/i)
 
-    # Skip meta/schedule lines
-    return if normalized.match?(/^(tel\.|Poradnia Dietetyczna|dietetyk\.)/i)
-    return if normalized.match?(/^\d{1,2}:\d{2}/)
-    if @current_set.nil? && normalized.match?(/^(Dieta dla|Godziny spożywania posiłków)/i)
+    # Diet Set header (e.g., "Zestaw 1")
+    if diet_set_header?(line)
+      process_diet_set_header(line)
       return
     end
 
-    # Diet Set header (e.g. "Zestaw 1")
-    if diet_set_header?(normalized)
-      process_diet_set_header(normalized)
-      return
-    end
-
-    # Meal header (e.g. "1) Śniadanie", "2) Przekąska I", etc.)
-    if meal_header?(normalized)
+    # Meal header (e.g., "1) Śniadanie", "2) Przekąska I", etc.)
+    if meal_header?(line)
       flush_instructions if @current_section == :instructions && @current_instructions.strip.present?
-      @current_meal_header = normalized  # store the header (e.g. "2) Przekąska I")
+      @current_meal_header = line
       @expecting_meal_name = true
       return
     end
 
-    # If we are expecting a meal name and the line does NOT start with a dash,
-    # then treat this line as the meal name AND as an ingredient.
-    if @expecting_meal_name && !normalized.start_with?('-')
-      # Build meal title from header and cleaned meal name.
-      meal_title = "#{@current_meal_header}: #{clean_meal_name(normalized)}".strip
+    # When expecting a meal name and the line does not start with a dash,
+    # treat it as the meal name (and possibly as an ingredient line).
+    if @expecting_meal_name && !line.start_with?('-')
+      meal_title = "#{@current_meal_header}: #{clean_meal_name(line)}".strip
       @current_meal = @current_set.meals.build(name: meal_title)
       @current_section = :ingredients
       @expecting_meal_name = false
 
-      # Now also process the raw line as an ingredient.
-      # Prepend a dash so that it goes through the same parser as a normal ingredient line.
-      if contains_measurement_info?(normalized)
-        product_line = "-#{normalized}"
-        process_ingredient_line(product_line)
-      end
-
-      # Clear stored header.
+      # If the meal name line includes measurement info, process it as an ingredient.
+      process_ingredient_line("-#{line}") if contains_measurement_info?(line)
       @current_meal_header = nil
       return
     end
 
-    # Instructions header: e.g., "Sposób wykonania:" or "Sposób przygotowania:"
-    if normalized =~ /^Sposób\b.*:/
+    # Switch to instructions section when an instructions header is found.
+    if line =~ /^Sposób\b.*:/
       @current_section = :instructions
-      @current_instructions = String.new
+      @current_instructions = String.new  # Reset mutable string
       return
     end
 
-    # Process based on current section:
+    # Process the line based on the current section.
     if @current_section == :instructions
-      @current_instructions << normalized + "\n"
+      if is_ingredient?(line)
+        # debugger if @current_set.name.include?('Zestaw 8')
+        process_ingredient_line(line)
+      else
+        @current_instructions << line + "\n"
+      end
     else
-      process_ingredient_line(normalized)
+      process_ingredient_line(line)
     end
   end
 
   def flush_instructions
     if @current_meal && @current_instructions.strip.present?
-      @current_meal.instructions = @current_instructions.strip
-      @current_instructions = String.new
+      cleaned_instructions = filter_ingredients_from_instructions(@current_instructions)
+      @current_meal.instructions = cleaned_instructions.strip
+      @current_instructions = String.new  # Reset mutable string
       @current_section = :ingredients
     end
+  end
+
+  # In the instructions block, simply skip lines that match the ingredient pattern
+  # to avoid processing them twice.
+  def filter_ingredients_from_instructions(instructions)
+    kept_lines = []
+    instructions.split("\n").each { |line| kept_lines << line unless is_ingredient?(line) }
+    kept_lines.join("\n")
   end
 
   def diet_set_header?(line)
@@ -97,9 +113,8 @@ class DietPageParser
   def process_diet_set_header(line)
     if line =~ /^Zestaw (\d+)/
       set_name = "Zestaw #{$1}"
-      @current_set = @diet.diet_sets.find_by(name: set_name) ||
-                     @diet.diet_sets.build(name: set_name)
-      # Reset meal, instructions, and header when starting a new set.
+      @current_set = @diet.diet_sets.find_by(name: set_name) || @diet.diet_sets.build(name: set_name)
+      # Reset state for the new set.
       @current_meal = nil
       @current_section = :ingredients
       @current_instructions = String.new
@@ -109,8 +124,15 @@ class DietPageParser
   end
 
   def meal_header?(line)
-    # Matches lines like "1) Śniadanie", "2) Przekąska I", "3) Obiad", "4) Kolacja"
     line.match?(/^\d+\)\s*(Śniadanie|Przekąska|Obiad|Kolacja)(\s+[IVX]+)?$/)
+  end
+
+  def clean_meal_name(name)
+    name.sub(/\s*-\s*\([^)]*\)\s*$/, '').strip
+  end
+
+  def contains_measurement_info?(text)
+    !!(text =~ /^(?<ingredient>.+?)\s*\((?<measurement>[^)]+)\)\s*\z/ || text =~ /-\s*\d/)
   end
 
   def process_ingredient_line(line)
@@ -131,21 +153,17 @@ class DietPageParser
 
     product = @current_meal.products.build(name: ingredient_name)
     if measurements
-      measurements.each do |amount, unit|
-        product.ingredient_measures.build(amount: amount.to_f, unit: unit)
-      end
+      measurements.each { |amount, unit| product.ingredient_measures.build(amount: amount.to_f, unit: unit) }
     end
   end
 
-  # A simple helper to clean meal names by removing trailing measurement info.
-  # You can adjust this logic if needed.
-  def clean_meal_name(name)
-    name.sub(/\s*-\s*\([^)]*\)\s*$/, '').strip
-  end
+  # Updated is_ingredient? method: if the line starts with a number (1 to 99) and a dot-space,
+  # it's considered an instruction, not an ingredient.
+  def is_ingredient?(line)
+    stripped = line.strip
+    return false if stripped =~ /\d+\s*-\s*\d+/
+    return false if stripped =~ /^(?:[1-9]\d?\.\s+)/
 
-  # Check if the meal name line contains measurement info in parentheses
-  # or a dash followed by a digit.
-  def contains_measurement_info?(text)
-    !!(text =~ /^(?<ingredient>.+?)\s*\((?<measurement>[^)]+)\)\s*\z/ || text =~ /-\s*\d/)
+    !!stripped.match(INGREDIENT_REGEX)
   end
 end
