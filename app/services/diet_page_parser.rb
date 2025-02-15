@@ -2,12 +2,12 @@
 
 class DietPageParser
   INGREDIENT_REGEX = /
-    (?<name>[\p{L}\s,]+?)\s*-\s*         # Ingredient name: letters, spaces, commas
-    (?<amount>\d+(?:[.,]\d+)?)\s*         # Amount: digits with optional decimal
-    (?<unit>[^\s]+)                      # Unit (e.g., "szkl.", "szt.")
-    (?:\s*\((?<volume>[^)]+)\))?          # Optional volume in parentheses
-    (?:\s*np\.\s*(?<note>[\p{L}\s]+))?     # Optional note (e.g., "np. Bakoma")
-  /x
+    ^-?\s*                              # Optional leading dash and spaces
+    (?<name>[\p{L}\s,]+?)                # Ingredient name: letters, spaces, commas
+    (?:\s*-\s*(?<amount>\d+(?:[\/.,]\d+)?)(?<unit>[^\s]+))?   # Optional: " - amountunit"
+    (?:\s*\((?<volume>[^)]+)\))?         # Optional volume in parentheses
+    (?:\s*np\.\s*(?<note>[\p{L}\s]+))?    # Optional note (e.g., "np. Bakoma")
+  $/xu
 
   META_LINES_COUNT = 4  # Change this value if necessary
 
@@ -79,7 +79,6 @@ class DietPageParser
     # Process the line based on the current section.
     if @current_section == :instructions
       if is_ingredient?(line)
-        # debugger if @current_set.name.include?('Zestaw 8')
         process_ingredient_line(line)
       else
         @current_instructions << line + "\n"
