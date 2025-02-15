@@ -22,7 +22,9 @@
     <%= turbo_frame_tag :modal %>
     <div class="flex flex-col h-full mb-10">
       <%= render(NavbarComponent.new(current_user: Current.user)) %>
-      <%= yield %>
+      <div class="container px-4 mx-auto">
+        <%= yield %>
+      </div>
       <%= render(FooterComponent.new) %>
     </div>
     <%= render(FlashComponent.new(flash: flash)) %>
