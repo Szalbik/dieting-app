@@ -12,6 +12,13 @@ FactoryBot.define do
       end
     end
 
+    trait :with_pdf2 do
+      after(:create) do |diet|
+        diet.pdf.attach(io: File.open(Rails.root.join('spec/fixtures/files/diet_for_one_week2.pdf')),
+                        filename: 'diet_for_one_week_2.pdf')
+      end
+    end
+
     trait :with_long_pdf do
       after(:create) do |diet|
         diet.pdf.attach(io: File.open(Rails.root.join('spec/fixtures/files/diet_for_two_weeks.pdf')),

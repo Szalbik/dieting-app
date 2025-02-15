@@ -4,7 +4,7 @@ class Product < ApplicationRecord
   belongs_to :diet_set, optional: true
   belongs_to :unit, optional: true
   has_many :ingredient_measures, dependent: :destroy
-  has_one :product_category
+  has_one :product_category, dependent: :nullify
   has_one :category, through: :product_category
   belongs_to :meal, optional: true
   belongs_to :associated_product, class_name: 'Product', foreign_key: 'associated_product_id', optional: true

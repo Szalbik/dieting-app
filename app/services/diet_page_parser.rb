@@ -63,9 +63,20 @@ class DietPageParser
       @current_section = :ingredients
       @expecting_meal_name = false
 
-      # If the meal name line includes measurement info, process it as an ingredient.
       process_ingredient_line("-#{line}") if contains_measurement_info?(line)
       @current_meal_header = nil
+      return
+    end
+
+    # When expecting a meal name and the line starts with a dash,
+    # create the meal using the header and process the ingredient line.
+    if @expecting_meal_name && line.start_with?('-')
+      meal_title = clean_meal_header(@current_meal_header)
+      @current_meal = @current_set.meals.build(name: meal_title)
+      @current_section = :ingredients
+      @expecting_meal_name = false
+      @current_meal_header = nil
+      process_ingredient_line(line)
       return
     end
 
@@ -124,6 +135,10 @@ class DietPageParser
 
   def meal_header?(line)
     line.match?(/^\d+\)\s*(Śniadanie|Przekąska|Obiad|Kolacja)(\s+[IVX]+)?$/)
+  end
+
+  def clean_meal_header(header)
+    header.sub(/^\d+\)\s*/, '').strip
   end
 
   def clean_meal_name(name)
