@@ -59,7 +59,7 @@ class MealPlansController < ApplicationController
       if cart_item
         cart_item.increment!(:quantity)
       else
-        cart.shopping_cart_items.create!(product: product, quantity: 1, date: date)
+        Current.user.shopping_cart.shopping_cart_items.create!(product: product, quantity: 1, date: date)
       end
     end
   end
