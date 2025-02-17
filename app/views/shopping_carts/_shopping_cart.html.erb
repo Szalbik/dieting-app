@@ -4,7 +4,7 @@
       Your shopping cart is empty.
     </div>
   <% else %>
-    <% shopping_cart.grouped_items.each do |group| %>
+    <% shopping_cart.group_and_sum_by_cart_items.each do |group| %>
       <div id="category_<%= group[:category]&.name&.parameterize || 'inne' %>">
         <div class="mb-6">
           <h2 class="mb-2 text-lg font-bold text-gray-800"><%= group[:category]&.name || 'Inne' %></h2>
@@ -13,11 +13,11 @@
               <li id="<%= shopping_cart_item_id_for(group[:category], product_group[:product]) %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
                 <div>
                   <p class="text-base font-semibold"><%= product_group[:product].name %></p>
-                  <% if product_group[:product].ingredient_measures.present? %>
+                  <% if product_group[:aggregated_ingredient_measures].present? %>
                     <p class="text-sm text-gray-600">
                       Measurements:
-                      <% product_group[:product].ingredient_measures.each do |measurement| %>
-                        <%= (measurement.amount * product_group[:quantity]).round(2) %> <%= measurement.unit %>
+                      <% product_group[:aggregated_ingredient_measures].each do |measurement| %>
+                        <%= measurement[:amount].round(2) %> <%= measurement[:unit] %>
                       <% end %>
                     </p>
                   <% end %>
