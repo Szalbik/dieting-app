@@ -6,7 +6,7 @@ class ShoppingCart < ApplicationRecord
 
   # Optional: helper to aggregate products (group, sum, etc.)
   def grouped_items
-    shopping_cart_items.includes(product: :category)
+    shopping_cart_items.with_current_or_future_meal_plan.includes(product: :category)
       .group_by { |item| item.product.category }
       .map do |category, items|
         products = items.group_by { |item| item.product.name }.map do |name, grouped_items|
