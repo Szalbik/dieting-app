@@ -5,8 +5,15 @@ class ShoppingCartItem < ApplicationRecord
   belongs_to :product
 
   scope :with_current_or_future_meal_plan, -> {
-    joins(product: { meal: { diet_set: :meal_plans } })
-      .where('meal_plans.date >= ?', Date.current)
-      .distinct
+    where(<<~SQL, Date.current)
+      EXISTS (
+        SELECT 1 FROM meal_plans mp
+        JOIN diet_sets ds ON mp.diet_set_id = ds.id
+        JOIN meals m ON m.diet_set_id = ds.id
+        JOIN products p ON p.meal_id = m.id
+        WHERE p.id = shopping_cart_items.product_id
+          AND mp.date >= ?
+      )
+    SQL
   }
 end
