@@ -10,11 +10,11 @@ gem 'rails', '~> 8.0.1'
 # Asssets pipeline
 gem 'cssbundling-rails' # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'jsbundling-rails' # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'propshaft' 
+gem 'propshaft'
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
+gem 'solid_cache'
+gem 'solid_queue'
 # gem "solid_cable"
 
 # Monitoring
@@ -31,17 +31,17 @@ gem 'httparty'
 gem 'jbuilder'
 gem 'kamal'
 gem 'mission_control-jobs'
-gem "sqlite3", ">= 2.1"
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
+gem 'sqlite3', '>= 2.1'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "thruster", require: false # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+gem 'thruster', require: false # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'view_component'
 
 # Dieting app related gems
-gem 'ruby-openai'
 gem 'nbayes'
 gem 'pdf-reader'
+gem 'ruby-openai'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -63,10 +63,10 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
 end
 
 group :development do

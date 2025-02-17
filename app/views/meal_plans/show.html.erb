@@ -5,7 +5,11 @@
 </div>
 
 <div id="meal_plan_details">
-    <%= render 'meal_plan_details', locals: { meal_plan: @meal_plan } %>
+    <% if @meal_plan.diet.blank? %>
+        <%= render 'diet_form', locals: { meal_plan: @meal_plan } %>
+    <% else %>
+        <%= render 'meal_plan_details', locals: { meal_plan: @meal_plan } %>
+    <% end %>
 </div>
 
 <!-- Bottom Navigation -->

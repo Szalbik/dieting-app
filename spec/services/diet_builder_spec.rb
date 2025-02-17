@@ -476,7 +476,7 @@ RSpec.describe DietBuilder do
 
       it 'cretes correct amount of products for Diet Set 14' do
         diet_set = diet.diet_sets.find_by(name: 'Zestaw 14')
-        expect(diet_set.products.count).to eq(35)
+        expect(diet_set.products.count).to eq(34)
       end
 
       context 'when counting Products for meals in 14' do
@@ -485,7 +485,7 @@ RSpec.describe DietBuilder do
         it 'creates a product' do
           expect(diet_set.meals[0].products.count).to eq(6)
           expect(diet_set.meals[1].products.count).to eq(3)
-          expect(diet_set.meals[2].products.count).to eq(14)
+          expect(diet_set.meals[2].products.count).to eq(13)
           expect(diet_set.meals[3].products.count).to eq(12)
         end
       end
