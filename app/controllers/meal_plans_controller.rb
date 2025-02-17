@@ -55,7 +55,7 @@ class MealPlansController < ApplicationController
     products = meal_plan.diet_set.meals.includes(:products).flat_map(&:products)
     products.each do |product|
       # Use product.id to uniquely identify the product
-      cart_item = cart.shopping_cart_items.find_by(product_id: product.id, date: date)
+      cart_item = Current.user.shopping_cart.shopping_cart_items.find_by(product_id: product.id, date: date)
       if cart_item
         cart_item.increment!(:quantity)
       else
