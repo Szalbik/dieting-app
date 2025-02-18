@@ -51,43 +51,6 @@ class Product < ApplicationRecord
     summed_products.sort_by { |k, v| v[:category] }.reverse
   end
 
-  def self.group_and_sum_by_category(scope = Product)
-    # Eager load ingredient measures and category
-    products_with_measures = scope.includes(:ingredient_measures, :category)
-
-    # Group products by category
-    grouped_by_category = products_with_measures.group_by { |product| product.category.try(:name) || 'Inne' }
-
-    # Initialize a hash to store the summed products
-    summed_products = {}
-
-    grouped_by_category.each do |category, products|
-      summed_products[category] ||= { measurements: [] }
-
-      # Initialize a hash to store the summed amounts for each unit
-      unit_hash = {}
-
-      products.each do |product|
-        # Fetch ingredient measurements for the product
-        ingredient_measurements = product.ingredient_measures
-
-        # Sum the amounts by unit for this product
-        ingredient_measurements.each do |measurement|
-          unit = measurement.unit || 'No Unit'
-          amount = measurement.amount || 0
-          unit_hash[unit] ||= 0
-          unit_hash[unit] += amount
-        end
-      end
-
-      unit_hash.each do |unit, amount|
-        summed_products[category][:measurements] << { unit: unit, amount: amount }
-      end
-    end
-
-    summed_products
-  end
-
   def self.group_and_sum_by_name_then_category(scope = Product)
     # Eager load ingredient measures and category
     # products_with_measures = scope.includes(:ingredient_measures, :category)
