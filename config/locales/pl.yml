@@ -29,50 +29,51 @@
 # To learn more, please read the Rails Internationalization guide
 # available at https://guides.rubyonrails.org/i18n.html.
 
-en:
+pl:
   units:
     kromka:
-      one: "slice"
-      few: "slices"
-      many: "slices"
-      other: "slices"
+      one: "kromka"
+      few: "kromki"
+      many: "kromek"
+      other: "kromki"
     łyżka:
-      one: "spoon"
-      few: "spoons"
-      many: "spoons"
-      other: "spoons"
+      one: "łyżka"
+      few: "łyżki"
+      many: "łyżek"
+      other: "łyżki"
     łyżeczka:
-      one: "teaspoon"
-      few: "teaspoons"
-      many: "teaspoons"
-      other: "teaspoons"
+      one: "łyżeczka"
+      few: "łyżeczki"
+      many: "łyżeczek"
+      other: "łyżeczki"
     g:
-      one: "gram"
-      few: "grams"
-      many: "grams"
-      other: "grams"
-    ząbkek:
-      one: "clove"
-      few: "cloves"
-      many: "cloves"
-      other: "cloves"
+      one: "g"
+      few: "g"
+      many: "g"
+      other: "g"
+    ząbek:
+      one: "ząbek"
+      few: "ząbki"
+      many: "ząbków"
+      other: "ząbków"
     szt:
-      one: "piece"
-      few: "pieces"
-      many: "pieces"
-      other: "pieces"
+      one: "szt"
+      few: "szt"
+      many: "szt"
+      other: "szt"
     plaster:
-      one: "slice"
-      few: "slices"
-      many: "slices"
-      other: "slices"
+      one: "plaster"
+      few: "plastry"
+      many: "plastrów"
+      other: "plastrów"
     ml:
       one: "ml"
       few: "ml"
       many: "ml"
       other: "ml"
     szkl:
-      one: "glass"
-      few: "glasses"
-      many: "glasses"
-      other: "glasses"
+      one: "szkl"
+      few: "szkl"
+      many: "szkl"
+      other: "szkl"
+

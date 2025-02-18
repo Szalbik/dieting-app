@@ -14,3 +14,18 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym "RESTful"
 # end
+
+ActiveSupport::Inflector.inflections(:pl) do |inflect|
+  inflect.plural 'kromka', 'kromki'
+  inflect.singular 'kromki', 'kromka'
+  inflect.plural 'łyżka', 'łyżki'
+  inflect.singular 'łyżki', 'łyżka'
+  inflect.plural 'łyżeczka', 'łyżeczki'
+  inflect.singular 'łyżeczki', 'łyżeczka'
+  inflect.plural 'szklanka', 'szklanki'
+  inflect.singular 'szklanki', 'szklanka'
+  inflect.plural 'plaster', 'plastry'
+  inflect.singular 'plastry', 'plaster'
+  inflect.plural 'ząbek', 'ząbki'
+  inflect.singular 'ząbki', 'ząbek'
+end
