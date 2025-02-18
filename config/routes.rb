@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
   root to: 'main#index'
 
@@ -27,9 +28,13 @@ Rails.application.routes.draw do
   resource :meal_plans, only: %i[show create] do
     post 'toggle_shopping_bag/:id', to: 'meal_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
   end
-  
+
   resource :shopping_cart, only: [:show]
-  resources :shopping_cart_items, only: [:destroy]
+  resources :shopping_cart_items, only: [:destroy] do
+    collection do
+      post :undo
+    end
+  end
 
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
@@ -45,3 +50,4 @@ Rails.application.routes.draw do
 
   get 'profile', to: 'profile#show', as: 'profile'
 end
+# Rubocop: enable Metrics/BlockLength

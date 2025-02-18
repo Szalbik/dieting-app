@@ -27,6 +27,7 @@
       </div>
       <%= render(FooterComponent.new) %>
     </div>
+    <%= render 'shared/flash', locals: { flash: flash } %>
     <%= render(FlashComponent.new(flash: flash)) %>
   </body>
 </html>

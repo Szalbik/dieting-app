@@ -17,7 +17,8 @@
                     <p class="text-sm text-gray-600">
                       Measurements:
                       <% product_group[:aggregated_ingredient_measures].each do |measurement| %>
-                        <%= measurement[:amount].round(2) %> <%= I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
+                        <%= measurement[:amount].round(2) %> 
+                        <%= I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
                       <% end %>
                     </p>
                   <% end %>
@@ -31,5 +32,12 @@
         </div>
       </div>
     <% end %>
+
+    <div class="mt-4 text-center">
+      <%= button_to "Cofnij", undo_shopping_cart_items_path, 
+                  method: :post, 
+                  data: { turbo_stream: true }, 
+                  class: "text-xs text-gray-400 hover:underline" %>
+    </div>
   <% end %>
 </turbo-frame>
