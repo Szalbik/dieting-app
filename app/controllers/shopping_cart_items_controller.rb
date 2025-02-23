@@ -16,7 +16,7 @@ class ShoppingCartItemsController < ApplicationController
       removed_at: Time.current.to_i,
     }
 
-    session[:removed_items] ||= []
+    session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
     session[:removed_items] << removal_record
 
     items.each(&:destroy)
