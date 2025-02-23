@@ -8,6 +8,8 @@ class Product < ApplicationRecord
   has_one :category, through: :product_category
   belongs_to :meal, optional: true
 
+  delegate :selected_for_cart, to: :meal
+
   # products without category
   scope :uncategorized, -> { includes(:product_category).where(product_categories: { id: nil }) }
 

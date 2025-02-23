@@ -6,6 +6,8 @@ class ShoppingCartItem < ApplicationRecord
   belongs_to :shopping_cart
   belongs_to :product
 
+  delegate :selected_for_cart, to: :product
+
   scope :with_current_or_future_meal_plan, -> {
     where(<<~SQL, Date.current)
       EXISTS (

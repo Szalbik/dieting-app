@@ -9,7 +9,7 @@ class ShoppingCart < ApplicationRecord
     items = shopping_cart_items.with_current_or_future_meal_plan.includes(product: [:ingredient_measures, :category])
 
     # Filter items to include only those with meal_plan.selected_for_cart true.
-    items = items.select { |item| item.meal_plan.selected_for_cart }
+    items = items.select { |item| item.selected_for_cart }
 
     # Group shopping cart items by product name.
     grouped_by_name = items.group_by { |item| item.product.name }
