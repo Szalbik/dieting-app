@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ShoppingCartItem < ApplicationRecord
+  acts_as_paranoid
+
   belongs_to :shopping_cart
   belongs_to :product
 

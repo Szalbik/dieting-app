@@ -31,6 +31,7 @@ gem 'httparty'
 gem 'jbuilder'
 gem 'kamal'
 gem 'mission_control-jobs'
+gem 'paranoia'
 gem 'puma', '~> 6.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'sqlite3', '>= 2.1'
 gem 'stimulus-rails' # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
