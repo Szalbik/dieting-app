@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_one :shopping_cart, dependent: :destroy
 
   has_many :diets, dependent: :nullify
-  has_many :meal_plans, through: :diets
+  has_many :diet_set_plans, through: :diets
   has_many :products, through: :diets
   has_many :audit_logs, through: :diets
 

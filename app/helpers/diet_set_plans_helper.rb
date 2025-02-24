@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MealPlansHelper
+module DietSetPlansHelper
   def meal_time_for(meal)
     case meal.name.downcase
     when /śniadanie/

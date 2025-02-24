@@ -6,9 +6,9 @@ class ShoppingCart < ApplicationRecord
 
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.
-    items = shopping_cart_items.with_current_or_future_meal_plan.includes(product: [:ingredient_measures, :category])
+    items = shopping_cart_items.with_current_or_future_diet_set_plan.includes(product: [:ingredient_measures, :category])
 
-    # Filter items to include only those with meal_plan.selected_for_cart true.
+    # Filter items to include only those with diet_set_plan.selected_for_cart true.
     items = items.select { |item| item.selected_for_cart }
 
     # Group shopping cart items by product name.
@@ -64,6 +64,22 @@ class ShoppingCart < ApplicationRecord
       groups[category_obj.name][:products] << data
     end
 
-    groups.values
+    order_hash = {
+      'Pieczywo' => 1,
+      'Owoce' => 2,
+      'Warzywa' => 3,
+      'Przyprawy' => 4,
+      'Nabiał' => 5,
+      'Wędliny' => 6,
+      'Mięso i Ryby' => 7,
+      'Produkty zbożowe' => 8,
+      'Przetwory' => 9,
+      'Inne' => 10,
+      'Napoje' => 11,
+    }
+
+    groups.values.sort_by do |group|
+      order_hash[group[:category].name] || Float::INFINITY
+    end
   end
 end

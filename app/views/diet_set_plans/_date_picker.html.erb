@@ -5,7 +5,7 @@
       <% (0..6).each do |i| %>
         <% date = Date.current + i.days %>
         <% is_selected = date.to_s == @date %>
-        <%= link_to date.day, meal_plans_path(date: date.to_s), 
+        <%= link_to date.day, diet_set_plans_path(date: date.to_s), 
                     class: "flex-shrink-0 w-10 h-10 text-sm rounded-full flex items-center justify-center #{i == 0 ? 'font-bold border border-green-600' : ''} #{is_selected ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
       <% end %>
     </div>

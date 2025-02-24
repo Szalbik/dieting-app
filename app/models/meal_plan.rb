@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class MealPlan < ApplicationRecord
-  belongs_to :diet
-  belongs_to :diet_set
-  has_many :meals, through: :diet_set
-  has_many :products, through: :meals
+  belongs_to :diet_set_plan
+  belongs_to :meal
+
+  has_many :products, through: :meal
+
+  delegate :name, to: :meal
+  delegate :instructions, to: :meal
 end

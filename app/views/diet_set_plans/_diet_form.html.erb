@@ -3,26 +3,26 @@
 <% diet_sets = DietSet
     .joins(:diet)
     .where(diets: { id: Current.user.diets.select(:id) })
-    .left_joins(:meal_plans)
+    .left_joins(:diet_set_plans)
     .group('diet_sets.id')
-    .order(Arel.sql('COUNT(meal_plans.id) DESC')) %>
+    .order(Arel.sql('COUNT(diet_set_plans.id) DESC')) %>
 
 <div class="flex flex-col items-center justify-center p-4 mb-20 bg-white rounded-lg shadow-md md:shadow-none">
-    <%= form_with model: @meal_plan, url: meal_plans_path, method: :post, data: { turbo_frame: "meal_plan_details" } do |f| %>
+    <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
         <%= hidden_field_tag :date, params[:date] %>
         <div class="w-full space-y-4">
             <h3 class="text-lg font-semibold text-center">🥗 Przypisz zestaw</h3>
             <% diet_sets.each do |diet_set| %>
                 <div class="flex items-center justify-between space-x-2">
                     <span class="text-gray-400">
-                        <% if diet_set.meal_plans.count.positive? %>
-                            <%= diet_set.meal_plans.count %>x
+                        <% if diet_set.diet_set_plans.count.positive? %>
+                            <%= diet_set.diet_set_plans.count %>x
                         <% end %>
                     </span>
                     <!-- Hidden radio button with the peer class -->
-                    <%= radio_button_tag "meal_plan[diet_set_id]", diet_set.id, false, id: "meal_plan_diet_set_#{diet_set.id}", class: "hidden peer" %>
+                    <%= radio_button_tag "diet_set_plan[diet_set_id]", diet_set.id, false, id: "diet_set_plan_diet_set_#{diet_set.id}", class: "hidden peer" %>
                     <!-- Label associated with the radio button -->
-                    <label for="meal_plan_diet_set_<%= diet_set.id %>" class="flex items-center justify-end w-full p-2 space-x-3 text-right rounded-md cursor-pointer peer-checked:bg-green-300">
+                    <label for="diet_set_plan_diet_set_<%= diet_set.id %>" class="flex items-center justify-end w-full p-2 space-x-3 text-right rounded-md cursor-pointer peer-checked:bg-green-300">
                         <p class="font-semibold"><%= diet_set.derrivated_name_from_meal %></p>
                     </label>
                 </div>

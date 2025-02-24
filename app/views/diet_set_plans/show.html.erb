@@ -1,0 +1,19 @@
+<!-- app/views/diet_set_plans/show.html.erb -->
+
+<div class="mx-auto" id="date_picker">
+    <%= render "date_picker" %>
+</div>
+
+<div id="diet_set_plan_details">
+    <% if @diet_set_plan.meals.empty? %>
+        <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
+    <% else %>
+        <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
+    <% end %>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 flex justify-around p-4 bg-white shadow-md" >
+    <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-green-600' %>
+    <%= link_to '🛒 Lista zakupów', shopping_cart_path, class: 'text-gray-500' %>
+</div>

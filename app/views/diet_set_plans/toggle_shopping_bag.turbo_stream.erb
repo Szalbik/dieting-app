@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@meal_plan, :shopping_bag) do %>
+  <%= render partial: "shopping_bag_icon", locals: { meal_plan: @meal_plan } %>
+<% end %>

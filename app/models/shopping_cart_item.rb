@@ -5,13 +5,14 @@ class ShoppingCartItem < ApplicationRecord
 
   belongs_to :shopping_cart
   belongs_to :product
+  belongs_to :meal_plan
 
-  delegate :selected_for_cart, to: :product
+  delegate :selected_for_cart, to: :meal_plan
 
-  scope :with_current_or_future_meal_plan, -> {
+  scope :with_current_or_future_diet_set_plan, -> {
     where(<<~SQL, Date.current)
       EXISTS (
-        SELECT 1 FROM meal_plans mp
+        SELECT 1 FROM diet_set_plans mp
         JOIN diet_sets ds ON mp.diet_set_id = ds.id
         JOIN meals m ON m.diet_set_id = ds.id
         JOIN products p ON p.meal_id = m.id

@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "date_picker", 
+        partial: "diet_set_plans/date_picker" %>
+<%= turbo_stream.replace "diet_set_plan_details", 
+        partial: "diet_set_plans/diet_set_plan_details", 
+        locals: { diet_set_plan: @diet_set_plan } %>

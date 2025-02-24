@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_24_091050) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -41,7 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
 
   create_table "audit_logs", force: :cascade do |t|
     t.string "trackable_type", null: false
-    t.bigint "trackable_id", null: false
+    t.integer "trackable_id", null: false
     t.string "action"
     t.text "description"
     t.datetime "created_at", null: false
@@ -55,9 +55,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "diet_set_plans", force: :cascade do |t|
+    t.integer "diet_id", null: false
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "diet_set_id", null: false
+    t.index ["diet_id"], name: "index_diet_set_plans_on_diet_id"
+    t.index ["diet_set_id"], name: "index_diet_set_plans_on_diet_set_id"
+  end
+
   create_table "diet_sets", force: :cascade do |t|
     t.string "name"
-    t.bigint "diet_id", null: false
+    t.integer "diet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["diet_id"], name: "index_diet_sets_on_diet_id"
@@ -66,7 +76,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
   create_table "diets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.integer "user_id", null: false
     t.string "name"
     t.boolean "active", default: true, null: false
     t.index ["user_id"], name: "index_diets_on_user_id"
@@ -75,20 +85,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
   create_table "ingredient_measures", force: :cascade do |t|
     t.float "amount"
     t.string "unit"
-    t.bigint "product_id", null: false
+    t.integer "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_ingredient_measures_on_product_id"
   end
 
   create_table "meal_plans", force: :cascade do |t|
-    t.bigint "diet_id", null: false
-    t.date "date", null: false
+    t.integer "diet_set_plan_id", null: false
+    t.integer "meal_id", null: false
+    t.boolean "selected_for_cart", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "diet_set_id", null: false
-    t.index ["diet_id"], name: "index_meal_plans_on_diet_id"
-    t.index ["diet_set_id"], name: "index_meal_plans_on_diet_set_id"
+    t.index ["diet_set_plan_id"], name: "index_meal_plans_on_diet_set_plan_id"
+    t.index ["meal_id"], name: "index_meal_plans_on_meal_id"
   end
 
   create_table "meals", force: :cascade do |t|
@@ -97,13 +107,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
     t.integer "diet_set_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "selected_for_cart", default: true, null: false
     t.index ["diet_set_id"], name: "index_meals_on_diet_set_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
-    t.bigint "product_id", null: false
-    t.bigint "category_id", null: false
+    t.integer "product_id", null: false
+    t.integer "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "state", default: false, null: false
@@ -115,7 +124,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "unit_id"
+    t.integer "unit_id"
     t.integer "diet_set_id"
     t.integer "associated_product_id"
     t.integer "meal_id"
@@ -142,7 +151,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
     t.datetime "updated_at", null: false
     t.date "date", null: false
     t.datetime "deleted_at"
+    t.integer "meal_plan_id", null: false
     t.index ["deleted_at"], name: "index_shopping_cart_items_on_deleted_at"
+    t.index ["meal_plan_id"], name: "index_shopping_cart_items_on_meal_plan_id"
     t.index ["product_id"], name: "index_shopping_cart_items_on_product_id"
     t.index ["shopping_cart_id"], name: "index_shopping_cart_items_on_shopping_cart_id"
   end
@@ -172,11 +183,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "diet_set_plans", "diet_sets"
+  add_foreign_key "diet_set_plans", "diets"
   add_foreign_key "diet_sets", "diets"
   add_foreign_key "diets", "users"
   add_foreign_key "ingredient_measures", "products"
-  add_foreign_key "meal_plans", "diet_sets"
-  add_foreign_key "meal_plans", "diets"
+  add_foreign_key "meal_plans", "diet_set_plans"
+  add_foreign_key "meal_plans", "meals"
   add_foreign_key "meals", "diet_sets"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
@@ -185,6 +198,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_23_103409) do
   add_foreign_key "products", "products", column: "associated_product_id"
   add_foreign_key "products", "units"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shopping_cart_items", "meal_plans"
   add_foreign_key "shopping_cart_items", "products"
   add_foreign_key "shopping_cart_items", "shopping_carts"
   add_foreign_key "shopping_carts", "users"

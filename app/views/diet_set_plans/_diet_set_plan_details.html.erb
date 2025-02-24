@@ -1,32 +1,31 @@
 <!-- Meal Plan Details -->
 <div class="mt-6 space-y-4">
-  <%# Assume that meal_plan.diet.diet_sets.first is the chosen set %>
-  <% current_set = @meal_plan.diet_set %>
-  <h3 class="text-lg font-semibold text-center">🥗 <%= current_set.name %></h3>
-  <% if current_set.meals.any? %>
-    <% current_set.meals.each do |meal| %>
+  <%# Assume that diet_set_plan.diet.diet_sets.first is the chosen set %>
+  <h3 class="text-lg font-semibold text-center">🥗 <%= @diet_set_plan.name %></h3>
+  <% if @diet_set_plan.meal_plans.any? %>
+    <% @diet_set_plan.meal_plans.each do |meal_plan| %>
       <!-- Each meal card is clickable and toggles its details using our Stimulus controller -->
       <div class="p-4 bg-white rounded-lg shadow-md cursor-pointer"
             data-controller="toggle-meal"
             data-action="click->toggle-meal#toggle">
         <div class="flex items-center justify-between">
           <div>
-            <h3 class="text-lg font-semibold"><%= meal.name %></h3>
-            <span class="text-sm text-gray-500"><%= meal_time_for(meal) %></span>
+            <h3 class="text-lg font-semibold"><%= meal_plan.name %></h3>
+            <span class="text-sm text-gray-500"><%= meal_time_for(meal_plan) %></span>
           </div>
-          <div id="<%= dom_id(meal, :shopping_bag) %>">
-            <%= render partial: "meal_plans/shopping_bag_icon", locals: { meal: meal } %>
+          <div id="<%= dom_id(meal_plan, :shopping_bag) %>">
+            <%= render partial: "diet_set_plans/shopping_bag_icon", locals: { meal_plan: meal_plan } %>
           </div>
         </div>
         <!-- Details: ingredients and instructions (initially hidden) -->
         <div data-toggle-meal-target="toggle" data-toggle-meal-animation-value="slide" class="hidden mt-2 overflow-hidden">
-          <% if meal.instructions.present? %>
+          <% if meal_plan.instructions.present? %>
             <div class="p-2 text-sm prose bg-gray-100 rounded">
-              <%= simple_format(meal.instructions) %>
+              <%= simple_format(meal_plan.instructions) %>
             </div>
           <% end %>
           <ul class="list-disc">
-            <% meal.products.each do |product| %>
+            <% meal_plan.products.each do |product| %>
                 <li class="flex flex-col mt-4">
                 <div class="flex items-center justify-between">
                   <div class="ml-3">
@@ -51,10 +50,7 @@
     <p class="mt-6 text-center text-gray-500">Brak posiłków dla wybranego zestawu.</p>
   <% end %>
   <!-- New Set Button (subdued) -->
-  <div class="mt-4 text-center">
-    <%= link_to "Przypisz nowy zestaw", meal_plans_path(reassign: true, date: params['date']), class: "text-xs text-gray-400 hover:underline" %>
-  </div>
   <div class="mt-4 mb-12 text-center">
-    <%= render 'shared/buy_coffee' %>
+    <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-gray-400 hover:underline" %>
   </div>
 </div>

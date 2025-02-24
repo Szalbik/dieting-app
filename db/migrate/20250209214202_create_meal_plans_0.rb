@@ -1,4 +1,4 @@
-class CreateMealPlans < ActiveRecord::Migration[8.0]
+class CreateMealPlans0 < ActiveRecord::Migration[8.0]
   def change
     create_table :meal_plans do |t|
       t.references :diet, null: false, foreign_key: true
