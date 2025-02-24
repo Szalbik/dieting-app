@@ -1,13 +1,17 @@
-  <!-- Header: Date Picker (mobile-friendly, horizontal scrolling) -->
-  <div class="flex justify-between p-4 text-center bg-white rounded-lg shadow-md md:shadow-none">
-    <!---<button class="text-gray-500 focus:outline-none">&lt;</button>--->
-    <div class="flex space-x-3 overflow-hidden overflow-x-auto no-scrollbar">
-      <% (0..6).each do |i| %>
-        <% date = Date.current + i.days %>
-        <% is_selected = date.to_s == @date %>
-        <%= link_to date.day, diet_set_plans_path(date: date.to_s), 
-                    class: "flex-shrink-0 w-10 h-10 text-sm rounded-full flex items-center justify-center #{i == 0 ? 'font-bold border border-green-600' : ''} #{is_selected ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
-      <% end %>
-    </div>
-    <!---<button class="text-gray-500 focus:outline-none">&gt;</button>--->
+<% weekday_abbrw = %w[Nd Pn Wt Śr Cz Pt So] %>
+
+<div class="flex justify-between p-6 text-center bg-white rounded-lg shadow-md md:shadow-none">
+  <div class="flex space-x-3 overflow-hidden overflow-x-auto text-xs no-scrollbar">
+    <% (0..6).each do |i| %>
+      <% d = Date.current + i.days %>
+      <% is_selected = (d.to_s == @date) %>
+      <% link_text = "#{weekday_abbrw[d.wday]}<br>#{d.day}".html_safe %>
+
+      <%= link_to link_text,
+                  diet_set_plans_path(date: d.to_s),
+                  class: "flex-shrink-0 w-14 h-14 text-sm rounded-full flex items-center justify-center text-center
+                          #{i == 0 ? 'font-bold border border-green-600' : ''}
+                          #{is_selected ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
+    <% end %>
   </div>
+</div>
