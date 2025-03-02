@@ -9,7 +9,7 @@ module Todoist
         tasks.map do |item|
           {
             project_id: project_id,
-            section_id: categories.find{ |c| c[:name] == item.last[:category] }&.dig(:id),
+            section_id: categories.find { |c| c[:name] == item.last[:category] }&.dig(:id),
             content: item.first,
             description: item.second[:measurements].map { |m| "#{m[:amount].to_i}#{m[:unit]}" }.join(', '),
           }

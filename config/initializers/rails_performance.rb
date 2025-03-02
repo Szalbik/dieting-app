@@ -25,7 +25,7 @@ if defined?(RailsPerformance)
     config.http_basic_authentication_password  = 'password12'
 
     # if you need an additional rules to check user permissions
-    config.verify_access_proc = proc { |controller| true }
+    config.verify_access_proc = proc { |_controller| true }
     # for example when you have `current_user`
     # config.verify_access_proc = proc { |controller| controller.current_user && controller.current_user.admin? }
 

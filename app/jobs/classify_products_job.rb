@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClassifyProductsJob < ApplicationJob
   queue_as :default
 
