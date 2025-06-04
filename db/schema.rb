@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_113818) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_114158) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -187,12 +187,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_113818) do
   add_foreign_key "diet_set_plans", "diets"
   add_foreign_key "diet_sets", "diets"
   add_foreign_key "diets", "users"
-  add_foreign_key "ingredient_measures", "products"
+  add_foreign_key "ingredient_measures", "products", on_delete: :cascade
   add_foreign_key "meal_plans", "diet_set_plans"
   add_foreign_key "meal_plans", "meals", on_delete: :cascade
   add_foreign_key "meals", "diet_sets"
-  add_foreign_key "product_categories", "categories"
-  add_foreign_key "product_categories", "products"
+  add_foreign_key "product_categories", "categories", on_delete: :cascade
+  add_foreign_key "product_categories", "products", on_delete: :cascade
   add_foreign_key "products", "diet_sets"
   add_foreign_key "products", "meals", on_delete: :nullify
   add_foreign_key "products", "products", column: "associated_product_id"
