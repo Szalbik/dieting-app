@@ -1,31 +1,44 @@
 # frozen_string_literal: true
 
 class DietDestroyer
+  def self.call(diet)
+    new(diet).call
+  end
+
   def initialize(diet)
     @diet = diet
   end
 
   def call
     ActiveRecord::Base.transaction do
-      destroy_meals_and_related_data
-      @diet.destroy!
-    end
-  end
+      puts "Usuwam dietę: \#{@diet.id} - \#{@diet.name}"
 
-  private
+      meal_plan_ids = MealPlan
+        .joins(:meal)
+        .where(meals: { diet_set_id: @diet.diet_sets.ids })
+        .pluck(:id)
 
-  def destroy_meals_and_related_data
-    @diet.meals.find_each do |meal|
-      meal_plan_ids = MealPlan.where(meal_id: meal.id).pluck(:id)
+      ShoppingCartItem.with_deleted
+        .where(meal_plan_id: meal_plan_ids)
+        .find_each(&:really_destroy!)
 
-      # Zniszcz ShoppingCartItems (z paranoia, jeśli używasz)
-      ShoppingCartItem.with_deleted.where(meal_plan_id: meal_plan_ids).find_each(&:really_destroy!)
-
-      # Zniszcz MealPlany i produkty powiązane z tym mealem
       MealPlan.where(id: meal_plan_ids).destroy_all
-      meal.products.destroy_all
 
-      meal.destroy!
+      @diet.diet_sets.each do |diet_set|
+        diet_set.meals.each do |meal|
+          meal.products.destroy_all
+        end
+
+        diet_set.meals.destroy_all
+      end
+
+      @diet.diet_sets.destroy_all
+      @diet.destroy!
+
+      puts "✔ Dieta \#{@diet.id} usunięta"
     end
+  rescue => e
+    puts "Błąd przy usuwaniu diety \#{@diet.id}: \#{e.message}"
+    raise
   end
 end
