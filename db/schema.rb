@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_114158) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_115351) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -198,7 +198,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_114158) do
   add_foreign_key "products", "products", column: "associated_product_id"
   add_foreign_key "products", "units"
   add_foreign_key "sessions", "users"
-  add_foreign_key "shopping_cart_items", "meal_plans"
+  add_foreign_key "shopping_cart_items", "meal_plans", on_delete: :cascade
   add_foreign_key "shopping_cart_items", "products"
   add_foreign_key "shopping_cart_items", "shopping_carts"
   add_foreign_key "shopping_carts", "users"
