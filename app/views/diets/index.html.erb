@@ -45,8 +45,10 @@
                       <%= diet.created_at.strftime("%B %d, %Y") %>
                     </td>
                     <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-gray-200 whitespace-nowrap sm:pr-8 lg:pr-8">
-                      <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900' %>
-                      |
+                      <% if diet.pdf.attached? %>
+                        <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900' %>
+                        |
+                      <% end %>
                       <%= link_to 'Edit', edit_diet_path(diet), class: 'text-indigo-600 hover:text-indigo-900' %>
                       |
                       <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-600 hover:text-red-900' %>
@@ -82,7 +84,9 @@
               </p>
             </div>
             <div class="mt-2">
-              <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900 text-sm' %>
+              <% if diet.pdf.attached? %>
+                <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900 text-sm' %>
+              <% end %>
             </div>
           </div>
         <% end %>
