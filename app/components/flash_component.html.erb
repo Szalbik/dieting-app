@@ -1,5 +1,5 @@
 <% @flash.each do |key, value| %>
-  <div class="z-40 pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+  <div class="fixed inset-0 z-40 flex items-end px-4 py-6 pointer-events-none sm:items-start sm:p-6"
        x-data="{ open: true }"
        x-show="open"
        x-transition:enter="transform ease-out duration-300 transition"
@@ -9,27 +9,49 @@
        x-transition:leave-start="opacity-100"
        x-transition:leave-end="opacity-0"
        aria-live="assertive">
-    <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
-      <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+    <div class="flex flex-col items-center w-full space-y-4 sm:items-end">
+      <div class="w-full max-w-sm overflow-hidden pointer-events-auto rounded-xl bg-white/95 backdrop-blur-sm shadow-large ring-1 ring-slate-200/60 animate-scale-in">
         <div class="p-4">
           <div class="flex items-start">
             <div class="flex-shrink-0">
-              <svg class="h-6 w-6 <%= alert_icon_color(key) %>" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+              <% case key %>
+              <% when 'notice', 'success' %>
+                <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              <% when 'alert', 'error' %>
+                <svg class="w-6 h-6 text-rose-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              <% when 'warning' %>
+                <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+              <% else %>
+                <svg class="w-6 h-6 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+              <% end %>
             </div>
             <div class="ml-3 w-0 flex-1 pt-0.5">
-              <p class="text-sm font-medium text-gray-900"><%= alert_title(key) %></p>
-              <p class="mt-1 text-sm text-gray-500"><%= value %></p>
+              <p class="text-sm font-medium text-slate-900">
+                <% case key %>
+                <% when 'notice', 'success' %>
+                  <span class="text-emerald-800"><%= value %></span>
+                <% when 'alert', 'error' %>
+                  <span class="text-rose-800"><%= value %></span>
+                <% when 'warning' %>
+                  <span class="text-amber-800"><%= value %></span>
+                <% else %>
+                  <span class="text-slate-800"><%= value %></span>
+                <% end %>
+              </p>
             </div>
-            <div class="ml-4 flex flex-shrink-0">
-              <button type="button"
-                      @click="open = false"
-                      class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <span @click="open = false"
-                      class="sr-only">Close</span>
-                <svg @click="open = false"  class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"/>
+            <div class="flex flex-shrink-0 ml-4">
+              <button type="button" @click="open = false" class="inline-flex p-1 transition-colors duration-200 rounded-lg bg-white/80 backdrop-blur-sm text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" aria-label="Close notification">
+                <span class="sr-only">Close</span>
+                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
               </button>
             </div>

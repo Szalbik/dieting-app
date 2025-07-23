@@ -3,13 +3,13 @@
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-          <h1 class="text-base font-semibold leading-6 text-gray-900">Diets</h1>
-          <p class="mt-2 text-sm text-gray-700">
+          <h1 class="text-2xl font-bold leading-9 tracking-tight text-slate-900">Diets</h1>
+          <p class="mt-2 text-sm text-slate-600">
             A list of all diets available for the currently logged in user.
           </p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <%= link_to 'Add diet', new_diet_path, class: 'block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
+          <%= link_to 'Add diet', new_diet_path, class: 'inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200' %>
         </div>
       </div>
 
@@ -17,41 +17,41 @@
       <div class="hidden flow-root mt-8 sm:block">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table class="min-w-full divide-y divide-gray-300">
+            <table class="min-w-full divide-y divide-slate-200">
               <thead>
                 <tr>
-                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sets number</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Active</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
-                  <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8">
+                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-0">Name</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Sets number</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Active</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Date</th>
+                  <th scope="col" class="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
                     <span class="sr-only">Edit</span>
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-200">
+              <tbody class="divide-y divide-slate-200">
                 <% @diets.each do |diet| %>
-                  <tr>
-                    <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
+                  <tr class="hover:bg-slate-50/50 transition-colors duration-200">
+                    <td class="py-4 pl-4 pr-3 text-sm font-medium text-slate-900 whitespace-nowrap sm:pl-0">
                       <%= diet.name %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
                       <%= diet.diet_sets.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
                       <%= diet.active %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
                       <%= diet.created_at.strftime("%B %d, %Y") %>
                     </td>
-                    <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-gray-200 whitespace-nowrap sm:pr-8 lg:pr-8">
+                    <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-slate-200 whitespace-nowrap sm:pr-8 lg:pr-8">
                       <% if diet.pdf.attached? %>
-                        <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900' %>
+                        <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-emerald-600 hover:text-emerald-700 transition-colors duration-200' %>
                         |
                       <% end %>
-                      <%= link_to 'Edit', edit_diet_path(diet), class: 'text-indigo-600 hover:text-indigo-900' %>
+                      <%= link_to 'Edit', edit_diet_path(diet), class: 'text-emerald-600 hover:text-emerald-700 transition-colors duration-200' %>
                       |
-                      <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-600 hover:text-red-900' %>
+                      <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-rose-600 hover:text-rose-700 transition-colors duration-200' %>
                     </td>
                   </tr>
                 <% end %>
@@ -64,28 +64,28 @@
       <!-- Mobile Card View -->
       <div class="mt-8 space-y-4 sm:hidden">
         <% @diets.each do |diet| %>
-          <div class="p-4 bg-white rounded-lg shadow">
+          <div class="p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium transition-all duration-200">
             <div class="flex items-center justify-between">
-              <h2 class="text-lg font-semibold text-gray-900"><%= diet.name %></h2>
+              <h2 class="text-lg font-semibold text-slate-900"><%= diet.name %></h2>
               <div class="flex space-x-2">
-                <%= link_to 'Edit', edit_diet_path(diet), class: 'text-indigo-600 hover:text-indigo-900 text-sm' %>
-                <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, form_class: 'inline-block', class: 'text-red-600 hover:text-red-900 text-sm' %>
+                <%= link_to 'Edit', edit_diet_path(diet), class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>
+                <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, form_class: 'inline-block', class: 'text-rose-600 hover:text-rose-700 text-sm transition-colors duration-200' %>
               </div>
             </div>
-            <div class="mt-2">
-              <p class="text-sm text-gray-700">
-                <strong>Sets number:</strong> <%= diet.diet_sets.count %>
+            <div class="mt-4 space-y-2">
+              <p class="text-sm text-slate-600">
+                <strong class="text-slate-700">Sets number:</strong> <%= diet.diet_sets.count %>
               </p>
-              <p class="text-sm text-gray-700">
-                <strong>Active:</strong> <%= diet.active %>
+              <p class="text-sm text-slate-600">
+                <strong class="text-slate-700">Active:</strong> <%= diet.active %>
               </p>
-              <p class="text-sm text-gray-700">
-                <strong>Date:</strong> <%= diet.created_at.strftime("%B %d, %Y") %>
+              <p class="text-sm text-slate-600">
+                <strong class="text-slate-700">Date:</strong> <%= diet.created_at.strftime("%B %d, %Y") %>
               </p>
             </div>
-            <div class="mt-2">
+            <div class="mt-4">
               <% if diet.pdf.attached? %>
-                <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-indigo-600 hover:text-indigo-900 text-sm' %>
+                <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>
               <% end %>
             </div>
           </div>

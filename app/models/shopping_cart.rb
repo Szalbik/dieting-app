@@ -46,8 +46,8 @@ class ShoppingCart < ApplicationRecord
           raw_unit = measurement.unit || ''
           normalized_unit = raw_unit.singularize(:pl)
           unit_hash[normalized_unit] ||= 0.0
-          # Multiply the measurement amount by the item's quantity.
-          unit_hash[normalized_unit] += measurement.amount * item.quantity
+          # Multiply the measurement amount by the item's quantity, ensuring nil safety.
+          unit_hash[normalized_unit] += measurement.amount.to_f * item.quantity.to_i
         end
       end
 

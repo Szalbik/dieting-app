@@ -7,30 +7,33 @@
     .group('diet_sets.id')
     .order(Arel.sql('COUNT(diet_set_plans.id) DESC')) %>
 
-<div class="flex flex-col items-center justify-center p-4 mb-20 bg-white rounded-lg shadow-md md:shadow-none">
-    <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
-        <%= hidden_field_tag :date, params[:date] %>
-        <div class="w-full space-y-4">
-            <h3 class="text-lg font-semibold text-center">🥗 Przypisz zestaw</h3>
-            <% diet_sets.each do |diet_set| %>
-                <div class="flex items-center justify-between space-x-2">
-                    <span class="text-gray-400">
-                        <% if diet_set.diet_set_plans.count.positive? %>
-                            <%= diet_set.diet_set_plans.count %>x
-                        <% end %>
-                    </span>
-                    <!-- Hidden radio button with the peer class -->
-                    <%= radio_button_tag "diet_set_plan[diet_set_id]", diet_set.id, false, id: "diet_set_plan_diet_set_#{diet_set.id}", class: "hidden peer" %>
-                    <!-- Label associated with the radio button -->
-                    <label for="diet_set_plan_diet_set_<%= diet_set.id %>" class="flex items-center justify-end w-full p-2 space-x-3 text-right rounded-md cursor-pointer peer-checked:bg-green-300">
-                        <p class="font-semibold"><%= diet_set.derrivated_name_from_meal %></p>
-                    </label>
-                </div>
+<div class="w-full max-w-md mx-auto mt-6 mb-24 p-4 bg-white/90 rounded-2xl shadow-soft border border-slate-100">
+  <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
+    <%= hidden_field_tag :date, params[:date] %>
+    <h3 class="text-xl font-bold text-center text-emerald-700 mb-6 flex items-center justify-center gap-2">
+      <span class="inline-block text-2xl">🥗</span> Przypisz zestaw
+    </h3>
+    <div class="space-y-3">
+      <% diet_sets.each do |diet_set| %>
+        <div class="flex items-center gap-3">
+          <%= radio_button_tag "diet_set_plan[diet_set_id]", diet_set.id, false, id: "diet_set_plan_diet_set_#{diet_set.id}", class: "peer hidden" %>
+          <label for="diet_set_plan_diet_set_<%= diet_set.id %>"
+            class="flex-1 flex items-center justify-between px-4 py-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200
+                   peer-checked:bg-emerald-50 peer-checked:border-emerald-400 peer-checked:shadow-md
+                   hover:bg-emerald-50 hover:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-400">
+            <span class="font-semibold text-slate-800"><%= diet_set.derrivated_name_from_meal %></span>
+            <% if diet_set.diet_set_plans.count.positive? %>
+              <span class="ml-2 text-xs text-emerald-600 bg-emerald-100 rounded-full px-2 py-0.5 font-medium">
+                <%= diet_set.diet_set_plans.count %>x
+              </span>
             <% end %>
+          </label>
         </div>
-        <div class="fixed left-0 right-0 flex justify-center justify-around p-4 mt-4 bg-white shadow-md bottom-10">
-            <%= f.submit "Przypisz dietę", class: "px-4 py-2 text-white bg-green-500 rounded-md w-full sm:w-auto" %>
-        </div>
-    <% end %>
+      <% end %>
+    </div>
+    <div class="mt-8 flex justify-center">
+      <%= f.submit "Przypisz dietę", class: "inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200 w-full sm:w-auto" %>
+    </div>
+  <% end %>
 </div>
 

@@ -17,7 +17,7 @@
                     <p class="text-sm text-gray-600">
                       Measurements:
                       <% product_group[:aggregated_ingredient_measures].each do |measurement| %>
-                        <%= measurement[:amount].round(2) %> 
+                        <%= (measurement[:amount] || 0).to_f.round(2) %> 
                         <%= I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
                       <% end %>
                     </p>

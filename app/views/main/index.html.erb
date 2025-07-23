@@ -12,44 +12,121 @@
   }
   ```
 -->
-<div class="bg-white">
+<div class="bg-gradient-to-br from-slate-50 via-white to-emerald-50">
   <main>
     <!-- Hero section -->
     <div class="relative pt-4 isolate">
-      <svg class="absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]" aria-hidden="true">
+      <!-- Background pattern -->
+      <div class="absolute inset-0 -z-10 h-full w-full bg-gradient-health"></div>
+      <svg class="absolute inset-0 -z-10 h-full w-full stroke-slate-200/30 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]" aria-hidden="true">
         <defs>
           <pattern id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
             <path d="M100 200V.5M.5 .5H200" fill="none" />
           </pattern>
         </defs>
-        <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
+        <svg x="50%" y="-1" class="overflow-visible fill-slate-50/50">
           <path d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z" stroke-width="0" />
         </svg>
         <rect width="100%" height="100%" stroke-width="0" fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)" />
       </svg>
+      
       <div class="px-6 py-24 mx-auto max-w-7xl sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
         <div class="max-w-2xl mx-auto lg:mx-0 lg:flex-auto">
-          <h1 class="max-w-lg mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Streamline your shopping experience</h1>
-          <p class="mt-6 text-lg leading-8 text-gray-600">With our intuitive and user-friendly application. Create, manage, and share shopping lists with ease. Never forget an item again and save time on your next shopping trip.</p>
-          <div class="flex items-center mt-10 gap-x-6">
-            <%= link_to 'Zarejestruj', new_registration_path, class: 'rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' %>
-            <!--<a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>-->
+          <div class="flex items-center gap-x-6">
+            <div class="flex items-center gap-x-2 rounded-full bg-emerald-100/80 backdrop-blur-sm px-3 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20 animate-fade-in">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Now with AI-powered nutrition insights
+            </div>
+          </div>
+          
+          <h1 class="max-w-lg mt-10 text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl animate-slide-up">
+            Transform your 
+            <span class="bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">nutrition journey</span>
+          </h1>
+          
+          <p class="mt-6 text-lg leading-8 text-slate-600 animate-slide-up">
+            Streamline your shopping experience with our intuitive and user-friendly application. Create, manage, and share shopping lists with ease. Never forget an item again and save time on your next shopping trip.
+          </p>
+          
+          <div class="flex items-center mt-10 gap-x-6 animate-slide-up">
+            <%= link_to new_registration_path, class: 'inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200 group' do %>
+              Get started for free
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            <% end %>
+            
+            <a href="#features" class="text-base font-semibold leading-6 text-slate-900 hover:text-emerald-600 transition-colors duration-200 group">
+              Learn more 
+              <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+            </a>
           </div>
         </div>
+        
         <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
-          <svg viewBox="0 0 366 729" role="img" class="mx-auto w-[22.875rem] max-w-full drop-shadow-xl">
-            <title>App screenshot</title>
-            <defs>
-              <clipPath id="2ade4387-9c63-4fc4-b754-10e687a0d332">
-                <rect width="316" height="684" rx="36" />
-              </clipPath>
-            </defs>
-            <path fill="#4B5563" d="M363.315 64.213C363.315 22.99 341.312 1 300.092 1H66.751C25.53 1 3.528 22.99 3.528 64.213v44.68l-.857.143A2 2 0 0 0 1 111.009v24.611a2 2 0 0 0 1.671 1.973l.95.158a2.26 2.26 0 0 1-.093.236v26.173c.212.1.398.296.541.643l-1.398.233A2 2 0 0 0 1 167.009v47.611a2 2 0 0 0 1.671 1.973l1.368.228c-.139.319-.314.533-.511.653v16.637c.221.104.414.313.56.689l-1.417.236A2 2 0 0 0 1 237.009v47.611a2 2 0 0 0 1.671 1.973l1.347.225c-.135.294-.302.493-.49.607v377.681c0 41.213 22 63.208 63.223 63.208h95.074c.947-.504 2.717-.843 4.745-.843l.141.001h.194l.086-.001 33.704.005c1.849.043 3.442.37 4.323.838h95.074c41.222 0 63.223-21.999 63.223-63.212v-394.63c-.259-.275-.48-.796-.63-1.47l-.011-.133 1.655-.276A2 2 0 0 0 366 266.62v-77.611a2 2 0 0 0-1.671-1.973l-1.712-.285c.148-.839.396-1.491.698-1.811V64.213Z" />
-            <path fill="#343E4E" d="M16 59c0-23.748 19.252-43 43-43h246c23.748 0 43 19.252 43 43v615c0 23.196-18.804 42-42 42H58c-23.196 0-42-18.804-42-42V59Z" />
-            <foreignObject width="316" height="684" transform="translate(24 24)" clip-path="url(#2ade4387-9c63-4fc4-b754-10e687a0d332)">
-              <%= image_tag 'example_list.jpg' %>
-            </foreignObject>
-          </svg>
+          <div class="relative">
+            <!-- Feature cards -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1">
+              <!-- Diet Management Card -->
+              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-emerald-200/60 transition-all duration-200 group animate-fade-in">
+                <div class="p-6">
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-emerald-600">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 class="text-lg font-semibold text-slate-900">Smart Diet Management</h3>
+                      <p class="text-sm text-slate-600">Upload PDFs and let AI parse your meal plans</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Shopping List Card -->
+              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-amber-200/60 transition-all duration-200 group animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="p-6">
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-600">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 class="text-lg font-semibold text-slate-900">Smart Shopping Lists</h3>
+                      <p class="text-sm text-slate-600">Automatically generate organized shopping lists</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Integration Card -->
+              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-sky-200/60 transition-all duration-200 group animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="p-6">
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center group-hover:bg-sky-200 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-sky-600">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 class="text-lg font-semibold text-slate-900">Seamless Integration</h3>
+                      <p class="text-sm text-slate-600">Connect with Todoist and other productivity tools</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
