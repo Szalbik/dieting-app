@@ -1,17 +1,18 @@
 <% weekday_abbrw = %w[Nd Pn Wt Śr Cz Pt So] %>
 
-<div class="flex justify-between p-6 text-center bg-white rounded-lg shadow-md md:shadow-none">
-  <div class="flex space-x-3 overflow-hidden overflow-x-auto text-xs no-scrollbar">
+<div class="w-full max-w-md px-2 mx-auto mt-4 mb-4">
+  <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
     <% (0..6).each do |i| %>
       <% d = Date.current + i.days %>
       <% is_selected = (d.to_s == @date) %>
-      <% link_text = "#{weekday_abbrw[d.wday]}<br>#{d.day}".html_safe %>
-
-      <%= link_to link_text,
-                  diet_set_plans_path(date: d.to_s),
-                  class: "flex-shrink-0 w-14 h-14 text-sm rounded-full flex items-center justify-center text-center
-                          #{i == 0 ? 'font-bold border border-green-600' : ''}
-                          #{is_selected ? 'font-bold text-white bg-green-600' : 'text-gray-600 bg-gray-200'}" %>
+      <%= link_to diet_set_plans_path(date: d.to_s),
+        class: "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-200 cursor-pointer select-none
+                border-2 #{is_selected ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg scale-105' : 'bg-white text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400'}",
+        aria_current: (is_selected ? 'date' : nil),
+        tabindex: 0 do %>
+        <span class="text-xs font-semibold <%= is_selected ? 'text-white' : 'text-emerald-700' %>"><%= weekday_abbrw[d.wday] %></span>
+        <span class="mt-1 text-lg font-bold leading-none"><%= d.day %></span>
+      <% end %>
     <% end %>
   </div>
 </div>
