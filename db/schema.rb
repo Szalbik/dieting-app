@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_115351) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -79,6 +79,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_115351) do
     t.integer "user_id", null: false
     t.string "name"
     t.boolean "active", default: true, null: false
+    t.text "parsed_json"
     t.index ["user_id"], name: "index_diets_on_user_id"
   end
 
@@ -107,6 +108,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_115351) do
     t.integer "diet_set_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "meal_type"
+    t.integer "kcal"
+    t.float "protein"
+    t.float "fat"
+    t.float "carbs"
     t.index ["diet_set_id"], name: "index_meals_on_diet_set_id"
   end
 

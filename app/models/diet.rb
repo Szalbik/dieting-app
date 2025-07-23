@@ -54,9 +54,6 @@ class Diet < ApplicationRecord
   def parse_pdf_content!
     return unless pdf.attached?
 
-    # ActiveRecord::Base.transaction do
-    builder = DietBuilder.new(self)
-
     pdf.open do |file|
       PDF::Reader.open(file) do |reader|
         reader.pages.each do |page|
@@ -64,8 +61,28 @@ class Diet < ApplicationRecord
         end
       end
     end
+  end
 
-    builder.save_ingredients
-    # end
+  attribute :parsed_json, :json, default: {}
+
+  def parse_pdf_content_with_chat!
+    return unless pdf.attached?
+
+    temp_path = Tempfile.new(['diet_pdf', '.pdf'])
+
+    pdf.open do |file|
+      IO.copy_stream(file, temp_path.path)
+    end
+
+    begin
+      parsed_data = Chat::DietParserService.new(temp_path.path).call
+      # Możesz teraz zapisać JSON do atrybutu, np. `parsed_json`:
+      update!(parsed_json: parsed_data)
+    rescue => e
+      Rails.logger.error("Błąd przetwarzania diety: #{e.message}")
+    ensure
+      temp_path.close
+      temp_path.unlink
+    end
   end
 end

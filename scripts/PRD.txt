@@ -1,0 +1,88 @@
+<context>
+# Overview  
+DietingApp is a web application designed to help users manage, analyze, and plan their diets. It enables users to upload diet plans (including as PDFs), automatically parse and structure them, track meals and nutrition, categorize products, and generate shopping lists. The app integrates with Todoist for exporting shopping lists as tasks. The primary audience is health-conscious individuals, dietitians, and anyone seeking to streamline their diet planning and grocery shopping experience.
+
+# Core Features  
+- **User Authentication & Profiles**  
+  Secure registration, login, and profile management. Each user has isolated data and a personal profile.
+
+- **Diet Management**  
+  Users can create, edit, and delete diets. Diet plans can be uploaded as PDFs and are automatically parsed and structured using ChatGPT. Parsed data is stored in a structured format for further use.
+
+- **Meal & Nutrition Tracking**  
+  Users can view and manage meals per diet/day, with nutritional values (kcal, protein, fat, carbs) tracked for each meal.
+
+- **Product & Category Management**  
+  Products are managed and assigned to categories. AI is used for automatic product categorization.
+
+- **Shopping Cart & Todoist Integration**  
+  Shopping lists are generated from diets and can be exported to Todoist projects/sections for easy task management.
+
+- **Admin & Audit Logging**  
+  All changes and actions are logged for accountability and troubleshooting.
+
+- **Diet PDF Parsing with ChatGPT**  
+  Users can upload a diet PDF, which is parsed using ChatGPT to extract days, meals, ingredients, and nutrition. The structured result is saved in the database for further processing.
+
+# User Experience  
+- **Personas:** Health-conscious individuals, dietitians, meal planners, and busy professionals.
+- **Key Flows:**
+  - Register/login
+  - Upload diet PDF or create diet manually
+  - View parsed diet structure and meals
+  - Track nutrition and generate shopping lists
+  - Export shopping lists to Todoist
+- **UI/UX:** Clean, intuitive forms for uploading and managing diets; clear feedback during parsing; easy navigation between diets, meals, and shopping lists.
+</context>
+<PRD>
+# Technical Architecture  
+- **System Components:**
+  - Rails backend (models: User, Diet, DietSet, Meal, Product, Category, ShoppingCart, etc.)
+  - Services for PDF parsing, ChatGPT integration, product categorization, and Todoist export
+  - Background jobs for async processing (diet parsing, Todoist export)
+  - Web frontend (views, forms, navigation)
+- **Data Models:**
+  - Diet: belongs to User, has many DietSets, Meals, Products
+  - Meal: belongs to DietSet, has nutrition fields (kcal, protein, fat, carbs)
+  - Product: belongs to Meal, categorized by Category
+- **APIs/Integrations:**
+  - OpenAI (ChatGPT) for PDF parsing and product categorization
+  - Todoist API for shopping list export
+- **Infrastructure:**
+  - PostgreSQL DB, ActiveStorage for file uploads, background job processing (e.g., Sidekiq/ActiveJob)
+
+# Development Roadmap  
+- **MVP Requirements:**
+  - User authentication and profile
+  - Diet CRUD and PDF upload
+  - ChatGPT-powered PDF parsing and structured storage
+  - Meal and nutrition tracking
+  - Product/category management
+  - Shopping list generation and Todoist export
+  - Admin/audit logging
+- **Future Enhancements:**
+  - Advanced analytics and reporting
+  - More integrations (e.g., Google Fit, Apple Health)
+  - Social/sharing features
+  - Mobile app
+
+# Logical Dependency Chain
+- User authentication and profile setup (foundation)
+- Diet CRUD and PDF upload
+- ChatGPT PDF parsing and structured storage
+- Meal and nutrition tracking
+- Product/category management
+- Shopping list generation
+- Todoist export
+- Admin/audit logging
+- Future enhancements
+
+# Risks and Mitigations  
+- **Technical:** LLM parsing errors (mitigate with retries, validation, partial results)
+- **MVP Scope:** Focus on core flows, defer advanced features
+- **Resource:** Use async jobs for heavy processing, monitor costs for LLM/API usage
+
+# Appendix  
+- See codebase for data model details and service implementations
+- Example prompt for ChatGPT PDF parsing included in app/services/chat/diet_parser_service.rb
+</PRD> 
