@@ -28,7 +28,6 @@ content: 'Jesteś dietetykiem i ekspertem od wartości odżywczych. Przetwarzaj 
     )
 
     json_str = response.dig('choices', 0, 'message', 'content')
-    debugger
     JSON.parse(clean_gpt_json(json_str))
   rescue JSON::ParserError => e
     raise "Błąd parsowania JSON: #{e.message}"

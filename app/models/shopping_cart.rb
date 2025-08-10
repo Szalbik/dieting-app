@@ -41,7 +41,8 @@ class ShoppingCart < ApplicationRecord
         if product.category.present?
           summed_products[name][:category] = product.category
         else
-          summed_products[name][:category] ||= OpenStruct.new(name: 'Inne')
+          # Always ensure we have a default category for products without one
+          summed_products[name][:category] = OpenStruct.new(name: 'Inne')
         end
 
         product.ingredient_measures.each do |measurement|

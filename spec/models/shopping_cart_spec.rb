@@ -107,7 +107,7 @@ RSpec.describe ShoppingCart, type: :model do
     let(:diet) { create(:diet, user: user) }
     let(:diet_set) { create(:diet_set, diet: diet) }
     let(:meal) { create(:meal, diet_set: diet_set) }
-    let(:product) { create(:product, meal: meal) }
+    let(:product) { create(:product, :with_category, meal: meal) }
     let(:meal_plan) { create(:meal_plan, meal: meal, selected_for_cart: true) }
     let(:shopping_cart) { user.shopping_cart }
 
@@ -121,7 +121,26 @@ RSpec.describe ShoppingCart, type: :model do
                          product: product,
                          meal_plan: meal_plan)
 
+      # Debug: Check the product category before processing
+      puts "\n=== DEBUG INFO ==="
+      puts "Product ID: #{product.id}"
+      puts "Product name: #{product.name}"
+      puts "Product category present?: #{product.category.present?}"
+      puts "Product category: #{product.category.inspect}"
+      puts "Product category name: #{product.category&.name}"
+      puts "==================\n"
+
       result = shopping_cart.group_and_sum_by_cart_items
+
+      # Debug: Check the result structure
+      puts "\n=== RESULT DEBUG ==="
+      result.each_with_index do |group, index|
+        puts "Group #{index}: #{group[:category].name}"
+        group[:products].each do |p|
+          puts "  - #{p[:name]} (ID: #{p[:product].id})"
+        end
+      end
+      puts "==================\n"
 
       # The method returns grouped data by category, so we need to check the structure
       expect(result).to be_an(Array)
@@ -133,6 +152,11 @@ RSpec.describe ShoppingCart, type: :model do
         group[:products].any? { |p| p[:product].id == product.id }
       end
       expect(product_found).to be true
+
+      # Verify that products with categories don't default to 'Inne'
+      product_group = result.find { |group| group[:products].any? { |p| p[:product].id == product.id } }
+      expect(product_group[:category].name).not_to eq('Inne')
+      expect(product_group[:category].name).to start_with('Test Category')
     end
 
     it 'filters out items where selected_for_cart is false' do
@@ -165,6 +189,10 @@ RSpec.describe ShoppingCart, type: :model do
       product_group = result.find { |group| group[:products].any? { |p| p[:product].id == product.id } }
       product_data = product_group[:products].find { |p| p[:product].id == product.id }
       expect(product_data[:quantity]).to eq(1)
+
+      # Verify that products with categories don't default to 'Inne'
+      expect(product_group[:category].name).not_to eq('Inne')
+      expect(product_group[:category].name).to start_with('Test Category')
     end
   end
 end
