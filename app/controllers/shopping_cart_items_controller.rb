@@ -11,20 +11,27 @@ class ShoppingCartItemsController < ApplicationController
       .joins(:product)
       .where(products: { name: @product.name })
 
+    # Store item IDs for potential undo and background job
+    item_ids = items.pluck(:id)
+
     removal_record = {
-      item_ids: items.pluck(:id),
+      item_ids: item_ids,
       removed_at: Time.current.to_i,
+      product_name: @product.name,
+      category_name: @product.category&.name || 'Inne',
     }
 
     session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
     session[:removed_items] << removal_record
 
-    items.each(&:destroy)
+    # Schedule background job to remove items from backend after delay
+    RemoveShoppingCartItemsJob.set(wait: 30.minutes).perform_later(item_ids, Current.user.id)
 
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to shopping_cart_path }
-    end
+    # Set flash message for user feedback
+    flash[:success] = 'Produkt został usunięty z koszyka. Możesz cofnąć operację w ciągu 30 minut.'
+
+    # Remove items from the shopping cart for immediate UI update
+    items.destroy_all
   end
 
   def undo
@@ -45,24 +52,31 @@ class ShoppingCartItemsController < ApplicationController
       end
 
       if removal_record.present?
-        ShoppingCartItem.only_deleted.where(id: removal_record['item_ids'] || removal_record[:item_ids]).each(&:restore)
-        flash[:notice] = 'Cofnięto usunięcie produktu.'
+        # Cancel the scheduled background job for these items
+        item_ids = removal_record['item_ids'] || removal_record[:item_ids]
+        RemoveShoppingCartItemsJob.cancel_scheduled_jobs(item_ids, Current.user.id)
+
+        # Restore the items by recreating them
+        product = Current.user.products.find_by(name: removal_record['product_name'] || removal_record[:product_name])
+        if product
+          shopping_cart = Current.user.shopping_cart
+          shopping_cart.shopping_cart_items.create!(product: product)
+        end
+
+        @shopping_cart = Current.user.shopping_cart
+        flash[:success] = 'Produkt został przywrócony do koszyka.'
       else
-        flash[:alert] = 'Czas na cofnięcie operacji minął.'
+        # No valid removal record found
+        flash[:warning] = 'No items to undo or undo time limit expired'
       end
     else
-      flash[:alert] = 'Brak operacji do cofnięcia.'
+      flash[:info] = 'No items to undo'
     end
+  end
 
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update('shopping_cart', partial: 'shopping_carts/shopping_cart',
-locals: { shopping_cart: Current.user.shopping_cart }),
-          turbo_stream.update('flash', partial: 'shared/flash', locals: { flash: flash }),
-        ]
-      end
-      format.html { redirect_to shopping_cart_path }
-    end
+  private
+
+  def shopping_cart_item_params
+    params.require(:shopping_cart_item).permit(:product_id, :quantity)
   end
 end
