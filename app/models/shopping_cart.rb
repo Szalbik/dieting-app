@@ -6,10 +6,12 @@ class ShoppingCart < ApplicationRecord
 
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.
-    items = shopping_cart_items.with_current_or_future_diet_set_plan.includes(product: [:ingredient_measures, :category])
-
-    # Filter items to include only those with diet_set_plan.selected_for_cart true.
-    items = items.select { |item| item.selected_for_cart }
+    # Use the new method that properly scopes to the current user
+    items = ShoppingCartItem.with_current_or_future_diet_set_plan_for_user(user)
+      .where(shopping_cart: self)
+      .joins(:meal_plan)
+      .where(meal_plans: { selected_for_cart: true })
+      .includes(product: [:ingredient_measures, :category])
 
     # Group shopping cart items by product name.
     grouped_by_name = items.group_by { |item| item.product.name }
