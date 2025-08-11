@@ -48,8 +48,20 @@ class DietSetPlansController < ApplicationController
     target_plan = Current.user.diet_set_plans.where(date: target_date).first
 
     if current_plan && target_plan
-      current_plan.update!(date: target_date)
-      target_plan.update!(date: current_date)
+      # Use a transaction to ensure both updates succeed or fail together
+      ActiveRecord::Base.transaction do
+        # Temporarily use a different date to avoid conflicts
+        temp_date = Date.new(1900, 1, 1)
+
+        # Move current plan to temp date first
+        current_plan.update!(date: temp_date)
+
+        # Move target plan to current date
+        target_plan.update!(date: current_date)
+
+        # Move current plan (now at temp date) to target date
+        current_plan.update!(date: target_date)
+      end
 
       render json: { success: true, message: 'Zestawy diety zostały zamienione pomyślnie.' }
     else
