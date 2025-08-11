@@ -1,15 +1,17 @@
 <!-- app/views/diet_set_plans/show.html.erb -->
 
-<div class="mx-auto" id="date_picker">
-    <%= render "date_picker" %>
-</div>
+<div data-controller="diet-swap" data-diet-swap-current-date-value="<%= params['date'] %>">
+  <div class="mx-auto" id="date_picker" data-diet-swap-target="datePicker">
+      <%= render "date_picker" %>
+  </div>
 
-<div id="diet_set_plan_details">
-    <% if @diet_set_plan.meals.empty? %>
-        <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
-    <% else %>
-        <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
-    <% end %>
+  <div id="diet_set_plan_details">
+      <% if @diet_set_plan.meals.empty? %>
+          <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
+      <% else %>
+          <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
+      <% end %>
+  </div>
 </div>
 
 <!-- Bottom Navigation -->

@@ -39,6 +39,28 @@ class DietSetPlansController < ApplicationController
     end
   end
 
+  def swap
+    current_date = Date.parse(params[:current_date])
+    target_date = Date.parse(params[:target_date])
+
+    # Find diet set plans for both dates
+    current_plan = Current.user.diet_set_plans.where(date: current_date).first
+    target_plan = Current.user.diet_set_plans.where(date: target_date).first
+
+    if current_plan && target_plan
+      current_plan.update!(date: target_date)
+      target_plan.update!(date: current_date)
+
+      render json: { success: true, message: 'Zestawy diety zostały zamienione pomyślnie.' }
+    else
+      render json: { success: false, message: 'Nie można znaleźć planów diety dla wybranych dat.' }, status: :unprocessable_entity
+    end
+  rescue Date::Error => e
+    render json: { success: false, message: 'Nieprawidłowy format daty.' }, status: :bad_request
+  rescue StandardError => e
+    render json: { success: false, message: 'Wystąpił błąd podczas zamiany zestawów diety.' }, status: :internal_server_error
+  end
+
   private
 
   def set_diet_set_plan

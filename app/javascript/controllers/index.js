@@ -4,14 +4,14 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import DietSwapController from "./diet_swap_controller"
+application.register("diet-swap", DietSwapController)
 
 import FilterController from "./filter_controller"
 application.register("filter", FilterController)
+
+import HelloController from "./hello_controller"
+application.register("hello", HelloController)
+
 import ToggleMealController from "./toggle_meal_controller"
 application.register("toggle-meal", ToggleMealController)
-
-import { Dropdown, Toggle } from "tailwindcss-stimulus-components"
-application.register('dropdown', Dropdown)
-application.register('toggle', Toggle)

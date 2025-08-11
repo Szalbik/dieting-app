@@ -50,7 +50,16 @@
     <p class="mt-6 text-center text-gray-500">Brak posiłków dla wybranego zestawu.</p>
   <% end %>
   <!-- New Set Button (subdued) -->
-  <div class="mt-4 mb-12 text-center">
-    <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-gray-400 hover:underline" %>
+  <div class="mt-4 mb-12 space-y-2 text-center">
+    <div class="flex items-center justify-center space-x-4">
+      <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-gray-400 hover:underline" %>
+      <span class="text-gray-300">•</span>
+      <button type="button" 
+              class="text-xs text-gray-400 hover:underline focus:outline-none"
+              data-diet-swap-target="swapButton"
+              data-action="click->diet-swap#toggleSwapMode">
+        Zamień zestaw diety
+      </button>
+    </div>
   </div>
 </div>

@@ -8,7 +8,8 @@
       class: "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-200 cursor-pointer select-none
               border-2 #{is_selected_prev ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg scale-105' : 'bg-white text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400'}",
       aria_current: (is_selected_prev ? 'date' : nil),
-      tabindex: 0 do %>
+      tabindex: 0,
+      data: { action: "click->diet-swap#swapDietSets" } do %>
       <span class="text-xs font-semibold <%= is_selected_prev ? 'text-white' : 'text-emerald-700' %>"><%= weekday_abbrw[prev_day.wday] %></span>
       <span class="mt-1 text-lg font-bold leading-none"><%= prev_day.day %></span>
     <% end %>
@@ -19,7 +20,8 @@
         class: "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-200 cursor-pointer select-none
                 border-2 #{is_selected ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg scale-105' : 'bg-white text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400'}",
         aria_current: (is_selected ? 'date' : nil),
-        tabindex: 0 do %>
+        tabindex: 0,
+        data: { action: "click->diet-swap#swapDietSets" } do %>
         <span class="text-xs font-semibold <%= is_selected ? 'text-white' : 'text-emerald-700' %>"><%= weekday_abbrw[d.wday] %></span>
         <span class="mt-1 text-lg font-bold leading-none"><%= d.day %></span>
       <% end %>

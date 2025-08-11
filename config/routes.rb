@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
   resource :diet_set_plans, only: %i[show create] do
     post 'toggle_shopping_bag/:id', to: 'diet_set_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
+    post 'swap', to: 'diet_set_plans#swap', as: 'swap'
   end
 
   resource :shopping_cart, only: [:show]
