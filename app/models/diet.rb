@@ -54,6 +54,8 @@ class Diet < ApplicationRecord
   def parse_pdf_content!
     return unless pdf.attached?
 
+    builder = DietBuilder.new(self)
+
     pdf.open do |file|
       PDF::Reader.open(file) do |reader|
         reader.pages.each do |page|
@@ -61,6 +63,8 @@ class Diet < ApplicationRecord
         end
       end
     end
+
+    builder.save_ingredients
   end
 
   attribute :parsed_json, :json, default: {}
