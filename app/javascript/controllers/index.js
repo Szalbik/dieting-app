@@ -7,6 +7,9 @@ import { application } from "./application"
 import DietSwapController from "./diet_swap_controller"
 application.register("diet-swap", DietSwapController)
 
+import DropdownController from "./dropdown_controller"
+application.register("dropdown", DropdownController)
+
 import FilterController from "./filter_controller"
 application.register("filter", FilterController)
 

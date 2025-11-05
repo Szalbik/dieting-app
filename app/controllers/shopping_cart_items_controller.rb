@@ -2,6 +2,9 @@
 
 class ShoppingCartItemsController < ApplicationController
   UNDO_TIME_LIMIT = 30.minutes
+  MAX_REMOVAL_RECORDS = 10 # Limit to prevent session cookie overflow
+
+  before_action :cleanup_expired_removal_records, only: [:destroy, :undo]
 
   def destroy
     @product = Current.user.products.find(params[:id])
@@ -23,6 +26,12 @@ class ShoppingCartItemsController < ApplicationController
 
     session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
     session[:removed_items] << removal_record
+
+    # Limit the number of removal records to prevent session cookie overflow
+    if session[:removed_items].length > MAX_REMOVAL_RECORDS
+      # Keep only the most recent records
+      session[:removed_items] = session[:removed_items].last(MAX_REMOVAL_RECORDS)
+    end
 
     # Schedule background job to remove items from backend after delay
     RemoveShoppingCartItemsJob.set(wait: 30.minutes).perform_later(item_ids, Current.user.id)
@@ -75,6 +84,16 @@ class ShoppingCartItemsController < ApplicationController
   end
 
   private
+
+  def cleanup_expired_removal_records
+    return unless session[:removed_items].is_a?(Array)
+
+    current_time = Time.current
+    session[:removed_items].reject! do |record|
+      removed_at = Time.zone.at(record['removed_at'] || record[:removed_at])
+      current_time - removed_at > UNDO_TIME_LIMIT
+    end
+  end
 
   def shopping_cart_item_params
     params.require(:shopping_cart_item).permit(:product_id, :quantity)
