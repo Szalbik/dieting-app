@@ -2,7 +2,7 @@
 
 <% diet_sets = DietSet
     .joins(:diet)
-    .where(diets: { id: Current.user.diets.select(:id) })
+    .where(diets: { id: Current.user.active_diets.select(:id) })
     .left_joins(:diet_set_plans)
     .group('diet_sets.id')
     .order(Arel.sql('COUNT(diet_set_plans.id) DESC')) %>

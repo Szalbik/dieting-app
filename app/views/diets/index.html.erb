@@ -31,15 +31,15 @@
               </thead>
               <tbody class="divide-y divide-slate-200">
                 <% @diets.each do |diet| %>
-                  <tr class="hover:bg-slate-50/50 transition-colors duration-200">
+                  <tr class="hover:bg-slate-50/50 transition-colors duration-200" id="diet_row_<%= diet.id %>">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium text-slate-900 whitespace-nowrap sm:pl-0">
                       <%= diet.name %>
                     </td>
                     <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
                       <%= diet.diet_sets.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
-                      <%= diet.active %>
+                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap" id="diet_toggle_<%= diet.id %>">
+                      <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
                     </td>
                     <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
                       <%= diet.created_at.strftime("%B %d, %Y") %>
@@ -64,7 +64,7 @@
       <!-- Mobile Card View -->
       <div class="mt-8 space-y-4 sm:hidden">
         <% @diets.each do |diet| %>
-          <div class="p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium transition-all duration-200">
+          <div class="p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium transition-all duration-200" id="diet_card_mobile_<%= diet.id %>">
             <div class="flex items-center justify-between">
               <h2 class="text-lg font-semibold text-slate-900"><%= diet.name %></h2>
               <div class="flex space-x-2">
@@ -76,9 +76,12 @@
               <p class="text-sm text-slate-600">
                 <strong class="text-slate-700">Sets number:</strong> <%= diet.diet_sets.count %>
               </p>
-              <p class="text-sm text-slate-600">
-                <strong class="text-slate-700">Active:</strong> <%= diet.active %>
-              </p>
+              <div class="flex items-center gap-2 text-sm text-slate-600">
+                <strong class="text-slate-700">Active:</strong>
+                <span id="diet_toggle_mobile_<%= diet.id %>">
+                  <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
+                </span>
+              </div>
               <p class="text-sm text-slate-600">
                 <strong class="text-slate-700">Date:</strong> <%= diet.created_at.strftime("%B %d, %Y") %>
               </p>

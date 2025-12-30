@@ -1,0 +1,7 @@
+<%= form_with url: toggle_active_diet_path(diet), method: :patch, local: false, class: "inline-block" do |f| %>
+  <button type="submit" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 <%= diet.active? ? 'bg-emerald-600' : 'bg-slate-300' %>" role="switch" aria-checked="<%= diet.active? %>">
+    <span class="sr-only">Toggle active status</span>
+    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform <%= diet.active? ? 'translate-x-6' : 'translate-x-1' %>"></span>
+  </button>
+<% end %>
+

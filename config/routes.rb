@@ -23,7 +23,11 @@ Rails.application.routes.draw do
   resources :users, only: :update
 
   resources :product_categories, only: %i[index edit update show]
-  resources :diets, only: %i[edit update show new destroy]
+  resources :diets, only: %i[edit update show new destroy] do
+    member do
+      patch :toggle_active
+    end
+  end
 
   resource :diet_set_plans, only: %i[show create] do
     post 'toggle_shopping_bag/:id', to: 'diet_set_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'

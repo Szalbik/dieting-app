@@ -4,11 +4,7 @@ require 'pdf/reader'
 
 class DietsController < ApplicationController
   def index
-    if params[:active].present? && params[:active] == 'false'
-      return @diets = Current.user.diets.inactive
-    end
-
-    @diets = Current.user.diets.active
+    @diets = Current.user.diets.order(created_at: :desc)
   end
 
   def show
@@ -75,6 +71,20 @@ class DietsController < ApplicationController
     end
   end
 
+  def toggle_active
+    @diet = Diet.find(params[:id])
+    @diet.update(active: !@diet.active)
+    @diet.reload
+
+    respond_to do |format|
+      format.html { redirect_to diets_path, notice: @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.' }
+      format.turbo_stream do
+        flash.now[:notice] = @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.'
+        render :toggle_active
+      end
+    end
+  end
+
   private
 
   def search_params
@@ -82,6 +92,6 @@ class DietsController < ApplicationController
   end
 
   def diet_params
-    params.require(:diet).permit(:pdf, :name)
+    params.require(:diet).permit(:pdf, :name, :active)
   end
 end

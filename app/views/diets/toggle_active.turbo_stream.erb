@@ -1,0 +1,13 @@
+<% if @diet.active? %>
+  <%= turbo_stream.replace "diet_toggle_#{@diet.id}" do %>
+    <%= render partial: 'diets/toggle_button', locals: { diet: @diet } %>
+  <% end %>
+
+  <%= turbo_stream.replace "diet_toggle_mobile_#{@diet.id}" do %>
+    <%= render partial: 'diets/toggle_button', locals: { diet: @diet } %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.remove "diet_row_#{@diet.id}" %>
+  <%= turbo_stream.remove "diet_card_mobile_#{@diet.id}" %>
+<% end %>
+
