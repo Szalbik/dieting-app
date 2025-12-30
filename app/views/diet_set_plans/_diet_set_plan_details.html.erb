@@ -3,15 +3,59 @@
   <%# Assume that diet_set_plan.diet.diet_sets.first is the chosen set %>
   <h3 class="text-lg font-semibold text-center">🥗 <%= @diet_set_plan.name %></h3>
   <% if @diet_set_plan.meal_plans.any? %>
+    <%# Calculate daily totals %>
+    <% daily_totals = @diet_set_plan.meal_plans.sum { |mp| mp.kcal || 0 } %>
+    <% daily_protein = @diet_set_plan.meal_plans.sum { |mp| mp.protein || 0 } %>
+    <% daily_fat = @diet_set_plan.meal_plans.sum { |mp| mp.fat || 0 } %>
+    <% daily_carbs = @diet_set_plan.meal_plans.sum { |mp| mp.carbs || 0 } %>
+    <% if daily_totals > 0 || daily_protein > 0 || daily_fat > 0 || daily_carbs > 0 %>
+      <div class="p-3 bg-green-50 rounded-lg border border-green-200 mb-4">
+        <h4 class="text-sm font-semibold text-green-800 mb-2 text-center">📊 Podsumowanie dnia</h4>
+        <div class="flex justify-center gap-4 text-sm">
+          <div class="text-center">
+            <div class="font-bold text-green-700"><%= daily_totals.round %></div>
+            <div class="text-xs text-green-600">kcal</div>
+          </div>
+          <div class="text-center">
+            <div class="font-bold text-green-700"><%= daily_protein.round(1) %></div>
+            <div class="text-xs text-green-600">g białka</div>
+          </div>
+          <div class="text-center">
+            <div class="font-bold text-green-700"><%= daily_fat.round(1) %></div>
+            <div class="text-xs text-green-600">g tłuszczu</div>
+          </div>
+          <div class="text-center">
+            <div class="font-bold text-green-700"><%= daily_carbs.round(1) %></div>
+            <div class="text-xs text-green-600">g węglowodanów</div>
+          </div>
+        </div>
+      </div>
+    <% end %>
     <% @diet_set_plan.meal_plans.each do |meal_plan| %>
       <!-- Each meal card is clickable and toggles its details using our Stimulus controller -->
       <div class="p-4 bg-white rounded-lg shadow-md cursor-pointer"
             data-controller="toggle-meal"
             data-action="click->toggle-meal#toggle">
         <div class="flex items-center justify-between">
-          <div>
+          <div class="flex-1">
             <h3 class="text-lg font-semibold"><%= meal_plan.name %></h3>
             <span class="text-sm text-gray-500"><%= meal_time_for(meal_plan) %></span>
+            <% if meal_plan.kcal.present? || meal_plan.protein.present? || meal_plan.fat.present? || meal_plan.carbs.present? %>
+              <div class="flex gap-3 mt-2 text-xs text-gray-600">
+                <% if meal_plan.kcal.present? %>
+                  <span><strong><%= meal_plan.kcal %></strong> kcal</span>
+                <% end %>
+                <% if meal_plan.protein.present? %>
+                  <span><strong><%= meal_plan.protein.round(1) %></strong>g białka</span>
+                <% end %>
+                <% if meal_plan.fat.present? %>
+                  <span><strong><%= meal_plan.fat.round(1) %></strong>g tłuszczu</span>
+                <% end %>
+                <% if meal_plan.carbs.present? %>
+                  <span><strong><%= meal_plan.carbs.round(1) %></strong>g węglowodanów</span>
+                <% end %>
+              </div>
+            <% end %>
           </div>
           <div id="<%= dom_id(meal_plan, :shopping_bag) %>">
             <%= render partial: "diet_set_plans/shopping_bag_icon", locals: { meal_plan: meal_plan } %>

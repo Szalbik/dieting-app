@@ -8,4 +8,5 @@ class MealPlan < ApplicationRecord
 
   delegate :name, to: :meal
   delegate :instructions, to: :meal
+  delegate :kcal, :protein, :fat, :carbs, to: :meal
 end

@@ -82,8 +82,17 @@ class Diet < ApplicationRecord
       parsed_data = Chat::DietParserService.new(temp_path.path).call
       # Możesz teraz zapisać JSON do atrybutu, np. `parsed_json`:
       update!(parsed_json: parsed_data)
+    rescue DietJsonValidationError => e
+      Rails.logger.error("Diet JSON validation failed for diet #{id}: #{e.message}")
+      Rails.logger.error("Validation errors: #{e.errors.inspect}")
+      raise e
+    rescue JSON::ParserError => e
+      Rails.logger.error("JSON parsing error for diet #{id}: #{e.message}")
+      raise "Błąd parsowania JSON: #{e.message}"
     rescue => e
-      Rails.logger.error("Błąd przetwarzania diety: #{e.message}")
+      Rails.logger.error("Błąd przetwarzania diety #{id}: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      raise e
     ensure
       temp_path.close
       temp_path.unlink

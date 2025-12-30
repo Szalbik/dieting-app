@@ -40,6 +40,7 @@ gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.
 gem 'view_component'
 
 # Dieting app related gems
+gem 'json-schema'
 gem 'nbayes'
 gem 'pdf-reader'
 gem 'ruby-openai'

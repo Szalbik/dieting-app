@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "description": "Array of diet days, each containing meals with ingredients and nutrition information",
+  "items": {
+    "type": "object",
+    "required": ["day", "meals"],
+    "properties": {
+      "day": {
+        "type": "integer",
+        "description": "Day number in the diet plan (e.g., 1, 2, 3)",
+        "minimum": 1
+      },
+      "meals": {
+        "type": "array",
+        "description": "Array of meals for this day",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["type", "name", "ingredients", "instructions", "nutrition"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["breakfast", "lunch", "dinner", "snack"],
+              "description": "Type of meal"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the meal",
+              "minLength": 1
+            },
+            "ingredients": {
+              "type": "array",
+              "description": "Array of ingredients for this meal",
+              "items": {
+                "type": "object",
+                "required": ["product", "quantity"],
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "description": "Name of the product/ingredient",
+                    "minLength": 1
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "Quantity of the product (e.g., '50g', '1', '200ml')",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "instructions": {
+              "type": "string",
+              "description": "Cooking/preparation instructions for the meal",
+              "default": ""
+            },
+            "nutrition": {
+              "type": "object",
+              "required": ["kcal", "protein", "fat", "carbs"],
+              "properties": {
+                "kcal": {
+                  "type": ["number", "null"],
+                  "description": "Calories in kilocalories"
+                },
+                "protein": {
+                  "type": ["number", "null"],
+                  "description": "Protein in grams"
+                },
+                "fat": {
+                  "type": ["number", "null"],
+                  "description": "Fat in grams"
+                },
+                "carbs": {
+                  "type": ["number", "null"],
+                  "description": "Carbohydrates in grams"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
