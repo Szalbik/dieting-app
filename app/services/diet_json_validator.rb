@@ -43,17 +43,17 @@ class DietJsonValidator
     errors = JSON::Validator.fully_validate(@schema, json_data, strict: true, validate_schema: false)
     {
       valid: errors.empty?,
-      errors: errors
+      errors: errors,
     }
   rescue JSON::Schema::SchemaError => e
     # If we still get schema errors, try removing $schema field
     schema_without_meta = @schema.dup
     schema_without_meta.delete('$schema')
-    
+
     errors = JSON::Validator.fully_validate(schema_without_meta, json_data, strict: true, validate_schema: false)
     {
       valid: errors.empty?,
-      errors: errors
+      errors: errors,
     }
   end
 
@@ -68,4 +68,3 @@ class DietJsonValidator
     error.to_s
   end
 end
-

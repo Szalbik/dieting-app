@@ -1,7 +1,7 @@
 <%= render 'shopping_cart', shopping_cart: @shopping_cart %>
 
 <!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-around p-4 bg-white shadow-md">
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-around p-4 bg-white shadow-md border-t border-gray-200">
   <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-green-600' %>
   <%= link_to '🛒 Lista zakupów', shopping_cart_path, class: 'text-gray-500' %>
 </div>

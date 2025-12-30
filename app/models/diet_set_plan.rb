@@ -9,4 +9,5 @@ class DietSetPlan < ApplicationRecord
   has_many :products, through: :meals
 
   delegate :name, to: :diet_set
+  delegate :derived_name_from_meal, to: :diet_set
 end
