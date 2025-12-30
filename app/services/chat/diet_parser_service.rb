@@ -22,7 +22,7 @@ class Chat::DietParserService
           messages: [
             {
               role: 'system',
-              content: 'Jesteś dietetykiem i ekspertem od wartości odżywczych. Przetwarzaj wszystkie dni diety — jeśli pdf zawiera 14 dni, zwróć wszystkie 14 w strukturze JSON. MUSISZ zawsze obliczać wartości odżywcze (kcal, białko, tłuszcz, węglowodany) dla każdego posiłku na podstawie składników, jeśli nie są wyraźnie podane w PDF.',
+              content: 'Jesteś dietetykiem i ekspertem od wartości odżywczych. Przetwarzaj wszystkie dni diety — jeśli pdf zawiera 14 dni, zwróć wszystkie 14 w strukturze JSON. MUSISZ zawsze obliczać wartości odżywcze (kcal, białko, tłuszcz, węglowodany) dla każdego posiłku na podstawie składników, jeśli nie są wyraźnie podane w PDF. WAŻNE: Zawsze uwzględniaj WSZYSTKIE składniki, w tym składniki dressingu/sosu jako osobne pozycje. Zawsze uwzględniaj PEŁNE instrukcje przygotowania, w tym kroki przygotowania dressingu jeśli są opisane osobno.',
             },
             { role: 'user', content: prompt },
           ],
@@ -147,7 +147,17 @@ class Chat::DietParserService
          - type (e.g., "breakfast", "lunch", "dinner", "snack")
          - name (if not provided, use the meal type)
          - ingredients: a list of objects with "product" and "quantity" fields
-         - instructions (if available, otherwise leave as an empty string)
+           **CRITICAL:** You MUST include ALL ingredients, including:
+           * All main dish ingredients
+           * ALL dressing/sauce ingredients (e.g., "Dressing:", "Sos:" sections) - each ingredient in the dressing must be listed separately
+           * All spices, seasonings, and condiments mentioned
+           * Example: If a salad has "Dressing: olive oil, mustard, maple syrup, balsamic vinegar", include each as a separate ingredient entry
+         - instructions: COMPLETE preparation instructions (if available, otherwise leave as an empty string)
+           **CRITICAL:** You MUST include ALL preparation steps:
+           * All steps from "Sposób wykonania:" / "Preparation method:" sections
+           * Include dressing/sauce preparation steps if they exist separately
+           * Include ALL numbered steps and instructions
+           * Preserve the complete cooking/preparation process
          - nutrition: MANDATORY - You MUST provide nutrition values for EVERY meal. Follow this priority:
       #{'     '}
            **Priority 1:** Extract explicit nutrition values from the PDF if present (look for tables, labels, or text near meals in formats like "kcal: 300", "300 kcal", "B: 8g", "T: 4g", "W: 60g")
@@ -203,11 +213,26 @@ class Chat::DietParserService
       - Round values to whole numbers (e.g., 195.3 kcal → 195 kcal)
       - Only use null in extremely rare cases where an ingredient is completely unidentifiable
 
+      **CRITICAL INGREDIENT EXTRACTION:**
+      - ALWAYS include dressing/sauce ingredients as separate entries in the ingredients array
+      - Look for sections labeled "Dressing:", "Sos:", "Dressing ingredients:", etc.
+      - Each ingredient in a dressing must be listed individually (e.g., "olive oil", "mustard", "maple syrup", not just "dressing")
+      - Include all spices, herbs, and seasonings mentioned in the recipe
+      - When calculating nutrition, include dressing ingredients in the total meal nutrition
+
+      **CRITICAL INSTRUCTIONS EXTRACTION:**
+      - ALWAYS include the complete "Sposób wykonania:" / "Preparation method:" section
+      - Include ALL numbered steps (1., 2., 3., etc.)
+      - Include dressing/sauce preparation steps if they are described separately
+      - Preserve the order and completeness of all preparation instructions
+      - If instructions mention preparing a dressing separately, include those steps in the instructions field
+
       **Edge Cases:**
       - If a day or meal is incomplete, still include it with complete nutrition data calculated from ingredients.
       - If the diet is for 14 days, return all 14 days, even if some are similar or repeated.
       - If the PDF is in Polish, return field names in English but preserve meal/ingredient names as in the source.
       - For unknown quantities (e.g., "dowolna ilość" / "any amount"), use reasonable standard portions for calculations.
+      - If a meal has a dressing with separate preparation steps, include both the dressing ingredients AND the dressing preparation steps in the instructions.
 
       **Diet Plan Text:**
       #{diet_text}
