@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* iPhone Safari fixed positioning fix */
+@supports (-webkit-touch-callout: none) {
+  /* Safari-specific styles for fixed elements */
+  .fixed {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Fix for bottom navigation on iOS Safari */
+  [data-controller="sticky-navbar"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
