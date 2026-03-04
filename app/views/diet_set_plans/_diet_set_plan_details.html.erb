@@ -61,32 +61,36 @@
             <%= render partial: "diet_set_plans/shopping_bag_icon", locals: { meal_plan: meal_plan } %>
           </div>
         </div>
-        <!-- Details: ingredients and instructions (initially hidden) -->
+        <!-- Details: instructions (steps) and ingredients (initially hidden) -->
         <div data-toggle-meal-target="toggle" data-toggle-meal-animation-value="slide" class="hidden mt-2 overflow-hidden">
           <% if meal_plan.instructions.present? %>
-            <div class="p-2 text-sm prose bg-gray-100 rounded">
-              <%= simple_format(meal_plan.instructions) %>
+            <div class="instruction-parts">
+              <%= format_meal_instructions(meal_plan.instructions) %>
             </div>
           <% end %>
-          <ul class="list-disc">
-            <% meal_plan.products.each do |product| %>
-                <li class="flex flex-col mt-4">
-                <div class="flex items-center justify-between">
-                  <div class="ml-3">
-                    <p class="text-base font-semibold"><%= product.name %></p>
-                  </div>
-                  <% if product.ingredient_measures.present? %>
-                    <div class="flex-col text-sm text-gray-600 felx">
-                      <% product.ingredient_measures.each do |measurement| %>
-                        <p class="text-right text-nowrap"><%= (measurement.amount)&.round(2) %> <%= measurement.unit %></p>
-                        
-                      <% end %>
+          <% if meal_plan.products.any? %>
+            <div class="<%= 'mt-6 pt-4 border-t border-gray-200' if meal_plan.instructions.present? %>">
+              <h4 class="mb-3 text-sm font-semibold text-gray-700">Składniki</h4>
+              <ul class="list-disc">
+                <% meal_plan.products.each do |product| %>
+                  <li class="flex flex-col mt-4">
+                    <div class="flex items-center justify-between">
+                    <div class="ml-3">
+                      <p class="text-base font-semibold"><%= product.name %></p>
                     </div>
-                  <% end %>
-                </div>
-                </li>
-            <% end %>
-          </ul>
+                    <% if product.ingredient_measures.present? %>
+                      <div class="flex flex-col text-sm text-gray-600">
+                        <% product.ingredient_measures.each do |measurement| %>
+                          <p class="text-right text-nowrap"><%= (measurement.amount)&.round(2) %> <%= measurement.unit %></p>
+                        <% end %>
+                      </div>
+                    <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>

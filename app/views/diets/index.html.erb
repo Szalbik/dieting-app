@@ -48,6 +48,8 @@
                       <% if diet.pdf.attached? %>
                         <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-emerald-600 hover:text-emerald-700 transition-colors duration-200' %>
                         |
+                        <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, form_class: 'inline-block', data: { confirm: 'Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF. Kontynuować?' }, class: 'text-emerald-600 hover:text-emerald-700 transition-colors duration-200' %>
+                        |
                       <% end %>
                       <%= link_to 'Edit', edit_diet_path(diet), class: 'text-emerald-600 hover:text-emerald-700 transition-colors duration-200' %>
                       |
@@ -86,9 +88,10 @@
                 <strong class="text-slate-700">Date:</strong> <%= diet.created_at.strftime("%B %d, %Y") %>
               </p>
             </div>
-            <div class="mt-4">
+            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
               <% if diet.pdf.attached? %>
                 <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>
+                <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, data: { confirm: 'Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF. Kontynuować?' }, form_class: 'inline-block', class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>
               <% end %>
             </div>
           </div>

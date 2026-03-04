@@ -85,6 +85,16 @@ class DietsController < ApplicationController
     end
   end
 
+  def reparse
+    @diet = Diet.find(params[:id])
+    unless @diet.pdf.attached?
+      redirect_to diets_path, alert: 'Brak załączonego PDF. Nie można przeparsować diety.'
+      return
+    end
+    DietBuilderJob.perform_later(@diet.id)
+    redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'
+  end
+
   private
 
   def search_params

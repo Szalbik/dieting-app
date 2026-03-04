@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   resources :diets, only: %i[edit update show new destroy] do
     member do
       patch :toggle_active
+      post :reparse
     end
   end
 

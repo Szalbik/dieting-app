@@ -18,7 +18,7 @@ class Chat::DietParserService
     begin
       response = openai_client.chat(
         parameters: {
-          model: 'gpt-4o',
+          model: 'gpt-4.1',
           messages: [
             {
               role: 'system',
@@ -193,7 +193,7 @@ class Chat::DietParserService
                   { "product": "Oats", "quantity": "50g" },
                   { "product": "Banana", "quantity": "1" }
                 ],
-                "instructions": "Mix oats with water, cook, and top with sliced banana.",
+                "instructions": "1. Mix oats with water and cook.\\n2. Top with sliced banana.",
                 "nutrition": {
                   "kcal": 300,
                   "protein": 8,
@@ -221,18 +221,20 @@ class Chat::DietParserService
       - When calculating nutrition, include dressing ingredients in the total meal nutrition
 
       **CRITICAL INSTRUCTIONS EXTRACTION:**
-      - ALWAYS include the complete "Sposób wykonania:" / "Preparation method:" section
-      - Include ALL numbered steps (1., 2., 3., etc.)
-      - Include dressing/sauce preparation steps if they are described separately
-      - Preserve the order and completeness of all preparation instructions
-      - If instructions mention preparing a dressing separately, include those steps in the instructions field
+      - ALWAYS include the complete "Sposób wykonania:" / "Preparation method:" section for the main dish.
+      - **One meal can have multiple instruction blocks:** For a single meal the PDF often has (1) main dish instructions and (2) separate instructions for a side/sauce/salad (e.g. "Surówka z kiszonej kapusty", "Sos:", "Dressing:"). You MUST include ALL of them in the instructions field: first the main dish steps, then the surówka/sauce/dressing steps (if they have their own numbered steps or preparation text). Each step on a separate line.
+      - Include ALL numbered steps (1., 2., 3., etc.) from every block.
+      - **Format:** Put each numbered step on a separate line (end with newline \\n). Example: "1. First step.\\n2. Second step.\\n3. Third step." This matches the PDF layout and allows the app to display instructions as a proper numbered list.
+      - Include dressing/sauce/surówka (salad) preparation steps if they are described separately.
+      - Preserve the order and completeness of all preparation instructions.
+      - If instructions mention preparing a dressing/sauce/surówka separately, include those steps in the instructions field.
 
       **Edge Cases:**
       - If a day or meal is incomplete, still include it with complete nutrition data calculated from ingredients.
       - If the diet is for 14 days, return all 14 days, even if some are similar or repeated.
       - If the PDF is in Polish, return field names in English but preserve meal/ingredient names as in the source.
       - For unknown quantities (e.g., "dowolna ilość" / "any amount"), use reasonable standard portions for calculations.
-      - If a meal has a dressing with separate preparation steps, include both the dressing ingredients AND the dressing preparation steps in the instructions.
+      - If a meal has a dressing, sauce, or surówka (salad) with separate preparation steps or ingredients, include both those ingredients (in the ingredients array) and all preparation steps (main dish + surówka/sauce/dressing) in the instructions field.
 
       **Diet Plan Text:**
       #{diet_text}
