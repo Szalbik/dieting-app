@@ -57,7 +57,8 @@
                       <%= t('shopping_cart.measurements_label') %>:
                       <% product_group[:aggregated_ingredient_measures].each_with_index do |measurement, idx| %>
                         <% amount = (measurement[:amount] || 0).to_f %>
-                        <% unit_str = I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
+                        <% unit_key = unit_key_for_i18n(measurement[:unit]) %>
+                        <% unit_str = unit_key.present? ? I18n.t("units.#{unit_key}", count: measurement[:amount], default: measurement[:unit].to_s) : measurement[:unit].to_s %>
                         <%= " " if idx > 0 %>
                         <% if amount.zero? %>
                           <%= unit_str %>

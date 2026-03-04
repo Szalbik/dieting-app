@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  # Unit strings from DB can include variants like "łyżka (10ml)". I18n keys use only the base name.
+  def unit_key_for_i18n(unit_str)
+    return '' if unit_str.blank?
+
+    unit_str.to_s.strip.sub(/\s*\([^)]*\)\z/, '').strip.presence || unit_str.to_s
+  end
+
   # Splits instructions into parts when numbering restarts (e.g. 1,2,3 then 1 again for salad).
   # Returns array of { title:, steps: } where steps are plain strings (no "1. " prefix).
   def instruction_parts(instructions)
@@ -35,7 +42,8 @@ module ApplicationHelper
     return 'Surówka' if t.match?(/kapust|surówk|cebul|marchew|burak/)
     # "Sos" only when step is clearly a sauce recipe (e.g. "Sos: wymieszać..."), not when sauce is just mentioned
     return 'Sos' if t.match?(/^(sos\b|sos:\s|przygotować sos|zrobić sos)/)
-    return part_index.zero? ? 'Danie główne' : 'Dodatki'
+
+    part_index.zero? ? 'Danie główne' : 'Dodatki'
   end
 
   def format_instruction_steps(steps)
