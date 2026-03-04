@@ -3,6 +3,7 @@
 class ShoppingCart < ApplicationRecord
   belongs_to :user
   has_many :shopping_cart_items, dependent: :destroy
+  has_many :custom_cart_items, dependent: :destroy
 
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.

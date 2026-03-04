@@ -55,6 +55,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "custom_cart_items", force: :cascade do |t|
+    t.integer "shopping_cart_id", null: false
+    t.string "name", null: false
+    t.integer "quantity", default: 1, null: false
+    t.string "unit", default: "szt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shopping_cart_id", "name"], name: "index_custom_cart_items_on_shopping_cart_id_and_name"
+    t.index ["shopping_cart_id"], name: "index_custom_cart_items_on_shopping_cart_id"
+  end
+
   create_table "diet_set_plans", force: :cascade do |t|
     t.integer "diet_id", null: false
     t.date "date", null: false
@@ -189,6 +200,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "custom_cart_items", "shopping_carts"
   add_foreign_key "diet_set_plans", "diet_sets"
   add_foreign_key "diet_set_plans", "diets"
   add_foreign_key "diet_sets", "diets"

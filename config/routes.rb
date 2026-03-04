@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       post :undo
     end
   end
+  resources :custom_cart_items, only: %i[create destroy]
 
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'

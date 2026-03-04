@@ -1,9 +1,42 @@
 <turbo-frame id="shopping_cart">
-  <% if shopping_cart.shopping_cart_items.empty? %>
+  <% diet_items_empty = shopping_cart.shopping_cart_items.empty? %>
+  <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
+
+  <% if diet_items_empty && custom_items_empty %>
     <div class="p-4 text-center text-gray-500">
-      Your shopping cart is empty.
+      Koszyk jest pusty.
     </div>
-  <% else %>
+  <% end %>
+
+  <div class="mb-6">
+    <h2 class="mb-2 text-lg font-bold text-gray-800">Własne produkty</h2>
+    <div id="custom_cart_item_form_errors"></div>
+    <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "flex flex-wrap items-end gap-2 mb-3" do |f| %>
+      <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "flex-1 min-w-[140px] rounded border border-gray-300 px-3 py-2 text-sm", required: true %>
+      <%= f.number_field :quantity, value: 1, min: 1, class: "w-16 rounded border border-gray-300 px-2 py-2 text-sm" %>
+      <%= f.text_field :unit, placeholder: "szt", value: "szt", class: "w-14 rounded border border-gray-300 px-2 py-2 text-sm" %>
+      <%= f.submit "Dodaj", class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700" %>
+    <% end %>
+    <% if custom_items_empty %>
+      <p class="text-sm text-gray-500">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
+    <% else %>
+      <ul class="space-y-2">
+        <% shopping_cart.custom_cart_items.order(:created_at).each do |item| %>
+          <li id="<%= dom_id(item) %>" class="flex items-center justify-between p-4 bg-amber-50 rounded-lg shadow border border-amber-100">
+            <div>
+              <p class="text-base font-semibold"><%= item.name %></p>
+              <p class="text-sm text-gray-600"><%= item.quantity %> <%= item.unit.presence || 'szt' %></p>
+            </div>
+            <%= button_to "Usuń", custom_cart_item_path(item), method: :delete,
+                  form: { data: { turbo_stream: true } },
+                  class: "px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600" %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <% unless diet_items_empty %>
     <% shopping_cart.group_and_sum_by_cart_items.each do |group| %>
       <div id="category_<%= group[:category]&.name&.parameterize || 'inne' %>">
         <div class="mb-6">
@@ -33,11 +66,13 @@
       </div>
     <% end %>
 
-    <div class="mt-4 mb-12 text-center">
+    <div class="mt-4 mb-6 text-center">
       <%= button_to "Cofnij", undo_shopping_cart_items_path, 
                   method: :post, 
                   data: { turbo_stream: true }, 
                   class: "text-xs text-gray-400 hover:underline" %>
     </div>
   <% end %>
+
+  <div class="mb-12"></div>
 </turbo-frame>

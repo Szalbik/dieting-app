@@ -1,0 +1,3 @@
+<%= turbo_stream.update "shopping_cart" do %>
+  <%= render "shopping_carts/shopping_cart", shopping_cart: Current.user.shopping_cart %>
+<% end %>
