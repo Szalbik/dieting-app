@@ -30,6 +30,11 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 pl:
+  shopping_cart:
+    add_custom_cart_item:
+      description: "Dodaj własny produkt do listy zakupów"
+    measurements_label: "Ilość"
+    remove: "Usuń"
   units:
     kromka:
       one: "kromka"
@@ -76,13 +81,55 @@ pl:
       few: "szkl"
       many: "szkl"
       other: "szkl"
+    "do smaku":
+      one: "do smaku"
+      few: "do smaku"
+      many: "do smaku"
+      other: "do smaku"
   activerecord:
     errors:
+      messages:
+        missing: "musi istnieć"
+        blank: "nie może być puste"
+        required: "musi istnieć"
+        confirmation: "nie zgadza się z polem %{attribute}"
+        accepted: "musi zostać zaakceptowane"
+        empty: "nie może być puste"
+        invalid: "jest nieprawidłowe"
+        taken: "zostało już zajęte"
+        not_a_number: "nie jest liczbą"
+        not_an_integer: "musi być liczbą całkowitą"
+        greater_than: "musi być większe od %{count}"
+        greater_than_or_equal_to: "musi być większe lub równe %{count}"
+        equal_to: "musi być równe %{count}"
+        less_than: "musi być mniejsze od %{count}"
+        less_than_or_equal_to: "musi być mniejsze lub równe %{count}"
+        other_than: "musi być inne niż %{count}"
+        odd: "musi być nieparzyste"
+        even: "musi być parzyste"
+        too_long:
+          one: "jest za długie (maksymalnie 1 znak)"
+          few: "jest za długie (maksymalnie %{count} znaki)"
+          many: "jest za długie (maksymalnie %{count} znaków)"
+          other: "jest za długie (maksymalnie %{count} znaków)"
+        too_short:
+          one: "jest za krótkie (minimalnie 1 znak)"
+          few: "jest za krótkie (minimalnie %{count} znaki)"
+          many: "jest za krótkie (minimalnie %{count} znaków)"
+          other: "jest za krótkie (minimalnie %{count} znaków)"
+        wrong_length:
+          one: "ma nieprawidłową długość (powinna wynosić 1 znak)"
+          few: "ma nieprawidłową długość (powinna wynosić %{count} znaki)"
+          many: "ma nieprawidłową długość (powinna wynosić %{count} znaków)"
+          other: "ma nieprawidłową długość (powinna wynosić %{count} znaków)"
+        inclusion: "nie znajduje się na liście dopuszczalnych wartości"
+        exclusion: "jest zarezerwowane"
+        present: "musi być puste"
       models:
         user:
           attributes:
             password:
-              too_short: "is too short (minimum is 6 characters)"
+              too_short: "jest za krótkie (minimum 6 znaków)"
             password_confirmation:
-              confirmation: "doesn't match Password"
+              confirmation: "nie zgadza się z hasłem"
 

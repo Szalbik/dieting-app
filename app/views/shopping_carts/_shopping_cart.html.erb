@@ -11,18 +11,24 @@
   <div class="mb-6">
     <h2 class="mb-2 text-lg font-bold text-gray-800">Własne produkty</h2>
     <div id="custom_cart_item_form_errors"></div>
-    <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "flex flex-wrap items-end gap-2 mb-3" do |f| %>
-      <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "flex-1 min-w-[140px] rounded border border-gray-300 px-3 py-2 text-sm", required: true %>
-      <%= f.number_field :quantity, value: 1, min: 1, class: "w-16 rounded border border-gray-300 px-2 py-2 text-sm" %>
-      <%= f.text_field :unit, placeholder: "szt", value: "szt", class: "w-14 rounded border border-gray-300 px-2 py-2 text-sm" %>
-      <%= f.submit "Dodaj", class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700" %>
+    <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "custom-cart-form mb-3 p-4 rounded-xl border border-gray-200 bg-gray-50/80 shadow-sm" do |f| %>
+      <div class="flex flex-col gap-3">
+        <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "custom-cart-input w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-200 focus:outline-none min-h-[48px]", required: true %>
+        <div class="flex flex-row items-end justify-between gap-2">
+          <div class="flex flex-row items-end gap-2">
+            <%= f.number_field :quantity, value: 1, min: 1, class: "custom-cart-input w-20 shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-3 text-base text-gray-900 min-h-[48px]" %>
+            <%= f.text_field :unit, placeholder: "szt", value: "szt", class: "custom-cart-input w-24 shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-3 text-base text-gray-900 min-h-[48px]" %>
+          </div>
+          <%= f.submit "Dodaj", class: "custom-cart-submit shrink-0 px-5 py-3 min-h-[48px] text-base font-semibold text-white bg-green-700 rounded-lg shadow hover:bg-green-800 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2" %>
+        </div>
+      </div>
     <% end %>
     <% if custom_items_empty %>
       <p class="text-sm text-gray-500">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
     <% else %>
       <ul class="space-y-2">
         <% shopping_cart.custom_cart_items.order(:created_at).each do |item| %>
-          <li id="<%= dom_id(item) %>" class="flex items-center justify-between p-4 bg-amber-50 rounded-lg shadow border border-amber-100">
+          <li id="<%= dom_id(item) %>" class="flex items-center justify-between p-4 border rounded-lg shadow bg-amber-50 border-amber-100">
             <div>
               <p class="text-base font-semibold"><%= item.name %></p>
               <p class="text-sm text-gray-600"><%= item.quantity %> <%= item.unit.presence || 'szt' %></p>
@@ -48,15 +54,21 @@
                   <p class="text-base font-semibold"><%= product_group[:product].name %></p>
                   <% if product_group[:aggregated_ingredient_measures].present? %>
                     <p class="text-sm text-gray-600">
-                      Measurements:
-                      <% product_group[:aggregated_ingredient_measures].each do |measurement| %>
-                        <%= (measurement[:amount] || 0).to_f.round(2) %> 
-                        <%= I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
+                      <%= t('shopping_cart.measurements_label') %>:
+                      <% product_group[:aggregated_ingredient_measures].each_with_index do |measurement, idx| %>
+                        <% amount = (measurement[:amount] || 0).to_f %>
+                        <% unit_str = I18n.t("units.#{measurement[:unit]}", count: measurement[:amount]) %>
+                        <%= " " if idx > 0 %>
+                        <% if amount.zero? %>
+                          <%= unit_str %>
+                        <% else %>
+                          <%= amount.round(2) %> <%= unit_str %>
+                        <% end %>
                       <% end %>
                     </p>
                   <% end %>
                 </div>
-                <%= button_to 'Remove', shopping_cart_item_path(product_group[:product]), method: :delete,
+                <%= button_to t('shopping_cart.remove'), shopping_cart_item_path(product_group[:product]), method: :delete,
                       form: { data: { turbo_stream: true } },
                       class: "px-2 py-1 text-xs text-white bg-red-500 rounded" %>
               </li>

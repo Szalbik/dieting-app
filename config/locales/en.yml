@@ -76,6 +76,11 @@ en:
       few: "glasses"
       many: "glasses"
       other: "glasses"
+    "do smaku":
+      one: "to taste"
+      few: "to taste"
+      many: "to taste"
+      other: "to taste"
   activerecord:
     errors:
       models:
