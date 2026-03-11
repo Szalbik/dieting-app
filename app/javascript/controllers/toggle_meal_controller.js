@@ -24,6 +24,10 @@ export default class extends Controller {
     }
   }
 
+  ignore(event) {
+    event.stopPropagation();
+  }
+
   // Slide up: collapse the element.
   slideUp(element) {
     element.style.height = `${element.scrollHeight}px`;

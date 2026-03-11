@@ -73,20 +73,7 @@
               <h4 class="mb-3 text-sm font-semibold text-gray-700">Składniki</h4>
               <ul class="list-disc">
                 <% meal_plan.products.each do |product| %>
-                  <li class="flex flex-col mt-4">
-                    <div class="flex items-center justify-between">
-                    <div class="ml-3">
-                      <p class="text-base font-semibold"><%= product.name %></p>
-                    </div>
-                    <% if product.ingredient_measures.present? %>
-                      <div class="flex flex-col text-sm text-gray-600">
-                        <% product.ingredient_measures.each do |measurement| %>
-                          <p class="text-right text-nowrap"><%= (measurement.amount)&.round(2) %> <%= measurement.unit %></p>
-                        <% end %>
-                      </div>
-                    <% end %>
-                    </div>
-                  </li>
+                  <%= render "diet_set_plans/ingredient_row", meal_plan: meal_plan, product: product %>
                 <% end %>
               </ul>
             </div>

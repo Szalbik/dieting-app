@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 class DietSetPlansController < ApplicationController
   before_action :set_diet_set_plan, only: [:show, :toggle_shopping_bag]
 
@@ -16,6 +18,8 @@ class DietSetPlansController < ApplicationController
     if Current.user.active_diets.empty?
       redirect_to new_diet_path, warning: 'You need to create a diet first.'
     end
+
+    load_substitution_suggestions
 
     respond_to do |format|
       format.turbo_stream
@@ -73,6 +77,132 @@ class DietSetPlansController < ApplicationController
     render json: { success: false, message: 'Wystąpił błąd podczas zamiany zestawów diety.' }, status: :internal_server_error
   end
 
+  def replace_product
+    meal_plan = MealPlan
+      .joins(diet_set_plan: :diet)
+      .find_by(id: replace_product_params[:meal_plan_id], diets: { user_id: Current.user.id })
+
+    unless meal_plan
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono posiłku do podmiany.'
+      return
+    end
+
+    product = meal_plan.products.find_by(id: replace_product_params[:product_id])
+    replacement_name = ProductSubstitution.strip_quantity_from_name(replace_product_params[:replacement_name].to_s)
+
+    if product.blank? || replacement_name.blank?
+      redirect_to diet_set_plans_path(date: date), alert: 'Podaj poprawny produkt zamienny.'
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      product.update!(
+        name: replacement_name,
+        base_product_name: product.base_product_name.presence || product.name
+      )
+      product.product_category&.destroy
+      product.categorize_if_needed
+    end
+
+    redirect_to diet_set_plans_path(date: date), notice: 'Produkt został trwale podmieniony w posiłku.'
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to diet_set_plans_path(date: date), alert: "Nie udało się podmienić produktu: #{e.message}"
+  end
+
+  def cycle_product_replacement
+    meal_plan = MealPlan
+      .joins(diet_set_plan: :diet)
+      .find_by(id: params[:meal_plan_id], diets: { user_id: Current.user.id })
+
+    unless meal_plan
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono posiłku do podmiany.'
+      return
+    end
+
+    product = meal_plan.products.find_by(id: params[:product_id])
+    unless product
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono produktu do podmiany.'
+      return
+    end
+
+    original_name = original_name_for(meal_plan: meal_plan, product: product)
+    base_name = resolve_base_name_for(product)
+    base_canonical_product = resolve_canonical_product(base_name) || resolve_base_canonical_product_for(product)
+    cycle_candidates = display_cycle_for(
+      meal_plan: meal_plan,
+      product: product,
+      base_name: base_name,
+      original_name: original_name
+    )
+    cycle_candidates = sensible_cycle_candidates(
+      meal_plan: meal_plan,
+      product: product,
+      base_name: base_name,
+      cycle_candidates: cycle_candidates
+    )
+    current_in_cycle = cycle_candidates.any? do |name|
+      ProductSubstitution.normalize_name(name) == ProductSubstitution.normalize_name(product.name)
+    end
+
+    if cycle_candidates.size < 2
+      redirect_to diet_set_plans_path(date: date), alert: 'Brak dostępnych zamienników dla tego produktu.'
+      return
+    end
+
+    if current_in_cycle
+      current_idx = cycle_candidates.index { |name| ProductSubstitution.normalize_name(name) == ProductSubstitution.normalize_name(product.name) } || 0
+      next_name = cycle_candidates[(current_idx + 1) % cycle_candidates.size]
+    else
+      # If current product is a mapped variant not present in cycle labels,
+      # jump to first actual replacement after base.
+      next_name = cycle_candidates[1] || cycle_candidates.first
+    end
+
+    factor_from_name = same_name?(product.name, original_name) ? base_name : product.name
+    factor_to_name = same_name?(next_name, original_name) ? base_name : next_name
+
+    factor = ProductSubstitution.local_factor_for(
+      user: Current.user,
+      base_name: base_name,
+      from_name: factor_from_name,
+      to_name: factor_to_name
+    ).to_f
+    factor = 1.0 if factor <= 0
+
+    ActiveRecord::Base.transaction do
+      product.update!(
+        name: ProductSubstitution.strip_quantity_from_name(next_name),
+        base_product_name: base_name,
+        canonical_product: resolve_canonical_product(next_name),
+        base_canonical_product: base_canonical_product
+      )
+      if factor != 1.0
+        product.ingredient_measures.each do |measure|
+          next unless measure.amount.present?
+
+          measure.update!(amount: (measure.amount.to_f * factor).round(2))
+        end
+      end
+      product.product_category&.destroy
+      product.categorize_if_needed
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        prepare_plan_for_refresh
+        flash.now[:notice] = "Podmieniono na: #{next_name}"
+        render turbo_stream: turbo_stream.replace(
+          view_context.dom_id(product, :ingredient_row),
+          partial: 'diet_set_plans/ingredient_row',
+          locals: { meal_plan: meal_plan, product: product.reload }
+        )
+      end
+      format.html { redirect_to diet_set_plans_path(date: date), notice: "Podmieniono na: #{next_name}" }
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to diet_set_plans_path(date: date), alert: "Nie udało się podmienić produktu: #{e.message}"
+  end
+
   private
 
   def set_diet_set_plan
@@ -86,6 +216,10 @@ class DietSetPlansController < ApplicationController
 
   def diet_set_plan_params
     params.require(:diet_set_plan).permit(:diet_set_id)
+  end
+
+  def replace_product_params
+    params.permit(:meal_plan_id, :product_id, :replacement_name)
   end
 
   def shopping_cart
@@ -117,5 +251,130 @@ class DietSetPlansController < ApplicationController
         end
       end
     end
+  end
+
+  def load_substitution_suggestions
+    @replacement_cycles = {}
+    return unless @diet_set_plan&.persisted?
+
+    products = @diet_set_plan.meal_plans.includes(:products).flat_map(&:products).uniq
+    products.each do |product|
+      meal_plan = @diet_set_plan.meal_plans.find { |candidate| candidate.products.exists?(id: product.id) }
+      base_name = resolve_base_name_for(product)
+      @replacement_cycles[product.id] = display_cycle_for(
+        meal_plan: meal_plan,
+        product: product,
+        base_name: base_name,
+        original_name: original_name_for(meal_plan: meal_plan, product: product)
+      )
+    end
+  end
+
+  def prepare_plan_for_refresh
+    @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last
+    @diet_set_plan ||= DietSetPlan.new(date: date)
+    load_substitution_suggestions
+  end
+
+  def resolve_base_name_for(product)
+    explicit = ProductSubstitution.strip_quantity_from_name(product.base_product_name.to_s)
+    current_name = ProductSubstitution.strip_quantity_from_name(product.name.to_s)
+    return explicit if candidate_cycle_for(explicit).size > 1
+
+    base_canonical_name = product.base_canonical_product&.name
+    return base_canonical_name if candidate_cycle_for(base_canonical_name).size > 1
+
+    product_norm = ProductSubstitution.normalize_name(product.name)
+    match = Current.user.substitution_product_matches.find do |m|
+      match_norm = ProductSubstitution.normalize_name(m.matched_product_name)
+      match_norm == product_norm || product_norm.include?(match_norm) || match_norm.include?(product_norm)
+    end
+    matched_source = ProductSubstitution.strip_quantity_from_name(match&.source_product)
+    return matched_source if candidate_cycle_for(matched_source).size > 1
+
+    explicit_differs_from_current = explicit.present? &&
+      ProductSubstitution.normalize_name(explicit) != ProductSubstitution.normalize_name(current_name)
+    return explicit if explicit_differs_from_current
+
+    return explicit if explicit.present?
+    return base_canonical_name if base_canonical_name.present?
+    return product.canonical_product.name if product.canonical_product.present?
+
+    ProductSubstitution.strip_quantity_from_name(product.name)
+  end
+
+  def candidate_cycle_for(base_name)
+    return [] if base_name.blank? || Current.user.blank?
+
+    ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+  end
+
+  def display_cycle_for(meal_plan:, product:, base_name:, original_name:)
+    substitutions = ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+    original = ProductSubstitution.strip_quantity_from_name(original_name.to_s)
+    return substitutions if original.blank?
+
+    [original, *substitutions.reject { |name| same_name?(name, original) || same_name?(name, base_name) }].uniq
+  end
+
+  def original_name_for(meal_plan:, product:)
+    return if meal_plan.blank? || product.blank?
+
+    OriginalMealIngredientResolver.new(meal: meal_plan.meal).original_name_for(product: product)
+  end
+
+  def same_name?(left, right)
+    ProductSubstitution.normalize_name(left) == ProductSubstitution.normalize_name(right)
+  end
+
+  def resolve_base_canonical_product_for(product)
+    product.base_canonical_product ||
+      resolve_canonical_product(product.base_product_name) ||
+      resolve_canonical_product(product.name)
+  end
+
+  def resolve_canonical_product(raw_name)
+    return if raw_name.blank?
+
+    Local::CanonicalProductResolver.new(user: Current.user).call(raw_name: raw_name)
+  end
+
+  def sensible_cycle_candidates(meal_plan:, product:, base_name:, cycle_candidates:)
+    return cycle_candidates if cycle_candidates.size <= 2
+    return cycle_candidates unless ai_meal_filter_enabled?
+
+    key_payload = [
+      meal_plan.name,
+      meal_plan.products.pluck(:name).sort.join('|'),
+      base_name,
+      cycle_candidates.join('|'),
+    ].join('::')
+    cache_key = "meal-replacements:v1:#{Digest::SHA256.hexdigest(key_payload)}"
+
+    allowed = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Chat::MealReplacementSuitabilityService.new(
+        meal_name: meal_plan.name,
+        ingredient_names: meal_plan.products.pluck(:name),
+        current_product_name: product.name,
+        base_product_name: base_name,
+        candidate_names: cycle_candidates
+      ).call
+    end
+
+    allowed_norm = Array(allowed).map { |name| ProductSubstitution.normalize_name(name) }
+    base_norm = ProductSubstitution.normalize_name(base_name)
+    current_norm = ProductSubstitution.normalize_name(product.name)
+
+    filtered = cycle_candidates.select do |candidate|
+      norm = ProductSubstitution.normalize_name(candidate)
+      allowed_norm.include?(norm) || norm == base_norm || norm == current_norm
+    end
+    filtered.size >= 2 ? filtered : cycle_candidates
+  rescue StandardError
+    cycle_candidates
+  end
+
+  def ai_meal_filter_enabled?
+    !Rails.env.test?
   end
 end
