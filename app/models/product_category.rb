@@ -4,6 +4,22 @@ class ProductCategory < ApplicationRecord
   belongs_to :product
   belongs_to :category
 
+  scope :pending_without_confirmed_counterpart, lambda {
+    joins(:product)
+      .includes(:product, :category)
+      .where(state: false)
+      .where(<<~SQL.squish)
+        NOT EXISTS (
+          SELECT 1
+          FROM product_categories confirmed_pc
+          INNER JOIN products confirmed_products ON confirmed_products.id = confirmed_pc.product_id
+          WHERE confirmed_pc.state = TRUE
+            AND LOWER(confirmed_products.name) = LOWER(products.name)
+        )
+      SQL
+      .order('products.name ASC')
+  }
+
   # Updates the state to true for all product categories whose associated product's name
   # matches the given pattern. Optionally, if a new category name is provided, it sets the
   # category to that (creating it if necessary).

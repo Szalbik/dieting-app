@@ -2,9 +2,10 @@
 
 class ProductCategoriesController < ApplicationController
   before_action :set_product_category, only: %i[edit update show]
+  before_action :require_admin!
 
   def index
-    @product_categories = ProductCategory.where(state: false)
+    @product_categories = ProductCategory.pending_without_confirmed_counterpart
   end
 
   def show
@@ -54,5 +55,11 @@ class ProductCategoriesController < ApplicationController
 
   def product_category_params
     params.require(:product_category).permit(:category_id, :state)
+  end
+
+  def require_admin!
+    return if Current.user&.admin?
+
+    redirect_to root_path, alert: 'Access denied.'
   end
 end
