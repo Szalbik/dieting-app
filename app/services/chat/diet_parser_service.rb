@@ -124,8 +124,7 @@ class Chat::DietParserService
   end
 
   def extract_text_from_pdf(path)
-    reader = PDF::Reader.new(path)
-    reader.pages.map(&:text).compact.join("\n")
+    PdfTextExtractor.new(path).call
   end
 
   def normalize_text(text)
@@ -147,6 +146,10 @@ class Chat::DietParserService
          - type (e.g., "breakfast", "lunch", "dinner", "snack")
          - name (if not provided, use the meal type)
          - ingredients: a list of objects with "product" and "quantity" fields
+           **CRITICAL FOR OCR TEXT:** If one line contains multiple comma-separated ingredients, split it into separate ingredient entries.
+           Example: "4 łyżki płatków owsianych Dietesse, 1 szklanka mleka 1,5%" must become:
+           * { "product": "płatki owsiane Dietesse", "quantity": "4 łyżki" }
+           * { "product": "mleko 1,5%", "quantity": "1 szklanka" }
            **CRITICAL:** You MUST include ALL ingredients, including:
            * All main dish ingredients
            * ALL dressing/sauce ingredients (e.g., "Dressing:", "Sos:" sections) - each ingredient in the dressing must be listed separately

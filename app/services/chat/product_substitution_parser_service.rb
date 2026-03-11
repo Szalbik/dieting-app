@@ -57,8 +57,7 @@ class Chat::ProductSubstitutionParserService
   end
 
   def extract_text_from_pdf(path)
-    reader = PDF::Reader.new(path)
-    reader.pages.map(&:text).compact.join("\n")
+    PdfTextExtractor.new(path).call
   end
 
   def clean_json(text)
