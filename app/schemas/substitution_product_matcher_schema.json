@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required": ["mappings"],
+  "additionalProperties": false,
+  "properties": {
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_product", "matched_product_names"],
+        "additionalProperties": false,
+        "properties": {
+          "source_product": {
+            "type": "string",
+            "minLength": 1
+          },
+          "matched_product_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,6 +47,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["trackable_type", "trackable_id"], name: "index_audit_logs_on_trackable"
+  end
+
+  create_table "canonical_product_aliases", force: :cascade do |t|
+    t.integer "canonical_product_id", null: false
+    t.string "name", null: false
+    t.string "normalized_name", null: false
+    t.string "stem_signature", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["canonical_product_id", "name"], name: "idx_canonical_aliases_on_product_and_name", unique: true
+    t.index ["canonical_product_id"], name: "index_canonical_product_aliases_on_canonical_product_id"
+    t.index ["normalized_name"], name: "index_canonical_product_aliases_on_normalized_name"
+    t.index ["stem_signature"], name: "index_canonical_product_aliases_on_stem_signature"
+  end
+
+  create_table "canonical_products", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_canonical_products_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_canonical_products_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -137,6 +159,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
     t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
+  create_table "product_substitutions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "source_product", null: false
+    t.string "replacement_product", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "source_amount"
+    t.string "source_unit"
+    t.float "replacement_amount"
+    t.string "replacement_unit"
+    t.float "amount_multiplier"
+    t.integer "source_canonical_product_id"
+    t.integer "replacement_canonical_product_id"
+    t.index ["replacement_canonical_product_id"], name: "idx_on_replacement_canonical_product_id_77fe11f052"
+    t.index ["source_canonical_product_id"], name: "index_product_substitutions_on_source_canonical_product_id"
+    t.index ["user_id", "source_product", "replacement_product"], name: "index_product_substitutions_on_user_and_pair", unique: true
+    t.index ["user_id"], name: "index_product_substitutions_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -145,7 +186,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
     t.integer "diet_set_id"
     t.integer "associated_product_id"
     t.integer "meal_id"
+    t.string "base_product_name"
+    t.integer "canonical_product_id"
+    t.integer "base_canonical_product_id"
     t.index ["associated_product_id"], name: "index_products_on_associated_product_id"
+    t.index ["base_canonical_product_id"], name: "index_products_on_base_canonical_product_id"
+    t.index ["canonical_product_id"], name: "index_products_on_canonical_product_id"
     t.index ["diet_set_id"], name: "index_products_on_diet_set_id"
     t.index ["meal_id"], name: "index_products_on_meal_id"
     t.index ["unit_id"], name: "index_products_on_unit_id"
@@ -182,6 +228,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
     t.index ["user_id"], name: "index_shopping_carts_on_user_id"
   end
 
+  create_table "substitution_product_matches", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "source_product", null: false
+    t.string "matched_product_name", null: false
+    t.float "confidence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "source_product", "matched_product_name"], name: "index_substitution_product_matches_on_user_source_and_match", unique: true
+    t.index ["user_id"], name: "index_substitution_product_matches_on_user_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -200,6 +257,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "canonical_product_aliases", "canonical_products"
+  add_foreign_key "canonical_products", "users"
   add_foreign_key "custom_cart_items", "shopping_carts"
   add_foreign_key "diet_set_plans", "diet_sets"
   add_foreign_key "diet_set_plans", "diets"
@@ -211,6 +270,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
   add_foreign_key "meals", "diet_sets"
   add_foreign_key "product_categories", "categories", on_delete: :cascade
   add_foreign_key "product_categories", "products", on_delete: :cascade
+  add_foreign_key "product_substitutions", "canonical_products", column: "replacement_canonical_product_id"
+  add_foreign_key "product_substitutions", "canonical_products", column: "source_canonical_product_id"
+  add_foreign_key "product_substitutions", "users"
+  add_foreign_key "products", "canonical_products"
+  add_foreign_key "products", "canonical_products", column: "base_canonical_product_id"
   add_foreign_key "products", "diet_sets"
   add_foreign_key "products", "meals", on_delete: :nullify
   add_foreign_key "products", "products", column: "associated_product_id"
@@ -220,4 +284,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_104037) do
   add_foreign_key "shopping_cart_items", "products"
   add_foreign_key "shopping_cart_items", "shopping_carts"
   add_foreign_key "shopping_carts", "users"
+  add_foreign_key "substitution_product_matches", "users"
 end

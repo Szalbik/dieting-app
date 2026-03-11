@@ -7,9 +7,13 @@ class Product < ApplicationRecord
   has_one :product_category, dependent: :destroy, inverse_of: :product
   has_one :category, through: :product_category
   belongs_to :meal, optional: true
+  belongs_to :canonical_product, optional: true
+  belongs_to :base_canonical_product, class_name: 'CanonicalProduct', optional: true
 
   # products without category
   scope :uncategorized, -> { includes(:product_category).where(product_categories: { id: nil }) }
+
+  before_validation :sync_canonical_products!
 
   # Automatically categorize products when they are created
   after_create :categorize_if_needed
@@ -168,5 +172,27 @@ class Product < ApplicationRecord
   # Get a reasonable category name, with fallback to "Inne"
   def category_name_or_default
     category&.name || 'Inne'
+  end
+
+  def sync_canonical_products!
+    user = owner_user
+    return if user.blank? || name.blank?
+
+    resolver = Local::CanonicalProductResolver.new(user: user)
+    resolved_product = resolver.call(raw_name: name)
+    return if resolved_product.blank?
+
+    base_name = base_product_name.presence || base_canonical_product&.name || resolved_product.name
+    preferred_base_name = base_product_name.presence || base_canonical_product&.name || base_name
+    resolved_base = resolver.call(raw_name: base_name, preferred_name: preferred_base_name)
+
+    self.canonical_product = resolved_product
+    self.base_canonical_product = resolved_base if resolved_base.present?
+    self.name = resolved_product.name
+    self.base_product_name = resolved_base&.name || base_name
+  end
+
+  def owner_user
+    diet_set&.diet&.user || meal&.diet_set&.diet&.user
   end
 end

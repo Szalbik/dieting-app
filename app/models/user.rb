@@ -7,6 +7,9 @@ class User < ApplicationRecord
   has_one :shopping_cart, dependent: :destroy
 
   has_many :diets, dependent: :nullify
+  has_many :canonical_products, dependent: :destroy
+  has_many :product_substitutions, dependent: :destroy
+  has_many :substitution_product_matches, dependent: :destroy
   has_many :diet_set_plans, through: :diets
   has_many :products, through: :diets
   has_many :audit_logs, through: :diets

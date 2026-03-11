@@ -41,5 +41,6 @@ class PopulateDietFromJsonJob < ApplicationJob
     
     # Classify products after they're created
     ClassifyProductsJob.perform_later(diet.id)
+    SyncCanonicalProductsJob.perform_later(diet.user_id)
   end
 end

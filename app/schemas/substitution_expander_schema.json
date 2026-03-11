@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "required": ["mappings"],
+  "additionalProperties": false,
+  "properties": {
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_product", "replacements"],
+        "additionalProperties": false,
+        "properties": {
+          "source_product": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replacements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "confidence"],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

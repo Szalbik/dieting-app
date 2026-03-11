@@ -21,6 +21,13 @@ Rails.application.routes.draw do
 
   resources :products, only: :index
   resources :users, only: :update
+  resources :product_substitutions, only: %i[index create destroy] do
+    collection do
+      post :import_pdf
+      post :rematch
+      post :expand_ai
+    end
+  end
 
   resources :product_categories, only: %i[index edit update show]
   resources :diets, only: %i[edit update show new destroy] do
@@ -33,6 +40,8 @@ Rails.application.routes.draw do
   resource :diet_set_plans, only: %i[show create] do
     post 'toggle_shopping_bag/:id', to: 'diet_set_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
     post 'swap', to: 'diet_set_plans#swap', as: 'swap'
+    post 'replace_product', to: 'diet_set_plans#replace_product', as: 'replace_product'
+    post 'cycle_product_replacement', to: 'diet_set_plans#cycle_product_replacement', as: 'cycle_product_replacement'
   end
 
   resource :shopping_cart, only: [:show]
