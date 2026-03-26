@@ -2,17 +2,21 @@
 
 require 'pdf-reader'
 require 'openai'
+require 'base64'
+require 'open3'
+require 'tmpdir'
 
 class Chat::DietParserService
   SCHEMA_PATH = Rails.root.join('app', 'schemas', 'diet_parser_schema.json').freeze
 
-  def initialize(file_path)
+  def initialize(file_path, expected_meals_per_day: nil)
     @file_path = file_path
+    @expected_meals_per_day = expected_meals_per_day
   end
 
   def call
-    text = extract_text_from_pdf(@file_path)
-    normalized = normalize_text(text)
+    extraction = extract_pdf_content(@file_path)
+    normalized = normalize_text(extraction.text)
     prompt = build_prompt(normalized)
 
     begin
@@ -24,7 +28,7 @@ class Chat::DietParserService
               role: 'system',
               content: 'Jesteś dietetykiem i ekspertem od wartości odżywczych. Przetwarzaj wszystkie dni diety — jeśli pdf zawiera 14 dni, zwróć wszystkie 14 w strukturze JSON. MUSISZ zawsze obliczać wartości odżywcze (kcal, białko, tłuszcz, węglowodany) dla każdego posiłku na podstawie składników, jeśli nie są wyraźnie podane w PDF. WAŻNE: Zawsze uwzględniaj WSZYSTKIE składniki, w tym składniki dressingu/sosu jako osobne pozycje. Zawsze uwzględniaj PEŁNE instrukcje przygotowania, w tym kroki przygotowania dressingu jeśli są opisane osobno.',
             },
-            { role: 'user', content: prompt },
+            { role: 'user', content: user_content(prompt, extraction) },
           ],
           temperature: 0.2,
           response_format: {
@@ -44,6 +48,10 @@ class Chat::DietParserService
       # Extract the array from the wrapped object response
       # OpenAI returns { "days": [...] } but we need just [...]
       days_array = parsed_json.is_a?(Hash) && parsed_json.key?('days') ? parsed_json['days'] : parsed_json
+      days_array = Chat::DietMealConsolidator.new(
+        days_array,
+        expected_meals_per_day: @expected_meals_per_day
+      ).call
 
       # Fallback validation to ensure schema compliance (validate against original array schema)
       DietJsonValidator.validate!(days_array)
@@ -123,8 +131,61 @@ class Chat::DietParserService
     schema
   end
 
-  def extract_text_from_pdf(path)
-    PdfTextExtractor.new(path).call
+  def extract_pdf_content(path)
+    PdfTextExtractor.new(path).extract
+  end
+
+  def user_content(prompt, extraction)
+    return prompt unless include_page_images?(extraction)
+
+    [
+      { type: 'text', text: prompt_with_image_instruction(prompt) },
+      *pdf_page_image_parts(@file_path),
+    ]
+  end
+
+  def include_page_images?(extraction)
+    extraction.source == :ocr
+  end
+
+  def prompt_with_image_instruction(prompt)
+    <<~PROMPT
+      #{prompt}
+
+      IMPORTANT: The extracted text above may contain OCR errors. Use the attached PDF page images as the source of truth for meal headings, recipe titles, and ingredient wording whenever the text and image disagree.
+    PROMPT
+  end
+
+  def pdf_page_image_parts(path)
+    return [] unless command_available?('pdftoppm')
+
+    Dir.mktmpdir('diet-parser-images') do |dir|
+      prefix = File.join(dir, 'page')
+      run_command('pdftoppm', '-png', '-r', '200', path, prefix)
+
+      Dir.glob("#{prefix}-*.png").sort.map do |image_path|
+        {
+          type: 'image_url',
+          image_url: {
+            url: "data:image/png;base64,#{Base64.strict_encode64(File.binread(image_path))}",
+            detail: 'high',
+          },
+        }
+      end
+    end
+  rescue StandardError
+    []
+  end
+
+  def run_command(*command)
+    stdout, stderr, status = Open3.capture3(*command)
+    raise "#{command.first} failed: #{stderr}" unless status.success?
+
+    stdout
+  end
+
+  def command_available?(name)
+    system('which', name, out: File::NULL, err: File::NULL)
   end
 
   def normalize_text(text)
@@ -139,6 +200,8 @@ class Chat::DietParserService
   def build_prompt(diet_text)
     <<~PROMPT
       You are a professional dietitian and expert in nutrition data extraction. Your task is to process the following diet plan text and return a complete, valid JSON object with a "days" property containing an array of all days and meals in the plan.
+
+      #{expected_meals_instruction}
 
       **Instructions:**
       1. Parse all days in the diet (e.g., "Day 1", "Dzień 1", etc.). If days are not explicitly named, infer them based on meal groupings.
@@ -216,6 +279,17 @@ class Chat::DietParserService
       - Round values to whole numbers (e.g., 195.3 kcal → 195 kcal)
       - Only use null in extremely rare cases where an ingredient is completely unidentifiable
 
+      **CRITICAL MEAL GROUPING REQUIREMENT:**
+      - In diet tables, create EXACTLY ONE meal object per meal heading such as "ŚNIADANIE", "DRUGIE ŚNIADANIE", "OBIAD", "PODWIECZOREK", "KOLACJA".
+      - If multiple lines appear under the same heading, they are still one meal object. Combine all dishes, sides, salads, desserts, and drinks from that heading into that single meal.
+      - Do NOT create separate meal objects for accessory drinks or supplements such as Drenanat, Levanat, Infunat, teas, or similar low-calorie beverages when they appear inside an existing meal heading. They belong to that meal.
+      - If a recipe title appears later in the PDF (for example in a detailed recipe box), attach that recipe to the earlier meal heading where the title first appeared. Do not create a new meal object from the repeated recipe title.
+      - When a meal heading contains multiple components, combine them by:
+        * using a combined meal name,
+        * including all ingredients from every component,
+        * including all instructions from every described component,
+        * summing nutrition for the entire heading.
+
       **CRITICAL INGREDIENT EXTRACTION:**
       - ALWAYS include dressing/sauce ingredients as separate entries in the ingredients array
       - Look for sections labeled "Dressing:", "Sos:", "Dressing ingredients:", etc.
@@ -242,6 +316,12 @@ class Chat::DietParserService
       **Diet Plan Text:**
       #{diet_text}
     PROMPT
+  end
+
+  def expected_meals_instruction
+    return '' if @expected_meals_per_day.blank?
+
+    "The user declared that this diet has #{@expected_meals_per_day} meals per day. Unless the PDF clearly contradicts that, each day should contain exactly #{@expected_meals_per_day} meal objects."
   end
 
   def openai_client

@@ -4,6 +4,8 @@ class ProductCategory < ApplicationRecord
   belongs_to :product
   belongs_to :category
 
+  after_commit :enqueue_model_retrain, on: :update, if: :retrain_model?
+
   scope :pending_without_confirmed_counterpart, lambda {
     joins(:product)
       .includes(:product, :category)
@@ -19,6 +21,13 @@ class ProductCategory < ApplicationRecord
       SQL
       .order('products.name ASC')
   }
+
+  def self.confirm_pending_for_exact_name(product_name, category_id:)
+    joins(:product)
+      .where(state: false)
+      .where('LOWER(products.name) = LOWER(?)', product_name.to_s.strip)
+      .update_all(state: true, category_id: category_id, updated_at: Time.current)
+  end
 
   # Updates the state to true for all product categories whose associated product's name
   # matches the given pattern. Optionally, if a new category name is provided, it sets the
@@ -40,5 +49,15 @@ class ProductCategory < ApplicationRecord
     end
 
     affected_count
+  end
+
+  private
+
+  def retrain_model?
+    state? && (saved_change_to_state? || saved_change_to_category_id?)
+  end
+
+  def enqueue_model_retrain
+    TrainCategoryModelJob.perform_later
   end
 end

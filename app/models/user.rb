@@ -2,13 +2,25 @@
 
 class User < ApplicationRecord
   after_create -> (first_name) { email_address.split('@').first }
-  after_create :create_shopping_cart
+  after_create :create_owned_shopping_cart
 
-  has_one :shopping_cart, dependent: :destroy
+  belongs_to :active_shopping_cart, class_name: 'ShoppingCart', optional: true, inverse_of: :active_users
+  has_one :owned_shopping_cart, class_name: 'ShoppingCart', dependent: :destroy, inverse_of: :user
+  has_many :sent_shopping_cart_invitations,
+           class_name: 'ShoppingCartInvitation',
+           foreign_key: :inviter_id,
+           dependent: :destroy,
+           inverse_of: :inviter
+  has_many :received_shopping_cart_invitations,
+           class_name: 'ShoppingCartInvitation',
+           foreign_key: :invitee_id,
+           dependent: :destroy,
+           inverse_of: :invitee
 
   has_many :diets, dependent: :nullify
   has_many :canonical_products, dependent: :destroy
   has_many :product_substitutions, dependent: :destroy
+  has_many :meal_plan_product_substitutions, dependent: :destroy
   has_many :substitution_product_matches, dependent: :destroy
   has_many :diet_set_plans, through: :diets
   has_many :products, through: :diets
@@ -46,9 +58,33 @@ class User < ApplicationRecord
     products.where(diet_set_id: active_diet_set_ids)
   end
 
+  def shopping_cart
+    active_shopping_cart || owned_shopping_cart
+  end
+
+  def accepted_shopping_cart_invitation
+    ShoppingCartInvitation.accepted.involving(self).order(accepted_at: :desc, updated_at: :desc).first
+  end
+
+  def sharing_shopping_cart?
+    accepted_shopping_cart_invitation.present?
+  end
+
+  def shopping_cart_partner
+    accepted_shopping_cart_invitation&.other_user_for(self)
+  end
+
+  def shopping_cart_members
+    invitation = accepted_shopping_cart_invitation
+    return [self] unless invitation
+
+    [invitation.inviter, invitation.invitee]
+  end
+
   private
 
-  def create_shopping_cart
-    ShoppingCart.create!(user: self)
+  def create_owned_shopping_cart
+    cart = ShoppingCart.create!(user: self)
+    update_column(:active_shopping_cart_id, cart.id)
   end
 end

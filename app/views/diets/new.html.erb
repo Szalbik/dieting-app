@@ -12,6 +12,14 @@
           </div>
         </div>
 
+        <div class="mt-6">
+          <%= form.label :meals_per_day, 'Meals per day', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+          <div class="mt-2">
+            <%= form.number_field :meals_per_day, value: form.object.meals_per_day || 5, min: 1, max: 10, class: 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+          </div>
+          <p class="max-w-2xl mt-1 text-sm leading-6 text-gray-600">Used as a parsing hint, for example 5 meals for each day.</p>
+        </div>
+
         <div class="pb-12 mt-10 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
           <%= form.label :pdf, "Pdf file", class: "block text-sm font-medium leading-6 text-gray-900" %>
           <%= form.file_field :pdf, class: "block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6

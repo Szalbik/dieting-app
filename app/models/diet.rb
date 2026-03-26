@@ -11,6 +11,7 @@ class Diet < ApplicationRecord
   has_one_attached :pdf, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
+  validates :meals_per_day, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 10 }, allow_nil: true
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
@@ -19,11 +20,18 @@ class Diet < ApplicationRecord
     return unless products.any?
 
     products.each do |product|
-      product_category = Classifier::Category.predict(product.name)
-      ProductCategory.create(
-        category: Category.find_by(name: product_category[:name]),
+      next if product.category.present?
+
+      prediction = Classifier::Category.predict(product.name)
+      next if prediction[:name].blank?
+
+      category = Category.find_by(name: prediction[:name])
+      next if category.blank?
+
+      ProductCategory.create!(
+        category: category,
         product: product,
-        state: product_category[:state]
+        state: prediction[:state]
       )
     end
   end
@@ -79,7 +87,10 @@ class Diet < ApplicationRecord
     end
 
     begin
-      parsed_data = Chat::DietParserService.new(temp_path.path).call
+      parsed_data = Chat::DietParserService.new(
+        temp_path.path,
+        expected_meals_per_day: meals_per_day
+      ).call
       # Możesz teraz zapisać JSON do atrybutu, np. `parsed_json`:
       update!(parsed_json: parsed_data)
     rescue DietJsonValidationError => e

@@ -5,6 +5,8 @@ require 'tmpdir'
 require 'pdf-reader'
 
 class PdfTextExtractor
+  Result = Struct.new(:text, :page_count, :source, keyword_init: true)
+
   MIN_TEXT_CHARS_PER_PAGE = 40
 
   def initialize(file_path)
@@ -12,11 +14,22 @@ class PdfTextExtractor
   end
 
   def call
+    extract.text
+  end
+
+  def extract
     extracted_text, page_count = extract_text_with_pdf_reader
-    return extracted_text if sufficient_text?(extracted_text, page_count)
+    return Result.new(text: extracted_text, page_count: page_count, source: :pdf_reader) if sufficient_text?(extracted_text, page_count)
+
+    pdftotext_text = extract_text_with_pdftotext
+    return Result.new(text: pdftotext_text, page_count: page_count, source: :pdftotext) if sufficient_text?(pdftotext_text, page_count)
 
     ocr_text = extract_text_with_ocr
-    ocr_text.presence || extracted_text
+    if ocr_text.present?
+      Result.new(text: ocr_text, page_count: page_count, source: :ocr)
+    else
+      Result.new(text: extracted_text, page_count: page_count, source: :pdf_reader)
+    end
   end
 
   private
@@ -28,6 +41,15 @@ class PdfTextExtractor
     [text, pages.size]
   rescue StandardError
     ['', 0]
+  end
+
+  def extract_text_with_pdftotext
+    return '' unless command_available?('pdftotext')
+
+    output = run_command('pdftotext', '-layout', @file_path, '-')
+    output.to_s.tr("\f", "\n").strip
+  rescue StandardError
+    ''
   end
 
   def sufficient_text?(text, page_count)

@@ -5,46 +5,24 @@ class ProductCategoriesController < ApplicationController
   before_action :require_admin!
 
   def index
-    @product_categories = ProductCategory.pending_without_confirmed_counterpart
+    @classification_rows = build_classification_rows
   end
 
   def show
-    respond_to do |format|
-      format.html {}
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "product_category_#{@product_category.id}",
-          partial: 'product_categories/product_category',
-          locals: { pc: @product_category }
-        )
-      end
-    end
+    redirect_to product_categories_path
   end
 
   def edit
-    render turbo_stream: turbo_stream.replace(
-      "product_category_#{@product_category.id}",
-      partial: 'product_categories/form_row',
-      locals: { pc: @product_category }
-    )
+    redirect_to product_categories_path
   end
 
   def update
-    if @product_category.update(product_category_params)
-      product = @product_category.product
-      ProductCategory.confirm_state_for(product.name, @product_category.category.name)
-      render turbo_stream: turbo_stream.remove(
-        "product_category_#{@product_category.id}"
-        # partial: 'product_categories/product_category',
-        # locals: { pc: @product_category }
-      )
-    else
-      render turbo_stream: turbo_stream.replace(
-        "product_category_#{@product_category.id}",
-        partial: 'product_categories/form_row',
-        locals: { pc: @product_category }
-      )
-    end
+    category_id = product_category_params[:category_id]
+    product_name = @product_category.product.name
+
+    ProductCategory.confirm_pending_for_exact_name(product_name, category_id: category_id)
+
+    redirect_to product_categories_path, notice: 'Kategoria produktu została zaktualizowana.'
   end
 
   private
@@ -55,6 +33,22 @@ class ProductCategoriesController < ApplicationController
 
   def product_category_params
     params.require(:product_category).permit(:category_id, :state)
+  end
+
+  def build_classification_rows
+    ProductCategory.pending_without_confirmed_counterpart
+      .group_by { |pc| pc.product.name.to_s.downcase.strip }
+      .values
+      .map do |items|
+        representative = items.first
+        {
+          id: representative.id,
+          name: representative.product.name,
+          category_id: representative.category_id,
+          count: items.size
+        }
+      end
+      .sort_by { |row| row[:name].downcase }
   end
 
   def require_admin!

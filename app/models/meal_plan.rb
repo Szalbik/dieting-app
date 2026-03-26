@@ -4,6 +4,7 @@ class MealPlan < ApplicationRecord
   belongs_to :diet_set_plan
   belongs_to :meal
 
+  has_many :meal_plan_product_substitutions, dependent: :destroy
   has_many :products, through: :meal
 
   delegate :name, to: :meal

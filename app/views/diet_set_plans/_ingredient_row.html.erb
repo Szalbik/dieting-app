@@ -1,34 +1,125 @@
-<li id="<%= dom_id(product, :ingredient_row) %>" class="flex flex-col mt-4">
-  <div class="flex items-center justify-between">
-    <div class="ml-3">
-      <div class="flex items-center gap-2">
-        <p class="text-base font-semibold"><%= product.name %></p>
-        <% cycle = Array(@replacement_cycles&.dig(product.id)) %>
-        <% if cycle.size <= 1 && Current.user.present? %>
-          <% base_name = product.base_product_name.presence || product.base_canonical_product&.name || product.name %>
-          <% cycle = ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name) %>
-        <% end %>
-        <% if cycle.size > 1 %>
-          <%= button_to cycle_product_replacement_diet_set_plans_path(format: :turbo_stream),
-                        method: :post,
-                        params: { meal_plan_id: meal_plan.id, product_id: product.id, date: params['date'] },
-                        form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
-                        data: { action: "click->toggle-meal#ignore" },
-                        class: "inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600",
-                        onclick: "event.stopPropagation()" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h10m0 0-2.5-2.5M17.5 7.5 15 10M16.5 16.5h-10m0 0 2.5 2.5M6.5 16.5 9 14" />
-            </svg>
+<li id="<%= dom_id(product, :ingredient_row) %>" class="mt-4" data-action="click->toggle-meal#ignore">
+  <% base_name = product.base_product_name.presence || product.base_canonical_product&.name || product.name %>
+  <% local_substitutions = [] %>
+  <% library_suggestions = [] %>
+  <% cycle = Array(@replacement_cycles&.dig(product.id)) %>
+  <% primary_measure = product.ingredient_measures.order(:id).first %>
+  <% default_unit = ProductSubstitution.normalize_unit(primary_measure&.unit).presence || 'g' %>
+  <% measurement_label = product.ingredient_measures.map { |measurement| "#{measurement.amount&.round(2)} #{measurement.unit}" }.join(' / ') %>
+  <% if Current.user.present? %>
+    <% local_substitutions = Current.user.meal_plan_product_substitutions.where(meal_plan: meal_plan, product: product).ordered.to_a %>
+    <% normalized_local_names = local_substitutions.map { |sub| ProductSubstitution.normalize_name(sub.replacement_product) } %>
+    <% library_suggestions = ProductSubstitution.local_replacements_for_base(user: Current.user, base_name: base_name).reject { |name| normalized_name = ProductSubstitution.normalize_name(name); normalized_local_names.include?(normalized_name) || normalized_name == ProductSubstitution.normalize_name(product.name) } %>
+  <% end %>
+  <% if cycle.size <= 1 && Current.user.present? %>
+    <% cycle = ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name) %>
+  <% end %>
+
+  <details class="group rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2">
+    <summary class="list-none cursor-pointer">
+      <div class="flex items-center gap-3">
+        <div class="flex min-w-0 flex-1 items-center gap-2">
+          <p class="truncate text-sm font-semibold text-slate-800"><%= product.name %></p>
+          <% if cycle.size > 1 %>
+            <%= button_to cycle_product_replacement_diet_set_plans_path(format: :turbo_stream),
+                          method: :post,
+                          params: { meal_plan_id: meal_plan.id, product_id: product.id, date: params['date'] },
+                          form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
+                          data: { action: "click->toggle-meal#ignore" },
+                          class: "inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600",
+                          onclick: "event.stopPropagation()" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h10m0 0-2.5-2.5M17.5 7.5 15 10M16.5 16.5h-10m0 0 2.5 2.5M6.5 16.5 9 14" />
+              </svg>
+            <% end %>
           <% end %>
+          <% if local_substitutions.any? %>
+            <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+              <%= local_substitutions.count %> zam.
+            </span>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-2">
+          <% if measurement_label.present? %>
+            <span class="text-xs font-medium text-slate-500"><%= measurement_label %></span>
+          <% end %>
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition group-open:rotate-180">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </summary>
+
+    <div class="mt-3 border-t border-slate-200 pt-3">
+      <div class="space-y-3">
+        <% if local_substitutions.any? %>
+          <div class="flex flex-wrap gap-2">
+            <% local_substitutions.each do |substitution| %>
+              <div class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs text-slate-700 ring-1 ring-slate-200">
+                <span><%= substitution.replacement_label %></span>
+                <%= button_to "Usuń",
+                              remove_product_substitution_diet_set_plans_path(substitution, format: :turbo_stream),
+                              method: :delete,
+                              params: { date: params['date'] },
+                              form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
+                              data: { action: "click->toggle-meal#ignore" },
+                              class: "font-semibold text-rose-600" %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-xs text-slate-500">Brak własnych zamienników dla tego składnika w tym posiłku.</p>
+        <% end %>
+
+        <%= form_with url: add_product_substitution_diet_set_plans_path(format: :turbo_stream),
+                      method: :post,
+                      class: "grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_92px_88px_auto]",
+                      data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } do |f| %>
+          <%= hidden_field_tag :meal_plan_id, meal_plan.id %>
+          <%= hidden_field_tag :product_id, product.id %>
+          <%= hidden_field_tag :date, params['date'] %>
+          <%= text_field_tag :replacement_name,
+                             nil,
+                             placeholder: "Nazwa zamiennika",
+                             class: "rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" %>
+          <%= number_field_tag :replacement_amount,
+                               nil,
+                               step: :any,
+                               min: 0,
+                               placeholder: "Ilość",
+                               class: "rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" %>
+          <%= select_tag :replacement_unit,
+                         options_for_select([['g', 'g'], ['kg', 'kg'], ['ml', 'ml'], ['l', 'l'], ['szt', 'szt']], default_unit),
+                         class: "rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" %>
+          <%= f.submit "Dodaj", class: "rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500" %>
+        <% end %>
+
+        <% if library_suggestions.any? %>
+          <div class="space-y-2">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Podpowiedzi</p>
+            <div class="flex flex-wrap gap-2">
+              <% library_suggestions.first(6).each do |suggestion| %>
+                <%= button_to suggestion,
+                              add_product_substitution_diet_set_plans_path(format: :turbo_stream),
+                              method: :post,
+                              params: {
+                                meal_plan_id: meal_plan.id,
+                                product_id: product.id,
+                                replacement_name: suggestion,
+                                replacement_amount: primary_measure&.amount,
+                                replacement_unit: default_unit,
+                                date: params['date']
+                              },
+                              form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
+                              data: { action: "click->toggle-meal#ignore" },
+                              class: "rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200 hover:text-emerald-600 hover:ring-emerald-300" %>
+              <% end %>
+            </div>
+          </div>
         <% end %>
       </div>
     </div>
-    <% if product.ingredient_measures.present? %>
-      <div class="flex flex-col text-sm text-gray-600">
-        <% product.ingredient_measures.each do |measurement| %>
-          <p class="text-right text-nowrap"><%= (measurement.amount)&.round(2) %> <%= measurement.unit %></p>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+  </details>
 </li>

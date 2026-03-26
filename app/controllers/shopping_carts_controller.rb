@@ -7,6 +7,7 @@ class ShoppingCartsController < ApplicationController
 
   def show
     @shopping_cart = Current.user.shopping_cart
+    @shopping_cart_members = @shopping_cart.member_users
   end
 
   private

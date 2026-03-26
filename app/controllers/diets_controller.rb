@@ -102,6 +102,6 @@ class DietsController < ApplicationController
   end
 
   def diet_params
-    params.require(:diet).permit(:pdf, :name, :active)
+    params.require(:diet).permit(:pdf, :name, :active, :meals_per_day)
   end
 end

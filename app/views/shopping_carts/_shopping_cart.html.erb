@@ -1,4 +1,16 @@
 <turbo-frame id="shopping_cart">
+  <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+    <p class="text-sm font-semibold text-emerald-800">Lista zakupow</p>
+    <% if shopping_cart.shared? %>
+      <p class="mt-1 text-sm text-emerald-700">
+        Wspolna lista:
+        <%= shopping_cart.member_users.map { |user| shopping_cart_member_label(user) }.join(' + ') %>
+      </p>
+    <% else %>
+      <p class="mt-1 text-sm text-emerald-700">To jest Twoja prywatna lista zakupow.</p>
+    <% end %>
+  </div>
+
   <% diet_items_empty = shopping_cart.shopping_cart_items.empty? %>
   <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
 
@@ -49,9 +61,9 @@
           <h2 class="mb-2 text-lg font-bold text-gray-800"><%= group[:category]&.name || 'Inne' %></h2>
           <ul class="space-y-2">
             <% group[:products].each do |product_group| %>
-              <li id="<%= shopping_cart_item_id_for(group[:category], product_group[:product]) %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+              <li id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
                 <div>
-                  <p class="text-base font-semibold"><%= product_group[:product].name %></p>
+                  <p class="text-base font-semibold"><%= product_group[:name] %></p>
                   <% if product_group[:aggregated_ingredient_measures].present? %>
                     <p class="text-sm text-gray-600">
                       <%= t('shopping_cart.measurements_label') %>:

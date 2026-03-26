@@ -1,33 +1,46 @@
-<div class="flex flex-col items-start w-full px-4 py-10 mx-auto max-w-7xl gap-y-8 sm:px-6 lg:px-8">
-  <main class="flex-1 w-full">
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-          <h1 class="text-base font-semibold leading-6 text-gray-900">Predictions</h1>
-          <p class="mt-2 text-sm text-gray-700">A list of all predictions available for the currently logged-in user.</p>
-        </div>
+<div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <h1 class="text-xl font-semibold text-slate-900">Klasyfikacja produktów</h1>
+    <p class="mt-1 text-sm text-slate-600">
+      Produkty bez potwierdzonej kategorii. Każdy wiersz to unikalna nazwa produktu.
+    </p>
+  </div>
+
+  <div class="space-y-3">
+    <% if @classification_rows.blank? %>
+      <div class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
+        Brak produktów do sklasyfikowania.
       </div>
-      <div class="flow-root mt-8">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table class="min-w-full divide-y divide-gray-300">
-              <thead class="flex flex-wrap">
-                <tr class="flex w-full">
-                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 flex-1">Product name</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 flex-1">Category name</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 flex-1">Confirmed</th>
-                  <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8 flex-1">
-                    <span class="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="flex flex-wrap divide-y divide-gray-200">
-                <%= render partial: 'product_categories/product_category', collection: @product_categories, as: :pc %>
-              </tbody>
-            </table>
+    <% end %>
+
+    <% @classification_rows.each do |row| %>
+      <%= form_with url: product_category_path(row[:id]), method: :patch, class: "rounded-lg border border-slate-200 bg-white p-4" do |form| %>
+        <div class="grid gap-3 sm:grid-cols-[1.8fr_0.8fr_1.2fr_auto] sm:items-center">
+          <div>
+            <p class="font-medium text-slate-900"><%= row[:name] %></p>
+            <% if row[:count] > 1 %>
+              <p class="text-xs text-slate-500">Powtórzenia: <%= row[:count] %></p>
+            <% end %>
+          </div>
+
+          <div>
+            <span class="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+              <%= row[:count] %> szt.
+            </span>
+          </div>
+
+          <div>
+            <%= form.select :category_id,
+                            Category.order(:name).pluck(:name, :id),
+                            { selected: row[:category_id] },
+                            { name: "product_category[category_id]", class: "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" } %>
+          </div>
+
+          <div>
+            <%= form.submit "Zapisz", class: "rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
           </div>
         </div>
-      </div>
-    </div>
-  </main>
+      <% end %>
+    <% end %>
+  </div>
 </div>

@@ -7,21 +7,32 @@ class ShoppingCartItemsController < ApplicationController
   before_action :cleanup_expired_removal_records, only: [:destroy, :undo]
 
   def destroy
-    @product = Current.user.products.find(params[:id])
     shopping_cart = Current.user.shopping_cart
+    @product = Product.joins(:shopping_cart_items)
+      .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
+      .find(params[:id])
 
+    group_name = @product.shopping_cart_group_name
     items = shopping_cart.shopping_cart_items
-      .joins(:product)
-      .where(products: { name: @product.name })
+      .includes(product: :category)
+      .select { |item| item.product.shopping_cart_group_name == group_name }
 
     # Store item IDs for potential undo and background job
-    item_ids = items.pluck(:id)
+    item_ids = items.map(&:id)
 
     removal_record = {
       item_ids: item_ids,
       removed_at: Time.current.to_i,
-      product_name: @product.name,
+      product_name: group_name,
       category_name: @product.category&.name || 'Inne',
+      items: items.map do |item|
+        {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          date: item.date,
+          meal_plan_id: item.meal_plan_id,
+        }
+      end,
     }
 
     session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
@@ -40,7 +51,7 @@ class ShoppingCartItemsController < ApplicationController
     flash[:success] = 'Produkt został usunięty z koszyka. Możesz cofnąć operację w ciągu 30 minut.'
 
     # Remove items from the shopping cart for immediate UI update
-    items.destroy_all
+    ShoppingCartItem.where(id: item_ids).destroy_all
   end
 
   def undo
@@ -65,14 +76,19 @@ class ShoppingCartItemsController < ApplicationController
         item_ids = removal_record['item_ids'] || removal_record[:item_ids]
         RemoveShoppingCartItemsJob.cancel_scheduled_jobs(item_ids, Current.user.id)
 
-        # Restore the items by recreating them
-        product = Current.user.products.find_by(name: removal_record['product_name'] || removal_record[:product_name])
-        if product
-          shopping_cart = Current.user.shopping_cart
-          shopping_cart.shopping_cart_items.create!(product: product)
+        shopping_cart = Current.user.shopping_cart
+        removed_items = removal_record['items'] || removal_record[:items] || []
+
+        removed_items.each do |item|
+          shopping_cart.shopping_cart_items.create!(
+            product_id: item['product_id'] || item[:product_id],
+            quantity: item['quantity'] || item[:quantity],
+            date: item['date'] || item[:date],
+            meal_plan_id: item['meal_plan_id'] || item[:meal_plan_id]
+          )
         end
 
-        @shopping_cart = Current.user.shopping_cart
+        @shopping_cart = shopping_cart
         flash[:success] = 'Produkt został przywrócony do koszyka.'
       else
         # No valid removal record found

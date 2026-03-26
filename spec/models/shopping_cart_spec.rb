@@ -194,5 +194,37 @@ RSpec.describe ShoppingCart, type: :model do
       expect(product_group[:category].name).not_to eq('Inne')
       expect(product_group[:category].name).to start_with('Test Category')
     end
+
+    it 'groups cart items by canonical product name and sums their quantities and measures' do
+      canonical_product = create(:canonical_product, user: user, name: 'Jogurt naturalny')
+      product.update_columns(name: 'Jogurt naturalny', canonical_product_id: canonical_product.id)
+      product.ingredient_measures.create!(amount: 150.0, unit: 'g')
+
+      other_product = create(:product, meal: meal, diet_set: diet_set)
+      other_product.update_columns(name: 'Jogurt naturalny 2% tłuszczu', canonical_product_id: canonical_product.id)
+      other_product.ingredient_measures.create!(amount: 50.0, unit: 'g')
+
+      create(:shopping_cart_item,
+             shopping_cart: shopping_cart,
+             product: product,
+             meal_plan: meal_plan,
+             quantity: 1)
+      create(:shopping_cart_item,
+             shopping_cart: shopping_cart,
+             product: other_product,
+             meal_plan: meal_plan,
+             quantity: 2)
+
+      result = shopping_cart.group_and_sum_by_cart_items
+      products = result.flat_map { |group| group[:products] }
+      grouped_product = products.find { |item| item[:name] == 'Jogurt naturalny' }
+
+      expect(grouped_product).to be_present
+      expect(products.count { |item| item[:name] == 'Jogurt naturalny' }).to eq(1)
+      expect(grouped_product[:quantity]).to eq(3)
+      expect(grouped_product[:aggregated_ingredient_measures]).to contain_exactly(
+        { unit: 'g', amount: 250.0 }
+      )
+    end
   end
 end

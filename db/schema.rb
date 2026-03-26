@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_233000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
     t.string "name"
     t.boolean "active", default: true, null: false
     t.text "parsed_json"
+    t.integer "meals_per_day"
     t.index ["user_id"], name: "index_diets_on_user_id"
   end
 
@@ -123,6 +124,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_ingredient_measures_on_product_id"
+  end
+
+  create_table "meal_plan_product_substitutions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "meal_plan_id", null: false
+    t.integer "product_id", null: false
+    t.string "source_product", null: false
+    t.string "replacement_product", null: false
+    t.float "source_amount"
+    t.string "source_unit"
+    t.float "replacement_amount"
+    t.string "replacement_unit"
+    t.float "amount_multiplier"
+    t.integer "replacement_canonical_product_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meal_plan_id"], name: "index_meal_plan_product_substitutions_on_meal_plan_id"
+    t.index ["product_id"], name: "index_meal_plan_product_substitutions_on_product_id"
+    t.index ["replacement_canonical_product_id"], name: "idx_on_replacement_canonical_product_id_3c28a877f7"
+    t.index ["user_id", "meal_plan_id", "product_id", "replacement_product"], name: "index_meal_plan_product_substitutions_on_scope_and_replacement", unique: true
+    t.index ["user_id"], name: "index_meal_plan_product_substitutions_on_user_id"
   end
 
   create_table "meal_plans", force: :cascade do |t|
@@ -206,6 +228,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "shopping_cart_invitations", force: :cascade do |t|
+    t.integer "inviter_id", null: false
+    t.integer "invitee_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "accepted_at"
+    t.datetime "responded_at"
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invitee_id"], name: "index_shopping_cart_invitations_on_invitee_id"
+    t.index ["inviter_id", "invitee_id", "status"], name: "idx_cart_invites_on_pair_and_status"
+    t.index ["inviter_id"], name: "index_shopping_cart_invitations_on_inviter_id"
+    t.index ["status"], name: "index_shopping_cart_invitations_on_status"
+  end
+
   create_table "shopping_cart_items", force: :cascade do |t|
     t.integer "shopping_cart_id", null: false
     t.integer "product_id", null: false
@@ -225,7 +262,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_shopping_carts_on_user_id"
+    t.index ["user_id"], name: "index_shopping_carts_on_user_id", unique: true
   end
 
   create_table "substitution_product_matches", force: :cascade do |t|
@@ -252,6 +289,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
     t.string "email_address", null: false
     t.string "password_digest", null: false
     t.boolean "admin", default: false, null: false
+    t.integer "active_shopping_cart_id"
+    t.index ["active_shopping_cart_id"], name: "index_users_on_active_shopping_cart_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
@@ -265,6 +304,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
   add_foreign_key "diet_sets", "diets"
   add_foreign_key "diets", "users"
   add_foreign_key "ingredient_measures", "products", on_delete: :cascade
+  add_foreign_key "meal_plan_product_substitutions", "canonical_products", column: "replacement_canonical_product_id"
+  add_foreign_key "meal_plan_product_substitutions", "meal_plans"
+  add_foreign_key "meal_plan_product_substitutions", "products"
+  add_foreign_key "meal_plan_product_substitutions", "users"
   add_foreign_key "meal_plans", "diet_set_plans"
   add_foreign_key "meal_plans", "meals", on_delete: :cascade
   add_foreign_key "meals", "diet_sets"
@@ -280,9 +323,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_160000) do
   add_foreign_key "products", "products", column: "associated_product_id"
   add_foreign_key "products", "units"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shopping_cart_invitations", "users", column: "invitee_id"
+  add_foreign_key "shopping_cart_invitations", "users", column: "inviter_id"
   add_foreign_key "shopping_cart_items", "meal_plans", on_delete: :cascade
   add_foreign_key "shopping_cart_items", "products"
   add_foreign_key "shopping_cart_items", "shopping_carts"
   add_foreign_key "shopping_carts", "users"
   add_foreign_key "substitution_product_matches", "users"
+  add_foreign_key "users", "shopping_carts", column: "active_shopping_cart_id"
 end

@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory(:diet) do
     name { "Diet for #{Faker::Name.first_name}" }
+    meals_per_day { 5 }
     user
 
     trait :with_pdf do

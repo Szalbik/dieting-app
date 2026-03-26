@@ -4,18 +4,18 @@ class ShoppingCart < ApplicationRecord
   belongs_to :user
   has_many :shopping_cart_items, dependent: :destroy
   has_many :custom_cart_items, dependent: :destroy
+  has_many :active_users, class_name: 'User', foreign_key: :active_shopping_cart_id, inverse_of: :active_shopping_cart
 
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.
     # Use the new method that properly scopes to the current user
-    items = ShoppingCartItem.with_current_or_future_diet_set_plan_for_user(user)
+    items = ShoppingCartItem.with_current_or_future_diet_set_plan_for_users(member_users)
       .where(shopping_cart: self)
       .joins(:meal_plan)
       .where(meal_plans: { selected_for_cart: true })
       .includes(product: [:ingredient_measures, :category])
 
-    # Group shopping cart items by product name.
-    grouped_by_name = items.group_by { |item| item.product.name }
+    grouped_by_name = items.group_by { |item| item.product.shopping_cart_group_name }
 
     # Build a hash to hold aggregated product data.
     summed_products = {}
@@ -85,5 +85,26 @@ class ShoppingCart < ApplicationRecord
     groups.values.sort_by do |group|
       order_hash[group[:category].name] || Float::INFINITY
     end
+  end
+
+  def member_users
+    active_users.presence || [user]
+  end
+
+  def shared?
+    member_users.many?
+  end
+
+  def member_labels
+    member_users.map { |member| member.first_name.presence || member.email_address }
+  end
+
+  def broadcast_contents
+    broadcast_replace_later_to(
+      self,
+      target: 'shopping_cart',
+      partial: 'shopping_carts/shopping_cart',
+      locals: { shopping_cart: self }
+    )
   end
 end

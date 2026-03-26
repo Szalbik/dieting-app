@@ -9,10 +9,18 @@ class ShoppingCartItem < ApplicationRecord
 
   delegate :selected_for_cart, to: :meal_plan
 
-  def self.with_current_or_future_diet_set_plan_for_user(user)
-    user_diet_ids = user.diets.pluck(:id)
+  after_commit :broadcast_cart_changes
 
-    where(<<~SQL, Date.current, user_diet_ids, user_diet_ids)
+  def self.with_current_or_future_diet_set_plan_for_user(user)
+    with_current_or_future_diet_set_plan_for_users(user)
+  end
+
+  def self.with_current_or_future_diet_set_plan_for_users(users)
+    user_ids = Array(users).compact.map { |user| user.respond_to?(:id) ? user.id : user }.uniq
+    diet_ids = Diet.where(user_id: user_ids).pluck(:id)
+    return none if diet_ids.empty?
+
+    where(<<~SQL, Date.current, diet_ids, diet_ids)
       EXISTS (
         SELECT 1
         FROM diet_set_plans mp
@@ -31,5 +39,11 @@ class ShoppingCartItem < ApplicationRecord
           )
       )
     SQL
+  end
+
+  private
+
+  def broadcast_cart_changes
+    shopping_cart.broadcast_contents
   end
 end

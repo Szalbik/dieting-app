@@ -48,6 +48,30 @@ RSpec.describe DietSetPlansController, type: :controller do
     end
   end
 
+  describe 'POST #add_product_substitution' do
+    it 'adds a local substitution scoped to the meal plan and product' do
+      allow(Current).to receive(:user).and_return(user)
+      product.ingredient_measures.create!(amount: 100.0, unit: 'g')
+
+      post :add_product_substitution, params: {
+        meal_plan_id: meal_plan.id,
+        product_id: product.id,
+        replacement_name: 'Losos',
+        replacement_amount: '140',
+        replacement_unit: 'g',
+        date: Date.current
+      }
+
+      substitution = user.meal_plan_product_substitutions.last
+      expect(response).to redirect_to(diet_set_plans_path(date: Date.current.to_s))
+      expect(substitution.meal_plan).to eq(meal_plan)
+      expect(substitution.product).to eq(product)
+      expect(substitution.replacement_product).to eq('Losos')
+      expect(substitution.replacement_unit).to eq('g')
+      expect(substitution.amount_multiplier).to be_within(0.001).of(1.4)
+    end
+  end
+
   describe 'POST #cycle_product_replacement' do
     before do
       create(:product_substitution, user: user, source_product: 'Tunczyk (100g)', replacement_product: 'Losos 140g')
@@ -82,6 +106,7 @@ RSpec.describe DietSetPlansController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq(Mime[:turbo_stream].to_s)
+      expect(response.body).to include('target="flash"')
     end
 
     it 'returns to base product after cycling through all replacements' do
@@ -169,6 +194,24 @@ RSpec.describe DietSetPlansController, type: :controller do
       product.reload
       expect(product.base_product_name).to eq('płatków owsianych')
       expect(product.name).to eq('płatków kukurydzianych')
+    end
+
+    it 'localizes meal edits so another day keeps the original product' do
+      allow(Current).to receive(:user).and_return(user)
+      other_day_plan = create(:diet_set_plan, diet_set: diet_set, diet: diet, date: Date.current + 1.day)
+      create(:meal_plan, diet_set_plan: other_day_plan, meal: meal)
+
+      post :cycle_product_replacement, params: {
+        meal_plan_id: meal_plan.id,
+        product_id: product.id,
+        date: Date.current
+      }
+
+      expect(response).to redirect_to(diet_set_plans_path(date: Date.current.to_s))
+      expect(meal_plan.reload.meal).not_to eq(meal)
+      expect(product.reload.name).to eq('Tunczyk')
+      expect(meal_plan.products.first.name).to satisfy { |name| %w[Losos Makrela].include?(name) }
+      expect(other_day_plan.meal_plans.first.products.first.name).to eq('Tunczyk')
     end
   end
 end

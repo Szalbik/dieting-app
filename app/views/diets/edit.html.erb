@@ -11,6 +11,14 @@
             <%= form.text_field :name, class: 'block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
           </div>
         </div>
+
+        <div class="mt-6">
+          <%= form.label :meals_per_day, 'Meals per day', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+          <div class="mt-2">
+            <%= form.number_field :meals_per_day, value: form.object.meals_per_day || 5, min: 1, max: 10, class: 'block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+          </div>
+          <p class="max-w-2xl mt-1 text-sm leading-6 text-gray-600">This value is reused when the PDF is reparsed.</p>
+        </div>
       </div>
 
       <div class="flex items-center justify-end mt-6 gap-x-6">

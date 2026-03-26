@@ -9,4 +9,12 @@ class CustomCartItem < ApplicationRecord
 
   normalizes :name, with: ->(n) { n.to_s.strip.presence }
   normalizes :unit, with: ->(u) { u.to_s.strip.presence || 'szt' }
+
+  after_commit :broadcast_cart_changes
+
+  private
+
+  def broadcast_cart_changes
+    shopping_cart.broadcast_contents
+  end
 end

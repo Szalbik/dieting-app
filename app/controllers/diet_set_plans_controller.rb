@@ -6,8 +6,9 @@ class DietSetPlansController < ApplicationController
   before_action :set_diet_set_plan, only: [:show, :toggle_shopping_bag]
 
   def toggle_shopping_bag
-    @meal_plan = MealPlan.find(params[:id])
+    @meal_plan = MealPlan.joins(diet_set_plan: :diet).find_by!(id: params[:id], diets: { user_id: Current.user.id })
     @meal_plan.update(selected_for_cart: !@meal_plan.selected_for_cart)
+    sync_current_shopping_cart!
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to diet_set_plans_path(date: date) }
@@ -36,7 +37,7 @@ class DietSetPlansController < ApplicationController
       diet_set.meals.each do |meal|
         @diet_set_plan.meal_plans.create!(meal: meal)
       end
-      add_diet_set_plan_products_to_cart(@diet_set_plan)
+      sync_current_shopping_cart!
       redirect_to diet_set_plans_path(date: date), notice: 'Meal plan was successfully updated.'
     else
       render :show
@@ -67,6 +68,8 @@ class DietSetPlansController < ApplicationController
         current_plan.update!(date: target_date)
       end
 
+      sync_current_shopping_cart!
+
       render json: { success: true, message: 'Zestawy diety zostały zamienione pomyślnie.' }
     else
       render json: { success: false, message: 'Nie można znaleźć planów diety dla wybranych dat.' }, status: :unprocessable_entity
@@ -94,6 +97,8 @@ class DietSetPlansController < ApplicationController
       redirect_to diet_set_plans_path(date: date), alert: 'Podaj poprawny produkt zamienny.'
       return
     end
+
+    product = localize_product_for_meal_plan(meal_plan: meal_plan, product: product)
 
     ActiveRecord::Base.transaction do
       product.update!(
@@ -125,8 +130,10 @@ class DietSetPlansController < ApplicationController
       return
     end
 
+    row_dom_id = view_context.dom_id(product, :ingredient_row)
+    product = localize_product_for_meal_plan(meal_plan: meal_plan, product: product)
     original_name = original_name_for(meal_plan: meal_plan, product: product)
-    base_name = resolve_base_name_for(product)
+    base_name = resolve_base_name_for(product, meal_plan: meal_plan)
     base_canonical_product = resolve_canonical_product(base_name) || resolve_base_canonical_product_for(product)
     cycle_candidates = display_cycle_for(
       meal_plan: meal_plan,
@@ -161,12 +168,13 @@ class DietSetPlansController < ApplicationController
     factor_from_name = same_name?(product.name, original_name) ? base_name : product.name
     factor_to_name = same_name?(next_name, original_name) ? base_name : next_name
 
-    factor = ProductSubstitution.local_factor_for(
-      user: Current.user,
+    factor = factor_for_cycle(
+      meal_plan: meal_plan,
+      product: product,
       base_name: base_name,
       from_name: factor_from_name,
       to_name: factor_to_name
-    ).to_f
+    )
     factor = 1.0 if factor <= 0
 
     ActiveRecord::Base.transaction do
@@ -191,16 +199,72 @@ class DietSetPlansController < ApplicationController
       format.turbo_stream do
         prepare_plan_for_refresh
         flash.now[:notice] = "Podmieniono na: #{next_name}"
-        render turbo_stream: turbo_stream.replace(
-          view_context.dom_id(product, :ingredient_row),
-          partial: 'diet_set_plans/ingredient_row',
-          locals: { meal_plan: meal_plan, product: product.reload }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            'flash',
+            partial: 'shared/flash',
+            locals: { flash: flash }
+          ),
+          turbo_stream.replace(
+            row_dom_id,
+            partial: 'diet_set_plans/ingredient_row',
+            locals: { meal_plan: meal_plan, product: product.reload }
+          )
+        ]
       end
       format.html { redirect_to diet_set_plans_path(date: date), notice: "Podmieniono na: #{next_name}" }
     end
   rescue ActiveRecord::RecordInvalid => e
     redirect_to diet_set_plans_path(date: date), alert: "Nie udało się podmienić produktu: #{e.message}"
+  end
+
+  def add_product_substitution
+    meal_plan = MealPlan
+      .joins(diet_set_plan: :diet)
+      .find_by(id: product_substitution_params[:meal_plan_id], diets: { user_id: Current.user.id })
+
+    unless meal_plan
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono posiłku.'
+      return
+    end
+
+    product = meal_plan.products.find_by(id: product_substitution_params[:product_id])
+    unless product
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono produktu.'
+      return
+    end
+
+    substitution = Current.user.meal_plan_product_substitutions.new(
+      meal_plan: meal_plan,
+      product: product,
+      replacement_product: product_substitution_params[:replacement_name].presence || product_substitution_params[:replacement_product],
+      replacement_amount: product_substitution_params[:replacement_amount],
+      replacement_unit: product_substitution_params[:replacement_unit]
+    )
+    substitution.capture_source_from!(
+      product: product,
+      base_name: resolve_base_name_for(product, meal_plan: meal_plan)
+    )
+
+    if substitution.save
+      render_product_row_update(meal_plan: meal_plan, product: product, notice: 'Zamiennik został dodany do tego posiłku.')
+    else
+      render_product_row_update(meal_plan: meal_plan, product: product, alert: substitution.errors.full_messages.to_sentence)
+    end
+  end
+
+  def remove_product_substitution
+    substitution = Current.user.meal_plan_product_substitutions.find_by(id: params[:substitution_id])
+    unless substitution
+      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono zamiennika.'
+      return
+    end
+
+    meal_plan = substitution.meal_plan
+    product = substitution.product
+    substitution.destroy
+
+    render_product_row_update(meal_plan: meal_plan, product: product, notice: 'Zamiennik został usunięty z tego posiłku.')
   end
 
   private
@@ -222,35 +286,19 @@ class DietSetPlansController < ApplicationController
     params.permit(:meal_plan_id, :product_id, :replacement_name)
   end
 
+  def product_substitution_params
+    params.permit(:meal_plan_id, :product_id, :replacement_product, :replacement_name, :replacement_amount, :replacement_unit)
+  end
+
   def shopping_cart
     @shopping_cart ||= Current.user.shopping_cart
   end
 
-  def add_diet_set_plan_products_to_cart(diet_set_plan)
-    # Iterate over each meal_plan in the given diet_set_plan.
-    diet_set_plan.meal_plans.includes(meal: :products).each do |meal_plan|
-      # Only process products for meal_plans that are selected for cart.
-      next unless meal_plan.selected_for_cart
-
-      # For each product in the meal associated with this meal_plan...
-      meal_plan.products.each do |product|
-        # Find a shopping cart item that already has this product, date, and meal_plan.
-        cart_item = shopping_cart.shopping_cart_items.find_by(
-          product_id: product.id,
-          date: date,
-          meal_plan_id: meal_plan.id)
-        if cart_item
-          cart_item.increment!(:quantity)
-        else
-          Current.user.shopping_cart.shopping_cart_items.create!(
-            product: product,
-            quantity: 1,
-            date: date,
-            meal_plan: meal_plan
-          )
-        end
-      end
-    end
+  def sync_current_shopping_cart!
+    ShoppingCartSyncService.new(
+      shopping_cart: shopping_cart,
+      users: shopping_cart.member_users
+    ).call
   end
 
   def load_substitution_suggestions
@@ -260,7 +308,7 @@ class DietSetPlansController < ApplicationController
     products = @diet_set_plan.meal_plans.includes(:products).flat_map(&:products).uniq
     products.each do |product|
       meal_plan = @diet_set_plan.meal_plans.find { |candidate| candidate.products.exists?(id: product.id) }
-      base_name = resolve_base_name_for(product)
+      base_name = resolve_base_name_for(product, meal_plan: meal_plan)
       @replacement_cycles[product.id] = display_cycle_for(
         meal_plan: meal_plan,
         product: product,
@@ -276,13 +324,13 @@ class DietSetPlansController < ApplicationController
     load_substitution_suggestions
   end
 
-  def resolve_base_name_for(product)
+  def resolve_base_name_for(product, meal_plan: nil)
     explicit = ProductSubstitution.strip_quantity_from_name(product.base_product_name.to_s)
     current_name = ProductSubstitution.strip_quantity_from_name(product.name.to_s)
-    return explicit if candidate_cycle_for(explicit).size > 1
+    return explicit if candidate_cycle_for(explicit, meal_plan: meal_plan, product: product).size > 1
 
     base_canonical_name = product.base_canonical_product&.name
-    return base_canonical_name if candidate_cycle_for(base_canonical_name).size > 1
+    return base_canonical_name if candidate_cycle_for(base_canonical_name, meal_plan: meal_plan, product: product).size > 1
 
     product_norm = ProductSubstitution.normalize_name(product.name)
     match = Current.user.substitution_product_matches.find do |m|
@@ -290,7 +338,7 @@ class DietSetPlansController < ApplicationController
       match_norm == product_norm || product_norm.include?(match_norm) || match_norm.include?(product_norm)
     end
     matched_source = ProductSubstitution.strip_quantity_from_name(match&.source_product)
-    return matched_source if candidate_cycle_for(matched_source).size > 1
+    return matched_source if candidate_cycle_for(matched_source, meal_plan: meal_plan, product: product).size > 1
 
     explicit_differs_from_current = explicit.present? &&
       ProductSubstitution.normalize_name(explicit) != ProductSubstitution.normalize_name(current_name)
@@ -303,14 +351,24 @@ class DietSetPlansController < ApplicationController
     ProductSubstitution.strip_quantity_from_name(product.name)
   end
 
-  def candidate_cycle_for(base_name)
+  def candidate_cycle_for(base_name, meal_plan: nil, product: nil)
     return [] if base_name.blank? || Current.user.blank?
+
+    if meal_plan.present? && product.present?
+      local_cycle = MealPlanProductSubstitution.local_cycle_for(
+        user: Current.user,
+        meal_plan: meal_plan,
+        product: product,
+        base_name: base_name
+      )
+      return local_cycle if local_cycle.size > 1
+    end
 
     ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
   end
 
   def display_cycle_for(meal_plan:, product:, base_name:, original_name:)
-    substitutions = ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+    substitutions = candidate_cycle_for(base_name, meal_plan: meal_plan, product: product)
     original = ProductSubstitution.strip_quantity_from_name(original_name.to_s)
     return substitutions if original.blank?
 
@@ -341,6 +399,7 @@ class DietSetPlansController < ApplicationController
 
   def sensible_cycle_candidates(meal_plan:, product:, base_name:, cycle_candidates:)
     return cycle_candidates if cycle_candidates.size <= 2
+    return cycle_candidates if local_substitutions_enabled_for?(meal_plan: meal_plan, product: product)
     return cycle_candidates unless ai_meal_filter_enabled?
 
     key_payload = [
@@ -376,5 +435,62 @@ class DietSetPlansController < ApplicationController
 
   def ai_meal_filter_enabled?
     !Rails.env.test?
+  end
+
+  def local_substitutions_enabled_for?(meal_plan:, product:)
+    MealPlanProductSubstitution.for_product(
+      user: Current.user,
+      meal_plan: meal_plan,
+      product: product
+    ).exists?
+  end
+
+  def factor_for_cycle(meal_plan:, product:, base_name:, from_name:, to_name:)
+    if local_substitutions_enabled_for?(meal_plan: meal_plan, product: product)
+      return MealPlanProductSubstitution.local_factor_for(
+        user: Current.user,
+        meal_plan: meal_plan,
+        product: product,
+        base_name: base_name,
+        from_name: from_name,
+        to_name: to_name
+      ).to_f
+    end
+
+    ProductSubstitution.local_factor_for(
+      user: Current.user,
+      base_name: base_name,
+      from_name: from_name,
+      to_name: to_name
+    ).to_f
+  end
+
+  def localize_product_for_meal_plan(meal_plan:, product:)
+    MealPlanMealLocalizer.new(meal_plan: meal_plan).localize_product(product: product)
+  end
+
+  def render_product_row_update(meal_plan:, product:, notice: nil, alert: nil)
+    respond_to do |format|
+      format.turbo_stream do
+        prepare_plan_for_refresh
+        flash.now[:notice] = notice if notice.present?
+        flash.now[:alert] = alert if alert.present?
+        render turbo_stream: [
+          turbo_stream.replace(
+            'flash',
+            partial: 'shared/flash',
+            locals: { flash: flash }
+          ),
+          turbo_stream.replace(
+            view_context.dom_id(product, :ingredient_row),
+            partial: 'diet_set_plans/ingredient_row',
+            locals: { meal_plan: meal_plan, product: product.reload }
+          )
+        ]
+      end
+      format.html do
+        redirect_to diet_set_plans_path(date: date), notice: notice, alert: alert
+      end
+    end
   end
 end

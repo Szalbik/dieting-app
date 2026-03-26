@@ -1,16 +1,16 @@
 <% @flash.each do |key, value| %>
-  <div class="fixed inset-0 z-40 flex items-end px-4 py-6 pointer-events-none sm:items-start sm:p-6"
+  <div class="pointer-events-none fixed inset-x-0 top-20 z-[70] flex justify-center px-4 sm:top-20 sm:justify-end sm:px-6"
        x-data="{ open: true }"
        x-show="open"
        x-transition:enter="transform ease-out duration-300 transition"
-       x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+       x-transition:enter-start="-translate-y-2 opacity-0 sm:translate-x-2 sm:translate-y-0"
        x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
        x-transition:leave="transition ease-in duration-100"
        x-transition:leave-start="opacity-100"
-       x-transition:leave-end="opacity-0"
+       x-transition:leave-end="opacity-0 -translate-y-1"
        aria-live="assertive">
-    <div class="flex flex-col items-center w-full space-y-4 sm:items-end">
-      <div class="w-full max-w-sm overflow-hidden pointer-events-auto rounded-xl bg-white/95 backdrop-blur-sm shadow-large ring-1 ring-slate-200/60 animate-scale-in">
+    <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
+      <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-xl bg-white/95 backdrop-blur-sm shadow-large ring-1 ring-slate-200/60 animate-scale-in">
         <div class="p-4">
           <div class="flex items-start">
             <div class="flex-shrink-0">

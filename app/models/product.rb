@@ -4,6 +4,8 @@ class Product < ApplicationRecord
   belongs_to :diet_set, optional: true
   belongs_to :unit, optional: true
   has_many :ingredient_measures, dependent: :destroy
+  has_many :meal_plan_product_substitutions, dependent: :destroy
+  has_many :shopping_cart_items
   has_one :product_category, dependent: :destroy, inverse_of: :product
   has_one :category, through: :product_category
   belongs_to :meal, optional: true
@@ -194,5 +196,11 @@ class Product < ApplicationRecord
 
   def owner_user
     diet_set&.diet&.user || meal&.diet_set&.diet&.user
+  end
+
+  def shopping_cart_group_name
+    canonical_product&.name.presence ||
+      ProductSubstitution.strip_quantity_from_name(name).presence ||
+      name
   end
 end
