@@ -12,9 +12,22 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: ['DM Sans', ...defaultTheme.fontFamily.sans],
+        serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
       },
       colors: {
+        brand: {
+          sage: '#7c9e7e',
+          'sage-light': '#a8c4aa',
+          'sage-dark': '#4a6e4c',
+          cream: '#f7f2eb',
+          'warm-white': '#fdfaf6',
+          charcoal: '#2a2a2a',
+          'soft-gray': '#6b6b6b',
+          accent: '#c8744a',
+          'accent-light': '#e8a882',
+          paper: '#ede8df',
+        },
         primary: {
           50: '#ecfdf5',
           100: '#d1fae5',

@@ -7,10 +7,10 @@
     .group('diet_sets.id')
     .order(Arel.sql('COUNT(diet_set_plans.id) DESC')) %>
 
-<div class="w-full max-w-md mx-auto mt-6 mb-24 p-4 bg-white/90 rounded-2xl shadow-soft border border-slate-100">
+<div class="mx-auto mt-6 mb-24 w-full max-w-md rounded-3xl border border-emerald-100/70 bg-white/90 p-6 shadow-soft">
   <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
     <%= hidden_field_tag :date, params[:date] %>
-    <h3 class="text-xl font-bold text-center text-emerald-700 mb-6 flex items-center justify-center gap-2">
+    <h3 class="mb-6 flex items-center justify-center gap-2 text-center text-xl font-bold text-brand-sage-dark">
       <span class="inline-block text-2xl">🥗</span> Przypisz zestaw
     </h3>
     <div class="space-y-3">
@@ -18,9 +18,9 @@
         <div class="flex items-center gap-3">
           <%= radio_button_tag "diet_set_plan[diet_set_id]", diet_set.id, false, id: "diet_set_plan_diet_set_#{diet_set.id}", class: "peer hidden" %>
           <label for="diet_set_plan_diet_set_<%= diet_set.id %>"
-            class="flex-1 flex items-center justify-between px-4 py-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200
-                   peer-checked:bg-emerald-50 peer-checked:border-emerald-400 peer-checked:shadow-md
-                   hover:bg-emerald-50 hover:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-400">
+            class="flex flex-1 cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all duration-200
+                   peer-checked:border-brand-sage peer-checked:bg-emerald-50 peer-checked:shadow-md
+                   hover:border-brand-sage hover:bg-emerald-50 focus-within:ring-2 focus-within:ring-brand-sage">
             <span class="font-semibold text-slate-800"><%= diet_set.derived_name_from_meal %></span>
             <% if diet_set.diet_set_plans.count.positive? %>
               <span class="ml-2 text-xs text-emerald-600 bg-emerald-100 rounded-full px-2 py-0.5 font-medium">
@@ -32,7 +32,7 @@
       <% end %>
     </div>
     <div class="mt-8 flex justify-center">
-      <%= f.submit "Przypisz dietę", class: "inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200 w-full sm:w-auto" %>
+      <%= f.submit "Przypisz dietę", class: "inline-flex w-full items-center justify-center rounded-full bg-brand-sage-dark px-6 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-brand-accent sm:w-auto" %>
     </div>
   <% end %>
 </div>

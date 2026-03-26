@@ -1,0 +1,45 @@
+<div class="space-y-10">
+  <%= render Ui::SectionHeaderComponent.new(
+    label: "Style guide",
+    title: "DietApp design system",
+    subtitle: "Tokeny, komponenty i wzorce dla nowych ekranow."
+  ) %>
+
+  <%= render Ui::CardComponent.new do %>
+    <h3 class="text-xl font-bold">Color tokens</h3>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-2xl bg-brand-sage p-4 text-white">brand-sage</div>
+      <div class="rounded-2xl bg-brand-sage-dark p-4 text-white">brand-sage-dark</div>
+      <div class="rounded-2xl bg-brand-accent p-4 text-white">brand-accent</div>
+      <div class="rounded-2xl bg-brand-cream p-4 text-brand-charcoal">brand-cream</div>
+    </div>
+  <% end %>
+
+  <%= render Ui::CardComponent.new do %>
+    <h3 class="text-xl font-bold">Buttons</h3>
+    <div class="mt-5 flex flex-wrap gap-3">
+      <%= render Ui::ButtonComponent.new(href: "#", variant: :primary) { "Primary" } %>
+      <%= render Ui::ButtonComponent.new(href: "#", variant: :secondary) { "Secondary" } %>
+      <%= render Ui::ButtonComponent.new(href: "#", variant: :ghost) { "Ghost" } %>
+      <%= render Ui::ButtonComponent.new(href: "#", variant: :danger) { "Danger" } %>
+    </div>
+  <% end %>
+
+  <%= render Ui::CardComponent.new do %>
+    <h3 class="text-xl font-bold">Form field</h3>
+    <div class="mt-5 max-w-md">
+      <%= render Ui::InputComponent.new(label: "Email", hint: "Uzywaj app-input dla formularzy.") do %>
+        <input type="email" class="app-input" placeholder="name@example.com">
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render Ui::CardComponent.new do %>
+    <h3 class="text-xl font-bold">Badges and section headers</h3>
+    <div class="mt-5 flex gap-3">
+      <%= render Ui::BadgeComponent.new(label: "Neutral") %>
+      <%= render Ui::BadgeComponent.new(label: "Success", variant: :success) %>
+      <%= render Ui::BadgeComponent.new(label: "Accent", variant: :accent) %>
+    </div>
+  <% end %>
+</div>

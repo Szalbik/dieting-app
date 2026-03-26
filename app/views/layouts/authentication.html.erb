@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html class='h-full bg-white'>
+<html class="h-full">
   <head>
-    <title>Registration</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DietingApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= render partial: "shared/favicons" %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
-  <body>
-    <div class="h-full">
+  <body class="min-h-screen bg-gradient-to-b from-brand-warm-white via-brand-warm-white to-emerald-50/70">
+    <main class="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(110,131,94,0.12),transparent_45%)]"></div>
       <%= yield %>
-    </div>
-    <%= render(FlashComponent.new(flash: flash)) %>
+    </main>
+    <%= render "shared/flash", flash: flash %>
   </body>
 </html>

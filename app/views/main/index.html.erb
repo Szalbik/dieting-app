@@ -1,134 +1,83 @@
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
-<div class="bg-gradient-to-br from-slate-50 via-white to-emerald-50">
-  <main>
-    <!-- Hero section -->
-    <div class="relative pt-4 isolate">
-      <!-- Background pattern -->
-      <div class="absolute inset-0 -z-10 h-full w-full bg-gradient-health"></div>
-      <svg class="absolute inset-0 -z-10 h-full w-full stroke-slate-200/30 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]" aria-hidden="true">
-        <defs>
-          <pattern id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
-            <path d="M100 200V.5M.5 .5H200" fill="none" />
-          </pattern>
-        </defs>
-        <svg x="50%" y="-1" class="overflow-visible fill-slate-50/50">
-          <path d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z" stroke-width="0" />
-        </svg>
-        <rect width="100%" height="100%" stroke-width="0" fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)" />
-      </svg>
-      
-      <div class="px-6 py-24 mx-auto max-w-7xl sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
-        <div class="max-w-2xl mx-auto lg:mx-0 lg:flex-auto">
-          <div class="flex items-center gap-x-6">
-            <div class="flex items-center gap-x-2 rounded-full bg-emerald-100/80 backdrop-blur-sm px-3 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20 animate-fade-in">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              Now with AI-powered nutrition insights
-            </div>
-          </div>
-          
-          <h1 class="max-w-lg mt-10 text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl animate-slide-up">
-            Transform your 
-            <span class="bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">nutrition journey</span>
-          </h1>
-          
-          <p class="mt-6 text-lg leading-8 text-slate-600 animate-slide-up">
-            Streamline your shopping experience with our intuitive and user-friendly application. Create, manage, and share shopping lists with ease. Never forget an item again and save time on your next shopping trip.
-          </p>
-          
-          <div class="flex items-center mt-10 gap-x-6 animate-slide-up">
-            <%= link_to new_registration_path, class: 'inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200 group' do %>
-              Get started for free
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            <% end %>
-            
-            <a href="#features" class="text-base font-semibold leading-6 text-slate-900 hover:text-emerald-600 transition-colors duration-200 group">
-              Learn more 
-              <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
-        </div>
-        
-        <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
-          <div class="relative">
-            <!-- Feature cards -->
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1">
-              <!-- Diet Management Card -->
-              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-emerald-200/60 transition-all duration-200 group animate-fade-in">
-                <div class="p-6">
-                  <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                      <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-emerald-600">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="text-lg font-semibold text-slate-900">Smart Diet Management</h3>
-                      <p class="text-sm text-slate-600">Upload PDFs and let AI parse your meal plans</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Shopping List Card -->
-              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-amber-200/60 transition-all duration-200 group animate-fade-in" style="animation-delay: 0.1s;">
-                <div class="p-6">
-                  <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                      <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-600">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="text-lg font-semibold text-slate-900">Smart Shopping Lists</h3>
-                      <p class="text-sm text-slate-600">Automatically generate organized shopping lists</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Integration Card -->
-              <div class="overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm shadow-soft ring-1 ring-slate-200/60 hover:shadow-medium hover:ring-sky-200/60 transition-all duration-200 group animate-fade-in" style="animation-delay: 0.2s;">
-                <div class="p-6">
-                  <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                      <div class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center group-hover:bg-sky-200 transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-sky-600">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="text-lg font-semibold text-slate-900">Seamless Integration</h3>
-                      <p class="text-sm text-slate-600">Connect with Todoist and other productivity tools</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+<% content_for :marketing_page, true %>
+<div class="bg-brand-warm-white text-brand-charcoal">
+  <nav class="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-brand-sage/20 bg-brand-warm-white/85 px-6 py-5 backdrop-blur-sm lg:px-16">
+    <div class="logo text-2xl font-bold font-serif text-brand-sage-dark">Diet<span class="text-brand-accent">App</span></div>
+    <ul class="hidden list-none items-center gap-10 md:flex">
+      <li><a href="#how" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">How it works</a></li>
+      <li><a href="#features" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">Features</a></li>
+      <li><a href="#pricing" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">Pricing</a></li>
+      <li><%= link_to "Get early access", new_registration_path, class: "rounded-full bg-brand-sage-dark px-5 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-accent" %></li>
+    </ul>
+  </nav>
+
+  <section class="relative grid min-h-screen items-center gap-16 overflow-hidden px-6 pt-32 pb-16 lg:grid-cols-2 lg:px-16">
+    <div class="pointer-events-none absolute -right-[10%] -top-[20%] h-[60vw] w-[60vw] bg-[radial-gradient(circle,rgba(124,158,126,0.12)_0%,transparent_70%)]"></div>
+    <div class="relative z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-sage/35 bg-brand-sage/10 px-4 py-1 text-xs font-medium uppercase tracking-[0.08em] text-brand-sage-dark">● For dietitians &amp; their patients</div>
+      <h1 class="mb-6 text-5xl font-black leading-[1.08] tracking-tight font-serif lg:text-7xl">Your diet plan,<br><em class="italic text-brand-accent">finally</em><br>effortless.</h1>
+      <p class="mb-10 max-w-xl text-lg leading-8 text-brand-soft-gray">Upload the PDF your dietitian gave you. DietApp reads it, builds your meal schedule, and generates a precise shopping list — automatically.</p>
+      <div class="flex flex-wrap gap-4">
+        <%= link_to "Start free trial", new_registration_path, class: "rounded-full bg-brand-sage-dark px-8 py-3.5 text-sm font-medium text-white shadow-[0_4px_24px_rgba(74,110,76,0.25)] hover:-translate-y-px hover:bg-brand-accent hover:shadow-[0_6px_32px_rgba(200,116,74,0.3)]" %>
+        <a href="#how" class="rounded-full border border-brand-charcoal/20 px-8 py-3.5 text-sm font-medium text-brand-charcoal hover:border-brand-sage-dark hover:text-brand-sage-dark">See how it works</a>
+      </div>
+    </div>
+
+    <div class="relative hidden lg:block">
+      <div class="absolute -left-16 bottom-20 rounded-2xl bg-white px-4 py-3 text-xs shadow-[0_12px_40px_rgba(0,0,0,0.1)]">
+        <div class="text-[0.65rem] uppercase tracking-[0.05em] text-brand-soft-gray">Weekly calories</div><div class="text-base font-bold">14,280</div><div class="text-[0.7rem] text-brand-sage-dark">↑ On track</div>
+      </div>
+      <div class="absolute -right-10 top-16 rounded-2xl bg-white px-4 py-3 text-xs shadow-[0_12px_40px_rgba(0,0,0,0.1)]">
+        <div class="text-[0.65rem] uppercase tracking-[0.05em] text-brand-soft-gray">Meals planned</div><div class="text-base font-bold">21 / 21</div><div class="text-[0.7rem] text-brand-sage-dark">This week</div>
+      </div>
+      <div class="mx-auto max-w-[320px] rounded-[32px] bg-white p-6 shadow-[0_32px_80px_rgba(0,0,0,0.12),0_8px_24px_rgba(0,0,0,0.06)]">
+        <div class="mb-4 flex items-center justify-between"><div class="text-base font-bold font-serif">Tuesday meals</div><span class="rounded-full bg-brand-sage/10 px-2.5 py-1 text-[0.7rem] font-medium text-brand-sage-dark">1,840 kcal</span></div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 rounded-2xl border border-brand-sage bg-brand-sage/10 p-4"><div class="text-3xl">🥣</div><div class="flex-1"><div class="text-sm font-medium">Oat porridge with berries</div><div class="text-xs text-brand-soft-gray">380 kcal · Breakfast</div></div><div class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-sage bg-brand-sage text-[0.65rem] text-white">✓</div></div>
+          <div class="flex items-center gap-3 rounded-2xl border border-brand-sage bg-brand-sage/10 p-4"><div class="text-3xl">🥗</div><div class="flex-1"><div class="text-sm font-medium">Grilled chicken salad</div><div class="text-xs text-brand-soft-gray">520 kcal · Lunch</div></div><div class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-sage bg-brand-sage text-[0.65rem] text-white">✓</div></div>
+          <div class="flex items-center gap-3 rounded-2xl border border-transparent bg-brand-cream p-4"><div class="text-3xl">🍝</div><div class="flex-1"><div class="text-sm font-medium">Pasta with tomato sauce</div><div class="text-xs text-brand-soft-gray">680 kcal · Dinner</div></div><div class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-sage-light text-[0.65rem] text-white">✓</div></div>
+          <div class="flex items-center gap-3 rounded-2xl border border-transparent bg-brand-cream p-4"><div class="text-3xl">🍎</div><div class="flex-1"><div class="text-sm font-medium">Apple &amp; almond butter</div><div class="text-xs text-brand-soft-gray">260 kcal · Snack</div></div><div class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-sage-light text-[0.65rem] text-white">✓</div></div>
         </div>
       </div>
     </div>
-  </main>
+  </section>
+
+  <div class="border-t border-brand-charcoal/10 px-6 pt-8 pb-12 text-center lg:px-16">
+    <p class="mb-6 text-xs uppercase tracking-[0.1em] text-brand-soft-gray">Trusted by dietitians at</p>
+    <div class="flex flex-wrap items-center justify-center gap-12 text-base font-bold font-serif text-brand-charcoal/20"><span>NutriClinic</span><span>HealthFirst</span><span>VitaBalance</span><span>MedNutrition</span><span>DietWell</span></div>
+  </div>
+
+  <section id="how" class="px-6 py-24 lg:px-16">
+    <div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">How it works</div>
+    <h2 class="max-w-3xl text-4xl font-black font-serif tracking-tight">From PDF to shopping cart in minutes.</h2>
+    <p class="mt-4 mb-14 max-w-2xl text-lg leading-8 text-brand-soft-gray">No manual entry. No guesswork. Your dietitian's plan gets turned into a clear, actionable routine.</p>
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <% [["01","📄","Upload your diet PDF","Drop in the PDF your dietitian created. DietApp reads it automatically — any format, any layout."],["02","🍽️","Browse your meals","See all your meals organised by day and type. Swap alternatives suggested by the plan with one tap."],["03","📅","Plan your week","Pick meals for each day of the week. Mix, repeat, or keep it exactly as your dietitian prescribed."],["04","🛒","Get your shopping list","A precise list — quantities, categories, everything — ready to take to the store or share with a delivery app."]].each do |s| %>
+        <div class="relative overflow-hidden rounded-3xl bg-brand-cream p-8 transition hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)]"><div class="absolute right-4 top-1 text-8xl font-black font-serif text-brand-sage/15"><%= s[0] %></div><div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-sage-dark text-2xl"><%= s[1] %></div><h3 class="mb-2 text-xl font-bold font-serif"><%= s[2] %></h3><p class="text-sm leading-6 text-brand-soft-gray"><%= s[3] %></p></div>
+      <% end %>
+    </div>
+  </section>
+
+  <section id="features" class="px-6 py-24 lg:px-16">
+    <div class="grid items-center gap-8 lg:grid-cols-2">
+      <div>
+        <div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Features</div>
+        <h2 class="max-w-2xl text-4xl font-black font-serif tracking-tight">Everything you need to stick to your diet.</h2>
+        <p class="mt-4 mb-10 max-w-2xl text-lg leading-8 text-brand-soft-gray">Designed for real people who actually want to follow their plan — not just save it in a drawer.</p>
+        <div class="space-y-5">
+          <% [["🧠","Smart PDF parsing","Our AI reads diet plans produced by any dietitian software — extracting meals, portions, and nutritional info accurately."],["⚖️","Calorie & macro tracking","Every meal comes with full nutritional data. See your daily and weekly totals at a glance."],["🛒","Auto shopping list","Ingredients are merged, quantities summed, and sorted by supermarket category. No duplication, no waste."],["🔁","Multi-week planning","Plan ahead for two or three weeks. Great for batch cooking or when you want to prepare in advance."]].each do |f| %>
+            <div class="flex gap-5 rounded-3xl bg-brand-cream p-6 transition hover:translate-x-1"><div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)]"><%= f[0] %></div><div><h4 class="mb-1 text-base font-semibold"><%= f[1] %></h4><p class="text-sm leading-6 text-brand-soft-gray"><%= f[2] %></p></div></div>
+          <% end %>
+        </div>
+      </div>
+      <div class="relative overflow-hidden rounded-[28px] bg-brand-sage-dark p-10 text-white"><div class="pointer-events-none absolute -right-16 -top-24 h-72 w-72 bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)]"></div><div class="relative"><div class="text-2xl font-bold font-serif">Shopping list</div><div class="mb-7 text-sm opacity-60">Week 1 · 21 meals · 3 people</div><div class="pb-1 text-[0.65rem] uppercase tracking-[0.08em] opacity-40">🥦 Vegetables & fruit</div><% [["Broccoli","600 g",true],["Cherry tomatoes","400 g",true],["Spinach","300 g",false],["Apples","6 pcs",false]].each do |i| %><div class="flex items-center gap-3 border-b border-white/10 py-3"><div class="flex h-5 w-5 items-center justify-center rounded-md border border-white/30 text-xs <%= i[2] ? 'bg-brand-sage-light border-brand-sage-light' : '' %>"><%= i[2] ? '✓' : '' %></div><span class="flex-1 text-sm <%= i[2] ? 'opacity-40 line-through' : '' %>"><%= i[0] %></span><span class="text-xs opacity-50"><%= i[1] %></span></div><% end %><div class="pt-4 pb-1 text-[0.65rem] uppercase tracking-[0.08em] opacity-40">🍗 Protein</div><% [["Chicken breast","1.2 kg"],["Greek yogurt","500 g"],["Eggs","12 pcs"]].each do |i| %><div class="flex items-center gap-3 border-b border-white/10 py-3"><div class="h-5 w-5 rounded-md border border-white/30"></div><span class="flex-1 text-sm"><%= i[0] %></span><span class="text-xs opacity-50"><%= i[1] %></span></div><% end %><div class="mt-6 flex items-center justify-between border-t border-white/15 pt-4"><span class="text-xs opacity-50">Est. total</span><span class="text-2xl font-bold font-serif">~€54.20</span></div></div></div>
+    </div>
+  </section>
+
+  <section id="pricing" class="bg-brand-cream px-6 py-24 lg:px-16"><div class="mb-14 text-center"><div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Pricing</div><h2 class="mx-auto mb-4 max-w-3xl text-4xl font-black font-serif tracking-tight">Simple, fair pricing.</h2><p class="mx-auto max-w-xl text-lg text-brand-soft-gray">Start free, upgrade when you're ready.</p></div><div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-3"><div class="rounded-3xl border border-transparent bg-white p-8 transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]"><div class="mb-3 text-xs font-semibold uppercase tracking-[0.1em] opacity-60">Starter</div><div class="text-6xl font-black font-serif leading-none">€0</div><div class="mb-6 mt-2 text-sm opacity-50">forever free</div><ul class="mb-8 space-y-2 text-sm"><li>✓ 1 PDF upload / month</li><li>✓ 7-day meal planning</li><li>✓ Basic shopping list</li><li class="opacity-35">– Nutritional tracking</li><li class="opacity-35">– Multi-week planning</li></ul><%= link_to "Get started", new_registration_path, class: "block rounded-full border border-brand-charcoal/15 px-4 py-3 text-center text-sm font-medium text-brand-charcoal hover:border-brand-sage-dark hover:text-brand-sage-dark" %></div><div class="relative rounded-3xl border border-brand-sage-dark bg-brand-sage-dark p-8 text-white transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]"><div class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-accent px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em]">Most popular</div><div class="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-brand-sage-light">Pro</div><div class="text-6xl font-black font-serif leading-none">€9</div><div class="mb-6 mt-2 text-sm opacity-70">per month</div><ul class="mb-8 space-y-2 text-sm"><li>✓ Unlimited PDF uploads</li><li>✓ Multi-week planning</li><li>✓ Smart shopping list</li><li>✓ Full nutritional tracking</li><li class="opacity-35">– Dietitian collaboration</li></ul><%= link_to "Start free trial", new_registration_path, class: "block rounded-full border border-white bg-white px-4 py-3 text-center text-sm font-medium text-brand-sage-dark hover:border-brand-accent hover:bg-brand-accent hover:text-white" %></div><div class="rounded-3xl border border-transparent bg-white p-8 transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]"><div class="mb-3 text-xs font-semibold uppercase tracking-[0.1em] opacity-60">Clinic</div><div class="text-6xl font-black font-serif leading-none">€29</div><div class="mb-6 mt-2 text-sm opacity-50">per dietitian / month</div><ul class="mb-8 space-y-2 text-sm"><li>✓ Everything in Pro</li><li>✓ Dietitian dashboard</li><li>✓ Patient management</li><li>✓ White-label option</li><li>✓ Priority support</li></ul><a href="#cta" class="block rounded-full border border-brand-charcoal/15 px-4 py-3 text-center text-sm font-medium text-brand-charcoal hover:border-brand-sage-dark hover:text-brand-sage-dark">Contact sales</a></div></div></section>
+
+  <section class="px-6 py-24 lg:px-16"><div class="mb-12 text-center"><div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Testimonials</div><h2 class="mx-auto max-w-3xl text-4xl font-black font-serif tracking-tight">People love sticking<br>to their diets now.</h2></div><div class="grid gap-6 lg:grid-cols-3"><% [["Anna K.","Using DietApp for 3 months","I used to lose my dietitian's PDF within a week. Now I upload it once and have everything planned out. The shopping list alone saves me an hour every weekend."],["Marta S., RD","Clinical dietitian, Warsaw","As a dietitian, I recommend DietApp to every patient. They actually follow the plan now because it's so simple to use. Compliance rates have noticeably improved."],["Piotr W.","Using DietApp for 5 months","The multi-week planning is a game changer. I plan my whole month, print the shopping list, and I'm done. Lost 8 kg in two months just by actually following my plan."]].each do |t| %><div class="rounded-3xl bg-brand-cream p-7 transition hover:-translate-y-1"><div class="mb-3 text-3xl font-serif text-brand-sage-light">"</div><p class="mb-5 text-sm leading-7 text-brand-soft-gray"><%= t[2] %></p><div class="flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-sage text-white"><%= t[0][0] %></div><div><div class="text-sm font-semibold"><%= t[0] %></div><div class="text-xs text-brand-soft-gray"><%= t[1] %></div></div></div></div><% end %></div></section>
+
+  <section id="cta" class="relative overflow-hidden bg-brand-charcoal px-6 py-24 text-center text-white lg:px-16"><div class="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(124,158,126,0.15)_0%,transparent_65%)]"></div><div class="relative mx-auto max-w-3xl"><h2 class="mb-4 text-5xl font-black font-serif tracking-tight">Start following your diet<br><em class="text-brand-sage-light">for real</em> — today.</h2><p class="mb-10 text-lg text-white/50">Join hundreds of people who finally stick to their plans.</p><div class="mx-auto flex max-w-lg flex-wrap justify-center gap-3"><input type="email" class="min-w-[220px] flex-1 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm text-white placeholder:text-white/40 focus:border-brand-sage-light focus:outline-none" placeholder="your@email.com"><%= link_to "Get early access", new_registration_path, class: "rounded-full bg-brand-sage px-7 py-3 text-sm font-medium text-white hover:-translate-y-px hover:bg-brand-accent" %></div><p class="mt-4 text-sm text-white/60">Already have an account? <%= link_to "Sign in", new_session_path, class: "text-brand-sage-light hover:text-white" %></p></div></section>
+
+  <footer class="flex flex-col gap-3 border-t border-brand-charcoal/10 px-6 py-10 text-center text-sm text-brand-soft-gray lg:flex-row lg:items-center lg:justify-between lg:px-16"><div class="logo text-lg font-bold font-serif text-brand-sage-dark">Diet<span class="text-brand-accent">App</span></div><span>© 2026 DietApp. All rights reserved.</span><div class="flex justify-center gap-6"><a href="#" class="text-brand-soft-gray no-underline hover:text-brand-sage-dark">Privacy</a><a href="#" class="text-brand-soft-gray no-underline hover:text-brand-sage-dark">Terms</a><a href="#" class="text-brand-soft-gray no-underline hover:text-brand-sage-dark">Contact</a></div></footer>
 </div>

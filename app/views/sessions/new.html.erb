@@ -1,43 +1,32 @@
-<div class="flex flex-col justify-center min-h-full px-6 py-12 lg:px-8">
-  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <%= link_to root_path, class: 'flex justify-center group' do %>
-      <%= image_tag 'logo-128.png', alt: 'DietingApp Logo', class: 'mx-auto h-12 w-auto transition-transform duration-200 group-hover:scale-105' %>
-    <% end %>
-    <h2 class="mt-8 text-2xl font-bold leading-9 tracking-tight text-center text-slate-900">Welcome back</h2>
-    <p class="mt-2 text-sm text-center text-slate-600">Sign in to your account to continue your nutrition journey</p>
-  </div>
-
-  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-    <%= form_with url: session_path, class: 'space-y-6' do |form| %>
-      <div>
-        <%= form.label :email, 'Email address', class: 'block text-sm font-semibold leading-6 text-slate-700' %>
-        <div class="mt-2">
-          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: 'block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-soft ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all duration-200' %>
-        </div>
-      </div>
-      
-      <div>
-        <div class="flex items-center justify-between">
-          <%= form.label :password, 'Password', class: 'block text-sm font-semibold leading-6 text-slate-700' %>
-          <div class="text-sm">
-            <%= link_to 'Forgot password?', new_password_path, class: 'font-semibold text-emerald-600 hover:text-emerald-500 transition-colors duration-200' %>
-          </div>
-        </div>
-        <div class="mt-2">
-          <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: 'block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-soft ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all duration-200' %>
-        </div>
-      </div>
-      
-      <div>
-        <%= form.submit 'Sign in', data: { turbo: false }, class: 'flex w-full justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold leading-6 text-white shadow-soft hover:bg-emerald-500 hover:shadow-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200' %>
-      </div>
-    <% end %>
-
-    <div class="mt-8 text-center">
-      <p class="text-sm text-slate-600">
-        Don't have an account?
-        <%= link_to 'Start your free trial', new_registration_path, class: 'font-semibold leading-6 text-emerald-600 hover:text-emerald-500 transition-colors duration-200' %>
-      </p>
+<div class="mx-auto w-full max-w-md">
+  <%= render Ui::CardComponent.new(padding: :lg, classes: "shadow-xl shadow-brand-sage/10") do %>
+    <div class="text-center">
+      <%= link_to root_path, class: "inline-flex justify-center" do %>
+        <%= image_tag "logo-128.png", alt: "DietingApp Logo", class: "h-14 w-auto" %>
+      <% end %>
+      <p class="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-brand-sage-dark/80">Welcome back</p>
+      <h1 class="mt-2 text-3xl font-black text-brand-charcoal sm:text-4xl">Sign in to your account</h1>
+      <p class="mt-3 text-sm text-brand-soft-gray">Continue your nutrition journey with your saved plans and shopping lists.</p>
     </div>
-  </div>
+
+    <%= form_with url: session_path, data: { turbo: false }, class: "mt-8 space-y-4" do |form| %>
+      <%= render Ui::InputComponent.new(label: "Email address") do %>
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "app-input", placeholder: "Enter your email" %>
+      <% end %>
+
+      <%= render Ui::InputComponent.new(label: "Password") do %>
+        <div class="mb-2 text-right text-xs">
+          <%= link_to "Forgot password?", new_password_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent" %>
+        </div>
+        <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72, class: "app-input", placeholder: "Enter your password" %>
+      <% end %>
+
+      <%= render Ui::ButtonComponent.new(type: "submit", variant: :primary, size: :lg, full_width: true).with_content("Sign in") %>
+    <% end %>
+
+    <p class="mt-7 text-center text-sm text-brand-soft-gray">
+      Don't have an account?
+      <%= link_to "Start your free trial", new_registration_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent" %>
+    </p>
+  <% end %>
 </div>

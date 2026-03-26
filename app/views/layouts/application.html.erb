@@ -14,23 +14,30 @@
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <%= render partial: "shared/favicons" %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+  <body class="min-h-screen bg-brand-warm-white">
     <%= turbo_frame_tag :modal %>
-    <div class="flex flex-col min-h-screen">
-      <%= render(NavbarComponent.new(current_user: Current.user)) %>
-      <main class="flex-1 py-8 sm:py-12 pb-24 sm:pb-12">
-        <div class="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <%= yield %>
+    <% if content_for?(:marketing_page) %>
+      <%= yield %>
+    <% else %>
+      <div class="flex flex-col min-h-screen">
+        <%= render(NavbarComponent.new(current_user: Current.user)) %>
+        <main class="flex-1 py-8 pb-24 sm:py-12 sm:pb-12">
+          <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <%= yield %>
+          </div>
+        </main>
+        <div class="mb-20 sm:mb-0">
+          <%= render(FooterComponent.new) %>
         </div>
-      </main>
-      <div class="mb-20 sm:mb-0">
-        <%= render(FooterComponent.new) %>
       </div>
-    </div>
+    <% end %>
     <%= render "shared/flash", flash: flash %>
   </body>
 </html>

@@ -3,6 +3,7 @@
 # Rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
   root to: 'main#index'
+  get 'style-guide', to: 'main#style_guide'
 
   get 'up', to: 'health#show'
 

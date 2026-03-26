@@ -9,4 +9,6 @@ class MainController < ApplicationController
       redirect_to diet_set_plans_path
     end
   end
+
+  def style_guide; end
 end

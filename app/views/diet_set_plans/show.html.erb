@@ -8,7 +8,8 @@
     </div>
   <% end %>
 
-  <div class="mx-auto" id="date_picker" data-diet-swap-target="datePicker">
+  <div class="mx-auto app-section" id="date_picker" data-diet-swap-target="datePicker">
+      <%= render Ui::SectionHeaderComponent.new(label: "Dashboard", title: "Twoj plan dnia", subtitle: "Wybierz dzien i zarzadzaj posilkami.", classes: "mb-4") %>
       <%= render "date_picker" %>
   </div>
 
@@ -22,12 +23,12 @@
 </div>
 
 <!-- Bottom Navigation -->
-<div data-controller="sticky-navbar" class="fixed bottom-0 left-0 right-0 z-50 flex justify-around bg-white shadow-md border-t border-gray-200" style="transform: translateZ(0); -webkit-transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; will-change: transform; padding: 1rem; padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
-    <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-green-600' %>
-    <%= link_to shopping_cart_path, class: 'text-gray-500 text-center' do %>
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-slate-200 bg-white/95 px-4 py-4 shadow-md backdrop-blur-sm" style="transform: translateZ(0); -webkit-transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; will-change: transform; padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
+    <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-brand-sage-dark' %>
+    <%= link_to shopping_cart_path, class: 'text-brand-soft-gray text-center' do %>
       <span>🛒 Lista zakupów</span>
       <% if Current.user.shopping_cart.shared? %>
-        <span class="block text-[10px] text-emerald-600">wspoldzielona</span>
+        <span class="block text-[10px] text-brand-sage-dark">wspoldzielona</span>
       <% end %>
     <% end %>
 </div>

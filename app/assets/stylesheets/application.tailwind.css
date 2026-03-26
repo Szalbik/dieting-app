@@ -1,4 +1,41 @@
 @import "tailwindcss";
+@config "../../../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-brand-warm-white text-brand-charcoal antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif tracking-tight;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .app-section {
+    @apply rounded-3xl border border-emerald-100/60 bg-white/90 p-6 shadow-soft backdrop-blur-sm;
+  }
+
+  .app-input {
+    @apply block w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-soft placeholder:text-slate-400 focus:border-brand-sage focus:outline-none focus:ring-2 focus:ring-brand-sage/30;
+  }
+
+  .app-label {
+    @apply block text-sm font-semibold text-slate-700;
+  }
+
+  .brand-cta-primary {
+    @apply rounded-full bg-brand-sage-dark text-white transition hover:bg-brand-accent;
+  }
+
+  .brand-cta-secondary {
+    @apply rounded-full border border-brand-charcoal/20 text-brand-charcoal transition hover:border-brand-sage-dark hover:text-brand-sage-dark;
+  }
+}
 
 /* iPhone Safari fixed positioning fix */
 @supports (-webkit-touch-callout: none) {

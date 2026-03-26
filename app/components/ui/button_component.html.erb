@@ -1,0 +1,9 @@
+<% if @href.present? %>
+  <%= link_to @href, class: button_classes do %>
+    <%= content %>
+  <% end %>
+<% else %>
+  <button type="<%= @type %>" class="<%= button_classes %>">
+    <%= content %>
+  </button>
+<% end %>
