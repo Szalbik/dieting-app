@@ -17,31 +17,35 @@
 
   <details class="group rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2">
     <summary class="list-none cursor-pointer">
-      <div class="flex items-center gap-3">
-        <div class="flex min-w-0 flex-1 items-center gap-2">
-          <p class="truncate text-sm font-semibold text-slate-800"><%= product.name %></p>
-          <% if cycle.size > 1 %>
-            <%= button_to cycle_product_replacement_diet_set_plans_path(format: :turbo_stream),
-                          method: :post,
-                          params: { meal_plan_id: meal_plan.id, product_id: product.id, date: params['date'] },
-                          form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
-                          data: { action: "click->toggle-meal#ignore" },
-                          class: "inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600",
-                          onclick: "event.stopPropagation()" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h10m0 0-2.5-2.5M17.5 7.5 15 10M16.5 16.5h-10m0 0 2.5 2.5M6.5 16.5 9 14" />
-              </svg>
+      <div class="flex items-start gap-2 sm:items-center sm:gap-3">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <p class="truncate text-sm font-semibold text-slate-800"><%= product.name %></p>
+            <% if cycle.size > 1 %>
+              <%= button_to cycle_product_replacement_diet_set_plans_path(format: :turbo_stream),
+                            method: :post,
+                            params: { meal_plan_id: meal_plan.id, product_id: product.id, date: params['date'] },
+                            form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
+                            data: { action: "click->toggle-meal#ignore" },
+                            class: "inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600",
+                            onclick: "event.stopPropagation()" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h10m0 0-2.5-2.5M17.5 7.5 15 10M16.5 16.5h-10m0 0 2.5 2.5M6.5 16.5 9 14" />
+                </svg>
+              <% end %>
             <% end %>
-          <% end %>
+          </div>
           <% if local_substitutions.any? %>
-            <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-              <%= local_substitutions.count %> zam.
-            </span>
+            <div class="mt-1">
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                <%= local_substitutions.count %> zam.
+              </span>
+            </div>
           <% end %>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="ml-1 flex shrink-0 items-center gap-1.5 sm:ml-0 sm:gap-2">
           <% if measurement_label.present? %>
-            <span class="text-xs font-medium text-slate-500"><%= measurement_label %></span>
+            <span class="max-w-[110px] truncate text-right text-[11px] font-medium text-slate-500 sm:max-w-none sm:text-xs"><%= measurement_label %></span>
           <% end %>
           <span class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition group-open:rotate-180">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">

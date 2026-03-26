@@ -20,6 +20,7 @@ class DietSetPlansController < ApplicationController
       redirect_to new_diet_path, warning: 'You need to create a diet first.'
     end
 
+    recover_missing_measures_if_needed
     load_substitution_suggestions
 
     respond_to do |format|
@@ -299,6 +300,21 @@ class DietSetPlansController < ApplicationController
       shopping_cart: shopping_cart,
       users: shopping_cart.member_users
     ).call
+  end
+
+  def recover_missing_measures_if_needed
+    return unless @diet_set_plan&.persisted?
+
+    diet = @diet_set_plan.diet
+    return unless diet&.parsed_json.is_a?(Array)
+    return unless @diet_set_plan.meal_plans.joins(:products).left_outer_joins(products: :ingredient_measures).where(ingredient_measures: { id: nil }).exists?
+
+    restored_count = DietMeasureRecoveryService.new(diet: diet).call
+    return unless restored_count.positive?
+
+    @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last || @diet_set_plan
+  rescue StandardError => e
+    Rails.logger.warn("Diet measure recovery failed for diet_set_plan #{@diet_set_plan&.id}: #{e.message}")
   end
 
   def load_substitution_suggestions
