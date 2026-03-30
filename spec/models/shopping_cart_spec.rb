@@ -116,31 +116,12 @@ RSpec.describe ShoppingCart, type: :model do
     end
 
     it 'returns aggregated cart items for the current user only' do
-      cart_item = create(:shopping_cart_item,
-                         shopping_cart: shopping_cart,
-                         product: product,
-                         meal_plan: meal_plan)
-
-      # Debug: Check the product category before processing
-      puts "\n=== DEBUG INFO ==="
-      puts "Product ID: #{product.id}"
-      puts "Product name: #{product.name}"
-      puts "Product category present?: #{product.category.present?}"
-      puts "Product category: #{product.category.inspect}"
-      puts "Product category name: #{product.category&.name}"
-      puts "==================\n"
+      create(:shopping_cart_item,
+             shopping_cart: shopping_cart,
+             product: product,
+             meal_plan: meal_plan)
 
       result = shopping_cart.group_and_sum_by_cart_items
-
-      # Debug: Check the result structure
-      puts "\n=== RESULT DEBUG ==="
-      result.each_with_index do |group, index|
-        puts "Group #{index}: #{group[:category].name}"
-        group[:products].each do |p|
-          puts "  - #{p[:name]} (ID: #{p[:product].id})"
-        end
-      end
-      puts "==================\n"
 
       # The method returns grouped data by category, so we need to check the structure
       expect(result).to be_an(Array)
@@ -218,6 +199,7 @@ RSpec.describe ShoppingCart, type: :model do
       result = shopping_cart.group_and_sum_by_cart_items
       products = result.flat_map { |group| group[:products] }
       grouped_product = products.find { |item| item[:name] == 'Jogurt naturalny' }
+      product_group = result.find { |g| g[:products].any? { |p| p[:name] == 'Jogurt naturalny' } }
 
       expect(grouped_product).to be_present
       expect(products.count { |item| item[:name] == 'Jogurt naturalny' }).to eq(1)
@@ -225,6 +207,9 @@ RSpec.describe ShoppingCart, type: :model do
       expect(grouped_product[:aggregated_ingredient_measures]).to contain_exactly(
         { unit: 'g', amount: 250.0 }
       )
+      # Merged line includes an uncategorized duplicate product; category must not reset to Inne.
+      expect(product_group[:category].name).not_to eq('Inne')
+      expect(product_group[:category].name).to start_with('Test Category')
     end
   end
 end

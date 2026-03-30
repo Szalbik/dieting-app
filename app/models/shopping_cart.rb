@@ -13,8 +13,9 @@ class ShoppingCart < ApplicationRecord
       .where(shopping_cart: self)
       .joins(:meal_plan)
       .where(meal_plans: { selected_for_cart: true })
-      .includes(product: [:ingredient_measures, :category])
+      .includes(product: [:ingredient_measures, :category, :canonical_product])
 
+    # Jedna linia na „nazwę sklepową”: CanonicalProduct (jeśli jest), inaczej nazwa bez ilości, inaczej raw name.
     grouped_by_name = items.group_by { |item| item.product.shopping_cart_group_name }
 
     # Build a hash to hold aggregated product data.
@@ -38,13 +39,9 @@ class ShoppingCart < ApplicationRecord
         # Use the first encountered product as the representative.
         summed_products[name][:product] ||= product
 
-        # Store product category (defaulting to 'Inne' if none exists).
-        if product.category.present?
-          summed_products[name][:category] = product.category
-        else
-          # Always ensure we have a default category for products without one
-          summed_products[name][:category] = OpenStruct.new(name: 'Inne')
-        end
+        # Prefer any real category in the group; do not overwrite with "Inne" when a
+        # later line has no category (common after grouping by canonical name).
+        summed_products[name][:category] = product.category if product.category.present?
 
         product.ingredient_measures.each do |measurement|
           raw_unit = measurement.unit || ''
