@@ -42,10 +42,10 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
       expect(session[:removed_items].last[:product_name]).to eq(product.shopping_cart_group_name)
     end
 
-    it 'soft-deletes items so they can be restored later' do
+    it 'sets flash message' do
       delete :destroy, params: { id: product.id }
 
-      expect(ShoppingCartItem.only_deleted.where(id: shopping_cart_item.id)).to exist
+      expect(flash[:success]).to eq('Produkt został usunięty z koszyka. Możesz cofnąć operację w ciągu 30 minut.')
     end
 
     it 'removes items from shopping cart immediately' do
@@ -78,18 +78,30 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
         item_ids: [shopping_cart_item.id],
         removed_at: Time.current.to_i,
         product_name: product.name,
+        category_name: product.category&.name || 'Inne',
+        items: [
+          {
+            product_id: product.id,
+            quantity: shopping_cart_item.quantity,
+            date: shopping_cart_item.date,
+            meal_plan_id: shopping_cart_item.meal_plan_id
+          }
+        ]
       }
     end
 
     before do
-      shopping_cart_item.destroy
       session[:removed_items] = [removal_record]
       allow(RemoveShoppingCartItemsJob).to receive(:cancel_scheduled_jobs)
+      allow(shopping_cart.shopping_cart_items).to receive(:create!)
     end
 
-    it 'restores soft-deleted items within time limit' do
-      expect { post :undo }.to change { shopping_cart.shopping_cart_items.count }.by(1)
-      expect(ShoppingCartItem.only_deleted.where(id: shopping_cart_item.id)).not_to exist
+    it 'restores items within time limit' do
+      post :undo
+
+      expect(RemoveShoppingCartItemsJob).to have_received(:cancel_scheduled_jobs).with([shopping_cart_item.id], user.id)
+      expect(shopping_cart.shopping_cart_items).to have_received(:create!)
+      expect(flash[:success]).to eq('Produkt został przywrócony do koszyka.')
     end
 
     it 'cancels scheduled background job' do
@@ -104,7 +116,7 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
 
       post :undo
 
-      expect(ShoppingCartItem.only_deleted.where(id: shopping_cart_item.id)).to exist
+      expect(flash[:info]).to eq('No items to undo')
     end
 
     it 'handles no removal records' do
@@ -112,7 +124,7 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
 
       post :undo
 
-      expect(ShoppingCartItem.only_deleted.where(id: shopping_cart_item.id)).to exist
+      expect(flash[:info]).to eq('No items to undo')
     end
   end
 end

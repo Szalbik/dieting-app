@@ -31,7 +31,7 @@ RSpec.describe 'User Sessions', type: :request do
       # Log in first
       post session_path, params: { email_address: user.email_address, password: 'password123' }
       delete session_path
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(new_session_path)
     end
   end
 end

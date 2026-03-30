@@ -84,42 +84,17 @@
   <% else %>
     <p class="mt-6 text-center text-brand-soft-gray">Brak posiłków dla wybranego zestawu.</p>
   <% end %>
-  <div class="mt-4 mb-12 space-y-2 text-center" data-controller="diet-swap">
+  <!-- New Set Button (subdued) -->
+  <div class="mt-4 mb-12 space-y-2 text-center">
     <div class="flex items-center justify-center space-x-4">
       <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-brand-soft-gray hover:text-brand-sage-dark hover:underline" %>
-      <span class="text-gray-300">|</span>
-      <button type="button"
-              class="text-xs text-brand-soft-gray hover:text-brand-sage-dark hover:underline"
-              data-action="click->diet-swap#toggle">
-        Zamień z innym dniem
-      </button>
-    </div>
-
-    <% weekday_names = %w[niedziela poniedziałek wtorek środa czwartek piątek sobota] %>
-    <div data-diet-swap-target="picker" class="hidden mt-4 text-left">
-      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft">
-        <h4 class="text-sm font-semibold text-brand-charcoal mb-3">Zamień z:</h4>
-        <div class="space-y-2">
-          <% ((Date.current - 1.day)..(Date.current + 5.days)).each do |d| %>
-            <% next if d.to_s == @date.to_s %>
-            <% other_plan = Current.user.diet_set_plans.where(date: d).order(created_at: :desc).first %>
-            <div class="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
-              <div class="min-w-0 flex-1">
-                <span class="text-sm font-semibold text-brand-charcoal capitalize"><%= weekday_names[d.wday] %> <%= d.strftime('%d.%m') %></span>
-                <% if other_plan %>
-                  <p class="truncate text-xs text-brand-soft-gray"><%= other_plan.derived_name_from_meal %></p>
-                <% else %>
-                  <p class="text-xs italic text-brand-soft-gray">Brak diety</p>
-                <% end %>
-              </div>
-              <%= button_to "Zamień", swap_diet_set_plans_path,
-                    params: { current_date: @date, target_date: d.to_s },
-                    method: :post,
-                    class: "ml-3 shrink-0 rounded-full bg-brand-sage-dark px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-accent" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
+       <!-- <span class="text-gray-300">•</span>
+      <button type="button" 
+              class="text-xs text-gray-400 hover:underline focus:outline-none"
+              data-diet-swap-target="swapButton"
+              data-action="click->diet-swap#toggleSwapMode">
+        Zamień zestaw diety
+      </button> -->
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-if defined?(RailsPerformance) && !Rails.env.test?
+if defined?(RailsPerformance)
   RailsPerformance.setup do |config|
     config.redis    = Redis.new(url: Rails.application.credentials.redis_url)
     config.duration = 4.hours

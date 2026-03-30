@@ -7,8 +7,7 @@ class LineParser
 
   def split_measurement(measurement)
     units = %w[g szt kromka kromki łyżeczka łyżeczki łyżka szkl ml ząbek ząbki gałązka gałązki garść garście plastry]
-    # Longer units first so e.g. "gałązki" is not parsed as "g" + leftover letters.
-    units_regex = Regexp.union(units.sort_by { |u| -u.length })
+    units_regex = Regexp.union(units)
     matches = measurement.scan(/(\d+(?:\/\d+)?)(?:\s*)(#{units_regex})/)
     matches.map do |quantity, unit|
       if quantity.include?('/')
