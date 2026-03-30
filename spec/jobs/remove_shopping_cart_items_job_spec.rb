@@ -9,16 +9,16 @@ RSpec.describe RemoveShoppingCartItemsJob, type: :job do
   let(:shopping_cart_item) { create(:shopping_cart_item, shopping_cart: shopping_cart, product: product) }
 
   describe '#perform' do
-    it 'removes shopping cart items from the backend' do
+    it 'hard-deletes soft-deleted shopping cart items' do
       item = shopping_cart_item
       item_ids = [item.id]
+      item.destroy
 
-      expect do
-        described_class.perform_now(item_ids, user.id)
-      end.to change { ShoppingCartItem.count }.by(-1)
+      expect(ShoppingCartItem.only_deleted.where(id: item.id)).to exist
 
-      # Check that the item no longer exists in the database
-      expect(ShoppingCartItem.exists?(item.id)).to be false
+      described_class.perform_now(item_ids, user.id)
+
+      expect(ShoppingCartItem.with_deleted.where(id: item.id)).not_to exist
     end
 
     it 'handles non-existent items gracefully' do

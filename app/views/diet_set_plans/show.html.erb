@@ -1,6 +1,6 @@
 <!-- app/views/diet_set_plans/show.html.erb -->
 
-<div data-controller="diet-swap" data-diet-swap-current-date-value="<%= params['date'] %>">
+<div>
   <% if Current.user.shopping_cart.shared? %>
     <div class="mx-auto mb-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
       Lista zakupow jest wspoldzielona z
@@ -8,7 +8,7 @@
     </div>
   <% end %>
 
-  <div class="mx-auto app-section" id="date_picker" data-diet-swap-target="datePicker">
+  <div class="mx-auto app-section" id="date_picker">
       <%= render Ui::SectionHeaderComponent.new(label: "Dashboard", title: "Twoj plan dnia", subtitle: "Wybierz dzien i zarzadzaj posilkami.", classes: "mb-4") %>
       <%= render "date_picker" %>
   </div>

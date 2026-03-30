@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Password Reset', type: :request do
+  include ActiveJob::TestHelper
+
   let!(:user) { FactoryBot.create(:user, password: 'password123', password_confirmation: 'password123') }
 
   describe 'GET /passwords/new' do
@@ -15,7 +17,9 @@ RSpec.describe 'Password Reset', type: :request do
   describe 'POST /passwords' do
     it 'sends reset instructions if user exists' do
       expect do
-        post passwords_path, params: { email_address: user.email_address }
+        perform_enqueued_jobs do
+          post passwords_path, params: { email_address: user.email_address }
+        end
       end.to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(response).to redirect_to(new_session_path)
     end

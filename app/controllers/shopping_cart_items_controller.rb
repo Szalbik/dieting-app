@@ -2,100 +2,56 @@
 
 class ShoppingCartItemsController < ApplicationController
   UNDO_TIME_LIMIT = 30.minutes
-  MAX_REMOVAL_RECORDS = 10 # Limit to prevent session cookie overflow
+  MAX_REMOVAL_RECORDS = 10
 
   before_action :cleanup_expired_removal_records, only: [:destroy, :undo]
 
   def destroy
     shopping_cart = Current.user.shopping_cart
-    @product = Product.joins(:shopping_cart_items)
+    product = Product.joins(:shopping_cart_items)
       .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
       .find(params[:id])
 
-    group_name = @product.shopping_cart_group_name
+    group_name = product.shopping_cart_group_name
     items = shopping_cart.shopping_cart_items
       .includes(product: :category)
       .select { |item| item.product.shopping_cart_group_name == group_name }
 
-    # Store item IDs for potential undo and background job
     item_ids = items.map(&:id)
 
-    removal_record = {
-      item_ids: item_ids,
-      removed_at: Time.current.to_i,
-      product_name: group_name,
-      category_name: @product.category&.name || 'Inne',
-      items: items.map do |item|
-        {
-          product_id: item.product_id,
-          quantity: item.quantity,
-          date: item.date,
-          meal_plan_id: item.meal_plan_id,
-        }
-      end,
-    }
-
     session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
-    session[:removed_items] << removal_record
+    session[:removed_items] << { item_ids: item_ids, removed_at: Time.current.to_i, product_name: group_name }
+    session[:removed_items] = session[:removed_items].last(MAX_REMOVAL_RECORDS)
 
-    # Limit the number of removal records to prevent session cookie overflow
-    if session[:removed_items].length > MAX_REMOVAL_RECORDS
-      # Keep only the most recent records
-      session[:removed_items] = session[:removed_items].last(MAX_REMOVAL_RECORDS)
-    end
-
-    # Schedule background job to remove items from backend after delay
-    RemoveShoppingCartItemsJob.set(wait: 30.minutes).perform_later(item_ids, Current.user.id)
-
-    # Set flash message for user feedback
-    flash[:success] = 'Produkt został usunięty z koszyka. Możesz cofnąć operację w ciągu 30 minut.'
-
-    # Remove items from the shopping cart for immediate UI update
+    RemoveShoppingCartItemsJob.set(wait: UNDO_TIME_LIMIT).perform_later(item_ids, Current.user.id)
     ShoppingCartItem.where(id: item_ids).destroy_all
+
+    @removed_product_name = group_name
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to shopping_cart_path }
+    end
   end
 
   def undo
-    if session[:removed_items].present?
-      removal_record = nil
+    @restored = false
 
-      # Check the most recent removal records until a valid one is found.
-      while session[:removed_items].present? && removal_record.nil?
-        candidate = session[:removed_items].last
-        removed_at = Time.at(candidate['removed_at'] || candidate[:removed_at])
-        if Time.current - removed_at <= UNDO_TIME_LIMIT
-          removal_record = candidate
-          session[:removed_items].pop
-        else
-          # Remove expired record and check next.
-          session[:removed_items].pop
-        end
-      end
+    if session[:removed_items].present?
+      cleanup_expired_removal_records
+      removal_record = session[:removed_items]&.pop
 
       if removal_record.present?
-        # Cancel the scheduled background job for these items
         item_ids = removal_record['item_ids'] || removal_record[:item_ids]
         RemoveShoppingCartItemsJob.cancel_scheduled_jobs(item_ids, Current.user.id)
-
-        shopping_cart = Current.user.shopping_cart
-        removed_items = removal_record['items'] || removal_record[:items] || []
-
-        removed_items.each do |item|
-          shopping_cart.shopping_cart_items.create!(
-            product_id: item['product_id'] || item[:product_id],
-            quantity: item['quantity'] || item[:quantity],
-            date: item['date'] || item[:date],
-            meal_plan_id: item['meal_plan_id'] || item[:meal_plan_id]
-          )
-        end
-
-        @shopping_cart = shopping_cart
-        flash[:success] = 'Produkt został przywrócony do koszyka.'
-      else
-        # No valid removal record found
-        flash[:warning] = 'No items to undo or undo time limit expired'
+        ShoppingCartItem.only_deleted.where(id: item_ids).each(&:restore)
+        @restored = true
       end
-    else
-      flash[:info] = 'No items to undo'
+    end
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to shopping_cart_path }
     end
   end
 
@@ -109,9 +65,5 @@ class ShoppingCartItemsController < ApplicationController
       removed_at = Time.zone.at(record['removed_at'] || record[:removed_at])
       current_time - removed_at > UNDO_TIME_LIMIT
     end
-  end
-
-  def shopping_cart_item_params
-    params.require(:shopping_cart_item).permit(:product_id, :quantity)
   end
 end

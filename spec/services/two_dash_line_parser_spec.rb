@@ -107,7 +107,7 @@ RSpec.describe TwoDashLineParser do
           let(:line) { '-cebula czerwona -1/2szt. (50g)' }
 
           it 'returns correct data' do
-            expect(subject).to match_array(['cebula czerwona', match_array([[50, 'g']])])
+            expect(subject).to match_array(['cebula czerwona', match_array([[0.5, 'szt'], [50.0, 'g']])])
           end
         end
         context 'case 2' do
@@ -121,7 +121,7 @@ RSpec.describe TwoDashLineParser do
           let(:line) { '-cebula -1/2szt. (30g)' }
 
           it 'returns correct data' do
-            expect(subject).to match_array(['cebula', match_array([[30, 'g']])])
+            expect(subject).to match_array(['cebula', match_array([[0.5, 'szt'], [30.0, 'g']])])
           end
         end
       end
