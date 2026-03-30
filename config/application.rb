@@ -18,6 +18,9 @@ require 'action_cable/engine'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Rails Performance defaults to enabled; without Redis tests cannot run request specs.
+RailsPerformance.enabled = false if Rails.env.test? && defined?(RailsPerformance)
+
 module DietingApp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

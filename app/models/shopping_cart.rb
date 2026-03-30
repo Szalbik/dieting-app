@@ -100,11 +100,13 @@ class ShoppingCart < ApplicationRecord
   end
 
   def broadcast_contents
-    broadcast_replace_later_to(
+    broadcast_action_later_to(
       self,
+      action: :replace,
       target: 'shopping_cart',
       partial: 'shopping_carts/shopping_cart',
-      locals: { shopping_cart: self }
+      locals: { shopping_cart: self },
+      attributes: { method: :morph }
     )
   end
 end

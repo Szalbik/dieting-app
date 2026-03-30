@@ -8,7 +8,7 @@ class DietsController < ApplicationController
   end
 
   def show
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
 
     products = if params[:diet].present?
       @diet.products.where(diet_set_id: search_params[:diet_set_ids])
@@ -20,7 +20,7 @@ class DietsController < ApplicationController
   end
 
   def search
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
     products = @diet.products.where(diet_set_id: search_params[:diet_set_ids])
     @products = Product.group_and_sum_by_name_and_unit(products)
   end
@@ -45,11 +45,11 @@ class DietsController < ApplicationController
   end
 
   def edit
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
   end
 
   def update
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
 
     respond_to do |format|
       if @diet.update(diet_params)
@@ -61,7 +61,7 @@ class DietsController < ApplicationController
   end
 
   def destroy
-    diet = Diet.find(params[:id])
+    diet = Current.user.diets.find(params[:id])
     respond_to do |format|
       if diet.destroy
         format.html { redirect_to diets_path, notice: 'Dieta została usunięta.' }
@@ -72,7 +72,7 @@ class DietsController < ApplicationController
   end
 
   def toggle_active
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
     @diet.update(active: !@diet.active)
     @diet.reload
 
@@ -86,7 +86,7 @@ class DietsController < ApplicationController
   end
 
   def reparse
-    @diet = Diet.find(params[:id])
+    @diet = Current.user.diets.find(params[:id])
     unless @diet.pdf.attached?
       redirect_to diets_path, alert: 'Brak załączonego PDF. Nie można przeparsować diety.'
       return

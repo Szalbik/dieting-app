@@ -49,36 +49,31 @@ class DietSetPlansController < ApplicationController
     current_date = Date.parse(params[:current_date])
     target_date = Date.parse(params[:target_date])
 
-    # Find diet set plans for both dates
-    current_plan = Current.user.diet_set_plans.where(date: current_date).first
-    target_plan = Current.user.diet_set_plans.where(date: target_date).first
+    current_plan = Current.user.diet_set_plans.where(date: current_date).order(created_at: :desc).first
+    target_plan = Current.user.diet_set_plans.where(date: target_date).order(created_at: :desc).first
 
-    if current_plan && target_plan
-      # Use a transaction to ensure both updates succeed or fail together
-      ActiveRecord::Base.transaction do
-        # Temporarily use a different date to avoid conflicts
-        temp_date = Date.new(1900, 1, 1)
-
-        # Move current plan to temp date first
-        current_plan.update!(date: temp_date)
-
-        # Move target plan to current date
-        target_plan.update!(date: current_date)
-
-        # Move current plan (now at temp date) to target date
-        current_plan.update!(date: target_date)
-      end
-
-      sync_current_shopping_cart!
-
-      render json: { success: true, message: 'Zestawy diety zostały zamienione pomyślnie.' }
-    else
-      render json: { success: false, message: 'Nie można znaleźć planów diety dla wybranych dat.' }, status: :unprocessable_entity
+    if current_plan.nil? && target_plan.nil?
+      redirect_to diet_set_plans_path(date: current_date), alert: 'Żaden z wybranych dni nie ma przypisanej diety.'
+      return
     end
-  rescue Date::Error => e
-    render json: { success: false, message: 'Nieprawidłowy format daty.' }, status: :bad_request
-  rescue StandardError => e
-    render json: { success: false, message: 'Wystąpił błąd podczas zamiany zestawów diety.' }, status: :internal_server_error
+
+    ActiveRecord::Base.transaction do
+      if current_plan && target_plan
+        temp_date = Date.new(1900, 1, 1)
+        current_plan.update!(date: temp_date)
+        target_plan.update!(date: current_date)
+        current_plan.update!(date: target_date)
+      elsif current_plan
+        current_plan.update!(date: target_date)
+      else
+        target_plan.update!(date: current_date)
+      end
+    end
+
+    sync_current_shopping_cart!
+    redirect_to diet_set_plans_path(date: current_date), notice: 'Zestawy diety zostały zamienione.'
+  rescue Date::Error
+    redirect_to diet_set_plans_path, alert: 'Nieprawidłowy format daty.'
   end
 
   def replace_product
