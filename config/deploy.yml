@@ -55,6 +55,11 @@ env:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
 #
 aliases:
+  # --reuse = ten sam proces co działający web; po deploy zawsze mają aktualny kod.
+  # Jeśli rake nie widzi własnych tasków: najpierw kamal deploy + push obrazu, potem:
+  #   kamal app exec "test -f lib/tasks/categorize_products.rake && bin/rake -T products"
+  # Jednorazowe rake bez interaktywnej powłoki (pewny aktualny release):
+  #   kamal app exec 'bin/rake products:propagate_canonical_categories'
   shell: app exec --interactive --reuse "bash"
   console: app exec --interactive --reuse "bin/rails console"
   logs: app logs -f
