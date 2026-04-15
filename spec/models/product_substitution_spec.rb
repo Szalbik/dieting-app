@@ -36,7 +36,8 @@ RSpec.describe ProductSubstitution, type: :model do
 
     before do
       create(:product_substitution, user: user, source_product: 'Bułka grahamka', replacement_product: 'Chleb żytni')
-      create(:product_substitution, user: user, source_product: 'Bułka grahamka', replacement_product: 'Bułka orkiszowa')
+      create(:product_substitution, user: user, source_product: 'Bułka grahamka',
+                                    replacement_product: 'Bułka orkiszowa')
       create(:product_substitution, user: user, source_product: 'Bułka orkiszowa', replacement_product: 'Chleb razowy')
     end
 
@@ -89,7 +90,7 @@ RSpec.describe ProductSubstitution, type: :model do
     it 'builds cycle only from direct replacements of base product' do
       cycle = described_class.local_cycle_for(user: user, base_name: 'Banan')
 
-      expect(cycle).to eq(['Banan', 'Gruszka', 'Jablko'])
+      expect(cycle).to eq(%w[Banan Gruszka Jablko])
       expect(cycle).not_to include('Kiwi')
     end
 

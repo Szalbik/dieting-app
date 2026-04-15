@@ -11,9 +11,9 @@ RSpec.describe ThreeDashLineParser do
 
       it 'collects measurements from both alternatives joined by "lub"' do
         expect(subject).to match_array([
-          'chleb razowy',
-          match_array([[2.0, 'kromki'], [70.0, 'g'], [2.0, 'kromki'], [80.0, 'g']]),
-        ])
+                                         'chleb razowy',
+                                         match_array([[2.0, 'kromki'], [70.0, 'g'], [2.0, 'kromki'], [80.0, 'g']])
+                                       ])
       end
     end
 

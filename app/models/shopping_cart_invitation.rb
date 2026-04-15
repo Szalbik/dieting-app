@@ -28,7 +28,7 @@ class ShoppingCartInvitation < ApplicationRecord
   end
 
   def revoke!(actor:)
-    ShoppingCartSharingService.new(self).revoke!(actor:)
+    ShoppingCartSharingService.new(self).revoke!(actor: actor)
   end
 
   def other_user_for(user)
@@ -45,6 +45,7 @@ class ShoppingCartInvitation < ApplicationRecord
 
   def can_be_revoked_by?(user)
     return inviter_id == user.id if pending?
+
     accepted? && [inviter_id, invitee_id].include?(user.id)
   end
 

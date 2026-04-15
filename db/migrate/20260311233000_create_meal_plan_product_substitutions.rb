@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMealPlanProductSubstitutions < ActiveRecord::Migration[8.0]
   def change
     create_table :meal_plan_product_substitutions do |t|
@@ -16,8 +18,8 @@ class CreateMealPlanProductSubstitutions < ActiveRecord::Migration[8.0]
     end
 
     add_index :meal_plan_product_substitutions,
-              [:user_id, :meal_plan_id, :product_id, :replacement_product],
+              %i[user_id meal_plan_id product_id replacement_product],
               unique: true,
-              name: "index_meal_plan_product_substitutions_on_scope_and_replacement"
+              name: 'index_meal_plan_product_substitutions_on_scope_and_replacement'
   end
 end

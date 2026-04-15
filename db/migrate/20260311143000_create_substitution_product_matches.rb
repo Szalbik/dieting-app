@@ -12,7 +12,7 @@ class CreateSubstitutionProductMatches < ActiveRecord::Migration[8.0]
     end
 
     add_index :substitution_product_matches,
-              [:user_id, :source_product, :matched_product_name],
+              %i[user_id source_product matched_product_name],
               unique: true,
               name: 'index_substitution_product_matches_on_user_source_and_match'
   end

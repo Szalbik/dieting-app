@@ -44,9 +44,9 @@ module ProductsCategoryRake
     return [nil, nil] unless canon
 
     donor = Product.joins(:product_category)
-      .where(canonical_product_id: canon.id)
-      .where.not(id: product.id)
-      .first
+                   .where(canonical_product_id: canon.id)
+                   .where.not(id: product.id)
+                   .first
     return [:fk, donor] if donor&.category
 
     label = canon.name.to_s.strip.downcase
@@ -54,26 +54,26 @@ module ProductsCategoryRake
 
     # Dokładna nazwa / baza jak etykieta kanonu (starsze produkty bez FK).
     donor = Product.joins(:product_category)
-      .where(canonical_product_id: nil)
-      .where.not(id: product.id)
-      .where(
-        <<~SQL.squish,
-          LOWER(TRIM(COALESCE(NULLIF(TRIM(products.base_product_name), ''), products.name))) = :label
-        SQL
-        { label: label }
-      )
-      .first
+                   .where(canonical_product_id: nil)
+                   .where.not(id: product.id)
+                   .where(
+                     <<~SQL.squish,
+                       LOWER(TRIM(COALESCE(NULLIF(TRIM(products.base_product_name), ''), products.name))) = :label
+                     SQL
+                     { label: label }
+                   )
+                   .first
     return [:name_exact, donor] if donor&.category
 
     # Prefiks: kanon "Jogurt naturalny" → skategoryzowany "Jogurt naturalny 2% ..."
     if label.length >= 3
       like_pattern = "#{ActiveRecord::Base.sanitize_sql_like(label)}%"
       donor = Product.joins(:product_category)
-        .where(canonical_product_id: nil)
-        .where.not(id: product.id)
-        .where("LOWER(TRIM(products.name)) LIKE LOWER(?)", like_pattern)
-        .order(Arel.sql('LENGTH(products.name) ASC'))
-        .first
+                     .where(canonical_product_id: nil)
+                     .where.not(id: product.id)
+                     .where('LOWER(TRIM(products.name)) LIKE LOWER(?)', like_pattern)
+                     .order(Arel.sql('LENGTH(products.name) ASC'))
+                     .first
       return [:name_prefix, donor] if donor&.category
     end
 
@@ -128,9 +128,9 @@ namespace :products do
       next if product.name.blank?
 
       donor = Product.joins(:product_category)
-        .where('LOWER(products.name) = ?', product.name.downcase)
-        .where.not(id: product.id)
-        .first
+                     .where('LOWER(products.name) = ?', product.name.downcase)
+                     .where.not(id: product.id)
+                     .first
       next unless donor&.category
 
       pc = donor.product_category

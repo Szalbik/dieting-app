@@ -153,7 +153,8 @@ class DietSetPlansController < ApplicationController
     end
 
     if current_in_cycle
-      current_idx = cycle_candidates.index { |name| ProductSubstitution.normalize_name(name) == ProductSubstitution.normalize_name(product.name) } || 0
+      current_idx = cycle_candidates.index { |name|
+ ProductSubstitution.normalize_name(name) == ProductSubstitution.normalize_name(product.name) } || 0
       next_name = cycle_candidates[(current_idx + 1) % cycle_candidates.size]
     else
       # If current product is a mapped variant not present in cycle labels,
@@ -205,7 +206,7 @@ class DietSetPlansController < ApplicationController
             row_dom_id,
             partial: 'diet_set_plans/ingredient_row',
             locals: { meal_plan: meal_plan, product: product.reload }
-          )
+          ),
         ]
       end
       format.html { redirect_to diet_set_plans_path(date: date), notice: "Podmieniono na: #{next_name}" }
@@ -233,7 +234,8 @@ class DietSetPlansController < ApplicationController
     substitution = Current.user.meal_plan_product_substitutions.new(
       meal_plan: meal_plan,
       product: product,
-      replacement_product: product_substitution_params[:replacement_name].presence || product_substitution_params[:replacement_product],
+      replacement_product: product_substitution_params[:replacement_name].presence ||
+        product_substitution_params[:replacement_product],
       replacement_amount: product_substitution_params[:replacement_amount],
       replacement_unit: product_substitution_params[:replacement_unit]
     )
@@ -267,7 +269,7 @@ class DietSetPlansController < ApplicationController
 
   def set_diet_set_plan
     @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last unless params['reassign'].present?
-    @diet_set_plan ||= DietSetPlan.new(date: date)
+    @_set_diet_set_plan ||= DietSetPlan.new(date: date)
   end
 
   def date
@@ -287,7 +289,7 @@ class DietSetPlansController < ApplicationController
   end
 
   def shopping_cart
-    @shopping_cart ||= Current.user.shopping_cart
+    @_shopping_cart ||= Current.user.shopping_cart
   end
 
   def sync_current_shopping_cart!
@@ -496,7 +498,7 @@ class DietSetPlansController < ApplicationController
             view_context.dom_id(product, :ingredient_row),
             partial: 'diet_set_plans/ingredient_row',
             locals: { meal_plan: meal_plan, product: product.reload }
-          )
+          ),
         ]
       end
       format.html do

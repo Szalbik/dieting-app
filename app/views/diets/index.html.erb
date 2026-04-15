@@ -22,7 +22,7 @@
               </thead>
               <tbody class="divide-y divide-slate-200">
                 <% @diets.each do |diet| %>
-                  <tr class="hover:bg-slate-50/50 transition-colors duration-200" id="diet_row_<%= diet.id %>">
+                  <tr class="transition-colors duration-200 hover:bg-slate-50/50" id="diet_row_<%= diet.id %>">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium text-slate-900 whitespace-nowrap sm:pl-0">
                       <%= diet.name %>
                     </td>
@@ -56,7 +56,7 @@
 
       <div class="mt-8 space-y-4 sm:hidden">
         <% @diets.each do |diet| %>
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft" id="diet_card_mobile_<%= diet.id %>">
+          <div class="p-6 bg-white border rounded-2xl border-slate-200 shadow-soft" id="diet_card_mobile_<%= diet.id %>">
             <div class="flex items-center justify-between">
               <h2 class="text-lg font-semibold text-slate-900"><%= diet.name %></h2>
               <div class="flex space-x-2">
@@ -78,7 +78,7 @@
                 <strong class="text-slate-700">Date:</strong> <%= diet.created_at.strftime("%B %d, %Y") %>
               </p>
             </div>
-            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+            <div class="flex flex-wrap mt-4 gap-x-4 gap-y-2">
               <% if diet.pdf.attached? %>
                 <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>
                 <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, data: { confirm: 'Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF. Kontynuować?' }, form_class: 'inline-block', class: 'text-emerald-600 hover:text-emerald-700 text-sm transition-colors duration-200' %>

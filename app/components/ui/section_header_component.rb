@@ -17,7 +17,7 @@ module Ui
     def wrapper_classes
       [
         (centered ? 'text-center' : nil),
-        classes
+        classes,
       ].compact.join(' ')
     end
   end

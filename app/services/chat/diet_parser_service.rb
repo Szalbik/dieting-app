@@ -87,7 +87,7 @@ class Chat::DietParserService
   private
 
   def json_schema
-    @json_schema ||= begin
+    @_json_schema ||= begin
       # Load the original array schema
       original_schema = JSON.parse(File.read(SCHEMA_PATH))
 
@@ -325,6 +325,6 @@ class Chat::DietParserService
   end
 
   def openai_client
-    @client ||= OpenAI::Client.new(request_timeout: 240, access_token: Rails.application.credentials.dig(:openai, :api_key))
+    @_openai_client ||= OpenAI::Client.new(request_timeout: 240, access_token: Rails.application.credentials.dig(:openai, :api_key))
   end
 end

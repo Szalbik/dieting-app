@@ -20,7 +20,7 @@ class MealPlanMealLocalizer
   end
 
   def duplicate_meal_and_products
-    return @duplicate_meal_and_products if defined?(@duplicate_meal_and_products)
+    return @_duplicate_meal_and_products if defined?(@_duplicate_meal_and_products)
 
     product_map = {}
 
@@ -80,6 +80,6 @@ class MealPlanMealLocalizer
       end
     end
 
-    @duplicate_meal_and_products = product_map
+    @_duplicate_meal_and_products = product_map
   end
 end

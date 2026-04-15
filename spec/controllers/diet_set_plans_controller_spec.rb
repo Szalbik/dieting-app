@@ -160,7 +160,8 @@ RSpec.describe DietSetPlansController, type: :controller do
       allow(Current).to receive(:user).and_return(user)
       product.update!(name: 'Jogurt naturalny 2% tluszczu', base_product_name: nil, base_canonical_product: nil)
 
-      create(:product_substitution, user: user, source_product: 'Jogurt naturalny', replacement_product: 'Skyr naturalny')
+      create(:product_substitution, user: user, source_product: 'Jogurt naturalny',
+                                    replacement_product: 'Skyr naturalny')
       create(
         :substitution_product_match,
         user: user,
@@ -183,7 +184,8 @@ RSpec.describe DietSetPlansController, type: :controller do
       allow(Current).to receive(:user).and_return(user)
       product.update!(name: 'płatków owsianych', base_product_name: 'płatków owsianych')
 
-      create(:product_substitution, user: user, source_product: 'płatków owsianych', replacement_product: 'płatków kukurydzianych')
+      create(:product_substitution, user: user, source_product: 'płatków owsianych',
+                                    replacement_product: 'płatków kukurydzianych')
 
       post :cycle_product_replacement, params: {
         meal_plan_id: meal_plan.id,
@@ -210,7 +212,7 @@ RSpec.describe DietSetPlansController, type: :controller do
       expect(response).to redirect_to(diet_set_plans_path(date: Date.current.to_s))
       expect(meal_plan.reload.meal).not_to eq(meal)
       expect(product.reload.name).to eq('Tunczyk')
-      expect(meal_plan.products.first.name).to satisfy { |name| %w[Losos Makrela].include?(name) }
+      expect(meal_plan.products.first.name).to(satisfy { |name| %w[Losos Makrela].include?(name) })
       expect(other_day_plan.meal_plans.first.products.first.name).to eq('Tunczyk')
     end
   end

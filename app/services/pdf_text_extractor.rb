@@ -9,6 +9,15 @@ class PdfTextExtractor
 
   MIN_TEXT_CHARS_PER_PAGE = 40
 
+  def self.available_tesseract_languages
+    @_available_tesseract_languages ||= begin
+      stdout, = Open3.capture2('tesseract', '--list-langs')
+      stdout.lines.drop(1).map(&:strip).reject(&:blank?)
+    rescue StandardError
+      []
+    end
+  end
+
   def initialize(file_path)
     @file_path = file_path
   end
@@ -19,7 +28,8 @@ class PdfTextExtractor
 
   def extract
     extracted_text, page_count = extract_text_with_pdf_reader
-    return Result.new(text: extracted_text, page_count: page_count, source: :pdf_reader) if sufficient_text?(extracted_text, page_count)
+    return Result.new(text: extracted_text, page_count: page_count, source: :pdf_reader) if sufficient_text?(extracted_text,
+page_count)
 
     pdftotext_text = extract_text_with_pdftotext
     return Result.new(text: pdftotext_text, page_count: page_count, source: :pdftotext) if sufficient_text?(pdftotext_text, page_count)
@@ -97,14 +107,5 @@ class PdfTextExtractor
     return 'eng' if languages.include?('eng')
 
     languages.first || 'eng'
-  end
-
-  def self.available_tesseract_languages
-    @available_tesseract_languages ||= begin
-      stdout, = Open3.capture2('tesseract', '--list-langs')
-      stdout.lines.drop(1).map(&:strip).reject(&:blank?)
-    rescue StandardError
-      []
-    end
   end
 end

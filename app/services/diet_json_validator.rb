@@ -60,7 +60,7 @@ class DietJsonValidator
   private
 
   def load_schema
-    @loaded_schema ||= JSON.parse(File.read(SCHEMA_PATH))
+    @_load_schema ||= JSON.parse(File.read(SCHEMA_PATH))
   end
 
   def format_error(error)

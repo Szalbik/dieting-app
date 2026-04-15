@@ -20,10 +20,10 @@ module Classifier
 
     def self.normalize_name(product_name)
       product_name.to_s.downcase
-                  .gsub(/[^[:alnum:]\s]/, ' ')
-                  .gsub(/\b\d+(?:[.,]\d+)?\b/, ' ')
-                  .gsub(/\s+/, ' ')
-                  .strip
+        .gsub(/[^[:alnum:]\s]/, ' ')
+        .gsub(/\b\d+(?:[.,]\d+)?\b/, ' ')
+        .gsub(/\s+/, ' ')
+        .strip
     end
 
     def self.tokens_for(product_name)
@@ -99,7 +99,7 @@ module Classifier
     end
 
     def confirmed_examples
-      @confirmed_examples ||= ProductCategory.where(state: true).includes(:product, :category).to_a
+      @_confirmed_examples ||= ProductCategory.where(state: true).includes(:product, :category).to_a
     end
 
     def normalized_product_name(product_category)

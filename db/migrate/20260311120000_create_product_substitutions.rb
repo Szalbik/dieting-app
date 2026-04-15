@@ -11,7 +11,7 @@ class CreateProductSubstitutions < ActiveRecord::Migration[8.0]
     end
 
     add_index :product_substitutions,
-              [:user_id, :source_product, :replacement_product],
+              %i[user_id source_product replacement_product],
               unique: true,
               name: 'index_product_substitutions_on_user_and_pair'
   end

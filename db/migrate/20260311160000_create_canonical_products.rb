@@ -9,7 +9,7 @@ class CreateCanonicalProducts < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :canonical_products, [:user_id, :name], unique: true
+    add_index :canonical_products, %i[user_id name], unique: true
 
     create_table :canonical_product_aliases do |t|
       t.references :canonical_product, null: false, foreign_key: true
@@ -20,7 +20,8 @@ class CreateCanonicalProducts < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :canonical_product_aliases, [:canonical_product_id, :name], unique: true, name: 'idx_canonical_aliases_on_product_and_name'
+    add_index :canonical_product_aliases, %i[canonical_product_id name], unique: true,
+                                                                         name: 'idx_canonical_aliases_on_product_and_name'
     add_index :canonical_product_aliases, :normalized_name
     add_index :canonical_product_aliases, :stem_signature
 

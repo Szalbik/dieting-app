@@ -5,9 +5,12 @@ class CanonicalProduct < ApplicationRecord
 
   has_many :canonical_product_aliases, dependent: :destroy
   has_many :products, dependent: :nullify
-  has_many :base_products, class_name: 'Product', foreign_key: :base_canonical_product_id, inverse_of: :base_canonical_product, dependent: :nullify
-  has_many :source_product_substitutions, class_name: 'ProductSubstitution', foreign_key: :source_canonical_product_id, inverse_of: :source_canonical_product, dependent: :nullify
-  has_many :replacement_product_substitutions, class_name: 'ProductSubstitution', foreign_key: :replacement_canonical_product_id, inverse_of: :replacement_canonical_product, dependent: :nullify
+  has_many :base_products, class_name: 'Product', foreign_key: :base_canonical_product_id, inverse_of: :base_canonical_product,
+dependent: :nullify
+  has_many :source_product_substitutions, class_name: 'ProductSubstitution', foreign_key: :source_canonical_product_id,
+inverse_of: :source_canonical_product, dependent: :nullify
+  has_many :replacement_product_substitutions, class_name: 'ProductSubstitution', foreign_key: :replacement_canonical_product_id,
+inverse_of: :replacement_canonical_product, dependent: :nullify
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
 

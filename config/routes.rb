@@ -44,7 +44,8 @@ Rails.application.routes.draw do
     post 'replace_product', to: 'diet_set_plans#replace_product', as: 'replace_product'
     post 'cycle_product_replacement', to: 'diet_set_plans#cycle_product_replacement', as: 'cycle_product_replacement'
     post 'add_product_substitution', to: 'diet_set_plans#add_product_substitution', as: 'add_product_substitution'
-    delete 'remove_product_substitution/:substitution_id', to: 'diet_set_plans#remove_product_substitution', as: 'remove_product_substitution'
+    delete 'remove_product_substitution/:substitution_id', to: 'diet_set_plans#remove_product_substitution',
+                                                           as: 'remove_product_substitution'
   end
 
   resource :shopping_cart, only: [:show]

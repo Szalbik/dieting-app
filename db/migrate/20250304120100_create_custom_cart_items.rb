@@ -11,6 +11,6 @@ class CreateCustomCartItems < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :custom_cart_items, [:shopping_cart_id, :name]
+    add_index :custom_cart_items, %i[shopping_cart_id name]
   end
 end

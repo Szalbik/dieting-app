@@ -84,11 +84,11 @@ class Chat::SubstitutionExpanderService
   end
 
   def json_schema
-    @json_schema ||= JSON.parse(File.read(SCHEMA_PATH))
+    @_json_schema ||= JSON.parse(File.read(SCHEMA_PATH))
   end
 
   def openai_client
-    @openai_client ||= OpenAI::Client.new(
+    @_openai_client ||= OpenAI::Client.new(
       request_timeout: 240,
       access_token: Rails.application.credentials.dig(:openai, :api_key)
     )

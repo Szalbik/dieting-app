@@ -48,6 +48,7 @@ class MealPlanProductSubstitution < ApplicationRecord
     if from_norm == base_norm
       ratio = pairs[to_norm]
       return ratio if ratio.present? && ratio.positive?
+
       return 1.0
     end
 

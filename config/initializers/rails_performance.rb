@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if defined?(RailsPerformance) && !Rails.env.test?
   RailsPerformance.setup do |config|
     config.redis    = Redis.new(url: Rails.application.credentials.redis_url)

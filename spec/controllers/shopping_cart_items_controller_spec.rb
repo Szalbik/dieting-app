@@ -11,7 +11,9 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
   let(:meal_plan) { create(:meal_plan, diet_set_plan: diet_set_plan, meal: meal, selected_for_cart: true) }
   let(:product) { create(:product, meal: meal, diet_set: diet_set) }
   let(:shopping_cart) { user.shopping_cart }
-  let(:shopping_cart_item) { create(:shopping_cart_item, shopping_cart: shopping_cart, product: product, meal_plan: meal_plan) }
+  let(:shopping_cart_item) do
+    create(:shopping_cart_item, shopping_cart: shopping_cart, product: product, meal_plan: meal_plan)
+  end
 
   before do
     # Mock the authentication system
@@ -77,7 +79,7 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
       {
         item_ids: [shopping_cart_item.id],
         removed_at: Time.current.to_i,
-        product_name: product.name,
+        product_name: product.name
       }
     end
 

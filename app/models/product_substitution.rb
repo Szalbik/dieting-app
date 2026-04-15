@@ -173,6 +173,7 @@ class ProductSubstitution < ApplicationRecord
     if from_norm == base_norm
       ratio = pairs[to_norm]
       return ratio if ratio.present? && ratio.positive?
+
       return 1.0
     end
 
@@ -450,6 +451,20 @@ class ProductSubstitution < ApplicationRecord
 
   private
 
+  def sync_canonical_products!
+    return if user.blank? || source_product.blank? || replacement_product.blank?
+
+    resolver = Local::CanonicalProductResolver.new(user: user)
+    source = resolver.call(raw_name: source_product)
+    replacement = resolver.call(raw_name: replacement_product)
+    return if source.blank? || replacement.blank?
+
+    self.source_canonical_product = source
+    self.replacement_canonical_product = replacement
+    self.source_product = source.name
+    self.replacement_product = replacement.name
+  end
+
   def normalize_products_and_quantities
     src_amount, src_unit, src_scale, src_name = self.class.parse_quantity_from_text(source_product)
     rep_amount, rep_unit, rep_scale, rep_name = self.class.parse_quantity_from_text(replacement_product)
@@ -473,21 +488,5 @@ class ProductSubstitution < ApplicationRecord
       replacement_base = effective_replacement_amount.to_f * effective_replacement_scale.last
       self.amount_multiplier = source_base.positive? ? (replacement_base / source_base) : self.amount_multiplier
     end
-  end
-
-  public
-
-  def sync_canonical_products!
-    return if user.blank? || source_product.blank? || replacement_product.blank?
-
-    resolver = Local::CanonicalProductResolver.new(user: user)
-    source = resolver.call(raw_name: source_product)
-    replacement = resolver.call(raw_name: replacement_product)
-    return if source.blank? || replacement.blank?
-
-    self.source_canonical_product = source
-    self.replacement_canonical_product = replacement
-    self.source_product = source.name
-    self.replacement_product = replacement.name
   end
 end

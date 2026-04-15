@@ -33,7 +33,7 @@ class SyncCanonicalProductsJob < ApplicationJob
         end
       end
 
-      user.products.includes(:meal => { :diet_set => :diet }, :diet_set => :diet).find_each do |product|
+      user.products.includes(meal: { diet_set: :diet }, diet_set: :diet).find_each do |product|
         product.sync_canonical_products!
         product.save! if product.changed?
       end

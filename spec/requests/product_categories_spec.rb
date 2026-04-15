@@ -49,7 +49,8 @@ RSpec.describe 'Product categories', type: :request do
 
       target_1 = ProductCategory.create!(product: Product.create!(name: 'Pieprz'), category: old_category, state: false)
       target_2 = ProductCategory.create!(product: Product.create!(name: 'PIEPRZ'), category: old_category, state: false)
-      other = ProductCategory.create!(product: Product.create!(name: 'Pieprz cayenne'), category: old_category, state: false)
+      other = ProductCategory.create!(product: Product.create!(name: 'Pieprz cayenne'), category: old_category,
+                                      state: false)
 
       patch product_category_path(target_1), params: { product_category: { category_id: new_category.id } }
 

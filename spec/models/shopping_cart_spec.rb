@@ -26,16 +26,16 @@ RSpec.describe ShoppingCart, type: :model do
     it 'prevents cross-user shopping cart interference' do
       # Create shopping cart items for both users
       user1_cart = user1.shopping_cart
-      user1_cart_item = create(:shopping_cart_item,
-                               shopping_cart: user1_cart,
-                               product: product1,
-                               meal_plan: meal_plan1)
+      create(:shopping_cart_item,
+             shopping_cart: user1_cart,
+             product: product1,
+             meal_plan: meal_plan1)
 
       user2_cart = user2.shopping_cart
-      user2_cart_item = create(:shopping_cart_item,
-                               shopping_cart: user2_cart,
-                               product: product2,
-                               meal_plan: meal_plan2)
+      create(:shopping_cart_item,
+             shopping_cart: user2_cart,
+             product: product2,
+             meal_plan: meal_plan2)
 
       # Verify that users can only see their own cart items
       user1_result = user1_cart.group_and_sum_by_cart_items
@@ -74,10 +74,10 @@ RSpec.describe ShoppingCart, type: :model do
     it 'maintains cart items when other users create new diet plans' do
       # Setup initial state
       user1_cart = user1.shopping_cart
-      user1_cart_item = create(:shopping_cart_item,
-                               shopping_cart: user1_cart,
-                               product: product1,
-                               meal_plan: meal_plan1)
+      create(:shopping_cart_item,
+             shopping_cart: user1_cart,
+             product: product1,
+             meal_plan: meal_plan1)
 
       # Verify initial state - check that the product exists in the result
       user1_result = user1_cart.group_and_sum_by_cart_items
@@ -143,19 +143,19 @@ RSpec.describe ShoppingCart, type: :model do
     it 'filters out items where selected_for_cart is false' do
       # Create a meal plan that's not selected for cart
       unselected_meal_plan = create(:meal_plan, meal: meal, selected_for_cart: false)
-      unselected_cart_item = create(:shopping_cart_item,
-                                    shopping_cart: shopping_cart,
-                                    product: product,
-                                    meal_plan: unselected_meal_plan,
-                                    quantity: 3)
+      create(:shopping_cart_item,
+             shopping_cart: shopping_cart,
+             product: product,
+             meal_plan: unselected_meal_plan,
+             quantity: 3)
 
       # Create a meal plan that is selected for cart
       selected_meal_plan = create(:meal_plan, meal: meal, selected_for_cart: true)
-      selected_cart_item = create(:shopping_cart_item,
-                                  shopping_cart: shopping_cart,
-                                  product: product,
-                                  meal_plan: selected_meal_plan,
-                                  quantity: 1)
+      create(:shopping_cart_item,
+             shopping_cart: shopping_cart,
+             product: product,
+             meal_plan: selected_meal_plan,
+             quantity: 1)
 
       result = shopping_cart.group_and_sum_by_cart_items
 

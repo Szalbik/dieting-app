@@ -5,7 +5,8 @@ class ExpandSubstitutionsWithAiJob < ApplicationJob
 
   MIN_CONFIDENCE = 0.65
   CATEGORY_RULES = {
-    /owoc/i => %w[banan jablk gruszk kiwi mango arbuz borow malin truskawk ananas pomarancz mandaryn winogron nektaryn brzoskwin czere],
+    /owoc/i => %w[banan jablk gruszk kiwi mango arbuz borow malin truskawk ananas pomarancz mandaryn winogron nektaryn brzoskwin
+czere],
     /pieczywo/i => %w[chleb bulk kajzer graham bagiet pita tortilla],
     /napoj/i => %w[herbat kaw wod sok napoj kefir maslank mleko],
   }.freeze
@@ -35,7 +36,7 @@ class ExpandSubstitutionsWithAiJob < ApplicationJob
     user.products.includes(:category).map do |product|
       {
         name: ProductSubstitution.strip_quantity_from_name(product.name),
-        category: product.category_name_or_default
+        category: product.category_name_or_default,
       }
     end.uniq { |row| row[:name].downcase }
   end

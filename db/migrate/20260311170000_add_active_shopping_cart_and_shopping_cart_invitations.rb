@@ -18,7 +18,8 @@ class AddActiveShoppingCartAndShoppingCartInvitations < ActiveRecord::Migration[
       end
     end
 
-    unless index_exists?(:shopping_cart_invitations, %i[inviter_id invitee_id status], name: 'idx_cart_invites_on_pair_and_status')
+    unless index_exists?(:shopping_cart_invitations, %i[inviter_id invitee_id status],
+                         name: 'idx_cart_invites_on_pair_and_status')
       add_index :shopping_cart_invitations,
                 %i[inviter_id invitee_id status],
                 name: 'idx_cart_invites_on_pair_and_status'
@@ -44,6 +45,8 @@ class AddActiveShoppingCartAndShoppingCartInvitations < ActiveRecord::Migration[
     remove_index :shopping_carts, :user_id if index_exists?(:shopping_carts, :user_id)
     add_index :shopping_carts, :user_id unless index_exists?(:shopping_carts, :user_id)
     drop_table :shopping_cart_invitations if table_exists?(:shopping_cart_invitations)
-    remove_reference :users, :active_shopping_cart, foreign_key: { to_table: :shopping_carts } if column_exists?(:users, :active_shopping_cart_id)
+    remove_reference :users, :active_shopping_cart, foreign_key: { to_table: :shopping_carts } if column_exists?(
+      :users, :active_shopping_cart_id
+    )
   end
 end

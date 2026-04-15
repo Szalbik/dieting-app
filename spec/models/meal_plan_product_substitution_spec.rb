@@ -7,7 +7,9 @@ RSpec.describe MealPlanProductSubstitution, type: :model do
   let(:diet) { create(:diet, user: user) }
   let(:diet_set) { create(:diet_set, diet: diet) }
   let(:meal) { create(:meal, diet_set: diet_set) }
-  let(:meal_plan) { create(:meal_plan, meal: meal, diet_set_plan: create(:diet_set_plan, diet: diet, diet_set: diet_set)) }
+  let(:meal_plan) do
+    create(:meal_plan, meal: meal, diet_set_plan: create(:diet_set_plan, diet: diet, diet_set: diet_set))
+  end
   let(:product) { create(:product, meal: meal, diet_set: diet_set, name: 'Tunczyk') }
 
   describe '#capture_source_from!' do

@@ -34,7 +34,7 @@ class OriginalMealIngredientResolver
       ProductSubstitution.normalize_name(meal_hash['name']) == normalized_name
     end
 
-    @resolved_meal_hash ||= begin
+    @_resolved_meal_hash ||= begin
       meal_index = @meal.diet_set.meals.order(:id).pluck(:id).index(@meal.id)
       meals[meal_index] if meal_index
     end

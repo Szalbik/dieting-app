@@ -10,7 +10,8 @@ RSpec.describe Chat::DietMealConsolidator do
           'day' => 3,
           'meals' => [
             meal(type: 'breakfast', name: 'Pieczywo razowe z jajkiem i pomidorem', kcal: 210),
-            meal(type: 'snack', name: 'DRENANAT INSTANT', product: 'DRENANAT INSTANT', quantity: '1 filiżanka', kcal: 2),
+            meal(type: 'snack', name: 'DRENANAT INSTANT', product: 'DRENANAT INSTANT', quantity: '1 filiżanka',
+                 kcal: 2),
             meal(type: 'snack', name: 'Gruszka z jogurtem i Fibroki', kcal: 120),
             meal(type: 'lunch', name: 'Roladki drobiowe z cukinią, mizeria z jogurtem', kcal: 226),
             meal(type: 'snack', name: 'Jogurt naturalny z Fibroki', kcal: 80),

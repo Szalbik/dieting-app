@@ -11,17 +11,17 @@ RSpec.describe DietJsonValidator do
           'type' => 'breakfast',
           'name' => 'Owsianka',
           'ingredients' => [
-            { 'product' => 'Płatki owsiane', 'quantity' => '50g' },
+            { 'product' => 'Płatki owsiane', 'quantity' => '50g' }
           ],
           'instructions' => 'Zalej mlekiem.',
           'nutrition' => {
             'kcal' => 300.0,
             'protein' => 12.0,
             'fat' => 6.0,
-            'carbs' => 48.0,
-          },
-        },
-      ],
+            'carbs' => 48.0
+          }
+        }
+      ]
     }
   end
 

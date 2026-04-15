@@ -77,7 +77,7 @@ class Chat::DietMealConsolidator
         [
           canonical_meal_type_rank(meal['type']),
           meal.dig('nutrition', 'kcal').to_f,
-          index
+          index,
         ]
       end
 
@@ -105,7 +105,7 @@ class Chat::DietMealConsolidator
     searchable_text = [
       meal['name'],
       ingredients.first['product'],
-      ingredients.first['quantity']
+      ingredients.first['quantity'],
     ].join(' ').downcase
 
     ACCESSORY_BEVERAGE_KEYWORDS.any? { |keyword| searchable_text.include?(keyword) }

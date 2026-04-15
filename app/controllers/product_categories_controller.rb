@@ -45,7 +45,7 @@ class ProductCategoriesController < ApplicationController
           id: representative.id,
           name: representative.product.name,
           category_id: representative.category_id,
-          count: items.size
+          count: items.size,
         }
       end
       .sort_by { |row| row[:name].downcase }

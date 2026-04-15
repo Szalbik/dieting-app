@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Run this script from Rails console to categorize products
 # Usage: load 'scripts/categorize_products.rb'
 

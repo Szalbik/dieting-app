@@ -41,7 +41,8 @@ class Chat::MealReplacementSuitabilityService
     content = response.dig('choices', 0, 'message', 'content')
     parsed = JSON.parse(clean_json(content))
     allowed = Array(parsed['allowed_products'])
-    allowed.select { |name| @candidate_names.any? { |candidate| ProductSubstitution.normalize_name(candidate) == ProductSubstitution.normalize_name(name) } }
+    allowed.select { |name| @candidate_names.any? { |candidate|
+ ProductSubstitution.normalize_name(candidate) == ProductSubstitution.normalize_name(name) } }
   end
 
   private
@@ -71,11 +72,11 @@ class Chat::MealReplacementSuitabilityService
   end
 
   def json_schema
-    @json_schema ||= JSON.parse(File.read(SCHEMA_PATH))
+    @_json_schema ||= JSON.parse(File.read(SCHEMA_PATH))
   end
 
   def openai_client
-    @openai_client ||= OpenAI::Client.new(
+    @_openai_client ||= OpenAI::Client.new(
       request_timeout: 120,
       access_token: Rails.application.credentials.dig(:openai, :api_key)
     )

@@ -38,10 +38,10 @@ RSpec.describe 'Product substitutions', type: :request do
       login
       expect do
         post product_substitutions_path, params: {
-          product_substitution: { source_product: '  jajka  ', replacement_product: '  tofu  ' },
+          product_substitution: { source_product: '  jajka  ', replacement_product: '  tofu  ' }
         }
       end.to change { user.product_substitutions.count }.by(1)
-        .and have_enqueued_job(SyncCanonicalProductsJob)
+                                                        .and have_enqueued_job(SyncCanonicalProductsJob)
         .and have_enqueued_job(MatchSubstitutionsToProductsJob)
 
       expect(response).to redirect_to(product_substitutions_path)
@@ -56,7 +56,7 @@ RSpec.describe 'Product substitutions', type: :request do
       expect do
         delete product_substitution_path(sub)
       end.to change { user.product_substitutions.count }.by(-1)
-        .and have_enqueued_job(SyncCanonicalProductsJob)
+                                                        .and have_enqueued_job(SyncCanonicalProductsJob)
         .and have_enqueued_job(MatchSubstitutionsToProductsJob)
 
       expect(response).to redirect_to(product_substitutions_path)
@@ -67,8 +67,8 @@ RSpec.describe 'Product substitutions', type: :request do
     it 'imports rows returned by the parser service' do
       login
       parser = instance_double(Chat::ProductSubstitutionParserService, call: [
-        { 'source' => 'mleko', 'replacements' => ['napój owsiany'] },
-      ])
+                                 { 'source' => 'mleko', 'replacements' => ['napój owsiany'] }
+                               ])
       allow(Chat::ProductSubstitutionParserService).to receive(:new).and_return(parser)
 
       pdf = Rack::Test::UploadedFile.new(
