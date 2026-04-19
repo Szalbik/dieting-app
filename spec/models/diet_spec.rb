@@ -36,4 +36,18 @@ RSpec.describe Diet, type: :model do
     it { is_expected.to belong_to(:user).optional }
     it { is_expected.to have_many(:diet_sets).dependent(:destroy) }
   end
+
+  describe '#parse_pdf_content_with_chat!' do
+    it 'saves parsed_json returned by the parser service' do
+      diet = create(:diet, :with_pdf)
+      parsed_data = [{ 'day' => 1, 'meals' => [] }]
+      parser = instance_double(Chat::DietParserService, call: parsed_data)
+
+      allow(Chat::DietParserService).to receive(:new).and_return(parser)
+
+      diet.parse_pdf_content_with_chat!
+
+      expect(diet.reload.parsed_json).to eq(parsed_data)
+    end
+  end
 end

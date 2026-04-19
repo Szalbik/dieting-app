@@ -4,6 +4,12 @@
     <p class="mt-1 text-sm text-slate-600">
       Produkty bez potwierdzonej kategorii. Każdy wiersz to unikalna nazwa produktu.
     </p>
+    <% if @classification_rows.respond_to?(:total_count) && @classification_rows.total_count.positive? %>
+      <p class="mt-2 text-xs text-slate-500">
+        Strona <%= @classification_rows.current_page %> z <%= @classification_rows.total_pages %>.
+        Łącznie: <%= @classification_rows.total_count %> produktów.
+      </p>
+    <% end %>
   </div>
 
   <div class="space-y-3">
@@ -16,6 +22,7 @@
     <% @classification_rows.each do |row| %>
       <%= form_with url: product_category_path(row[:id]), method: :patch, class: "rounded-lg border border-slate-200 bg-white p-4" do |form| %>
         <%= hidden_field_tag :product_name, row[:name] %>
+        <%= hidden_field_tag :page, @classification_rows.current_page if @classification_rows.respond_to?(:current_page) %>
         <div class="grid gap-3 sm:grid-cols-[1.8fr_0.8fr_1.2fr_auto] sm:items-center">
           <div>
             <p class="font-medium text-slate-900"><%= row[:name] %></p>
@@ -44,4 +51,20 @@
       <% end %>
     <% end %>
   </div>
+
+  <% if @classification_rows.respond_to?(:total_pages) && @classification_rows.total_pages > 1 %>
+    <div class="mt-8 flex items-center justify-center gap-2">
+      <% if @classification_rows.prev_page %>
+        <%= link_to 'Poprzednia', product_categories_path(page: @classification_rows.prev_page), class: 'rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50' %>
+      <% end %>
+
+      <span class="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700">
+        <%= @classification_rows.current_page %> / <%= @classification_rows.total_pages %>
+      </span>
+
+      <% if @classification_rows.next_page %>
+        <%= link_to 'Następna', product_categories_path(page: @classification_rows.next_page), class: 'rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50' %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

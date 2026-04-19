@@ -7,6 +7,11 @@ RSpec.describe 'Product categories', type: :request do
     post session_path, params: { email_address: user.email_address, password: password }
   end
 
+  before do
+    allow_any_instance_of(ActionView::Base).to receive(:stylesheet_link_tag).and_return('')
+    allow_any_instance_of(ActionView::Base).to receive(:javascript_include_tag).and_return('')
+  end
+
   let(:password) { 'password123' }
   let(:admin) { create(:user, admin: true, password: password, password_confirmation: password) }
   let(:user) { create(:user, admin: false, password: password, password_confirmation: password) }
@@ -50,6 +55,21 @@ RSpec.describe 'Product categories', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to match(/Marchew|MARCHEW/)
       expect(response.body).to include('Powtórzenia:')
+    end
+
+    it 'paginates classification rows' do
+      login_as(admin, password: password)
+
+      51.times do |idx|
+        Product.create!(name: format('Produkt %03d', idx))
+      end
+
+      get product_categories_path(page: 2)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Strona 2 z 2')
+      expect(response.body).to include('Produkt 050')
+      expect(response.body).not_to include('Produkt 000')
     end
   end
 
@@ -100,6 +120,21 @@ RSpec.describe 'Product categories', type: :request do
       expect(second_product.reload.category).to eq(new_category)
       expect(first_product.product_category.state).to be(true)
       expect(second_product.product_category.state).to be(true)
+    end
+
+    it 'keeps the current page after updating a category' do
+      login_as(admin, password: password)
+
+      category = create(:category, name: 'Warzywa')
+      product = Product.create!(name: 'Marchew')
+
+      patch product_category_path(product.id), params: {
+        page: 3,
+        product_name: 'Marchew',
+        product_category: { category_id: category.id }
+      }
+
+      expect(response).to redirect_to(product_categories_path(page: 3))
     end
   end
 end

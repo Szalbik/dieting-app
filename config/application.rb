@@ -40,6 +40,12 @@ module DietingApp
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    config.x.openai.diet_parsing_models = ActiveSupport::InheritableOptions.new(
+      metadata: ENV.fetch('OPENAI_DIET_PARSER_METADATA_MODEL', 'gpt-4.1'),
+      ingredients: ENV.fetch('OPENAI_DIET_PARSER_INGREDIENTS_MODEL', 'gpt-4.1'),
+      instructions_nutrition: ENV.fetch('OPENAI_DIET_PARSER_INSTRUCTIONS_MODEL', 'gpt-5.1')
+    )
+
     config.time_zone = 'Warsaw'
     # config.eager_load_paths << Rails.root.join("extras")
 

@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 class ProductCategoriesController < ApplicationController
+  PER_PAGE = 50
+
   before_action :set_product_category, only: %i[edit show]
   before_action :require_admin!
 
   def index
-    @classification_rows = build_classification_rows
+    @classification_rows = Kaminari.paginate_array(build_classification_rows)
+      .page(params[:page])
+      .per(PER_PAGE)
   end
 
   def show
@@ -23,7 +27,7 @@ class ProductCategoriesController < ApplicationController
 
     ProductCategory.assign_category_for_exact_name!(product_name, category_id: category_id)
 
-    redirect_to product_categories_path, notice: 'Kategoria produktu została zaktualizowana.'
+    redirect_to product_categories_path(page: params[:page]), notice: 'Kategoria produktu została zaktualizowana.'
   end
 
   private
