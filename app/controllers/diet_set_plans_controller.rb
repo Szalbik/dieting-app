@@ -269,7 +269,7 @@ class DietSetPlansController < ApplicationController
 
   def set_diet_set_plan
     @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last unless params['reassign'].present?
-    @_set_diet_set_plan ||= DietSetPlan.new(date: date)
+    @diet_set_plan ||= DietSetPlan.new(date: date)
   end
 
   def date

@@ -13,6 +13,8 @@ RSpec.describe 'Main', type: :request do
     it 'renders for a guest' do
       get root_path
       expect(response).to have_http_status(:success)
+      expect(response.body).to include(new_registration_path)
+      expect(response.body).to include(new_dietitian_waitlist_entry_path)
     end
 
     it 'redirects to diet set plans when authenticated' do

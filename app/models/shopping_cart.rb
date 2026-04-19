@@ -15,46 +15,37 @@ class ShoppingCart < ApplicationRecord
       .where(meal_plans: { selected_for_cart: true })
       .includes(product: [:ingredient_measures, :category, :canonical_product])
 
-    # Jedna linia na „nazwę sklepową”: CanonicalProduct (jeśli jest), inaczej nazwa bez ilości, inaczej raw name.
-    grouped_by_name = items.group_by { |item| item.product.shopping_cart_group_name }
-
-    # Build a hash to hold aggregated product data.
     summed_products = {}
 
-    grouped_by_name.each do |name, items|
-      summed_products[name] ||= {
+    items.group_by { |item| item.product.shopping_cart_group_key }.each_value do |grouped_items|
+      display_name = Product.best_shopping_list_display_name(grouped_items.map(&:product))
+      summed_products[display_name] ||= {
         product: nil,
-        name: name,
+        name: display_name,
         quantity: 0,
         aggregated_ingredient_measures: [],
         category: nil,
       }
 
-      # Use a hash to accumulate totals for each unit.
       unit_hash = {}
 
-      items.each do |item|
+      grouped_items.each do |item|
         product = item.product
-        summed_products[name][:quantity] += item.quantity
-        # Use the first encountered product as the representative.
-        summed_products[name][:product] ||= product
+        summed_products[display_name][:quantity] += item.quantity
+        summed_products[display_name][:product] ||= product
 
-        # Prefer any real category in the group; do not overwrite with "Inne" when a
-        # later line has no category (common after grouping by canonical name).
-        summed_products[name][:category] = product.category if product.category.present?
+        summed_products[display_name][:category] = product.category if product.category.present?
 
         product.ingredient_measures.each do |measurement|
           raw_unit = measurement.unit || ''
           normalized_unit = raw_unit.singularize(:pl)
           unit_hash[normalized_unit] ||= 0.0
-          # Multiply the measurement amount by the item's quantity, ensuring nil safety.
           unit_hash[normalized_unit] += measurement.amount.to_f * item.quantity.to_i
         end
       end
 
-      # Convert the accumulated unit totals into an array.
       aggregated = unit_hash.map { |unit, amount| { unit: unit, amount: amount } }
-      summed_products[name][:aggregated_ingredient_measures] = aggregated
+      summed_products[display_name][:aggregated_ingredient_measures] = aggregated
     end
 
     # Now, group the aggregated products by category.

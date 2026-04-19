@@ -11,5 +11,9 @@ FactoryBot.define do
     password_digest { password_digest }
     password { password }
     password_confirmation { password }
+
+    trait :admin do
+      admin { true }
+    end
   end
 end

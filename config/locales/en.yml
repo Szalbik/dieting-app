@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M"
   shopping_cart:
     add_custom_cart_item:
       description: "Add your own product to the shopping list"

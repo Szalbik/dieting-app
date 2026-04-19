@@ -1,5 +1,9 @@
 <%= turbo_stream.replace "date_picker", 
         partial: "diet_set_plans/date_picker" %>
-<%= turbo_stream.replace "diet_set_plan_details", 
-        partial: "diet_set_plans/diet_set_plan_details", 
-        locals: { diet_set_plan: @diet_set_plan } %>
+<%= turbo_stream.replace "diet_set_plan_details" do %>
+  <% if @diet_set_plan.meals.empty? %>
+    <%= render partial: "diet_set_plans/diet_form", locals: { diet_set_plan: @diet_set_plan } %>
+  <% else %>
+    <%= render partial: "diet_set_plans/diet_set_plan_details", locals: { diet_set_plan: @diet_set_plan } %>
+  <% end %>
+<% end %>

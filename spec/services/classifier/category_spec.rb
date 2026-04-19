@@ -47,6 +47,22 @@ RSpec.describe Classifier::Category, type: :service do
     expect(prediction[:confidence]).to eq(0.0)
   end
 
+  it 'falls back to keyword rules for obvious meat products without training data' do
+    prediction = described_class.predict('Wieprzowina schab, chudy')
+
+    expect(prediction[:name]).to eq('Mięso i Ryby')
+    expect(prediction[:state]).to be(false)
+    expect(prediction[:confidence]).to be >= 0.8
+  end
+
+  it 'falls back to keyword rules for obvious vegetable products without training data' do
+    prediction = described_class.predict('Kapusta biała')
+
+    expect(prediction[:name]).to eq('Warzywa')
+    expect(prediction[:state]).to be(false)
+    expect(prediction[:confidence]).to be >= 0.8
+  end
+
   it 'persists the trained model to disk' do
     category = create(:category, name: 'Warzywa')
     ProductCategory.create!(

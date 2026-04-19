@@ -72,6 +72,23 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
       expect(session[:removed_items].last[:item_ids]).to match_array([shopping_cart_item.id, other_item.id])
       expect(shopping_cart.shopping_cart_items.reload).to be_empty
     end
+
+    it 'removes all items sharing the same normalized shopping-list key' do
+      product.update_columns(name: 'Jajko', canonical_product_id: nil)
+
+      other_product = create(:product, meal: meal, diet_set: diet_set)
+      other_product.update_columns(name: 'jajka', canonical_product_id: nil)
+      other_item = create(:shopping_cart_item,
+                          shopping_cart: shopping_cart,
+                          product: other_product,
+                          meal_plan: meal_plan)
+
+      delete :destroy, params: { id: product.id }
+
+      expect(session[:removed_items].last[:item_ids]).to match_array([shopping_cart_item.id, other_item.id])
+      expect(session[:removed_items].last[:product_name]).to eq('Jajko')
+      expect(shopping_cart.shopping_cart_items.reload).to be_empty
+    end
   end
 
   describe 'POST #undo' do

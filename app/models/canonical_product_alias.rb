@@ -11,15 +11,10 @@ class CanonicalProductAlias < ApplicationRecord
   private
 
   def normalize_fields
-    cleaned = ProductSubstitution.strip_quantity_from_name(name).to_s.strip
+    normalizer = ShoppingList::ProductNormalizer.new
+    cleaned = normalizer.cleaned_name(name)
     self.name = cleaned.presence
     self.normalized_name = ProductSubstitution.normalize_name(cleaned)
-    self.stem_signature = cleaned
-      .then { |value| ProductSubstitution.normalize_name(value) }
-      .split
-      .map { |token| ProductSubstitution.normalize_polish_stem(token) }
-      .reject(&:blank?)
-      .sort
-      .join(' ')
+    self.stem_signature = normalizer.call(raw_name: cleaned)[:key]
   end
 end

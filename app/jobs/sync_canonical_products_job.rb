@@ -8,8 +8,10 @@ class SyncCanonicalProductsJob < ApplicationJob
     return unless user
 
     ActiveRecord::Base.transaction do
+      refresh_existing_aliases!(user)
+
       user.product_substitutions.find_each do |substitution|
-        substitution.sync_canonical_products!
+        substitution.send(:sync_canonical_products!)
         next unless substitution.changed?
 
         duplicate = user.product_substitutions
@@ -38,5 +40,41 @@ class SyncCanonicalProductsJob < ApplicationJob
         product.save! if product.changed?
       end
     end
+  end
+
+  private
+
+  def refresh_existing_aliases!(user)
+    normalizer = ShoppingList::ProductNormalizer.new
+
+    user.canonical_products.includes(:canonical_product_aliases).find_each do |canonical|
+      normalize_canonical_name!(canonical, normalizer)
+      canonical.canonical_product_aliases.find_or_create_by!(name: canonical.name)
+
+      canonical.canonical_product_aliases.order(:id).each do |alias_record|
+        normalized_name = normalizer.cleaned_name(alias_record.name)
+        duplicate = canonical.canonical_product_aliases
+          .where(name: normalized_name)
+          .where.not(id: alias_record.id)
+          .first
+
+        if duplicate.present?
+          alias_record.destroy!
+          next
+        end
+
+        alias_record.update!(name: normalized_name)
+      end
+    end
+  end
+
+  def normalize_canonical_name!(canonical, normalizer)
+    normalized_name = normalizer.cleaned_name(canonical.name)
+    return if normalized_name.blank? || normalized_name == canonical.name
+
+    duplicate = canonical.user.canonical_products.where(name: normalized_name).where.not(id: canonical.id).first
+    return if duplicate.present?
+
+    canonical.update!(name: normalized_name)
   end
 end

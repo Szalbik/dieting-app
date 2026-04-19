@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_19_152003) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_19_160000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -105,6 +105,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_152003) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["diet_id"], name: "index_diet_sets_on_diet_id"
+  end
+
+  create_table "dietitian_waitlist_entries", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "email_address", null: false
+    t.string "company_name", null: false
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "demo_called_at"
+    t.datetime "approved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_dietitian_waitlist_entries_on_created_at"
+    t.index ["email_address"], name: "index_dietitian_waitlist_entries_on_email_address", unique: true
+    t.index ["status"], name: "index_dietitian_waitlist_entries_on_status"
   end
 
   create_table "diets", force: :cascade do |t|

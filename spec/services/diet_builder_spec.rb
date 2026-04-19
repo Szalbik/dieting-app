@@ -16,6 +16,20 @@ RSpec.describe DietBuilder do
     end
   end
 
+  def expect_diet_structure(diet, expected_sets)
+    expect(diet.diet_sets.count).to eq(expected_sets.size)
+
+    expected_sets.each do |set_name, expected_data|
+      diet_set = diet.diet_sets.find_by(name: set_name)
+
+      aggregate_failures(set_name) do
+        expect(diet_set).to be_present
+        expect(diet_set.products.count).to eq(expected_data[:products])
+        expect(diet_set.meals.map { |meal| meal.products.count }).to eq(expected_data[:meals])
+      end
+    end
+  end
+
   describe '.new' do
     subject { described_class.new(diet) }
 
@@ -25,470 +39,85 @@ RSpec.describe DietBuilder do
   end
 
   describe '#process_page with 2 pdf' do
-    let(:diet) { create(:diet, :with_pdf) }
+    let(:pdf_trait) { :with_pdf }
+    let(:diet) { create(:diet, pdf_trait) }
     let(:builder) { described_class.new(diet) }
 
     it 'processes the page' do
       process_pages
     end
 
-    it 'creates a diet set' do
-      process_pages
-      save_ingredients
-      expect(diet.diet_sets.count).to eq(7)
-    end
-
-    context 'when counting Products for first diet' do
+    shared_examples 'imports parsed diet' do
       before do
         process_pages
         save_ingredients
       end
 
-      it 'creates a product' do
+      it 'creates products' do
         expect(Product.count).not_to eq(0)
       end
 
-      it 'cretes correct amount of products for Diet Set 1' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 1')
-        expect(diet_set.products.count).to eq(30)
-      end
-
-      context 'when counting Products for meals in 1' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 1') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(6)
-          expect(diet_set.meals[1].products.count).to eq(2)
-          expect(diet_set.meals[2].products.count).to eq(15)
-          expect(diet_set.meals[3].products.count).to eq(7)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 2' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 2')
-        expect(diet_set.products.count).to eq(28)
-      end
-
-      context 'when counting Products for meals in 2' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 2') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(4)
-          expect(diet_set.meals[1].products.count).to eq(12)
-          expect(diet_set.meals[2].products.count).to eq(7)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 3' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 3')
-        expect(diet_set.products.count).to eq(29)
-      end
-
-      context 'when counting Products for meals in 3' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 3') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(6)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(7)
-          expect(diet_set.meals[3].products.count).to eq(11)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 4' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 4')
-        expect(diet_set.products.count).to eq(28)
-      end
-
-      context 'when counting Products for meals in 4' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 4') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(7)
-          expect(diet_set.meals[2].products.count).to eq(10)
-          expect(diet_set.meals[3].products.count).to eq(6)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 5' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 5')
-        expect(diet_set.products.count).to eq(32)
-      end
-
-      context 'when counting Products for meals in 5' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 5') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(7)
-          expect(diet_set.meals[2].products.count).to eq(11)
-          expect(diet_set.meals[3].products.count).to eq(9)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 6' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 6')
-        expect(diet_set.products.count).to eq(27)
-      end
-
-      context 'when counting Products for meals in 6' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 6') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(6)
-          expect(diet_set.meals[1].products.count).to eq(3)
-          expect(diet_set.meals[2].products.count).to eq(13)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 7' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 7')
-        expect(diet_set.products.count).to eq(29)
-      end
-
-      context 'when counting Products for meals in 7' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 7') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(14)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
+      it 'creates the expected diet structure', :aggregate_failures do
+        expect_diet_structure(diet, expected_sets)
       end
     end
 
-    context 'when counting Products for 3 pdf' do
-      let(:diet) { create(:diet, :with_pdf2) }
-
-      before do
-        process_pages
-        save_ingredients
+    context 'when parsing diet_for_one_week.pdf' do
+      let(:pdf_trait) { :with_pdf }
+      let(:expected_sets) do
+        {
+          'Zestaw 1' => { products: 30, meals: [6, 2, 15, 7] },
+          'Zestaw 2' => { products: 28, meals: [4, 12, 7, 5] },
+          'Zestaw 3' => { products: 29, meals: [6, 5, 7, 11] },
+          'Zestaw 4' => { products: 28, meals: [5, 7, 10, 6] },
+          'Zestaw 5' => { products: 32, meals: [5, 7, 11, 9] },
+          'Zestaw 6' => { products: 27, meals: [6, 3, 13, 5] },
+          'Zestaw 7' => { products: 29, meals: [5, 5, 14, 5] }
+        }
       end
 
-      context 'when counting Products for first set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 1') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(4) }
-        it { expect(diet_set.meals[1].products.count).to eq(7) }
-        it { expect(diet_set.meals[2].products.count).to eq(9) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(3) }
-
-        it { expect(diet_set.products.count).to eq(25) }
-      end
-
-      context 'when counting Products for second set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 2') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(4) }
-        it { expect(diet_set.meals[1].products.count).to eq(5) }
-        it { expect(diet_set.meals[2].products.count).to eq(12) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(7) }
-
-        it { expect(diet_set.products.count).to eq(30) }
-      end
-
-      context 'when counting Products for third set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 3') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(6) }
-        it { expect(diet_set.meals[1].products.count).to eq(2) }
-        it { expect(diet_set.meals[2].products.count).to eq(9) }
-        it { expect(diet_set.meals[3].products.count).to eq(1) }
-        it { expect(diet_set.meals[4].products.count).to eq(10) }
-
-        it { expect(diet_set.products.count).to eq(28) }
-      end
-
-      context 'when counting Products for fourth set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 4') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(6) }
-        it { expect(diet_set.meals[1].products.count).to eq(2) }
-        it { expect(diet_set.meals[2].products.count).to eq(10) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(6) }
-
-        it { expect(diet_set.products.count).to eq(26) }
-      end
-
-      context 'when counting Products for fifth set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 5') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(4) }
-        it { expect(diet_set.meals[1].products.count).to eq(2) }
-        it { expect(diet_set.meals[2].products.count).to eq(10) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(4) }
-
-        it { expect(diet_set.products.count).to eq(22) }
-      end
-
-      context 'when counting Products for sixth set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 6') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(4) }
-        it { expect(diet_set.meals[1].products.count).to eq(5) }
-        it { expect(diet_set.meals[2].products.count).to eq(10) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(5) }
-
-        it { expect(diet_set.products.count).to eq(26) }
-      end
-
-      context 'when counting Products for seventh set' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 7') }
-
-        it { expect(diet_set.meals[0].products.count).to eq(5) }
-        it { expect(diet_set.meals[1].products.count).to eq(5) }
-        it { expect(diet_set.meals[2].products.count).to eq(11) }
-        it { expect(diet_set.meals[3].products.count).to eq(2) }
-        it { expect(diet_set.meals[4].products.count).to eq(6) }
-
-        it { expect(diet_set.products.count).to eq(29) }
-      end
+      include_examples 'imports parsed diet'
     end
 
-    context 'when counting Products for 1 pdf' do
-      let(:diet) { create(:diet, :with_long_pdf) }
-
-      before do
-        process_pages
-        save_ingredients
+    context 'when parsing diet_for_one_week2.pdf' do
+      let(:pdf_trait) { :with_pdf2 }
+      let(:expected_sets) do
+        {
+          'Zestaw 1' => { products: 25, meals: [4, 7, 9, 2, 3] },
+          'Zestaw 2' => { products: 30, meals: [4, 5, 12, 2, 7] },
+          'Zestaw 3' => { products: 28, meals: [6, 2, 9, 1, 10] },
+          'Zestaw 4' => { products: 26, meals: [6, 2, 10, 2, 6] },
+          'Zestaw 5' => { products: 22, meals: [4, 2, 10, 2, 4] },
+          'Zestaw 6' => { products: 26, meals: [4, 5, 10, 2, 5] },
+          'Zestaw 7' => { products: 29, meals: [5, 5, 11, 2, 6] }
+        }
       end
 
-      it 'creates a product' do
-        expect(Product.count).not_to eq(0)
+      include_examples 'imports parsed diet'
+    end
+
+    context 'when parsing diet_for_two_weeks.pdf' do
+      let(:pdf_trait) { :with_long_pdf }
+      let(:expected_sets) do
+        {
+          'Zestaw 1' => { products: 23, meals: [4, 7, 8, 4] },
+          'Zestaw 2' => { products: 30, meals: [3, 6, 14, 7] },
+          'Zestaw 3' => { products: 32, meals: [5, 4, 11, 12] },
+          'Zestaw 4' => { products: 26, meals: [3, 5, 12, 6] },
+          'Zestaw 5' => { products: 23, meals: [6, 5, 7, 5] },
+          'Zestaw 6' => { products: 24, meals: [5, 2, 12, 5] },
+          'Zestaw 7' => { products: 26, meals: [4, 5, 11, 6] },
+          'Zestaw 8' => { products: 24, meals: [4, 4, 12, 4] },
+          'Zestaw 9' => { products: 22, meals: [5, 3, 9, 5] },
+          'Zestaw 10' => { products: 25, meals: [4, 6, 9, 6] },
+          'Zestaw 11' => { products: 26, meals: [3, 2, 13, 8] },
+          'Zestaw 12' => { products: 25, meals: [3, 5, 13, 4] },
+          'Zestaw 13' => { products: 24, meals: [7, 4, 8, 5] },
+          'Zestaw 14' => { products: 35, meals: [6, 3, 14, 12] }
+        }
       end
 
-      it 'cretes correct amount of products for Diet Set 1' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 1')
-        expect(diet_set.products.count).to eq(23)
-      end
-
-      context 'when counting Products for meals in 1' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 1') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(4)
-          expect(diet_set.meals[1].products.count).to eq(7)
-          expect(diet_set.meals[2].products.count).to eq(8)
-          expect(diet_set.meals[3].products.count).to eq(4)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 2' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 2')
-        expect(diet_set.products.count).to eq(30)
-      end
-
-      context 'when counting Products for meals in 2' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 2') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(3)
-          expect(diet_set.meals[1].products.count).to eq(6)
-          expect(diet_set.meals[2].products.count).to eq(14)
-          expect(diet_set.meals[3].products.count).to eq(7)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 3' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 3')
-        expect(diet_set.products.count).to eq(32)
-      end
-
-      context 'when counting Products for meals in 3' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 3') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(4)
-          expect(diet_set.meals[2].products.count).to eq(11)
-          expect(diet_set.meals[3].products.count).to eq(12)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 4' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 4')
-        expect(diet_set.products.count).to eq(26)
-      end
-
-      context 'when counting Products for meals in 4' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 4') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(3)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(12)
-          expect(diet_set.meals[3].products.count).to eq(6)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 5' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 5')
-        expect(diet_set.products.count).to eq(23)
-      end
-
-      context 'when counting Products for meals in 5' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 5') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(6)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(7)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 6' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 6')
-        expect(diet_set.products.count).to eq(24)
-      end
-
-      context 'when counting Products for meals in 6' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 6') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(2)
-          expect(diet_set.meals[2].products.count).to eq(12)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 7' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 7')
-        expect(diet_set.products.count).to eq(26)
-      end
-
-      context 'when counting Products for meals in 7' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 7') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(4)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(11)
-          expect(diet_set.meals[3].products.count).to eq(6)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 8' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 8')
-        expect(diet_set.products.count).to eq(24)
-      end
-
-      context 'when counting Products for meals in 8' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 8') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(4)
-          expect(diet_set.meals[1].products.count).to eq(4)
-          expect(diet_set.meals[2].products.count).to eq(12)
-          expect(diet_set.meals[3].products.count).to eq(4)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 9' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 9')
-        expect(diet_set.products.count).to eq(22)
-      end
-
-      context 'when counting Products for meals in 9' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 9') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(5)
-          expect(diet_set.meals[1].products.count).to eq(3)
-          expect(diet_set.meals[2].products.count).to eq(9)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 10' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 10')
-        expect(diet_set.products.count).to eq(25)
-      end
-
-      context 'when counting Products for meals in 10' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 10') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(4)
-          expect(diet_set.meals[1].products.count).to eq(6)
-          expect(diet_set.meals[2].products.count).to eq(9)
-          expect(diet_set.meals[3].products.count).to eq(6)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 11' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 11')
-        expect(diet_set.products.count).to eq(26)
-      end
-
-      context 'when counting Products for meals in 11' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 11') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(3)
-          expect(diet_set.meals[1].products.count).to eq(2)
-          expect(diet_set.meals[2].products.count).to eq(13)
-          expect(diet_set.meals[3].products.count).to eq(8)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 12' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 12')
-        expect(diet_set.products.count).to eq(25)
-      end
-
-      context 'when counting Products for meals in 12' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 12') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(3)
-          expect(diet_set.meals[1].products.count).to eq(5)
-          expect(diet_set.meals[2].products.count).to eq(13)
-          expect(diet_set.meals[3].products.count).to eq(4)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 13' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 13')
-        expect(diet_set.products.count).to eq(24)
-      end
-
-      context 'when counting Products for meals in 13' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 13') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(7)
-          expect(diet_set.meals[1].products.count).to eq(4)
-          expect(diet_set.meals[2].products.count).to eq(8)
-          expect(diet_set.meals[3].products.count).to eq(5)
-        end
-      end
-
-      it 'cretes correct amount of products for Diet Set 14' do
-        diet_set = diet.diet_sets.find_by(name: 'Zestaw 14')
-        expect(diet_set.products.count).to eq(35)
-      end
-
-      context 'when counting Products for meals in 14' do
-        let(:diet_set) { diet.diet_sets.find_by(name: 'Zestaw 14') }
-
-        it 'creates a product' do
-          expect(diet_set.meals[0].products.count).to eq(6)
-          expect(diet_set.meals[1].products.count).to eq(3)
-          expect(diet_set.meals[2].products.count).to eq(14)
-          expect(diet_set.meals[3].products.count).to eq(12)
-        end
-      end
+      include_examples 'imports parsed diet'
     end
   end
 end

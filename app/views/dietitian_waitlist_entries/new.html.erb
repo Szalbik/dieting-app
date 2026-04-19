@@ -1,0 +1,45 @@
+<div class="mx-auto w-full max-w-md">
+  <%= render Ui::CardComponent.new(padding: :lg, classes: "shadow-xl shadow-brand-sage/10") do %>
+    <div class="text-center">
+      <%= link_to root_path, class: "inline-flex justify-center" do %>
+        <%= image_tag "logo-128.png", alt: "DietingApp Logo", class: "h-14 w-auto" %>
+      <% end %>
+      <p class="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-brand-sage-dark/80">Dietitian beta</p>
+      <h1 class="mt-2 text-3xl font-black text-brand-charcoal sm:text-4xl">Join the waitlist</h1>
+      <p class="mt-3 text-sm text-brand-soft-gray">
+        Apply for beta access for dietitians. Selected clinics will be invited after a short demo call.
+      </p>
+    </div>
+
+    <%= form_with model: @dietitian_waitlist_entry, url: dietitian_waitlist_entries_path, data: { turbo: false }, class: "mt-8 space-y-4" do |form| %>
+      <% if form.object.errors.any? %>
+        <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+          <ul class="list-disc space-y-1 pl-4">
+            <% form.object.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= render Ui::InputComponent.new(label: "First name") do %>
+        <%= form.text_field :first_name, class: "app-input", placeholder: "Anna" %>
+      <% end %>
+
+      <%= render Ui::InputComponent.new(label: "Work email") do %>
+        <%= form.email_field :email_address, class: "app-input", placeholder: "anna@clinic.com" %>
+      <% end %>
+
+      <%= render Ui::InputComponent.new(label: "Clinic or company") do %>
+        <%= form.text_field :company_name, class: "app-input", placeholder: "Healthy Clinic" %>
+      <% end %>
+
+      <%= render Ui::ButtonComponent.new(type: "submit", variant: :primary, size: :lg, full_width: true).with_content("Join beta waitlist") %>
+    <% end %>
+
+    <div class="mt-7 rounded-2xl border border-brand-sage/20 bg-brand-sage/5 p-4 text-sm text-brand-soft-gray">
+      Client or patient?
+      <%= link_to "Create a regular account", new_registration_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent" %>
+    </div>
+  <% end %>
+</div>

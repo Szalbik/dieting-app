@@ -38,10 +38,23 @@ RSpec.describe 'Product categories', type: :request do
       expect(response.body).to include('Powtórzenia:')
       expect(response.body).not_to include('Mleko')
     end
+
+    it 'shows uncategorized products that have no product_categories yet' do
+      login_as(admin, password: password)
+
+      Product.create!(name: 'Marchew')
+      Product.create!(name: 'MARCHEW')
+
+      get product_categories_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to match(/Marchew|MARCHEW/)
+      expect(response.body).to include('Powtórzenia:')
+    end
   end
 
   describe 'PATCH /product_categories/:id' do
-    it 'updates only exact same-name pending records (case-insensitive)' do
+    it 'updates all exact same-name products and creates missing categories (case-insensitive)' do
       login_as(admin, password: password)
 
       old_category = create(:category, name: 'Orzechy')
@@ -49,6 +62,7 @@ RSpec.describe 'Product categories', type: :request do
 
       target_1 = ProductCategory.create!(product: Product.create!(name: 'Pieprz'), category: old_category, state: false)
       target_2 = ProductCategory.create!(product: Product.create!(name: 'PIEPRZ'), category: old_category, state: false)
+      uncategorized_product = Product.create!(name: 'Pieprz')
       other = ProductCategory.create!(product: Product.create!(name: 'Pieprz cayenne'), category: old_category,
                                       state: false)
 
@@ -62,8 +76,30 @@ RSpec.describe 'Product categories', type: :request do
       expect(target_2.reload.category).to eq(new_category)
       expect(target_2.state).to be(true)
 
+      expect(uncategorized_product.reload.category).to eq(new_category)
+      expect(uncategorized_product.product_category.state).to be(true)
+
       expect(other.reload.category).to eq(old_category)
       expect(other.state).to be(false)
+    end
+
+    it 'creates categories for all exact same-name uncategorized products' do
+      login_as(admin, password: password)
+
+      new_category = create(:category, name: 'Warzywa')
+      first_product = Product.create!(name: 'Marchew')
+      second_product = Product.create!(name: 'MARCHEW')
+
+      patch product_category_path(first_product.id), params: {
+        product_name: 'Marchew',
+        product_category: { category_id: new_category.id }
+      }
+
+      expect(response).to redirect_to(product_categories_path)
+      expect(first_product.reload.category).to eq(new_category)
+      expect(second_product.reload.category).to eq(new_category)
+      expect(first_product.product_category.state).to be(true)
+      expect(second_product.product_category.state).to be(true)
     end
   end
 end

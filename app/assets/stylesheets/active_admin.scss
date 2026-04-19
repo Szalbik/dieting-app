@@ -1,0 +1,5 @@
+// Default ActiveAdmin stylesheet entrypoint.
+// Keep custom overrides out of this file unless we intentionally want to diverge
+// from the gem's standard look and feel.
+@import "active_admin/mixins";
+@import "active_admin/base";

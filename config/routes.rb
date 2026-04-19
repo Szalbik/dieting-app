@@ -2,6 +2,7 @@
 
 # Rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
+  ActiveAdmin.routes(self)
   root to: 'main#index'
   get 'style-guide', to: 'main#style_guide'
 
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   resource :session, only: %i[new create destroy]
   resources :passwords, param: :token, only: %i[new create edit update]
   resources :registrations, only: %i[new create]
+  resources :dietitian_waitlist_entries, path: 'dietitian-waitlist', only: %i[new create]
 
   resources :products, only: :index
   resources :users, only: :update

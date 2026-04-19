@@ -211,5 +211,74 @@ RSpec.describe ShoppingCart, type: :model do
       expect(product_group[:category].name).not_to eq('Inne')
       expect(product_group[:category].name).to start_with('Test Category')
     end
+
+    it 'groups Polish inflected variants into one cart line with a readable label' do
+      jajko = create(:product, meal: meal, diet_set: diet_set)
+      jajko.update_columns(name: 'Jajko', canonical_product_id: nil)
+      jajko.ingredient_measures.create!(amount: 1.0, unit: 'szt')
+
+      jajka = create(:product, meal: meal, diet_set: diet_set)
+      jajka.update_columns(name: 'jajka', canonical_product_id: nil)
+      jajka.ingredient_measures.create!(amount: 2.0, unit: 'szt')
+
+      jaja = create(:product, meal: meal, diet_set: diet_set)
+      jaja.update_columns(name: 'jaja', canonical_product_id: nil)
+      jaja.ingredient_measures.create!(amount: 3.0, unit: 'szt')
+
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: jajko, meal_plan: meal_plan, quantity: 1)
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: jajka, meal_plan: meal_plan, quantity: 2)
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: jaja, meal_plan: meal_plan, quantity: 1)
+
+      result = shopping_cart.group_and_sum_by_cart_items
+      products = result.flat_map { |group| group[:products] }
+      grouped_product = products.find { |item| item[:name] == 'Jajko' }
+
+      expect(products.count { |item| item[:name] == 'Jajko' }).to eq(1)
+      expect(grouped_product[:quantity]).to eq(4)
+      expect(grouped_product[:aggregated_ingredient_measures]).to contain_exactly(
+        { unit: 'szt', amount: 8.0 }
+      )
+    end
+
+    it 'does not merge unrelated products that normalize differently' do
+      pomidor = create(:product, meal: meal, diet_set: diet_set)
+      pomidor.update_columns(name: 'Pomidor', canonical_product_id: nil)
+      pomidor.ingredient_measures.create!(amount: 1.0, unit: 'szt')
+
+      papryka = create(:product, meal: meal, diet_set: diet_set)
+      papryka.update_columns(name: 'Papryka', canonical_product_id: nil)
+      papryka.ingredient_measures.create!(amount: 1.0, unit: 'szt')
+
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: pomidor, meal_plan: meal_plan, quantity: 1)
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: papryka, meal_plan: meal_plan, quantity: 1)
+
+      result = shopping_cart.group_and_sum_by_cart_items
+      products = result.flat_map { |group| group[:products] }
+
+      expect(products.map { |item| item[:name] }).to include('Pomidor', 'Papryka')
+      expect(products.size).to be >= 2
+    end
+
+    it 'handles multi-word product names reasonably' do
+      mleko = create(:product, meal: meal, diet_set: diet_set)
+      mleko.update_columns(name: 'Mleko kokosowe', canonical_product_id: nil)
+      mleko.ingredient_measures.create!(amount: 200.0, unit: 'ml')
+
+      mleka = create(:product, meal: meal, diet_set: diet_set)
+      mleka.update_columns(name: 'mleka kokosowego', canonical_product_id: nil)
+      mleka.ingredient_measures.create!(amount: 100.0, unit: 'ml')
+
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: mleko, meal_plan: meal_plan, quantity: 1)
+      create(:shopping_cart_item, shopping_cart: shopping_cart, product: mleka, meal_plan: meal_plan, quantity: 1)
+
+      result = shopping_cart.group_and_sum_by_cart_items
+      products = result.flat_map { |group| group[:products] }
+      grouped_product = products.find { |item| item[:name] == 'Mleko kokosowe' }
+
+      expect(products.count { |item| item[:name] == 'Mleko kokosowe' }).to eq(1)
+      expect(grouped_product[:aggregated_ingredient_measures]).to contain_exactly(
+        { unit: 'ml', amount: 300.0 }
+      )
+    end
   end
 end

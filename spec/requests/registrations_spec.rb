@@ -7,6 +7,8 @@ RSpec.describe 'User Registration', type: :request do
     it 'renders the registration form' do
       get new_registration_path
       expect(response).to have_http_status(:success)
+      expect(response.body).to include('Create your client account')
+      expect(response.body).to include('Join the beta waitlist')
     end
   end
 

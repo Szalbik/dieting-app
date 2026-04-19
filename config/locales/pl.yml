@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 pl:
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M"
   shopping_cart:
     add_custom_cart_item:
       description: "Dodaj własny produkt do listy zakupów"
@@ -132,4 +135,3 @@ pl:
               too_short: "jest za krótkie (minimum 6 znaków)"
             password_confirmation:
               confirmation: "nie zgadza się z hasłem"
-

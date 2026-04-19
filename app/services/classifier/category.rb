@@ -9,6 +9,44 @@ module Classifier
     MIN_CONFIDENCE = 0.45
     SIMILARITY_THRESHOLD = 0.6
     IGNORED_TOKENS = %w[g kg dag mg ml l szt sztuk op opak opakowanie opakowania].freeze
+    KEYWORD_RULES = {
+      'Mięso i Ryby' => [
+        'boczek', 'cielecina', 'dorsz', 'filet z kurczaka', 'filet z indyka',
+        'indyk', 'karkowka', 'kurczak', 'losos', 'mieso', 'piers z kurczaka',
+        'polędwica', 'ryba', 'schab', 'szynka', 'tunczyk', 'wieprzowina',
+        'wolowina'
+      ],
+      'Warzywa' => [
+        'baklazan', 'brokul', 'burak', 'cebula', 'cukinia', 'czosnek',
+        'fasolka', 'jarmuz', 'kabaczek', 'kalafior', 'kapusta', 'marchew',
+        'ogorek', 'papryka', 'pieczarki', 'pomidor', 'por', 'rukola',
+        'salata', 'seler', 'spinak', 'szczypiorek'
+      ],
+      'Owoce' => [
+        'ananas', 'arbuz', 'banan', 'borowka', 'cytryna', 'gruszka',
+        'jablko', 'kiwi', 'malina', 'mandarynka', 'mango', 'melon',
+        'nektarynka', 'owoc', 'pomarancza', 'truskawka', 'winogron'
+      ],
+      'Nabiał' => [
+        'feta', 'jajko', 'jogurt', 'kefir', 'maslanka', 'mleko', 'mozzarella',
+        'ser', 'skyr', 'serek', 'twarog'
+      ],
+      'Produkty zbożowe' => [
+        'bulka tarta', 'chleb', 'kasza', 'makaron', 'maka', 'owsianka',
+        'pieczywo', 'platki', 'ryz', 'suchary', 'tortilla'
+      ],
+      'Przetwory' => [
+        'dzem', 'koncentrat', 'miod', 'musztarda', 'ocet', 'olej',
+        'oliwa', 'przecier', 'sos'
+      ],
+      'Przyprawy' => [
+        'bazylia', 'cukier', 'curry', 'oregano', 'papryka slodka', 'pieprz',
+        'przyprawa', 'sol', 'suszone pomidory', 'ziola'
+      ],
+      'Napoje' => [
+        'herbata', 'kawa', 'napoj', 'sok', 'woda'
+      ]
+    }.freeze
 
     def self.predict(product_name)
       new.predict(product_name)
@@ -59,6 +97,8 @@ module Classifier
       end
 
       tokens = self.class.tokens_for(product_name)
+      keyword_match = keyword_rule_match(normalized_name)
+      return build_prediction(name: keyword_match, state: false, confidence: 0.8) if keyword_match.present?
       return blank_prediction if tokens.empty? || confirmed_examples.empty?
 
       classification = @nbayes.classify(tokens)
@@ -104,6 +144,18 @@ module Classifier
 
     def normalized_product_name(product_category)
       self.class.normalize_name(product_category.product.name)
+    end
+
+    def keyword_rule_match(normalized_name)
+      KEYWORD_RULES.each do |category_name, patterns|
+        return category_name if patterns.any? { |pattern| normalized_name.match?(keyword_pattern(pattern)) }
+      end
+
+      nil
+    end
+
+    def keyword_pattern(pattern)
+      /\b#{Regexp.escape(self.class.normalize_name(pattern))}\b/
     end
 
     def best_confirmed_match(normalized_name)

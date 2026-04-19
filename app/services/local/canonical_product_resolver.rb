@@ -6,6 +6,7 @@ module Local
 
     def initialize(user:)
       @user = user
+      @normalizer = ShoppingList::ProductNormalizer.new
     end
 
     def call(raw_name:, preferred_name: nil)
@@ -15,6 +16,7 @@ module Local
       canonical = resolve_existing(raw_name: cleaned)
       canonical ||= create_canonical!(cleaned, preferred_name: preferred_name)
       ensure_aliases!(canonical, [raw_name, preferred_name, cleaned])
+      promote_better_canonical_name!(canonical, [preferred_name, raw_name, cleaned])
       canonical
     end
 
@@ -48,8 +50,9 @@ module Local
     private
 
     def create_canonical!(cleaned, preferred_name:)
-      chosen_name = cleaned_name(preferred_name).presence
+      chosen_name = choose_better_name(nil, cleaned_name(preferred_name).presence)
       chosen_name ||= ProductSubstitution.best_catalog_match(user: @user, raw_name: cleaned, min_score: 0.9)
+      chosen_name = choose_better_name(chosen_name, cleaned)
       chosen_name ||= cleaned
 
       canonical = @user.canonical_products.find_or_create_by!(name: chosen_name)
@@ -94,18 +97,39 @@ module Local
     end
 
     def normalized_tokens(text)
-      ProductSubstitution.normalize_name(text)
-        .split
-        .map { |token| ProductSubstitution.normalize_polish_stem(token) }
-        .reject(&:blank?)
+      @normalizer.normalized_tokens(text)
     end
 
     def stem_signature(text)
-      normalized_tokens(text).sort.join(' ')
+      @normalizer.call(raw_name: text)[:key]
     end
 
     def cleaned_name(text)
-      ProductSubstitution.strip_quantity_from_name(text).to_s.strip
+      @normalizer.cleaned_name(text)
+    end
+
+    def promote_better_canonical_name!(canonical, names)
+      better_name = names.compact.reduce(canonical.name) do |current, candidate|
+        choose_better_name(current, cleaned_name(candidate))
+      end
+      return if better_name.blank? || better_name == canonical.name
+
+      canonical.update!(name: better_name)
+    end
+
+    def choose_better_name(current_name, candidate_name)
+      current = cleaned_name(current_name)
+      candidate = cleaned_name(candidate_name)
+      return current if candidate.blank?
+      return candidate if current.blank?
+
+      current_canonical = @normalizer.canonical_form?(current)
+      candidate_canonical = @normalizer.canonical_form?(candidate)
+      return candidate if candidate_canonical && !current_canonical
+      return current if current_canonical && !candidate_canonical
+      return candidate if candidate.length < current.length
+
+      current
     end
   end
 end

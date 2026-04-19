@@ -60,6 +60,7 @@ node_modules/
 *.sw?
 # OS specific
 .DS_Store
+.sass-cache
 
 # Task files
 tasks.json

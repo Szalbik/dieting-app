@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProductCategoriesController < ApplicationController
-  before_action :set_product_category, only: %i[edit update show]
+  before_action :set_product_category, only: %i[edit show]
   before_action :require_admin!
 
   def index
@@ -18,9 +18,10 @@ class ProductCategoriesController < ApplicationController
 
   def update
     category_id = product_category_params[:category_id]
-    product_name = @product_category.product.name
+    product_name = params[:product_name].to_s.strip
+    product_name = ProductCategory.find(params[:id]).product.name if product_name.blank?
 
-    ProductCategory.confirm_pending_for_exact_name(product_name, category_id: category_id)
+    ProductCategory.assign_category_for_exact_name!(product_name, category_id: category_id)
 
     redirect_to product_categories_path, notice: 'Kategoria produktu została zaktualizowana.'
   end
@@ -36,7 +37,7 @@ class ProductCategoriesController < ApplicationController
   end
 
   def build_classification_rows
-    ProductCategory.pending_without_confirmed_counterpart
+    pending_rows = ProductCategory.pending_without_confirmed_counterpart
       .group_by { |pc| pc.product.name.to_s.downcase.strip }
       .values
       .map do |items|
@@ -48,6 +49,32 @@ class ProductCategoriesController < ApplicationController
           count: items.size,
         }
       end
+
+    uncategorized_rows = Product.left_outer_joins(:product_category)
+      .where(product_categories: { id: nil })
+      .where(<<~SQL.squish)
+        NOT EXISTS (
+          SELECT 1
+          FROM product_categories confirmed_pc
+          INNER JOIN products confirmed_products ON confirmed_products.id = confirmed_pc.product_id
+          WHERE confirmed_pc.state = TRUE
+            AND LOWER(TRIM(confirmed_products.name)) = LOWER(TRIM(products.name))
+        )
+      SQL
+      .group_by { |product| product.name.to_s.downcase.strip }
+      .values
+      .map do |items|
+        representative = items.first
+        {
+          id: representative.id,
+          name: representative.name,
+          category_id: nil,
+          count: items.size,
+        }
+      end
+
+    (pending_rows + uncategorized_rows)
+      .uniq { |row| row[:name].downcase.strip }
       .sort_by { |row| row[:name].downcase }
   end
 

@@ -63,27 +63,17 @@ class Product < ApplicationRecord
   end
 
   def self.group_and_sum_by_name_and_unit(scope = Product)
-    # Eager load ingredient measures
-    # products_with_measures = scope.includes(:ingredient_measures, :category)
-
-    # Group products by name
-    grouped_by_name = scope.group_by(&:name)
-
-    # Initialize a hash to store the summed products
+    grouped_products = group_by_shopping_list_key(scope)
     summed_products = {}
 
-    grouped_by_name.each do |name, products|
+    grouped_products.each_value do |group|
+      name = group[:display_name]
       summed_products[name] ||= { measurements: [], category: 'Inne' }
 
-      # Initialize a hash to store the summed amounts for each unit
       unit_hash = {}
 
-      products.each do |product|
-        # Fetch ingredient measurements for the product
-        ingredient_measurements = product.ingredient_measures
-
-        # Sum the amounts by unit for this product
-        ingredient_measurements.each do |measurement|
+      group[:products].each do |product|
+        product.ingredient_measures.each do |measurement|
           unit = measurement.unit || 'No Unit'
           amount = measurement.amount || 0
           unit_hash[unit] ||= 0
@@ -103,27 +93,17 @@ class Product < ApplicationRecord
   end
 
   def self.group_and_sum_by_name_then_category(scope = Product)
-    # Eager load ingredient measures and category
-    # products_with_measures = scope.includes(:ingredient_measures, :category)
-
-    # Group products by name
-    grouped_by_name = scope.group_by(&:name)
-
-    # Initialize a hash to store the summed products
+    grouped_products = group_by_shopping_list_key(scope)
     summed_products = {}
 
-    grouped_by_name.each do |name, products|
+    grouped_products.each_value do |group|
+      name = group[:display_name]
       summed_products[name] ||= { measurements: [], category: 'Inne', name: name }
 
-      # Initialize a hash to store the summed amounts for each unit
       unit_hash = {}
 
-      products.each do |product|
-        # Fetch ingredient measurements for the product
-        ingredient_measurements = product.ingredient_measures
-
-        # Sum the amounts by unit for this product
-        ingredient_measurements.each do |measurement|
+      group[:products].each do |product|
+        product.ingredient_measures.each do |measurement|
           unit = measurement.unit || 'No Unit'
           amount = measurement.amount || 0
           unit_hash[unit] ||= 0
@@ -167,6 +147,17 @@ class Product < ApplicationRecord
       return
     end
 
+    prediction = Classifier::Category.predict(name)
+    category_match = Category.find_by(name: prediction[:name])
+    if category_match.present?
+      ProductCategory.create!(
+        product: self,
+        category: category_match,
+        state: prediction[:state] || false
+      )
+      return
+    end
+
     # Trigger the categorization job
     CategorizeProductJob.perform_later(id)
   end
@@ -198,9 +189,36 @@ class Product < ApplicationRecord
     diet_set&.diet&.user || meal&.diet_set&.diet&.user
   end
 
+  def shopping_list_grouping
+    self.class.shopping_list_normalizer.call(raw_name: name, canonical_name: canonical_product&.name)
+  end
+
   def shopping_cart_group_name
-    canonical_product&.name.presence ||
-      ProductSubstitution.strip_quantity_from_name(name).presence ||
-      name
+    shopping_list_grouping[:display_name]
+  end
+
+  def shopping_cart_group_key
+    shopping_list_grouping[:key]
+  end
+
+  def self.shopping_list_normalizer
+    @shopping_list_normalizer ||= ShoppingList::ProductNormalizer.new
+  end
+
+  def self.best_shopping_list_display_name(products)
+    canonical_name = products.filter_map { |product| product.canonical_product&.name }.first
+    shopping_list_normalizer.best_display_label(products.map(&:name), canonical_name: canonical_name)
+  end
+
+  def self.group_by_shopping_list_key(scope)
+    scope.each_with_object({}) do |product, grouped|
+      grouping = product.shopping_list_grouping
+      key = grouping[:key].presence || shopping_list_normalizer.normalized_name(product.name)
+      grouped[key] ||= { display_name: nil, products: [] }
+      grouped[key][:products] << product
+    end.transform_values do |group|
+      group[:display_name] = best_shopping_list_display_name(group[:products])
+      group
+    end
   end
 end

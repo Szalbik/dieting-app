@@ -29,6 +29,27 @@ class ProductCategory < ApplicationRecord
       .update_all(state: true, category_id: category_id, updated_at: Time.current)
   end
 
+  def self.assign_category_for_exact_name!(product_name, category_id:)
+    normalized_name = product_name.to_s.strip
+    updated_count = joins(:product)
+      .where('LOWER(TRIM(products.name)) = ?', normalized_name.downcase)
+      .update_all(category_id: category_id, state: true, updated_at: Time.current)
+
+    created_count = 0
+    Product
+      .left_outer_joins(:product_category)
+      .where('LOWER(TRIM(products.name)) = ?', normalized_name.downcase)
+      .where(product_categories: { id: nil })
+      .find_each do |product|
+        create!(product: product, category_id: category_id, state: true)
+        created_count += 1
+      end
+
+    if updated_count.positive? || created_count.positive?
+      TrainCategoryModelJob.perform_later
+    end
+  end
+
   # Updates the state to true for all product categories whose associated product's name
   # matches the given pattern. Optionally, if a new category name is provided, it sets the
   # category to that (creating it if necessary).

@@ -12,12 +12,13 @@ class ShoppingCartItemsController < ApplicationController
       .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
       .find(params[:id])
 
-    group_name = product.shopping_cart_group_name
+    group_key = product.shopping_cart_group_key
     items = shopping_cart.shopping_cart_items
-      .includes(product: :category)
-      .select { |item| item.product.shopping_cart_group_name == group_name }
+      .includes(product: [:category, :canonical_product])
+      .select { |item| item.product.shopping_cart_group_key == group_key }
 
     item_ids = items.map(&:id)
+    group_name = Product.best_shopping_list_display_name(items.map(&:product))
 
     session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
     session[:removed_items] << { item_ids: item_ids, removed_at: Time.current.to_i, product_name: group_name }

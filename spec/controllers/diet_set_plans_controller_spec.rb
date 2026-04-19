@@ -18,6 +18,20 @@ RSpec.describe DietSetPlansController, type: :controller do
     allow(Current).to receive(:session).and_return(double(user: user))
   end
 
+  describe 'GET #show' do
+    it 'assigns a blank plan when no plan exists for the selected date' do
+      allow(Current).to receive(:user).and_return(user)
+
+      get :show, params: { date: Date.current.to_s }
+
+      diet_set_plan = controller.instance_variable_get(:@diet_set_plan)
+
+      expect(response).to have_http_status(:ok)
+      expect(diet_set_plan).to be_a_new(DietSetPlan)
+      expect(diet_set_plan.date.to_s).to eq(Date.current.to_s)
+    end
+  end
+
   describe 'POST #replace_product' do
     it 'replaces product name permanently for meal' do
       allow(Current).to receive(:user).and_return(user)

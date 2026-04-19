@@ -19,6 +19,7 @@ gem 'solid_queue'
 
 # Monitoring
 gem 'honeybadger', '~> 5.4'
+gem 'activeadmin'
 gem 'rails_performance'
 # gem 'lograge'
 # gem 'bullet'
