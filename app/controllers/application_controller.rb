@@ -2,5 +2,5 @@
 
 class ApplicationController < ActionController::Base
   include Authentication
-  include Pagy::Backend
+  include Pagy::Method
 end

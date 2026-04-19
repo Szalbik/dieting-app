@@ -7,7 +7,7 @@ class ProductCategoriesController < ApplicationController
   before_action :require_admin!
 
   def index
-    @pagy, @classification_rows = pagy_array(build_classification_rows, limit: PER_PAGE)
+    @pagy, @classification_rows = pagy(:offset, build_classification_rows, limit: PER_PAGE)
   end
 
   def show
