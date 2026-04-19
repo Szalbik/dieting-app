@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  include Pagy::Frontend
+
   # Unit strings from DB can include variants like "łyżka (10ml)". I18n keys use only the base name.
   def unit_key_for_i18n(unit_str)
     return '' if unit_str.blank?

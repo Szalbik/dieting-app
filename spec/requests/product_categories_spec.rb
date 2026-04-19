@@ -60,7 +60,7 @@ RSpec.describe 'Product categories', type: :request do
     it 'paginates classification rows' do
       login_as(admin, password: password)
 
-      51.times do |idx|
+      21.times do |idx|
         Product.create!(name: format('Produkt %03d', idx))
       end
 
@@ -68,7 +68,7 @@ RSpec.describe 'Product categories', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Strona 2 z 2')
-      expect(response.body).to include('Produkt 050')
+      expect(response.body).to include('Produkt 020')
       expect(response.body).not_to include('Produkt 000')
     end
   end

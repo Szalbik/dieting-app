@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 class ProductCategoriesController < ApplicationController
-  PER_PAGE = 50
+  PER_PAGE = 20
 
   before_action :set_product_category, only: %i[edit show]
   before_action :require_admin!
 
   def index
-    @classification_rows = Kaminari.paginate_array(build_classification_rows)
-      .page(params[:page])
-      .per(PER_PAGE)
+    @pagy, @classification_rows = pagy_array(build_classification_rows, limit: PER_PAGE)
   end
 
   def show
