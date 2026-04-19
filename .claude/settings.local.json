@@ -3,7 +3,11 @@
     "allow": [
       "WebSearch",
       "Bash(git init)",
-      "Bash(git switch:*)"
+      "Bash(git switch:*)",
+      "Bash(find /Users/damians/Projects/DietingApp/spec -name \"*.rb\" -exec grep -l \"ShoppingCartSyncService\" {} \\\\;)",
+      "Bash(bin/rails db:migrate)",
+      "Bash(bin/rails db:migrate RAILS_ENV=test)",
+      "Bash(bundle exec *)"
     ]
   }
 }

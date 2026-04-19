@@ -7,6 +7,8 @@ class ShoppingCartSyncService
   end
 
   def call
+    mark_completed_diet_set_plans!
+
     grouped_items = Hash.new(0)
     meal_plans = future_selected_meal_plans
 
@@ -36,6 +38,20 @@ class ShoppingCartSyncService
 
   attr_reader :shopping_cart, :users
 
+  def mark_completed_diet_set_plans!
+    all_dates = shopping_cart.shopping_cart_items.with_deleted.distinct.pluck(:date)
+    active_dates = shopping_cart.shopping_cart_items.distinct.pluck(:date)
+    completed_dates = all_dates - active_dates
+
+    return if completed_dates.empty?
+
+    DietSetPlan
+      .joins(:diet)
+      .where(diets: { user_id: users.map(&:id) })
+      .where(date: completed_dates)
+      .update_all(shopping_done: true)
+  end
+
   def future_selected_meal_plans
     user_ids = users.map(&:id)
     return MealPlan.none if user_ids.empty?
@@ -45,6 +61,7 @@ class ShoppingCartSyncService
       .where(diets: { user_id: user_ids })
       .where(selected_for_cart: true)
       .where('diet_set_plans.date >= ?', Date.current)
+      .where(diet_set_plans: { shopping_done: false })
       .includes(:diet_set_plan, meal: :products)
   end
 end

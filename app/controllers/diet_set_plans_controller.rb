@@ -34,7 +34,7 @@ class DietSetPlansController < ApplicationController
     @diet_set_plan = DietSetPlan.new(date: date, diet_set: diet_set, diet: diet_set.diet)
 
     if @diet_set_plan.save
-      # Create associated meal_plan records for each meal in the diet_set.
+      Current.user.diet_set_plans.where(date: date).update_all(shopping_done: false)
       diet_set.meals.each do |meal|
         @diet_set_plan.meal_plans.create!(meal: meal)
       end
