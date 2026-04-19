@@ -67,7 +67,7 @@ RSpec.describe 'Product categories', type: :request do
       get product_categories_path(page: 2)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('Strona 2 z 2')
+      expect(response.body).to include('Strona 2.')
       expect(response.body).to include('Produkt 020')
       expect(response.body).not_to include('Produkt 000')
     end

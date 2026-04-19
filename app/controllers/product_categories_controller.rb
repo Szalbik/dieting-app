@@ -7,7 +7,16 @@ class ProductCategoriesController < ApplicationController
   before_action :require_admin!
 
   def index
-    @pagy, @classification_rows = pagy(:offset, build_classification_rows, limit: PER_PAGE)
+    @category_options = Category.order(:name).pluck(:name, :id)
+    @pagy, classification_rows = pagy(:countless, classification_rows_scope, limit: PER_PAGE)
+    @classification_rows = classification_rows.map do |row|
+      {
+        id: row.id,
+        name: row.name,
+        category_id: row.category_id,
+        count: row.count.to_i,
+      }
+    end
   end
 
   def show
@@ -38,46 +47,51 @@ class ProductCategoriesController < ApplicationController
     params.require(:product_category).permit(:category_id, :state)
   end
 
-  def build_classification_rows
-    pending_rows = ProductCategory.pending_without_confirmed_counterpart
-      .group_by { |pc| pc.product.name.to_s.downcase.strip }
-      .values
-      .map do |items|
-        representative = items.first
-        {
-          id: representative.id,
-          name: representative.product.name,
-          category_id: representative.category_id,
-          count: items.size,
-        }
-      end
+  def classification_rows_scope
+    confirmed_names_sql = ProductCategory
+      .joins('INNER JOIN products ON products.id = product_categories.product_id')
+      .where(state: true)
+      .select('DISTINCT LOWER(TRIM(products.name)) AS normalized_name')
+      .to_sql
 
-    uncategorized_rows = Product.left_outer_joins(:product_category)
+    classified_names_sql = ProductCategory
+      .joins('INNER JOIN products ON products.id = product_categories.product_id')
+      .select('DISTINCT LOWER(TRIM(products.name)) AS normalized_name')
+      .to_sql
+
+    pending_sql = ProductCategory
+      .joins('INNER JOIN products ON products.id = product_categories.product_id')
+      .joins("LEFT JOIN (#{confirmed_names_sql}) confirmed_names ON confirmed_names.normalized_name = LOWER(TRIM(products.name))")
+      .where(state: false)
+      .where('confirmed_names.normalized_name IS NULL')
+      .group('LOWER(TRIM(products.name))')
+      .select(
+        'MIN(product_categories.id) AS id',
+        'MIN(products.name) AS name',
+        'MIN(product_categories.category_id) AS category_id',
+        'COUNT(*) AS count',
+        'LOWER(TRIM(products.name)) AS normalized_name'
+      )
+      .to_sql
+
+    uncategorized_sql = Product.left_outer_joins(:product_category)
+      .joins("LEFT JOIN (#{classified_names_sql}) classified_names ON classified_names.normalized_name = LOWER(TRIM(products.name))")
       .where(product_categories: { id: nil })
-      .where(<<~SQL.squish)
-        NOT EXISTS (
-          SELECT 1
-          FROM product_categories confirmed_pc
-          INNER JOIN products confirmed_products ON confirmed_products.id = confirmed_pc.product_id
-          WHERE confirmed_pc.state = TRUE
-            AND LOWER(TRIM(confirmed_products.name)) = LOWER(TRIM(products.name))
-        )
-      SQL
-      .group_by { |product| product.name.to_s.downcase.strip }
-      .values
-      .map do |items|
-        representative = items.first
-        {
-          id: representative.id,
-          name: representative.name,
-          category_id: nil,
-          count: items.size,
-        }
-      end
+      .where('classified_names.normalized_name IS NULL')
+      .group('LOWER(TRIM(products.name))')
+      .select(
+        'MIN(products.id) AS id',
+        'MIN(products.name) AS name',
+        'NULL AS category_id',
+        'COUNT(*) AS count',
+        'LOWER(TRIM(products.name)) AS normalized_name'
+      )
+      .to_sql
 
-    (pending_rows + uncategorized_rows)
-      .uniq { |row| row[:name].downcase.strip }
-      .sort_by { |row| row[:name].downcase }
+    Product.unscoped
+      .from("(#{pending_sql} UNION ALL #{uncategorized_sql}) classification_rows")
+      .select('classification_rows.id, classification_rows.name, classification_rows.category_id, classification_rows.count')
+      .order('classification_rows.normalized_name ASC')
   end
 
   def require_admin!

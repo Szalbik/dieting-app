@@ -4,10 +4,9 @@
     <p class="mt-1 text-sm text-slate-600">
       Produkty bez potwierdzonej kategorii. Każdy wiersz to unikalna nazwa produktu.
     </p>
-    <% if @pagy.present? && @pagy.count.positive? %>
+    <% if @pagy.present? && @classification_rows.present? %>
       <p class="mt-2 text-xs text-slate-500">
-        Strona <%= @pagy.page %> z <%= @pagy.pages %>.
-        Łącznie: <%= @pagy.count %> produktów.
+        Strona <%= @pagy.page %>.
       </p>
     <% end %>
   </div>
@@ -39,7 +38,7 @@
 
           <div>
             <%= form.select :category_id,
-                            Category.order(:name).pluck(:name, :id),
+                            @category_options,
                             { selected: row[:category_id] },
                             { name: "product_category[category_id]", class: "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" } %>
           </div>
@@ -52,7 +51,7 @@
     <% end %>
   </div>
 
-  <% if @pagy.present? && @pagy.pages > 1 %>
+  <% if @pagy.present? && @pagy.last.to_i > 1 %>
     <div class="mt-8 flex items-center justify-center text-sm text-slate-700">
       <%== pagy_series_nav(@pagy) %>
     </div>

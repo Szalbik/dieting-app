@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_19_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_19_181500) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -194,6 +194,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_160000) do
     t.datetime "updated_at", null: false
     t.boolean "state", default: false, null: false
     t.index ["category_id"], name: "index_product_categories_on_category_id"
+    t.index ["product_id"], name: "index_product_categories_on_confirmed_product_id", where: "state = TRUE"
     t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
@@ -227,6 +228,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_160000) do
     t.string "base_product_name"
     t.integer "canonical_product_id"
     t.integer "base_canonical_product_id"
+    t.index "LOWER(TRIM(name))", name: "index_products_on_normalized_name"
     t.index ["associated_product_id"], name: "index_products_on_associated_product_id"
     t.index ["base_canonical_product_id"], name: "index_products_on_base_canonical_product_id"
     t.index ["canonical_product_id"], name: "index_products_on_canonical_product_id"
