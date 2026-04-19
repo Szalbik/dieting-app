@@ -42,7 +42,7 @@ module DietingApp
     #
     config.x.openai.diet_parsing_models = ActiveSupport::InheritableOptions.new(
       metadata: ENV.fetch('OPENAI_DIET_PARSER_METADATA_MODEL', 'gpt-4.1'),
-      ingredients: ENV.fetch('OPENAI_DIET_PARSER_INGREDIENTS_MODEL', 'gpt-4.1'),
+      ingredients: ENV.fetch('OPENAI_DIET_PARSER_INGREDIENTS_MODEL', 'gpt-5.1'),
       instructions_nutrition: ENV.fetch('OPENAI_DIET_PARSER_INSTRUCTIONS_MODEL', 'gpt-5.1')
     )
 
