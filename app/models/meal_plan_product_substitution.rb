@@ -120,7 +120,7 @@ class MealPlanProductSubstitution < ApplicationRecord
   def sync_canonical_product!
     return if user.blank? || replacement_product.blank?
 
-    replacement = Local::CanonicalProductResolver.new(user: user).call(raw_name: replacement_product)
+    replacement = Local::CanonicalProductResolver.new(user: user).call_for_canonical(raw_name: replacement_product)
     return if replacement.blank?
 
     self.replacement_canonical_product = replacement

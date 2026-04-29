@@ -407,7 +407,7 @@ class DietSetPlansController < ApplicationController
   def resolve_canonical_product(raw_name)
     return if raw_name.blank?
 
-    Local::CanonicalProductResolver.new(user: Current.user).call(raw_name: raw_name)
+    Local::CanonicalProductResolver.new(user: Current.user).call_for_canonical(raw_name: raw_name)
   end
 
   def sensible_cycle_candidates(meal_plan:, product:, base_name:, cycle_candidates:)

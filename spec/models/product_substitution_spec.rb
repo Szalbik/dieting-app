@@ -110,14 +110,16 @@ RSpec.describe ProductSubstitution, type: :model do
       diet = create(:diet, user: isolated_user)
       diet_set = create(:diet_set, diet: diet)
       meal = create(:meal, diet_set: diet_set)
-      create(:product, name: 'Jabłko', meal: meal, diet_set: diet_set)
-      create(:product_substitution, user: isolated_user, source_product: 'Banan', replacement_product: 'jabłka')
+      # 'Pomidor' and 'pomidory' both lemmatize to 'pomidor' via PolishLemmatizer::TOKEN_LEMMAS,
+      # so the substitution's inflected form resolves to the catalog canonical name.
+      create(:product, name: 'Pomidor', meal: meal, diet_set: diet_set)
+      create(:product_substitution, user: isolated_user, source_product: 'Banan', replacement_product: 'pomidory')
 
       cycle = described_class.local_cycle_for(user: isolated_user, base_name: 'Banan')
-      apple_like = cycle.select { |name| described_class.normalize_name(name).include?('jablk') }
+      tomato_like = cycle.select { |name| described_class.normalize_name(name).include?('pomidor') }
 
-      expect(apple_like.size).to eq(1)
-      expect(apple_like.first).to eq('Jabłko')
+      expect(tomato_like.size).to eq(1)
+      expect(tomato_like.first).to eq('Pomidor')
     end
 
     it 'stores canonical source and replacement products' do

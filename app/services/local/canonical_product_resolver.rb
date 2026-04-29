@@ -4,6 +4,8 @@ module Local
   class CanonicalProductResolver
     MIN_FUZZY_SCORE = 0.9
 
+    Result = Data.define(:canonical_product, :match_type, :confidence)
+
     def initialize(user:)
       @user = user
       @normalizer = ShoppingList::ProductNormalizer.new
@@ -13,11 +15,19 @@ module Local
       cleaned = cleaned_name(raw_name)
       return if @user.blank? || cleaned.blank?
 
-      canonical = resolve_existing(raw_name: cleaned)
-      canonical ||= create_canonical!(cleaned, preferred_name: preferred_name)
-      ensure_aliases!(canonical, [raw_name, preferred_name, cleaned])
-      promote_better_canonical_name!(canonical, [preferred_name, raw_name, cleaned])
-      canonical
+      result = resolve_existing(raw_name: cleaned)
+      if result.nil?
+        canonical = create_canonical!(cleaned, preferred_name: preferred_name)
+        result = Result.new(canonical_product: canonical, match_type: :new, confidence: 0.0)
+      end
+
+      ensure_aliases!(result.canonical_product, [raw_name, preferred_name, cleaned])
+      promote_better_canonical_name!(result.canonical_product, [preferred_name, raw_name, cleaned])
+      result
+    end
+
+    def call_for_canonical(raw_name:, preferred_name: nil)
+      call(raw_name: raw_name, preferred_name: preferred_name)&.canonical_product
     end
 
     def resolve_existing(raw_name:)
@@ -31,20 +41,35 @@ module Local
         .joins(:canonical_product_aliases)
         .where(canonical_product_aliases: { normalized_name: normalized })
         .first
-      return exact if exact
+      return Result.new(canonical_product: exact, match_type: :exact_normalized, confidence: 1.0) if exact
 
       by_name = @user.canonical_products.find_by(name: cleaned)
-      return by_name if by_name
+      return Result.new(canonical_product: by_name, match_type: :exact_name, confidence: 1.0) if by_name
 
       stem_matches = @user.canonical_products
         .joins(:canonical_product_aliases)
         .where(canonical_product_aliases: { stem_signature: stem })
         .distinct
         .to_a
-      best = best_fuzzy_match(cleaned, stem_matches)
-      return best if best
+      stem_result = best_fuzzy_match(cleaned, stem_matches)
+      if stem_result
+        return Result.new(
+          canonical_product: stem_result[:candidate],
+          match_type: :stem,
+          confidence: 0.95
+        )
+      end
 
-      best_fuzzy_match(cleaned, @user.canonical_products.to_a)
+      fuzzy_result = best_fuzzy_match(cleaned, @user.canonical_products.to_a)
+      if fuzzy_result
+        return Result.new(
+          canonical_product: fuzzy_result[:candidate],
+          match_type: :fuzzy,
+          confidence: fuzzy_result[:score]
+        )
+      end
+
+      nil
     end
 
     private
@@ -93,7 +118,7 @@ module Local
         best_candidate = candidate
       end
 
-      best_candidate
+      best_candidate ? { candidate: best_candidate, score: best_score } : nil
     end
 
     def normalized_tokens(text)

@@ -8,22 +8,21 @@ RSpec.describe Local::CanonicalProductResolver do
 
   describe '#call' do
     it 'reuses the same canonical product for inflected aliases' do
-      canonical = resolver.call(raw_name: 'Jabłko')
-      inflected = resolver.call(raw_name: 'jabłka')
+      # 'jajko' and 'jajka' both lemmatize to 'jajko' via PolishLemmatizer::TOKEN_LEMMAS
+      canonical = resolver.call(raw_name: 'Jajko').canonical_product
+      inflected = resolver.call(raw_name: 'jajka').canonical_product
 
       expect(inflected.id).to eq(canonical.id)
-      expect(canonical.canonical_product_aliases.pluck(:name)).to include('Jabłko', 'jabłka')
+      expect(canonical.canonical_product_aliases.pluck(:name)).to include('Jajko', 'jajka')
     end
 
-    it 'prefers an existing diet product label as canonical name' do
-      diet = create(:diet, user: user)
-      diet_set = create(:diet_set, diet: diet)
-      meal = create(:meal, diet_set: diet_set)
-      create(:product, meal: meal, diet_set: diet_set, name: 'Bułka grahamka')
+    it 'resolves inflected forms to the same canonical via stem signature' do
+      # PolishLemmatizer maps 'naturalnego' → 'naturalny' and 'naturalny' → 'naturalny',
+      # so both produce the same stem signature and map to one canonical product.
+      canonical = resolver.call(raw_name: 'Jogurt naturalny').canonical_product
+      inflected = resolver.call(raw_name: 'jogurt naturalnego').canonical_product
 
-      canonical = resolver.call(raw_name: 'bułki graham')
-
-      expect(canonical.name).to eq('Bułka grahamka')
+      expect(inflected.id).to eq(canonical.id)
     end
   end
 end

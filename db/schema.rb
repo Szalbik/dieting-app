@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_19_181500) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_20_100001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -198,6 +198,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_181500) do
     t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
+  create_table "product_name_suggestions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "raw_name", null: false
+    t.integer "canonical_product_id"
+    t.float "confidence", default: 0.0, null: false
+    t.string "match_type", null: false
+    t.string "source", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "occurrence_count", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["canonical_product_id"], name: "index_product_name_suggestions_on_canonical_product_id"
+    t.index ["status"], name: "index_product_name_suggestions_on_status"
+    t.index ["user_id", "raw_name"], name: "idx_pns_unique_pending_per_user_raw_name", unique: true, where: "status = 'pending'"
+    t.index ["user_id"], name: "index_product_name_suggestions_on_user_id"
+  end
+
   create_table "product_substitutions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "source_product", null: false
@@ -228,6 +245,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_181500) do
     t.string "base_product_name"
     t.integer "canonical_product_id"
     t.integer "base_canonical_product_id"
+    t.string "original_name"
     t.index "LOWER(TRIM(name))", name: "index_products_on_normalized_name"
     t.index ["associated_product_id"], name: "index_products_on_associated_product_id"
     t.index ["base_canonical_product_id"], name: "index_products_on_base_canonical_product_id"

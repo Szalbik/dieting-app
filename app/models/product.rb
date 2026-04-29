@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Product < ApplicationRecord
+  SUGGESTION_FUZZY_THRESHOLD = 0.95
+
   belongs_to :diet_set, optional: true
   belongs_to :unit, optional: true
   has_many :ingredient_measures, dependent: :destroy
@@ -171,18 +173,38 @@ class Product < ApplicationRecord
     user = owner_user
     return if user.blank? || name.blank?
 
+    self.original_name ||= name
+
     resolver = Local::CanonicalProductResolver.new(user: user)
-    resolved_product = resolver.call(raw_name: name)
-    return if resolved_product.blank?
+    result = resolver.call(raw_name: name)
+    return if result.nil?
 
-    base_name = base_product_name.presence || base_canonical_product&.name || resolved_product.name
+    canonical = result.canonical_product
+    base_name = base_product_name.presence || base_canonical_product&.name || canonical.name
     preferred_base_name = base_product_name.presence || base_canonical_product&.name || base_name
-    resolved_base = resolver.call(raw_name: base_name, preferred_name: preferred_base_name)
+    base_result = resolver.call(raw_name: base_name, preferred_name: preferred_base_name)
 
-    self.canonical_product = resolved_product
-    self.base_canonical_product = resolved_base if resolved_base.present?
-    self.name = resolved_product.name
-    self.base_product_name = resolved_base&.name || base_name
+    self.canonical_product      = canonical
+    self.base_canonical_product = base_result&.canonical_product if base_result.present?
+    self.base_product_name      = base_result&.canonical_product&.name || base_name
+
+    if uncertain_result?(result)
+      ProductNameSuggestion.record_suggestion!(
+        user:              user,
+        raw_name:          original_name || name,
+        canonical_product: canonical,
+        confidence:        result.confidence,
+        match_type:        result.match_type,
+        source:            'manual'
+      )
+    else
+      self.name = canonical.name
+    end
+  end
+
+  def uncertain_result?(result)
+    result.match_type == :new ||
+      (result.match_type == :fuzzy && result.confidence < SUGGESTION_FUZZY_THRESHOLD)
   end
 
   def owner_user

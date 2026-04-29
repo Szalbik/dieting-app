@@ -97,7 +97,7 @@ class ProductSubstitution < ApplicationRecord
   end
 
   def self.local_replacements_for_base(user:, base_name:)
-    canonical_base = Local::CanonicalProductResolver.new(user: user).resolve_existing(raw_name: base_name)
+    canonical_base = Local::CanonicalProductResolver.new(user: user).resolve_existing(raw_name: base_name)&.canonical_product
     if canonical_base.present?
       names = user.product_substitutions
         .where(source_canonical_product_id: canonical_base.id)
@@ -126,9 +126,9 @@ class ProductSubstitution < ApplicationRecord
 
   def self.local_factor_for(user:, base_name:, from_name:, to_name:)
     resolver = Local::CanonicalProductResolver.new(user: user)
-    base_canonical = resolver.resolve_existing(raw_name: base_name)
-    from_canonical = resolver.resolve_existing(raw_name: from_name)
-    to_canonical = resolver.resolve_existing(raw_name: to_name)
+    base_canonical = resolver.resolve_existing(raw_name: base_name)&.canonical_product
+    from_canonical = resolver.resolve_existing(raw_name: from_name)&.canonical_product
+    to_canonical = resolver.resolve_existing(raw_name: to_name)&.canonical_product
 
     if base_canonical.present?
       pairs = user.product_substitutions
@@ -241,7 +241,7 @@ class ProductSubstitution < ApplicationRecord
     cleaned = strip_quantity_from_name(raw_name).to_s.strip
     return cleaned if cleaned.blank? || user.blank?
 
-    Local::CanonicalProductResolver.new(user: user).call(raw_name: cleaned)&.name || cleaned
+    Local::CanonicalProductResolver.new(user: user).call_for_canonical(raw_name: cleaned)&.name || cleaned
   end
 
   def self.normalize_name(value)
@@ -455,8 +455,8 @@ class ProductSubstitution < ApplicationRecord
     return if user.blank? || source_product.blank? || replacement_product.blank?
 
     resolver = Local::CanonicalProductResolver.new(user: user)
-    source = resolver.call(raw_name: source_product)
-    replacement = resolver.call(raw_name: replacement_product)
+    source = resolver.call(raw_name: source_product)&.canonical_product
+    replacement = resolver.call(raw_name: replacement_product)&.canonical_product
     return if source.blank? || replacement.blank?
 
     self.source_canonical_product = source

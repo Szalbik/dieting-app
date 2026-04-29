@@ -32,7 +32,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :product_categories, only: %i[index edit update show]
+  resources :product_categories,       only: %i[index edit update show]
+  resources :product_name_suggestions, only: %i[index update]
   resources :diets, only: %i[edit update show new destroy] do
     member do
       patch :toggle_active
