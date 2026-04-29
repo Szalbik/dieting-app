@@ -10,7 +10,19 @@ class ShoppingCartItemsController < ApplicationController
     shopping_cart = Current.user.shopping_cart
     product = Product.joins(:shopping_cart_items)
       .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
-      .find(params[:id])
+      .find_by(id: params[:id])
+
+    if product.nil?
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace("shopping_cart",
+            partial: "shopping_carts/shopping_cart",
+            locals: { shopping_cart: shopping_cart })
+        end
+        format.html { redirect_to shopping_cart_path }
+      end
+      return
+    end
 
     group_key = product.shopping_cart_group_key
     items = shopping_cart.shopping_cart_items
