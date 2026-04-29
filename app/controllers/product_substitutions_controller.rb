@@ -15,8 +15,12 @@ class ProductSubstitutionsController < ApplicationController
       raw_name: product_substitution_params[:replacement_product]
     )
     substitution = Current.user.product_substitutions.new(
-      source_product: source,
-      replacement_product: replacement
+      source_product:      source,
+      replacement_product: replacement,
+      source_amount:       product_substitution_params[:source_amount].presence,
+      source_unit:         ProductSubstitution.normalize_unit(product_substitution_params[:source_unit].to_s),
+      replacement_amount:  product_substitution_params[:replacement_amount].presence,
+      replacement_unit:    ProductSubstitution.normalize_unit(product_substitution_params[:replacement_unit].to_s)
     )
 
     if substitution.save
@@ -92,6 +96,10 @@ class ProductSubstitutionsController < ApplicationController
   private
 
   def product_substitution_params
-    params.require(:product_substitution).permit(:source_product, :replacement_product)
+    params.require(:product_substitution).permit(
+      :source_product, :replacement_product,
+      :source_amount, :source_unit,
+      :replacement_amount, :replacement_unit
+    )
   end
 end

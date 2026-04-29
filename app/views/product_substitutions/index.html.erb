@@ -28,11 +28,35 @@
   </section>
 
   <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200">
-    <h2 class="mb-3 text-lg font-semibold">Dodaj ręcznie</h2>
-    <%= form_with model: ProductSubstitution.new, url: product_substitutions_path, method: :post, class: "grid grid-cols-1 gap-3 sm:grid-cols-3" do |f| %>
-      <%= f.text_field :source_product, placeholder: "Produkt bazowy", class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
-      <%= f.text_field :replacement_product, placeholder: "Produkt zamienny", class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
-      <%= f.submit "Dodaj", class: "px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-500" %>
+    <h2 class="mb-1 text-lg font-semibold">Dodaj ręcznie</h2>
+    <p class="mb-3 text-sm text-slate-500">Ilość i jednostka są opcjonalne — jeśli podasz obie strony, przelicznik zostanie wyliczony automatycznie.</p>
+    <%= form_with model: ProductSubstitution.new, url: product_substitutions_path, method: :post do |f| %>
+      <div class="grid grid-cols-[1fr_80px_76px] gap-2">
+        <%= f.text_field :source_product,
+              placeholder: "Produkt bazowy",
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+        <%= f.number_field :source_amount,
+              step: :any, min: 0, placeholder: "Ilość",
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+        <%= f.select :source_unit,
+              options_for_select([%w[g g], %w[kg kg], %w[ml ml], %w[l l], %w[szt szt]], 'g'),
+              {},
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+
+        <%= f.text_field :replacement_product,
+              placeholder: "Zamiennik",
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+        <%= f.number_field :replacement_amount,
+              step: :any, min: 0, placeholder: "Ilość",
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+        <%= f.select :replacement_unit,
+              options_for_select([%w[g g], %w[kg kg], %w[ml ml], %w[l l], %w[szt szt]], 'g'),
+              {},
+              class: "rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+      </div>
+      <div class="mt-3 flex justify-end">
+        <%= f.submit "Dodaj zamiennik", class: "px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-500 cursor-pointer" %>
+      </div>
     <% end %>
   </section>
 
@@ -42,10 +66,19 @@
       <ul class="space-y-2">
         <% @product_substitutions.each do |sub| %>
           <li class="flex items-center justify-between p-3 border rounded-md border-slate-200">
-            <p class="text-sm">
+            <p class="text-sm flex items-center flex-wrap gap-x-1">
               <span class="font-semibold"><%= sub.source_product %></span>
-              <span class="mx-2 text-slate-400">→</span>
+              <% if sub.source_amount.present? %>
+                <span class="text-slate-400 text-xs"><%= sub.source_amount.round(2) %> <%= sub.source_unit %></span>
+              <% end %>
+              <span class="mx-1 text-slate-400">→</span>
               <span><%= sub.replacement_product %></span>
+              <% if sub.replacement_amount.present? %>
+                <span class="text-slate-400 text-xs"><%= sub.replacement_amount.round(2) %> <%= sub.replacement_unit %></span>
+              <% end %>
+              <% if sub.amount_multiplier.present? && sub.amount_multiplier.round(3) != 1.0 %>
+                <span class="ml-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 rounded-full px-1.5 py-0.5">×<%= sub.amount_multiplier.round(2) %></span>
+              <% end %>
             </p>
             <%= button_to "Usuń", product_substitution_path(sub), method: :delete, class: "px-3 py-1 text-xs font-semibold text-white bg-rose-600 rounded hover:bg-rose-500" %>
           </li>
