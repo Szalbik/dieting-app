@@ -4,8 +4,8 @@ class CategorizeProductJob < ApplicationJob
   queue_as :default
 
   def perform(product_id)
-    product = Product.find(product_id)
-    return unless product.present?
+    product = Product.find_by(id: product_id)
+    return if product.nil?
     return if product.category.present?
 
     prediction = Classifier::Category.predict(product.name)
@@ -20,6 +20,6 @@ class CategorizeProductJob < ApplicationJob
       state: prediction[:state] || false
     )
   rescue StandardError => e
-    Rails.logger.error "Failed to categorize product #{product.id} (#{product.name}): #{e.message}"
+    Rails.logger.error "Failed to categorize product #{product_id}: #{e.message}"
   end
 end
