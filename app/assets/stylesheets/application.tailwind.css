@@ -1,6 +1,40 @@
 @import "tailwindcss";
 @config "../../../tailwind.config.js";
 
+/* ── Peach Skyline design tokens (mirror of the mobile UI kit) ──
+   Lets the redesigned screens use the same var(--…) references as the
+   source mockup, so the ERB is a near-mechanical port of the JSX. */
+:root {
+  --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+  --font-sans:  'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-peach: #FFDBBB;  --color-peach-strong: #E8A874;  --color-peach-soft: #FFEDDB;
+  --color-sky:   #BADDFF;  --color-sky-strong:   #5B8FC9;  --color-sky-soft:   #E2EEFC;
+  --color-mint:  #BAFFF5;  --color-mint-strong:  #3AA48F;  --color-mint-soft:  #E2FBF5;
+  --color-navy:  #496580;  --color-navy-strong:  #2D4259;
+  --color-paper: #FBF8F1;  --color-paper-2: #F4EEE0;
+
+  --fg-primary: #2A2823;  --fg-secondary: #5A5448;  --fg-muted: #9A948A;
+  --border-default: rgba(42, 40, 35, 0.10);
+  --border-strong:  rgba(42, 40, 35, 0.20);
+}
+
+@layer components {
+  /* Card tints — exact color-mix recipes from the UI kit's <Card>. */
+  .dietcard       { border-radius: 22px; border: 1px solid var(--border-default); background: #fff; }
+  .dietcard-peach { border-radius: 22px; background: color-mix(in srgb, var(--color-peach) 50%, var(--color-paper)); border: 1px solid color-mix(in srgb, var(--color-peach) 80%, var(--color-paper)); }
+  .dietcard-sky   { border-radius: 22px; background: color-mix(in srgb, var(--color-sky) 45%, var(--color-paper));  border: 1px solid color-mix(in srgb, var(--color-sky) 70%, var(--color-paper)); }
+  .dietcard-mint  { border-radius: 22px; background: color-mix(in srgb, var(--color-mint) 50%, var(--color-paper)); border: 1px solid color-mix(in srgb, var(--color-mint) 70%, var(--color-paper)); }
+  .dietcard-navy  { border-radius: 22px; background: var(--color-navy); border: 1px solid var(--color-navy); color: #fff; }
+
+  /* FoodTile — emoji-in-tile with the kit's organic radius. */
+  .foodtile { border: 1px solid rgba(42,40,35,0.08); border-radius: 13px 15px 12px 14px; display: grid; place-items: center; flex-shrink: 0; }
+  .foodtile-peach { background: var(--color-peach); }
+  .foodtile-sky   { background: var(--color-sky); }
+  .foodtile-mint  { background: var(--color-mint); }
+  .foodtile-cream { background: var(--color-paper-2); }
+}
+
 @layer base {
   body {
     @apply bg-brand-warm-white text-brand-charcoal antialiased;
@@ -17,11 +51,11 @@
   }
 
   .app-section {
-    @apply rounded-3xl border border-emerald-100/60 bg-white/90 p-6 shadow-soft backdrop-blur-sm;
+    @apply rounded-3xl border border-brand-peach/40 bg-white/90 p-6 shadow-soft backdrop-blur-sm;
   }
 
   .app-input {
-    @apply block w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-soft placeholder:text-slate-400 focus:border-brand-sage focus:outline-none focus:ring-2 focus:ring-brand-sage/30;
+    @apply block w-full rounded-xl border border-brand-ink/15 bg-white px-3 py-2.5 text-brand-ink shadow-soft placeholder:text-brand-ink-faint focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy/30;
   }
 
   .app-label {

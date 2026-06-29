@@ -3,9 +3,10 @@
 module Ui
   class BadgeComponent < ViewComponent::Base
     VARIANT_CLASSES = {
-      neutral: 'bg-slate-100 text-slate-700 ring-slate-300/80',
-      success: 'bg-emerald-100 text-emerald-700 ring-emerald-300/80',
-      accent: 'bg-orange-100 text-orange-700 ring-orange-300/80',
+      neutral: 'bg-white text-brand-ink-soft ring-brand-ink/10',
+      success: 'bg-brand-mint-soft text-brand-mint-strong ring-brand-mint/60',
+      accent: 'bg-brand-peach-soft text-brand-peach-strong ring-brand-peach/60',
+      info: 'bg-brand-sky-soft text-brand-sky-strong ring-brand-sky/60',
     }.freeze
 
     def initialize(label:, variant: :neutral, classes: nil)

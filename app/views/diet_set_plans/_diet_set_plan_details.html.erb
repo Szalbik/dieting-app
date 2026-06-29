@@ -1,95 +1,119 @@
 <!-- Meal Plan Details -->
-<div class="mt-6 space-y-4">
-  <%# Assume that diet_set_plan.diet.diet_sets.first is the chosen set %>
-  <h3 class="text-center text-2xl font-black">🥗 <%= @diet_set_plan.derived_name_from_meal %></h3>
+<div class="mt-4">
   <% if @diet_set_plan.meal_plans.any? %>
-    <%# Calculate daily totals %>
-    <% daily_totals = @diet_set_plan.meal_plans.sum { |mp| mp.kcal || 0 } %>
+    <% daily_totals  = @diet_set_plan.meal_plans.sum { |mp| mp.kcal || 0 } %>
     <% daily_protein = @diet_set_plan.meal_plans.sum { |mp| mp.protein || 0 } %>
-    <% daily_fat = @diet_set_plan.meal_plans.sum { |mp| mp.fat || 0 } %>
-    <% daily_carbs = @diet_set_plan.meal_plans.sum { |mp| mp.carbs || 0 } %>
+    <% daily_fat     = @diet_set_plan.meal_plans.sum { |mp| mp.fat || 0 } %>
+    <% daily_carbs   = @diet_set_plan.meal_plans.sum { |mp| mp.carbs || 0 } %>
+    <% total_meals = @diet_set_plan.meal_plans.size %>
+    <% done_meals  = @diet_set_plan.meal_plans.count { |mp| meal_status_for(mp, @date) == :done } %>
+    <% progress_pct = total_meals.positive? ? (done_meals * 100 / total_meals) : 0 %>
+
     <% if daily_totals > 0 || daily_protein > 0 || daily_fat > 0 || daily_carbs > 0 %>
-      <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-        <h4 class="mb-2 text-sm font-semibold text-center text-green-800">📊 Podsumowanie dnia</h4>
-        <div class="flex justify-center gap-4 text-sm">
-          <div class="text-center">
-            <div class="font-bold text-green-700"><%= daily_totals.round %></div>
-            <div class="text-xs text-green-600">kcal</div>
-          </div>
-          <div class="text-center">
-            <div class="font-bold text-green-700"><%= daily_protein.round(1) %></div>
-            <div class="text-xs text-green-600">g białka</div>
-          </div>
-          <div class="text-center">
-            <div class="font-bold text-green-700"><%= daily_fat.round(1) %></div>
-            <div class="text-xs text-green-600">g tłuszczu</div>
-          </div>
-          <div class="text-center">
-            <div class="font-bold text-green-700"><%= daily_carbs.round(1) %></div>
-            <div class="text-xs text-green-600">g węglowodanów</div>
-          </div>
+      <%= render Ui::CardComponent.new(tint: :peach, padding: :md, classes: "mt-3.5") do %>
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="whitespace-nowrap font-serif text-[17px] font-bold text-brand-ink">Podsumowanie dnia</h2>
+          <span class="whitespace-nowrap text-[11px] text-brand-ink-soft"><%= done_meals %> / <%= total_meals %> posiłki</span>
         </div>
-      </div>
+        <div class="mt-2 flex items-center gap-2.5 whitespace-nowrap text-[13px] text-brand-ink">
+          <span><b><%= daily_totals.round %></b> kcal</span>
+          <span class="text-brand-ink-faint">|</span>
+          <span><b><%= daily_protein.round %></b>b</span>
+          <span class="text-brand-ink-faint">|</span>
+          <span><b><%= daily_fat.round %></b>t</span>
+          <span class="text-brand-ink-faint">|</span>
+          <span><b><%= daily_carbs.round %></b>w</span>
+        </div>
+        <div class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/50">
+          <div class="h-full rounded-full bg-brand-navy" style="width: <%= progress_pct %>%"></div>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <a href="#posilki" class="flex flex-1 items-center justify-center rounded-full bg-brand-navy px-3 py-2 text-[13px] font-semibold text-white">Zobacz</a>
+          <%= link_to "Zamień", diet_set_plans_path(reassign: true, date: params['date']), class: "flex flex-1 items-center justify-center rounded-full border border-brand-ink/20 bg-white px-3 py-2 text-[13px] font-semibold text-brand-ink" %>
+        </div>
+      <% end %>
     <% end %>
-    <% @diet_set_plan.meal_plans.each do |meal_plan| %>
-      <!-- Each meal card is clickable and toggles its details using our Stimulus controller -->
-      <div class="cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 shadow-soft transition hover:shadow-medium"
-            data-controller="toggle-meal"
-            data-action="click->toggle-meal#toggle">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-brand-charcoal"><%= meal_plan.name %></h3>
-            <span class="text-sm text-brand-soft-gray"><%= meal_time_for(meal_plan) %></span>
-            <% if meal_plan.kcal.present? || meal_plan.protein.present? || meal_plan.fat.present? || meal_plan.carbs.present? %>
-              <div class="mt-2 flex gap-3 text-xs text-brand-soft-gray">
-                <% if meal_plan.kcal.present? %>
-                  <span><strong><%= meal_plan.kcal %></strong> kcal</span>
+
+    <h3 id="posilki" class="mb-2 mt-[18px] font-serif text-[17px] font-bold text-brand-ink">Posiłki</h3>
+    <div class="flex flex-col gap-2">
+      <% @diet_set_plan.meal_plans.each do |meal_plan| %>
+        <% status = meal_status_for(meal_plan, @date) %>
+        <!-- Meal card: clickable, toggles details via Stimulus -->
+        <div class="dietcard<%= '-peach' if status == :current %> cursor-pointer p-3 shadow-soft transition hover:shadow-medium"
+             data-controller="toggle-meal"
+             data-action="click->toggle-meal#toggle">
+          <div class="flex items-center gap-3">
+            <% if status == :done %>
+              <div class="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] border border-brand-mint-strong/30 bg-brand-mint">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg>
+              </div>
+            <% else %>
+              <div class="foodtile <%= status == :current ? 'foodtile-peach' : 'foodtile-cream' %> h-9 w-9 text-lg"><%= meal_glyph_for(meal_plan) %></div>
+            <% end %>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="truncate text-sm font-bold text-brand-ink"><%= meal_plan.name %></span>
+                <% if status == :current %>
+                  <span class="shrink-0 rounded-full bg-brand-peach-soft px-2 py-0.5 text-[11px] font-semibold text-brand-peach-strong">teraz</span>
                 <% end %>
-                <% if meal_plan.protein.present? %>
-                  <span><strong><%= meal_plan.protein.round(1) %></strong>g białka</span>
-                <% end %>
-                <% if meal_plan.fat.present? %>
-                  <span><strong><%= meal_plan.fat.round(1) %></strong>g tłuszczu</span>
-                <% end %>
-                <% if meal_plan.carbs.present? %>
-                  <span><strong><%= meal_plan.carbs.round(1) %></strong>g węglowodanów</span>
-                <% end %>
+              </div>
+              <div class="mt-px truncate text-xs text-brand-ink-soft">
+                <% parts = [meal_time_for(meal_plan).presence, (meal_plan.kcal.present? ? "#{meal_plan.kcal} kcal" : nil)].compact %>
+                <%= parts.join(' · ') %>
+              </div>
+            </div>
+            <div id="<%= dom_id(meal_plan, :shopping_bag) %>" class="shrink-0">
+              <%= render partial: "diet_set_plans/shopping_bag_icon", locals: { meal_plan: meal_plan } %>
+            </div>
+          </div>
+          <!-- Details: instructions + ingredients (initially hidden) -->
+          <div data-toggle-meal-target="toggle" data-toggle-meal-animation-value="slide" class="hidden mt-2 overflow-hidden">
+            <% if meal_plan.instructions.present? %>
+              <div class="instruction-parts">
+                <%= format_meal_instructions(meal_plan.instructions) %>
+              </div>
+            <% end %>
+            <% if meal_plan.products.any? %>
+              <div class="<%= 'mt-6 border-t border-brand-ink/10 pt-4' if meal_plan.instructions.present? %>">
+                <h4 class="mb-3 text-sm font-semibold text-brand-ink-soft">Składniki</h4>
+                <ul class="list-disc">
+                  <% meal_plan.products.each do |product| %>
+                    <%= render "diet_set_plans/ingredient_row", meal_plan: meal_plan, product: product %>
+                  <% end %>
+                </ul>
               </div>
             <% end %>
           </div>
-          <div id="<%= dom_id(meal_plan, :shopping_bag) %>">
-            <%= render partial: "diet_set_plans/shopping_bag_icon", locals: { meal_plan: meal_plan } %>
-          </div>
         </div>
-        <!-- Details: instructions (steps) and ingredients (initially hidden) -->
-        <div data-toggle-meal-target="toggle" data-toggle-meal-animation-value="slide" class="hidden mt-2 overflow-hidden">
-          <% if meal_plan.instructions.present? %>
-            <div class="instruction-parts">
-              <%= format_meal_instructions(meal_plan.instructions) %>
-            </div>
-          <% end %>
-          <% if meal_plan.products.any? %>
-            <div class="<%= 'mt-6 border-t border-slate-200 pt-4' if meal_plan.instructions.present? %>">
-              <h4 class="mb-3 text-sm font-semibold text-slate-700">Składniki</h4>
-              <ul class="list-disc">
-                <% meal_plan.products.each do |product| %>
-                  <%= render "diet_set_plans/ingredient_row", meal_plan: meal_plan, product: product %>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   <% else %>
-    <p class="mt-6 text-center text-brand-soft-gray">Brak posiłków dla wybranego zestawu.</p>
+    <p class="mt-6 text-center text-brand-ink-soft">Brak posiłków dla wybranego zestawu.</p>
   <% end %>
-  <div class="mt-4 mb-12 space-y-2 text-center" data-controller="diet-swap">
+
+  <div class="mt-3.5">
+    <%= link_to shopping_cart_path, class: "block" do %>
+      <%= render Ui::CardComponent.new(tint: :sky, padding: :sm) do %>
+        <div class="flex items-center gap-2.5">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B8FC9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+            <path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" />
+          </svg>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-bold text-brand-ink">Twoja lista zakupów</div>
+            <div class="text-[11px] text-brand-ink-soft">Przejdź do zakupów dla tej diety</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A5448" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M8 6 L14 12 L8 18" /></svg>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="mb-12 mt-4 space-y-2 text-center" data-controller="diet-swap">
     <div class="flex items-center justify-center space-x-4">
-      <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-brand-soft-gray hover:text-brand-sage-dark hover:underline" %>
-      <span class="text-gray-300">|</span>
+      <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-brand-ink-soft hover:text-brand-navy hover:underline" %>
+      <span class="text-brand-ink/20">|</span>
       <button type="button"
-              class="text-xs text-brand-soft-gray hover:text-brand-sage-dark hover:underline"
+              class="text-xs text-brand-ink-soft hover:text-brand-navy hover:underline"
               data-action="click->diet-swap#toggle">
         Zamień z innym dniem
       </button>
@@ -97,25 +121,25 @@
 
     <% weekday_names = %w[niedziela poniedziałek wtorek środa czwartek piątek sobota] %>
     <div data-diet-swap-target="picker" class="hidden mt-4 text-left">
-      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft">
-        <h4 class="text-sm font-semibold text-brand-charcoal mb-3">Zamień z:</h4>
+      <div class="dietcard p-4 shadow-soft">
+        <h4 class="mb-3 text-sm font-semibold text-brand-ink">Zamień z:</h4>
         <div class="space-y-2">
           <% ((Date.current - 1.day)..(Date.current + 5.days)).each do |d| %>
             <% next if d.to_s == @date.to_s %>
             <% other_plan = Current.user.diet_set_plans.where(date: d).order(created_at: :desc).first %>
-            <div class="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+            <div class="flex items-center justify-between rounded-xl border border-brand-ink/10 bg-brand-paper px-3 py-2.5">
               <div class="min-w-0 flex-1">
-                <span class="text-sm font-semibold text-brand-charcoal capitalize"><%= weekday_names[d.wday] %> <%= d.strftime('%d.%m') %></span>
+                <span class="text-sm font-semibold capitalize text-brand-ink"><%= weekday_names[d.wday] %> <%= d.strftime('%d.%m') %></span>
                 <% if other_plan %>
-                  <p class="truncate text-xs text-brand-soft-gray"><%= other_plan.derived_name_from_meal %></p>
+                  <p class="truncate text-xs text-brand-ink-soft"><%= other_plan.derived_name_from_meal %></p>
                 <% else %>
-                  <p class="text-xs italic text-brand-soft-gray">Brak diety</p>
+                  <p class="text-xs italic text-brand-ink-soft">Brak diety</p>
                 <% end %>
               </div>
               <%= button_to "Zamień", swap_diet_set_plans_path,
                     params: { current_date: @date, target_date: d.to_s },
                     method: :post,
-                    class: "ml-3 shrink-0 rounded-full bg-brand-sage-dark px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-accent" %>
+                    class: "ml-3 shrink-0 rounded-full bg-brand-navy px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-navy-strong" %>
             </div>
           <% end %>
         </div>

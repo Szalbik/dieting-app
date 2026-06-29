@@ -3,10 +3,11 @@
 module Ui
   class ButtonComponent < ViewComponent::Base
     VARIANT_CLASSES = {
-      primary: 'bg-brand-sage-dark text-white hover:bg-brand-accent focus-visible:outline-brand-sage-dark',
-      secondary: 'border border-slate-300 bg-white text-slate-800 ' \
-                 'hover:border-brand-sage hover:text-brand-sage-dark focus-visible:outline-brand-sage',
-      ghost: 'bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:outline-brand-sage',
+      primary: 'bg-brand-navy text-white hover:bg-brand-navy-strong focus-visible:outline-brand-navy',
+      secondary: 'border border-brand-ink/20 bg-white text-brand-ink ' \
+                 'hover:border-brand-navy hover:text-brand-navy focus-visible:outline-brand-navy',
+      peach: 'bg-brand-peach text-brand-ink hover:bg-brand-peach-strong focus-visible:outline-brand-peach-strong',
+      ghost: 'bg-transparent text-brand-ink-soft hover:bg-brand-paper focus-visible:outline-brand-navy',
       danger: 'bg-rose-600 text-white hover:bg-rose-500 focus-visible:outline-rose-600',
     }.freeze
 

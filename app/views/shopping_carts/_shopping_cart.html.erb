@@ -1,97 +1,133 @@
 <turbo-frame id="shopping_cart">
-  <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-    <p class="text-sm font-semibold text-brand-sage-dark">Lista zakupow</p>
+  <div data-controller="tabs">
+    <% diet_items_empty = shopping_cart.shopping_cart_items.empty? %>
+    <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
+    <% groups = diet_items_empty ? [] : shopping_cart.group_and_sum_by_cart_items %>
+    <% tints = %i[sky mint peach] %>
+    <% active_diet = Current.user.diets.where(active: true).first %>
+
     <% if shopping_cart.shared? %>
-      <p class="mt-1 text-sm text-brand-sage-dark">
-        Wspolna lista:
-        <%= shopping_cart.member_users.map { |user| shopping_cart_member_label(user) }.join(' + ') %>
-      </p>
-    <% else %>
-      <p class="mt-1 text-sm text-brand-sage-dark">To jest Twoja prywatna lista zakupow.</p>
-    <% end %>
-  </div>
-
-  <% diet_items_empty = shopping_cart.shopping_cart_items.empty? %>
-  <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
-
-  <% if diet_items_empty && custom_items_empty %>
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center text-brand-soft-gray">
-      Koszyk jest pusty.
-    </div>
-  <% end %>
-
-  <div class="mb-6">
-    <h2 class="mb-2 text-lg font-bold text-brand-charcoal">Własne produkty</h2>
-    <div id="custom_cart_item_form_errors"></div>
-    <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "custom-cart-form mb-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft" do |f| %>
-      <div class="flex flex-col gap-3">
-          <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "custom-cart-input app-input min-h-[48px] w-full text-base", required: true %>
-        <div class="flex flex-row items-end justify-between gap-2">
-          <div class="flex flex-row items-end gap-2">
-            <%= f.number_field :quantity, value: 1, min: 1, class: "custom-cart-input app-input min-h-[48px] w-20 shrink-0 text-base" %>
-            <%= f.text_field :unit, placeholder: "szt", value: "szt", class: "custom-cart-input app-input min-h-[48px] w-24 shrink-0 text-base" %>
-          </div>
-          <%= f.submit "Dodaj", class: "custom-cart-submit min-h-[48px] shrink-0 rounded-full bg-brand-sage-dark px-5 py-3 text-base font-semibold text-white hover:bg-brand-accent" %>
-        </div>
+      <div class="mb-3.5 rounded-2xl border border-brand-sky/60 bg-brand-sky-soft px-4 py-3">
+        <p class="text-sm font-semibold text-brand-sky-strong">Wspólna lista</p>
+        <p class="mt-0.5 text-sm text-brand-ink-soft"><%= shopping_cart.member_users.map { |user| shopping_cart_member_label(user) }.join(' + ') %></p>
       </div>
     <% end %>
-    <% if custom_items_empty %>
-      <p class="text-sm text-brand-soft-gray">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
-    <% else %>
-      <ul class="space-y-2">
-        <% shopping_cart.custom_cart_items.order(:created_at).each do |item| %>
-          <li id="<%= dom_id(item) %>" class="flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-soft">
-            <div>
-              <p class="text-base font-semibold"><%= item.name %></p>
-              <p class="text-sm text-brand-soft-gray"><%= item.quantity %> <%= item.unit.presence || 'szt' %></p>
-            </div>
-            <%= button_to "Usuń", custom_cart_item_path(item), method: :delete,
-                  form: { data: { turbo_stream: true } },
-                  class: "rounded-full bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600" %>
-          </li>
+
+    <% if diet_items_empty && custom_items_empty %>
+      <div class="dietcard p-6 text-center text-brand-ink-soft">Koszyk jest pusty.</div>
+    <% end %>
+
+    <%# Category filter pills (client-side show/hide) %>
+    <% unless groups.empty? %>
+      <div class="mb-3.5 flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+        <button type="button" data-tabs-target="pill" data-tab-value="all" data-action="tabs#select" aria-selected="true"
+                class="shrink-0 whitespace-nowrap rounded-full border border-brand-ink/10 bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-ink-soft aria-selected:border-brand-navy aria-selected:bg-brand-navy aria-selected:text-white">
+          Wszystko
+        </button>
+        <% groups.each do |group| %>
+          <% slug = group[:category]&.name&.parameterize || 'inne' %>
+          <button type="button" data-tabs-target="pill" data-tab-value="<%= slug %>" data-action="tabs#select" aria-selected="false"
+                  class="shrink-0 whitespace-nowrap rounded-full border border-brand-ink/10 bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-ink-soft aria-selected:border-brand-navy aria-selected:bg-brand-navy aria-selected:text-white">
+            <%= group[:category]&.name || 'Inne' %>
+          </button>
         <% end %>
-      </ul>
-    <% end %>
-  </div>
+      </div>
 
-  <% unless diet_items_empty %>
-    <% shopping_cart.group_and_sum_by_cart_items.each do |group| %>
-      <div id="category_<%= group[:category]&.name&.parameterize || 'inne' %>">
-        <div class="mb-6">
-          <h2 class="mb-2 text-lg font-bold text-brand-charcoal"><%= group[:category]&.name || 'Inne' %></h2>
-          <ul class="space-y-2">
-            <% group[:products].each do |product_group| %>
-              <li id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-soft">
-                <div>
-                  <p class="text-base font-semibold"><%= product_group[:name] %></p>
-                  <% if product_group[:aggregated_ingredient_measures].present? %>
-                    <p class="text-sm text-brand-soft-gray">
-                      <%= t('shopping_cart.measurements_label') %>:
-                      <% product_group[:aggregated_ingredient_measures].each_with_index do |measurement, idx| %>
-                        <% amount = (measurement[:amount] || 0).to_f %>
-                        <% unit_key = unit_key_for_i18n(measurement[:unit]) %>
-                        <% unit_str = unit_key.present? ? I18n.t("units.#{unit_key}", count: measurement[:amount], default: measurement[:unit].to_s) : measurement[:unit].to_s %>
-                        <%= " " if idx > 0 %>
-                        <% if amount.zero? %>
-                          <%= unit_str %>
-                        <% else %>
-                          <%= amount.round(2) %> <%= unit_str %>
-                        <% end %>
-                      <% end %>
-                    </p>
-                  <% end %>
-                </div>
-                <%= button_to t('shopping_cart.remove'), shopping_cart_item_path(product_group[:product]), method: :delete,
-                      form: { data: { turbo_stream: true } },
-                      class: "rounded-full bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600" %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
+      <%# Period / summary card %>
+      <div class="mb-3.5 flex items-center gap-2.5 rounded-2xl border border-brand-ink/10 bg-white px-3 py-2.5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A5448" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="12" cy="12" r="9" /><path d="M12 7 V12 L15 14" /></svg>
+        <span class="text-[13px] font-bold text-brand-ink"><%= shopping_cart.shopping_cart_items.size %> produktów</span>
+        <% if shopping_cart.shared? %>
+          <span class="text-xs text-brand-ink-soft">· <%= shopping_cart.member_users.size %> osoby</span>
+        <% end %>
       </div>
     <% end %>
 
-  <% end %>
+    <%# Custom (non-diet) products %>
+    <div class="mb-5" data-tabs-target="panel" data-tab-value="wlasne">
+      <h2 class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft">Własne produkty</h2>
+      <div id="custom_cart_item_form_errors"></div>
+      <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "custom-cart-form mb-3 dietcard p-4 shadow-soft" do |f| %>
+        <div class="flex flex-col gap-3">
+          <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "custom-cart-input app-input min-h-[48px] w-full text-base", required: true %>
+          <div class="flex flex-row items-end justify-between gap-2">
+            <div class="flex flex-row items-end gap-2">
+              <%= f.number_field :quantity, value: 1, min: 1, class: "custom-cart-input app-input min-h-[48px] w-20 shrink-0 text-base" %>
+              <%= f.text_field :unit, placeholder: "szt", value: "szt", class: "custom-cart-input app-input min-h-[48px] w-24 shrink-0 text-base" %>
+            </div>
+            <%= f.submit "Dodaj", class: "custom-cart-submit min-h-[48px] shrink-0 rounded-full bg-brand-navy px-5 py-3 text-base font-semibold text-white hover:bg-brand-navy-strong" %>
+          </div>
+        </div>
+      <% end %>
+      <% if custom_items_empty %>
+        <p class="text-sm text-brand-ink-soft">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
+      <% else %>
+        <div class="flex flex-col gap-1.5">
+          <% shopping_cart.custom_cart_items.order(:created_at).each do |item| %>
+            <div id="<%= dom_id(item) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5">
+              <%= button_to custom_cart_item_path(item), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                    class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] border-brand-ink/20 bg-white transition-colors hover:border-brand-mint-strong hover:bg-brand-mint" do %>
+                <span class="sr-only">Odhacz</span>
+              <% end %>
+              <div class="min-w-0 flex-1">
+                <span class="text-[13px] font-semibold text-brand-ink"><%= item.name %></span>
+                <span class="text-xs text-brand-ink-soft"> · <%= item.quantity %> <%= item.unit.presence || 'szt' %></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
-  <div class="mb-12"></div>
+    <%# Diet products, grouped by category %>
+    <% unless diet_items_empty %>
+      <div class="flex flex-col gap-3">
+        <% groups.each_with_index do |group, gi| %>
+          <% slug = group[:category]&.name&.parameterize || 'inne' %>
+          <div id="category_<%= slug %>" data-tabs-target="panel" data-tab-value="<%= slug %>">
+            <%= render Ui::CardComponent.new(tint: tints[gi % tints.size], padding: :sm) do %>
+              <div class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft"><%= group[:category]&.name || 'Inne' %></div>
+              <div class="flex flex-col gap-1.5">
+                <% group[:products].each do |product_group| %>
+                  <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5">
+                    <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                          class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] border-brand-ink/20 bg-white transition-colors hover:border-brand-mint-strong hover:bg-brand-mint" do %>
+                      <span class="sr-only"><%= t('shopping_cart.remove') %></span>
+                    <% end %>
+                    <div class="min-w-0 flex-1">
+                      <span class="text-[13px] font-semibold text-brand-ink"><%= product_group[:name] %></span>
+                      <% if product_group[:aggregated_ingredient_measures].present? %>
+                        <span class="text-xs text-brand-ink-soft"> ·
+                          <% product_group[:aggregated_ingredient_measures].each_with_index do |measurement, idx| %>
+                            <% amount = (measurement[:amount] || 0).to_f %>
+                            <% unit_key = unit_key_for_i18n(measurement[:unit]) %>
+                            <% unit_str = unit_key.present? ? I18n.t("units.#{unit_key}", count: measurement[:amount], default: measurement[:unit].to_s) : measurement[:unit].to_s %>
+                            <%= " " if idx > 0 %><%= amount.zero? ? unit_str : "#{amount.round(2)} #{unit_str}" %>
+                          <% end %>
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# Active-diet footer card %>
+        <% if active_diet %>
+          <div class="flex items-center gap-2.5 dietcard-peach p-3.5 shadow-soft">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A874" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" /></svg>
+            <div class="min-w-0 flex-1">
+              <div class="truncate text-[13px] font-bold text-brand-ink"><%= active_diet.name %></div>
+              <div class="text-[11px] text-brand-ink-soft"><%= active_diet.diet_sets.count %> zestawów · aktywna</div>
+            </div>
+            <span class="shrink-0 rounded-full bg-brand-mint-soft px-2 py-0.5 text-[11px] font-semibold text-brand-mint-strong">Aktywna</span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mb-12"></div>
+  </div>
 </turbo-frame>

@@ -17,16 +17,33 @@ module.exports = {
       },
       colors: {
         brand: {
-          sage: '#7c9e7e',
-          'sage-light': '#a8c4aa',
-          'sage-dark': '#4a6e4c',
-          cream: '#f7f2eb',
-          'warm-white': '#fdfaf6',
-          charcoal: '#2a2a2a',
-          'soft-gray': '#6b6b6b',
-          accent: '#c8744a',
-          'accent-light': '#e8a882',
-          paper: '#ede8df',
+          // Peach Skyline palette. Legacy token names kept and repointed so
+          // existing brand-* markup reskins without per-view edits.
+          sage: '#FFDBBB',         // → peach
+          'sage-light': '#FFEDDB', // → peach-soft
+          'sage-dark': '#496580',  // → navy: primary CTA / active
+          cream: '#FFEDDB',
+          'warm-white': '#FBF8F1', // → paper (body bg)
+          charcoal: '#2A2823',     // → ink
+          'soft-gray': '#5A5448',  // → ink-soft
+          accent: '#E8A874',       // → peach-strong: CTA hover, eyebrow
+          'accent-light': '#FFDBBB',
+          paper: '#F4EEE0',        // → paper-2
+          // New semantic accents used by the redesigned screens
+          navy: '#496580',
+          'navy-strong': '#2D4259',
+          peach: '#FFDBBB',
+          'peach-strong': '#E8A874',
+          'peach-soft': '#FFEDDB',
+          sky: '#BADDFF',
+          'sky-strong': '#5B8FC9',
+          'sky-soft': '#E2EEFC',
+          mint: '#BAFFF5',
+          'mint-strong': '#3AA48F',
+          'mint-soft': '#E2FBF5',
+          ink: '#2A2823',
+          'ink-soft': '#5A5448',
+          'ink-faint': '#9A948A',
         },
         primary: {
           50: '#ecfdf5',
@@ -145,14 +162,14 @@ module.exports = {
         },
       },
       boxShadow: {
-        'health': '0 4px 6px -1px rgba(16, 185, 129, 0.1), 0 2px 4px -1px rgba(16, 185, 129, 0.06)',
-        'health-lg': '0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05)',
-        'health-xl': '0 20px 25px -5px rgba(16, 185, 129, 0.1), 0 10px 10px -5px rgba(16, 185, 129, 0.04)',
-        'soft': '0 2px 4px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
-        'medium': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'large': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'glow': '0 0 20px rgba(16, 185, 129, 0.15)',
-        'glow-lg': '0 0 40px rgba(16, 185, 129, 0.2)',
+        'health': '0 4px 6px -1px rgba(73, 101, 128, 0.1), 0 2px 4px -1px rgba(73, 101, 128, 0.06)',
+        'health-lg': '0 10px 15px -3px rgba(73, 101, 128, 0.1), 0 4px 6px -2px rgba(73, 101, 128, 0.05)',
+        'health-xl': '0 20px 25px -5px rgba(73, 101, 128, 0.1), 0 10px 10px -5px rgba(73, 101, 128, 0.04)',
+        'soft': '0 2px 4px 0 rgba(42, 40, 35, 0.06), 0 1px 2px 0 rgba(42, 40, 35, 0.04)',
+        'medium': '0 8px 24px 0 rgba(42, 40, 35, 0.08), 0 2px 6px 0 rgba(42, 40, 35, 0.05)',
+        'large': '0 16px 48px -3px rgba(42, 40, 35, 0.10), 0 4px 12px -2px rgba(42, 40, 35, 0.06)',
+        'glow': '0 0 20px rgba(232, 168, 116, 0.18)',
+        'glow-lg': '0 0 40px rgba(232, 168, 116, 0.22)',
       },
       borderRadius: {
         'xl': '0.75rem',

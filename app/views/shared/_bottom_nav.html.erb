@@ -1,0 +1,23 @@
+<%# Unified 3-tab mobile bottom bar. Active tab derived from controller_name. %>
+<% tabs = [
+     { id: 'plan',   label: 'Plan',   path: diet_set_plans_path, controllers: %w[diet_set_plans],
+       icon: '<path d="M9 3 V10 A2 2 0 0 1 7 12 A2 2 0 0 1 5 10 V3" /><path d="M7 12 V21" /><path d="M16 3 C 14 3 13 6 13 8 C 13 10 14 11 16 11 V21" />' },
+     { id: 'zakupy', label: 'Zakupy', path: shopping_cart_path, controllers: %w[shopping_carts shopping_cart_items custom_cart_items],
+       icon: '<path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" />' },
+     { id: 'diety',  label: 'Diety',  path: diets_path, controllers: %w[diets],
+       icon: '<path d="M4 6 H20" /><path d="M4 12 H20" /><path d="M4 18 H14" />' },
+   ] %>
+
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-brand-ink/10 bg-brand-warm-white/95 backdrop-blur-md sm:hidden"
+     style="transform: translateZ(0); -webkit-transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; padding: 0.625rem 1.375rem calc(0.625rem + env(safe-area-inset-bottom));">
+  <% tabs.each do |tab| %>
+    <% active = tab[:controllers].include?(controller_name) %>
+    <%= link_to tab[:path], class: "relative flex flex-col items-center gap-1 px-3.5 py-1.5 #{active ? 'text-brand-navy' : 'text-brand-ink-faint'}" do %>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="<%= active ? 2 : 1.6 %>" stroke-linecap="round" stroke-linejoin="round">
+        <%== tab[:icon] %>
+      </svg>
+      <span class="text-[11px] <%= active ? 'font-bold' : 'font-medium' %>"><%= tab[:label] %></span>
+      <% if active %><span class="absolute -bottom-1 h-0.5 w-6 rounded-full bg-brand-navy"></span><% end %>
+    <% end %>
+  <% end %>
+</nav>

@@ -8,18 +8,29 @@ module Ui
       lg: 'p-8',
     }.freeze
 
-    def initialize(padding: :md, classes: nil)
+    # Tinted surfaces from the Peach Skyline kit (exact color-mix recipes
+    # live in application.tailwind.css as .dietcard-* classes). nil = white.
+    TINT_CLASSES = {
+      peach: 'dietcard-peach',
+      sky:   'dietcard-sky',
+      mint:  'dietcard-mint',
+      navy:  'dietcard-navy',
+    }.freeze
+
+    def initialize(padding: :md, tint: nil, classes: nil)
       @padding = padding.to_sym
+      @tint = tint&.to_sym
       @classes = classes
     end
 
     private
 
-    attr_reader :padding, :classes
+    attr_reader :padding, :tint, :classes
 
     def card_classes
       [
-        'rounded-3xl border border-emerald-100/70 bg-white/90 shadow-soft backdrop-blur-sm',
+        'shadow-soft',
+        tint ? TINT_CLASSES.fetch(tint) : 'dietcard',
         PADDING_CLASSES.fetch(padding, PADDING_CLASSES[:md]),
         classes,
       ].compact.join(' ')

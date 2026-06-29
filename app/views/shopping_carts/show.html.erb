@@ -1,13 +1,16 @@
 <%= turbo_stream_from @shopping_cart %>
-<div class="mb-6">
-  <%= render Ui::SectionHeaderComponent.new(label: "Shopping", title: "Lista zakupow", subtitle: "Produkty z diety i Twoje wlasne pozycje w jednym miejscu.") %>
+
+<!-- Header -->
+<div class="mb-3.5 flex items-center gap-3">
+  <%= link_to diet_set_plans_path, class: "shrink-0 text-brand-ink" do %>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 L6 12 L14 20" /></svg>
+  <% end %>
+  <h1 class="flex-1 font-serif text-2xl font-extrabold tracking-tight text-brand-ink">Lista zakupów</h1>
+  <button type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-brand-ink/10 bg-white text-brand-ink">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6" /><path d="M14.5 14.5 L20 20" /></svg>
+  </button>
 </div>
+
 <%= render 'shopping_cart', shopping_cart: @shopping_cart %>
 
 <div id="undo_toast"></div>
-
-<!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-slate-200 bg-white/95 px-4 py-4 shadow-md backdrop-blur-sm" style="transform: translateZ(0); -webkit-transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; will-change: transform; padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
-  <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-brand-soft-gray' %>
-  <%= link_to '🛒 Lista zakupów', shopping_cart_path, class: 'font-semibold text-brand-sage-dark' %>
-</div>

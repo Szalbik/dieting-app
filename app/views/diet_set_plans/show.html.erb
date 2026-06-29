@@ -1,34 +1,37 @@
 <!-- app/views/diet_set_plans/show.html.erb -->
+<% display_date = (Date.parse(@date.to_s) rescue Date.current) %>
+<% pl_days = %w[Niedziela Poniedziałek Wtorek Środa Czwartek Piątek Sobota] %>
+<% pl_months = %w[stycznia lutego marca kwietnia maja czerwca lipca sierpnia września października listopada grudnia] %>
 
-<div>
+<div class="pb-4">
   <% if Current.user.shopping_cart.shared? %>
-    <div class="mx-auto mb-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+    <div class="mb-4 rounded-2xl border border-brand-sky/60 bg-brand-sky-soft px-4 py-3 text-sm text-brand-sky-strong">
       Lista zakupow jest wspoldzielona z
       <span class="font-semibold"><%= Current.user.shopping_cart_partner&.first_name.presence || Current.user.shopping_cart_partner&.email_address %></span>.
     </div>
   <% end %>
 
-  <div class="mx-auto app-section" id="date_picker">
-      <%= render Ui::SectionHeaderComponent.new(label: "Dashboard", title: "Twoj plan dnia", subtitle: "Wybierz dzien i zarzadzaj posilkami.", classes: "mb-4") %>
-      <%= render "date_picker" %>
+  <!-- Header -->
+  <div class="flex items-start justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink">Twój plan dnia</h1>
+      <p class="mt-1 text-sm text-brand-ink-soft"><%= pl_days[display_date.wday] %>, <%= display_date.day %> <%= pl_months[display_date.month - 1] %></p>
+    </div>
+    <%= link_to profile_path, class: "grid h-10 w-10 shrink-0 place-items-center rounded-full border border-brand-ink/10 bg-white" do %>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-brand-ink"><circle cx="12" cy="8" r="3.5" /><path d="M5 21 C 5 16 8 14 12 14 C 16 14 19 16 19 21" /></svg>
+    <% end %>
+  </div>
+
+  <!-- Day strip -->
+  <div id="date_picker" class="mt-4">
+    <%= render "date_picker" %>
   </div>
 
   <div id="diet_set_plan_details">
-      <% if @diet_set_plan.meals.empty? %>
-          <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
-      <% else %>
-          <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
-      <% end %>
-  </div>
-</div>
-
-<!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-slate-200 bg-white/95 px-4 py-4 shadow-md backdrop-blur-sm" style="transform: translateZ(0); -webkit-transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; will-change: transform; padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
-    <%= link_to '🥗 Twoja dieta', diet_set_plans_path, class: 'font-semibold text-brand-sage-dark' %>
-    <%= link_to shopping_cart_path, class: 'text-brand-soft-gray text-center' do %>
-      <span>🛒 Lista zakupów</span>
-      <% if Current.user.shopping_cart.shared? %>
-        <span class="block text-[10px] text-brand-sage-dark">wspoldzielona</span>
-      <% end %>
+    <% if @diet_set_plan.meals.empty? %>
+      <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
+    <% else %>
+      <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
     <% end %>
+  </div>
 </div>

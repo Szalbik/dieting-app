@@ -28,8 +28,8 @@
     <% else %>
       <div class="flex flex-col min-h-screen">
         <%= render(NavbarComponent.new(current_user: Current.user)) %>
-        <main class="flex-1 py-8 pb-24 sm:py-12 sm:pb-12">
-          <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main class="flex-1 pt-4 pb-28 sm:py-12 sm:pb-12">
+          <div class="container mx-auto max-w-2xl px-[22px] sm:max-w-7xl sm:px-6 lg:px-8">
             <%= yield %>
           </div>
         </main>
@@ -37,6 +37,9 @@
           <%= render(FooterComponent.new) %>
         </div>
       </div>
+      <% if Current.user.present? %>
+        <%= render "shared/bottom_nav" %>
+      <% end %>
     <% end %>
     <%= render "shared/flash", flash: flash %>
   </body>
