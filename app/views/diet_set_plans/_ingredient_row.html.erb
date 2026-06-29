@@ -3,13 +3,15 @@
   <% local_substitutions = [] %>
   <% library_suggestions = [] %>
   <% cycle = Array(@replacement_cycles&.dig(product.id)) %>
-  <% primary_measure = product.ingredient_measures.order(:id).first %>
+  <% primary_measure = product.ingredient_measures.min_by(&:id) %>
   <% default_unit = ProductSubstitution.normalize_unit(primary_measure&.unit).presence || 'g' %>
   <% measurement_label = product.ingredient_measures.map { |measurement| "#{measurement.amount&.round(2)} #{measurement.unit}" }.join(' / ') %>
   <% if Current.user.present? %>
-    <% local_substitutions = Current.user.meal_plan_product_substitutions.where(meal_plan: meal_plan, product: product).ordered.to_a %>
+    <% local_substitutions = (@local_substitutions_by_key&.dig([meal_plan.id, product.id]) || Current.user.meal_plan_product_substitutions.where(meal_plan: meal_plan, product: product).ordered.to_a) %>
     <% normalized_local_names = local_substitutions.map { |sub| ProductSubstitution.normalize_name(sub.replacement_product) } %>
-    <% library_suggestions = ProductSubstitution.local_replacements_for_base(user: Current.user, base_name: base_name).reject { |name| normalized_name = ProductSubstitution.normalize_name(name); normalized_local_names.include?(normalized_name) || normalized_name == ProductSubstitution.normalize_name(product.name) } %>
+    <% @library_suggestions_memo ||= {} %>
+    <% base_replacements = (@library_suggestions_memo[base_name] ||= ProductSubstitution.local_replacements_for_base(user: Current.user, base_name: base_name)) %>
+    <% library_suggestions = base_replacements.reject { |name| normalized_name = ProductSubstitution.normalize_name(name); normalized_local_names.include?(normalized_name) || normalized_name == ProductSubstitution.normalize_name(product.name) } %>
   <% end %>
   <% if cycle.size <= 1 && Current.user.present? %>
     <% cycle = ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name) %>

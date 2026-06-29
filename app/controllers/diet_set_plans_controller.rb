@@ -21,6 +21,7 @@ class DietSetPlansController < ApplicationController
     end
 
     recover_missing_measures_if_needed
+    preload_plan_associations
     load_substitution_suggestions
 
     respond_to do |format|
@@ -314,13 +315,43 @@ class DietSetPlansController < ApplicationController
     Rails.logger.warn("Diet measure recovery failed for diet_set_plan #{@diet_set_plan&.id}: #{e.message}")
   end
 
-  def load_substitution_suggestions
-    @replacement_cycles = {}
+  # Eager-load the whole render tree for #show so the view (per-meal,
+  # per-product) and load_substitution_suggestions don't trigger N+1s.
+  def preload_plan_associations
     return unless @diet_set_plan&.persisted?
 
-    products = @diet_set_plan.meal_plans.includes(:products).flat_map(&:products).uniq
-    products.each do |product|
-      meal_plan = @diet_set_plan.meal_plans.find { |candidate| candidate.products.exists?(id: product.id) }
+    ActiveRecord::Associations::Preloader.new(
+      records: [@diet_set_plan],
+      associations: {
+        meal_plans: [
+          :meal,
+          :meal_plan_product_substitutions,
+          { products: [:ingredient_measures, :base_canonical_product, :canonical_product, { product_category: :category }] },
+        ],
+      }
+    ).call
+  end
+
+  def load_substitution_suggestions
+    @replacement_cycles = {}
+    @local_substitutions_by_key = {}
+    return unless @diet_set_plan&.persisted?
+
+    # One query for all of this plan's user substitutions, grouped for O(1)
+    # per-row lookup in the view (was one query per ingredient row).
+    @local_substitutions_by_key = Current.user.meal_plan_product_substitutions
+      .where(meal_plan: @diet_set_plan.meal_plans)
+      .ordered
+      .group_by { |sub| [sub.meal_plan_id, sub.product_id] }
+
+    # Build product_id => [meal_plan, product] from the already-preloaded
+    # associations instead of a SQL `exists?` per candidate per product.
+    meal_plan_by_product = {}
+    @diet_set_plan.meal_plans.each do |meal_plan|
+      meal_plan.products.each { |product| meal_plan_by_product[product.id] ||= [meal_plan, product] }
+    end
+
+    meal_plan_by_product.each_value do |meal_plan, product|
       base_name = resolve_base_name_for(product, meal_plan: meal_plan)
       @replacement_cycles[product.id] = display_cycle_for(
         meal_plan: meal_plan,
@@ -367,17 +398,27 @@ class DietSetPlansController < ApplicationController
   def candidate_cycle_for(base_name, meal_plan: nil, product: nil)
     return [] if base_name.blank? || Current.user.blank?
 
-    if meal_plan.present? && product.present?
-      local_cycle = MealPlanProductSubstitution.local_cycle_for(
-        user: Current.user,
-        meal_plan: meal_plan,
-        product: product,
-        base_name: base_name
-      )
-      return local_cycle if local_cycle.size > 1
-    end
+    # Request-scoped memo: same (base_name, meal_plan, product) yields the same
+    # result within a request, and resolve_base_name_for/display_cycle_for call
+    # this repeatedly with overlapping base names across products.
+    @candidate_cycle_memo ||= {}
+    cache_key = [base_name, meal_plan&.id, product&.id]
+    return @candidate_cycle_memo[cache_key] if @candidate_cycle_memo.key?(cache_key)
 
-    ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+    result =
+      if meal_plan.present? && product.present?
+        local_cycle = MealPlanProductSubstitution.local_cycle_for(
+          user: Current.user,
+          meal_plan: meal_plan,
+          product: product,
+          base_name: base_name
+        )
+        local_cycle.size > 1 ? local_cycle : ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+      else
+        ProductSubstitution.local_cycle_for(user: Current.user, base_name: base_name)
+      end
+
+    @candidate_cycle_memo[cache_key] = result
   end
 
   def display_cycle_for(meal_plan:, product:, base_name:, original_name:)
