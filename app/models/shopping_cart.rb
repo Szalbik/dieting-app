@@ -25,6 +25,7 @@ class ShoppingCart < ApplicationRecord
         quantity: 0,
         aggregated_ingredient_measures: [],
         category: nil,
+        bought: true,
       }
 
       unit_hash = {}
@@ -33,6 +34,7 @@ class ShoppingCart < ApplicationRecord
         product = item.product
         summed_products[display_name][:quantity] += item.quantity
         summed_products[display_name][:product] ||= product
+        summed_products[display_name][:bought] &&= item.bought
 
         summed_products[display_name][:category] = product.category if product.category.present?
 

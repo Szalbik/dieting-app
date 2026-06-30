@@ -66,11 +66,18 @@ Rails.application.routes.draw do
     end
   end
   resources :shopping_cart_items, only: [:destroy] do
+    member do
+      patch :toggle_bought
+    end
     collection do
       post :undo
     end
   end
-  resources :custom_cart_items, only: %i[create destroy]
+  resources :custom_cart_items, only: %i[create destroy] do
+    member do
+      patch :toggle_bought
+    end
+  end
 
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'

@@ -28,6 +28,20 @@ class CustomCartItemsController < ApplicationController
     end
   end
 
+  def toggle_bought
+    shopping_cart = Current.user.shopping_cart
+    custom_item = shopping_cart.custom_cart_items.find(params[:id])
+    custom_item.update(bought: !custom_item.bought) # after_commit broadcasts to the shared cart
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('shopping_cart',
+          partial: 'shopping_carts/shopping_cart', locals: { shopping_cart: shopping_cart })
+      end
+      format.html { redirect_to shopping_cart_path }
+    end
+  end
+
   private
 
   def custom_cart_item_params

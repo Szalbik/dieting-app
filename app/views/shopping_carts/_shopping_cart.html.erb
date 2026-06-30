@@ -64,15 +64,19 @@
       <% else %>
         <div class="flex flex-col gap-1.5">
           <% shopping_cart.custom_cart_items.order(:created_at).each do |item| %>
-            <div id="<%= dom_id(item) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5">
-              <%= button_to custom_cart_item_path(item), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
-                    class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] border-brand-ink/20 bg-white transition-colors hover:border-brand-mint-strong hover:bg-brand-mint" do %>
-                <span class="sr-only">Odhacz</span>
+            <div id="<%= dom_id(item) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5 <%= 'opacity-60' if item.bought %>">
+              <%= button_to toggle_bought_custom_cart_item_path(item), method: :patch, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                    class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{item.bought ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
+                <% if item.bought %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% end %>
               <% end %>
               <div class="min-w-0 flex-1">
-                <span class="text-[13px] font-semibold text-brand-ink"><%= item.name %></span>
+                <span class="text-[13px] font-semibold text-brand-ink <%= 'line-through' if item.bought %>"><%= item.name %></span>
                 <span class="text-xs text-brand-ink-soft"> · <%= item.quantity %> <%= item.unit.presence || 'szt' %></span>
               </div>
+              <%= button_to custom_cart_item_path(item), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                    class: "text-brand-ink-faint hover:text-rose-500" do %>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -89,13 +93,13 @@
               <div class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft"><%= group[:category]&.name || 'Inne' %></div>
               <div class="flex flex-col gap-1.5">
                 <% group[:products].each do |product_group| %>
-                  <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5">
-                    <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
-                          class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] border-brand-ink/20 bg-white transition-colors hover:border-brand-mint-strong hover:bg-brand-mint" do %>
-                      <span class="sr-only"><%= t('shopping_cart.remove') %></span>
+                  <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5 <%= 'opacity-60' if product_group[:bought] %>">
+                    <%= button_to toggle_bought_shopping_cart_item_path(product_group[:product]), method: :patch, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                          class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{product_group[:bought] ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
+                      <% if product_group[:bought] %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% else %><span class="sr-only">Odhacz</span><% end %>
                     <% end %>
                     <div class="min-w-0 flex-1">
-                      <span class="text-[13px] font-semibold text-brand-ink"><%= product_group[:name] %></span>
+                      <span class="text-[13px] font-semibold text-brand-ink <%= 'line-through' if product_group[:bought] %>"><%= product_group[:name] %></span>
                       <% if product_group[:aggregated_ingredient_measures].present? %>
                         <span class="text-xs text-brand-ink-soft"> ·
                           <% product_group[:aggregated_ingredient_measures].each_with_index do |measurement, idx| %>
@@ -107,6 +111,10 @@
                         </span>
                       <% end %>
                     </div>
+                    <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                          class: "text-brand-ink-faint hover:text-rose-500" do %>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
+                    <% end %>
                   </div>
                 <% end %>
               </div>

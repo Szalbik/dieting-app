@@ -15,8 +15,8 @@ class ShoppingCartItemsController < ApplicationController
     if product.nil?
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("shopping_cart",
-            partial: "shopping_carts/shopping_cart",
+          render turbo_stream: turbo_stream.replace('shopping_cart',
+            partial: 'shopping_carts/shopping_cart',
             locals: { shopping_cart: shopping_cart })
         end
         format.html { redirect_to shopping_cart_path }
@@ -43,6 +43,31 @@ class ShoppingCartItemsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.html { redirect_to shopping_cart_path }
+    end
+  end
+
+  def toggle_bought
+    shopping_cart = Current.user.shopping_cart
+    product = Product.joins(:shopping_cart_items)
+      .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
+      .find_by(id: params[:id])
+
+    if product
+      group_key = product.shopping_cart_group_key
+      items = shopping_cart.shopping_cart_items
+        .includes(product: [:category, :canonical_product])
+        .select { |item| item.product.shopping_cart_group_key == group_key }
+      # update_all skips callbacks, so broadcast to the shared cart explicitly.
+      ShoppingCartItem.where(id: items.map(&:id)).update_all(bought: !items.all?(&:bought))
+      shopping_cart.broadcast_contents
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('shopping_cart',
+          partial: 'shopping_carts/shopping_cart', locals: { shopping_cart: shopping_cart })
+      end
       format.html { redirect_to shopping_cart_path }
     end
   end
