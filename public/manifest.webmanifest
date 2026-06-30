@@ -1,7 +1,16 @@
 {
-    "name": "Rails Designer",
-    "icons": [
-      { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
-      { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
-    ]
+  "name": "Asystent Diety",
+  "short_name": "Dieta",
+  "lang": "pl",
+  "start_url": "/diet_set_plans",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF8F1",
+  "theme_color": "#496580",
+  "icons": [
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
 }

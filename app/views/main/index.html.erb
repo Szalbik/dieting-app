@@ -5,6 +5,7 @@
     <ul class="hidden list-none items-center gap-10 md:flex">
       <li><a href="#how" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">How it works</a></li>
       <li><a href="#features" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">Features</a></li>
+      <li><a href="#app" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">App</a></li>
       <li><a href="#pricing" class="text-xs font-medium uppercase tracking-wider text-brand-soft-gray hover:text-brand-sage-dark">Pricing</a></li>
       <li><%= link_to "Client signup", new_registration_path, class: "rounded-full border border-brand-sage-dark px-5 py-2 text-xs font-medium uppercase tracking-wider text-brand-sage-dark hover:bg-brand-sage/10" %></li>
       <li><%= link_to "Dietitian beta", new_dietitian_waitlist_entry_path, class: "rounded-full bg-brand-sage-dark px-5 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-accent" %></li>
@@ -72,6 +73,36 @@
         </div>
       </div>
       <div class="relative overflow-hidden rounded-[28px] bg-brand-sage-dark p-10 text-white"><div class="pointer-events-none absolute -right-16 -top-24 h-72 w-72 bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)]"></div><div class="relative"><div class="text-2xl font-bold font-serif">Shopping list</div><div class="mb-7 text-sm opacity-60">Week 1 · 21 meals · 3 people</div><div class="pb-1 text-[0.65rem] uppercase tracking-[0.08em] opacity-40">🥦 Vegetables & fruit</div><% [["Broccoli","600 g",true],["Cherry tomatoes","400 g",true],["Spinach","300 g",false],["Apples","6 pcs",false]].each do |i| %><div class="flex items-center gap-3 border-b border-white/10 py-3"><div class="flex h-5 w-5 items-center justify-center rounded-md border border-white/30 text-xs <%= i[2] ? 'bg-brand-sage-light border-brand-sage-light' : '' %>"><%= i[2] ? '✓' : '' %></div><span class="flex-1 text-sm <%= i[2] ? 'opacity-40 line-through' : '' %>"><%= i[0] %></span><span class="text-xs opacity-50"><%= i[1] %></span></div><% end %><div class="pt-4 pb-1 text-[0.65rem] uppercase tracking-[0.08em] opacity-40">🍗 Protein</div><% [["Chicken breast","1.2 kg"],["Greek yogurt","500 g"],["Eggs","12 pcs"]].each do |i| %><div class="flex items-center gap-3 border-b border-white/10 py-3"><div class="h-5 w-5 rounded-md border border-white/30"></div><span class="flex-1 text-sm"><%= i[0] %></span><span class="text-xs opacity-50"><%= i[1] %></span></div><% end %><div class="mt-6 flex items-center justify-between border-t border-white/15 pt-4"><span class="text-xs opacity-50">Est. total</span><span class="text-2xl font-bold font-serif">~€54.20</span></div></div></div>
+    </div>
+  </section>
+
+  <section id="app" class="px-6 py-24 lg:px-16">
+    <div class="grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Install on your phone</div>
+        <h2 class="max-w-2xl text-4xl font-black font-serif tracking-tight">Add it to your home screen.</h2>
+        <p class="mt-4 mb-10 max-w-2xl text-lg leading-8 text-brand-soft-gray">DietApp is a Progressive Web App — install it straight from the browser, no app store needed. It opens full-screen like a native app and stays in sync across phones, so you and your partner can tick items off the same shopping list while you shop.</p>
+        <div class="space-y-5">
+          <% [["📲","Add to Home Screen","On iPhone tap Share → “Add to Home Screen”. On Android, Chrome offers “Install app” from the menu."],["🚀","Opens like a native app","Launches full-screen with no browser bar — straight to your plan for the day."],["👫","Shop together, live","Share your list and check items off together. Updates appear on both phones instantly."]].each do |f| %>
+            <div class="flex gap-5 rounded-3xl bg-brand-cream p-6 transition hover:translate-x-1"><div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)]"><%= f[0] %></div><div><h4 class="mb-1 text-base font-semibold"><%= f[1] %></h4><p class="text-sm leading-6 text-brand-soft-gray"><%= f[2] %></p></div></div>
+          <% end %>
+        </div>
+        <div class="mt-8">
+          <%= link_to "Create your account", new_registration_path, class: "inline-block rounded-full bg-brand-sage px-7 py-3 text-sm font-medium text-white hover:-translate-y-px hover:bg-brand-accent" %>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <div class="relative w-[260px] overflow-hidden rounded-[40px] border-[10px] border-brand-charcoal bg-brand-warm-white shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
+          <div class="flex items-center justify-between px-6 pt-4 pb-2 text-[0.7rem] font-medium text-brand-charcoal"><span>9:41</span><span>●●● 📶 🔋</span></div>
+          <div class="px-5 pb-8 pt-3">
+            <div class="text-xs text-brand-soft-gray">Poniedziałek, 30 czerwca</div>
+            <div class="mt-1 text-2xl font-black font-serif tracking-tight text-brand-charcoal">Twój plan dnia</div>
+            <% [["🥣","Śniadanie","08:00",true],["🥗","Obiad","13:30",false],["🍎","Przekąska","16:00",false]].each do |m| %>
+              <div class="mt-3 flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"><div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-xl"><%= m[0] %></div><div class="flex-1"><div class="text-sm font-semibold text-brand-charcoal"><%= m[1] %></div><div class="text-xs text-brand-soft-gray"><%= m[2] %></div></div><% if m[3] %><span class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-sage-light text-xs text-white">✓</span><% end %></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
