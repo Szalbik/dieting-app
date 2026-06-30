@@ -1,0 +1,5 @@
+<%= turbo_stream.replace dom_id(@meal_plan, :actions) do %>
+  <div id="<%= dom_id(@meal_plan, :actions) %>" class="mt-6 flex gap-2">
+    <%= render "meal_plans/actions", meal_plan: @meal_plan %>
+  </div>
+<% end %>

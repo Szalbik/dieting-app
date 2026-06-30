@@ -1,0 +1,83 @@
+<% back_date = @meal_plan.diet_set_plan&.date %>
+
+<div class="pb-6" data-controller="tabs">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <%= link_to diet_set_plans_path(date: back_date), class: "shrink-0 text-brand-ink" do %>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 L6 12 L14 20" /></svg>
+    <% end %>
+    <span class="flex-1 text-center text-[13px] font-bold text-brand-ink"><%= @meal_plan.name %><% if meal_time_for(@meal_plan).present? %> · <%= meal_time_for(@meal_plan) %><% end %></span>
+    <span class="w-[22px] shrink-0"></span>
+  </div>
+
+  <!-- Hero -->
+  <div class="mt-3.5 grid h-44 place-items-center overflow-hidden rounded-[22px] text-7xl"
+       style="background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-peach-soft) 100%);">
+    <%= meal_glyph_for(@meal_plan) %>
+  </div>
+
+  <!-- Title -->
+  <div class="mt-3.5">
+    <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink"><%= @meal_plan.name %></h1>
+    <% if @meal_plan.eaten? %>
+      <p class="mt-1 text-sm font-semibold text-brand-mint-strong">Zjedzone</p>
+    <% end %>
+  </div>
+
+  <!-- Macros -->
+  <div class="mt-3.5 grid grid-cols-4 gap-2">
+    <% [[@meal_plan.kcal, 'kcal', :peach], [@meal_plan.protein, 'białko', :mint], [@meal_plan.fat, 'tłuszcz', :sky], [@meal_plan.carbs, 'węgle', :peach]].each do |value, label, tint| %>
+      <%= render Ui::CardComponent.new(tint: tint, padding: :sm, classes: "text-center") do %>
+        <div class="whitespace-nowrap text-base font-bold text-brand-ink"><%= value.present? ? value.round : '—' %></div>
+        <div class="text-[10px] text-brand-ink-soft"><%= label %></div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mt-4 flex gap-[18px] border-b border-brand-ink/10">
+    <% [["skladniki", "Składniki"], ["przepis", "Przepis"], ["substytuty", "Substytuty"]].each_with_index do |(val, label), i| %>
+      <button type="button" data-tabs-target="pill" data-tab-value="<%= val %>" data-action="tabs#select" aria-selected="<%= i.zero? %>"
+              class="-mb-px border-b-2 border-transparent pb-2 text-[13px] font-semibold text-brand-ink-soft aria-selected:border-brand-navy aria-selected:font-bold aria-selected:text-brand-ink">
+        <%= label %>
+      </button>
+    <% end %>
+  </div>
+
+  <!-- Składniki -->
+  <div data-tabs-target="panel" data-tab-value="skladniki" class="pt-1">
+    <% @meal_plan.products.each do |product| %>
+      <% measure = product.ingredient_measures.map { |m| "#{m.amount&.round(2)} #{m.unit}" }.join(' / ') %>
+      <div class="flex items-center gap-3 border-b border-dashed border-brand-ink/10 py-2.5 text-[13px]">
+        <div class="h-3.5 w-3.5 shrink-0 rounded border-[1.5px] border-brand-ink/20"></div>
+        <span class="flex-1 text-brand-ink"><%= product.name %></span>
+        <span class="text-brand-ink-soft"><%= measure %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Przepis -->
+  <div data-tabs-target="panel" data-tab-value="przepis" hidden class="pt-3">
+    <% if @meal_plan.instructions.present? %>
+      <div class="instruction-parts text-sm text-brand-ink">
+        <%= format_meal_instructions(@meal_plan.instructions) %>
+      </div>
+    <% else %>
+      <p class="text-sm text-brand-ink-soft">Brak przepisu dla tego posiłku.</p>
+    <% end %>
+  </div>
+
+  <!-- Substytuty -->
+  <div data-tabs-target="panel" data-tab-value="substytuty" hidden class="pt-2">
+    <ul class="list-none">
+      <% @meal_plan.products.each do |product| %>
+        <%= render "diet_set_plans/ingredient_row", meal_plan: @meal_plan, product: product %>
+      <% end %>
+    </ul>
+  </div>
+
+  <!-- Action bar -->
+  <div id="<%= dom_id(@meal_plan, :actions) %>" class="mt-6 flex gap-2">
+    <%= render "meal_plans/actions", meal_plan: @meal_plan %>
+  </div>
+</div>

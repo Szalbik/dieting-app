@@ -1,0 +1,11 @@
+<button type="button" data-tab-value="substytuty" data-action="tabs#select"
+        class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-brand-ink/20 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 H18 L15 5" /><path d="M20 16 H6 L9 19" /></svg>
+  Zamień
+</button>
+<%= button_to toggle_eaten_meal_plan_path(meal_plan), method: :patch,
+      form: { data: { turbo_stream: true }, class: "flex-[2]" },
+      class: "flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold #{meal_plan.eaten? ? 'bg-brand-mint-soft text-brand-mint-strong' : 'bg-brand-navy text-white'}" do %>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg>
+  <%= meal_plan.eaten? ? 'Zjedzone' : 'Zjadłem' %>
+<% end %>

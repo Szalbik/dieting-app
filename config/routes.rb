@@ -51,6 +51,12 @@ Rails.application.routes.draw do
                                                            as: 'remove_product_substitution'
   end
 
+  resources :meal_plans, only: :show do
+    member do
+      patch :toggle_eaten
+    end
+  end
+
   resource :shopping_cart, only: [:show]
   resources :shopping_cart_invitations, only: [:create] do
     member do

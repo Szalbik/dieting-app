@@ -22,7 +22,9 @@ class DietSetPlansController < ApplicationController
 
     recover_missing_measures_if_needed
     preload_plan_associations
-    load_substitution_suggestions
+    # Plan dnia no longer renders ingredient rows (moved to meal_plans#show),
+    # so the per-product substitution precompute is dead weight here.
+    @replacement_cycles = {}
 
     respond_to do |format|
       format.turbo_stream

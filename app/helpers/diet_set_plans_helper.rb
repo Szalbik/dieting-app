@@ -32,6 +32,8 @@ module DietSetPlansHelper
   # :done / :current / :upcoming based on the meal's time window — only
   # meaningful for today; other days render neutral (:upcoming).
   def meal_status_for(meal, date)
+    return :done if meal.try(:eaten?)
+
     time = meal_time_for(meal)
     return :upcoming unless date.to_s == Date.current.to_s && time.present?
 
