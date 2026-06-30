@@ -10,34 +10,34 @@
       <div class="hidden sm:block">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="min-w-full divide-y divide-brand-ink/10">
               <thead>
                 <tr>
-                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-0">Name</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Sets number</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Active</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Date</th>
-                  <th scope="col" class="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
+                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-brand-ink sm:pl-0">Name</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Sets number</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Active</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Date</th>
+                  <th scope="col" class="sticky top-0 z-10 border-b border-brand-ink/10 bg-white/80 backdrop-blur-sm py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
                     <span class="sr-only">Edit</span>
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-200">
+              <tbody class="divide-y divide-brand-ink/10">
                 <% @diets.each do |diet| %>
-                  <tr class="transition-colors duration-200 hover:bg-slate-50/50" id="diet_row_<%= diet.id %>">
-                    <td class="py-4 pl-4 pr-3 text-sm font-medium text-slate-900 whitespace-nowrap sm:pl-0">
+                  <tr class="transition-colors duration-200 hover:bg-brand-paper/50" id="diet_row_<%= diet.id %>">
+                    <td class="py-4 pl-4 pr-3 text-sm font-medium text-brand-ink whitespace-nowrap sm:pl-0">
                       <%= diet.name %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap">
                       <%= diet.diet_sets.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap" id="diet_toggle_<%= diet.id %>">
+                    <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap" id="diet_toggle_<%= diet.id %>">
                       <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-slate-500 whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap">
                       <%= diet.created_at.strftime("%B %d, %Y") %>
                     </td>
-                    <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-slate-200 whitespace-nowrap sm:pr-8 lg:pr-8">
+                    <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-brand-ink/10 whitespace-nowrap sm:pr-8 lg:pr-8">
                       <% if diet.pdf.attached? %>
                         <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                         |
