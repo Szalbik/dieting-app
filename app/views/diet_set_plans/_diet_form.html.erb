@@ -5,17 +5,69 @@
     .where(diets: { id: Current.user.active_diets.select(:id) })
     .left_joins(:diet_set_plans)
     .group('diet_sets.id')
-    .order(Arel.sql('COUNT(diet_set_plans.id) DESC')) %>
+    .order(Arel.sql('COUNT(diet_set_plans.id) DESC')).to_a %>
 
-<div class="mx-auto mt-6 mb-24 w-full max-w-md rounded-3xl border border-emerald-100/70 bg-white/90 p-6 shadow-soft">
+<%# Preload products so per-set name lists don't N+1 (grouped relation can't take includes). %>
+<% ActiveRecord::Associations::Preloader.new(records: diet_sets, associations: { meals: :products }).call %>
+
+<%# id => lowercased, de-duped product names, for client-side AND filtering. %>
+<% sets_products = diet_sets.to_h { |ds| [ds.id.to_s, ds.products.map { |p| p.name.to_s.downcase.strip }.reject(&:blank?).uniq] } %>
+
+<div class="mx-auto mt-6 mb-24 w-full max-w-md rounded-3xl border border-emerald-100/70 bg-white/90 p-6 shadow-soft"
+     x-data="{
+       sets: <%= sets_products.to_json %>,
+       chips: [],
+       query: '',
+       visible(id) { return this.chips.every(c => (this.sets[id] || []).some(p => p.includes(c))); },
+       get visibleCount() { return Object.keys(this.sets).filter(id => this.visible(id)).length; },
+       get suggestions() {
+         const out = new Set();
+         Object.keys(this.sets).forEach(id => { if (this.visible(id)) this.sets[id].forEach(p => out.add(p)); });
+         this.chips.forEach(c => out.delete(c));
+         return [...out].sort();
+       },
+       addChip() {
+         const v = this.query.trim().toLowerCase();
+         if (v && !this.chips.includes(v)) this.chips.push(v);
+         this.query = '';
+       },
+       removeChip(i) { this.chips.splice(i, 1); }
+     }">
   <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
     <%= hidden_field_tag :date, params[:date] %>
     <h3 class="mb-6 flex items-center justify-center gap-2 text-center text-xl font-bold text-brand-sage-dark">
       <span class="inline-block text-2xl">🥗</span> Przypisz zestaw
     </h3>
+
+    <!-- Product filter -->
+    <div class="mb-5">
+      <label for="diet_form_product_filter" class="mb-1.5 block text-sm font-medium text-slate-700">Filtruj po produkcie</label>
+      <input type="text" id="diet_form_product_filter" x-model="query" inputmode="text" autocomplete="off"
+             list="diet_form_product_list"
+             @keydown.enter.prevent="addChip()" @change="addChip()"
+             placeholder="np. mleko, kurczak…"
+             class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-800 placeholder:text-slate-400 focus:border-brand-sage focus:ring-2 focus:ring-brand-sage">
+      <datalist id="diet_form_product_list">
+        <template x-for="p in suggestions" :key="p"><option :value="p"></option></template>
+      </datalist>
+
+      <div class="mt-3 flex flex-wrap items-center gap-2" x-show="chips.length">
+        <template x-for="(chip, i) in chips" :key="chip">
+          <button type="button" @click="removeChip(i)" :aria-label="'Usuń filtr ' + chip"
+                  class="inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-emerald-100 py-2 pl-4 pr-3 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-200">
+            <span x-text="chip"></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </template>
+        <button type="button" @click="chips = []" class="ml-1 inline-flex min-h-[44px] items-center px-2 text-sm font-medium text-slate-500 underline">Wyczyść</button>
+      </div>
+
+      <p class="mt-3 text-xs text-slate-500" x-show="chips.length" aria-live="polite"><span x-text="visibleCount"></span> dni pasuje</p>
+    </div>
+
     <div class="space-y-3">
       <% diet_sets.each do |diet_set| %>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3" x-show="visible('<%= diet_set.id %>')">
           <%= radio_button_tag "diet_set_plan[diet_set_id]", diet_set.id, false, id: "diet_set_plan_diet_set_#{diet_set.id}", class: "peer hidden" %>
           <label for="diet_set_plan_diet_set_<%= diet_set.id %>"
             class="flex flex-1 cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all duration-200
@@ -30,7 +82,9 @@
           </label>
         </div>
       <% end %>
+      <p class="py-6 text-center text-sm text-slate-500" x-show="chips.length && visibleCount === 0" aria-live="polite">Brak dni z tymi produktami.</p>
     </div>
+
     <div class="mt-8 flex justify-center">
       <%= f.submit "Przypisz dietę", class: "inline-flex w-full items-center justify-center rounded-full bg-brand-sage-dark px-6 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-brand-accent sm:w-auto" %>
     </div>
