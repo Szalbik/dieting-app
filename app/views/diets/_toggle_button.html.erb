@@ -1,7 +1,9 @@
 <%= form_with url: toggle_active_diet_path(diet), method: :patch, local: false, class: "inline-block" do |f| %>
-  <button type="submit" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2 <%= diet.active? ? 'bg-brand-navy' : 'bg-brand-ink/20' %>" role="switch" aria-checked="<%= diet.active? %>">
+  <button type="submit" role="switch" aria-checked="<%= diet.active? %>"
+          class="grid h-6 w-6 place-items-center rounded-[7px] border-[1.5px] transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-1 <%= diet.active? ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white' %>">
     <span class="sr-only">Toggle active status</span>
-    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform <%= diet.active? ? 'translate-x-6' : 'translate-x-1' %>"></span>
+    <% if diet.active? %>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg>
+    <% end %>
   </button>
 <% end %>
-

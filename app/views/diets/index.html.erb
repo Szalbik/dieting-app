@@ -2,7 +2,7 @@
   <div class="flex flex-wrap items-end justify-between gap-4">
     <%= render Ui::SectionHeaderComponent.new(label: "Planer", title: "Twoje diety", subtitle: "Wybierz, którą dietę chcesz teraz stosować.") %>
     <span class="hidden sm:block">
-      <%= render Ui::ButtonComponent.new(href: new_diet_path) { "Dodaj dietę" } %>
+      <%= render(Ui::ButtonComponent.new(href: new_diet_path).with_content("Dodaj dietę")) %>
     </span>
   </div>
 
@@ -73,7 +73,7 @@
                  id="diet_card_mobile_<%= diet.id %>">
               <%= render Ui::CardComponent.new(tint: diet.active? ? :peach : nil, padding: :sm) do %>
                 <div class="flex items-start gap-3">
-                  <div class="foodtile <%= diet.active? ? 'foodtile-peach' : 'foodtile-cream' %> h-11 w-11 text-xl">🥗</div>
+                  <div class="foodtile foodtile-<%= diet_tile_tint_for(diet) %> h-11 w-11 text-xl"><%= diet_glyph_for(diet) %></div>
                   <div class="min-w-0 flex-1">
                     <h2 class="truncate font-semibold text-brand-ink"><%= diet.name %></h2>
                     <p class="text-xs text-brand-ink-soft"><%= diet.diet_sets.count %> zestawów · <%= diet.created_at.strftime("%d.%m.%Y") %></p>
