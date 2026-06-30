@@ -67,3 +67,7 @@ tasks.json
 .cursor/
 .taskmaster/
 .env.example
+.claude/
+context/
+idea-notes.md
+graphify-out/
