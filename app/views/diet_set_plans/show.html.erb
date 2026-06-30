@@ -3,7 +3,8 @@
 <% pl_days = %w[Niedziela Poniedziałek Wtorek Środa Czwartek Piątek Sobota] %>
 <% pl_months = %w[stycznia lutego marca kwietnia maja czerwca lipca sierpnia września października listopada grudnia] %>
 
-<div class="pb-4">
+<div class="relative isolate overflow-hidden pb-4">
+  <div class="watercolor absolute -top-12 -right-20 -z-10 h-52 w-80 rounded-full"></div>
   <% if Current.user.shopping_cart.shared? %>
     <div class="mb-4 rounded-2xl border border-brand-sky/60 bg-brand-sky-soft px-4 py-3 text-sm text-brand-sky-strong">
       Lista zakupow jest wspoldzielona z

@@ -27,6 +27,18 @@
   .dietcard-mint  { border-radius: 22px; background: color-mix(in srgb, var(--color-mint) 50%, var(--color-paper)); border: 1px solid color-mix(in srgb, var(--color-mint) 70%, var(--color-paper)); }
   .dietcard-navy  { border-radius: 22px; background: var(--color-navy); border: 1px solid var(--color-navy); color: #fff; }
 
+  /* Watercolor decoration — CSS approximation of the kit's painterly blobs
+     (no image asset). Sits behind hero zones, soft + multiply-blended. */
+  .watercolor {
+    pointer-events: none;
+    filter: blur(26px);
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background:
+      radial-gradient(45% 55% at 35% 40%, var(--color-peach) 0%, transparent 72%),
+      radial-gradient(50% 50% at 72% 62%, var(--color-sky) 0%, transparent 72%);
+  }
+
   /* FoodTile — emoji-in-tile with the kit's organic radius. */
   .foodtile { border: 1px solid rgba(42,40,35,0.08); border-radius: 13px 15px 12px 14px; display: grid; place-items: center; flex-shrink: 0; }
   .foodtile-peach { background: var(--color-peach); }
