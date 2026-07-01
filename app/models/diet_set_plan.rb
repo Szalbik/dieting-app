@@ -10,4 +10,13 @@ class DietSetPlan < ApplicationRecord
 
   delegate :name, to: :diet_set
   delegate :derived_name_from_meal, to: :diet_set
+
+  def nutrition_totals
+    {
+      kcal: meal_plans.sum { |mp| mp.kcal || 0 },
+      protein: meal_plans.sum { |mp| mp.protein || 0 },
+      fat: meal_plans.sum { |mp| mp.fat || 0 },
+      carbs: meal_plans.sum { |mp| mp.carbs || 0 },
+    }
+  end
 end

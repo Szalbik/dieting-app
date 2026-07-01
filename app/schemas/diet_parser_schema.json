@@ -21,7 +21,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": ["breakfast", "lunch", "dinner", "snack"],
+              "enum": ["breakfast", "second_breakfast", "lunch", "afternoon_snack", "dinner", "snack"],
               "description": "Type of meal"
             },
             "name": {

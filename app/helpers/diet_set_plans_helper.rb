@@ -9,6 +9,8 @@ module DietSetPlansHelper
       '11:00 - 12:00'
     when /obiad/
       '14:00 - 15:00'
+    when /podwieczorek/
+      '16:30 - 17:00'
     when /kolacja/
       '18:00 - 19:00'
     when /dodatkowy/
@@ -24,6 +26,7 @@ module DietSetPlansHelper
     when /śniadanie/ then '🥣'
     when /przekąska/, /drugie/ then '🍓'
     when /obiad/ then '🍝'
+    when /podwieczorek/ then '🍎'
     when /kolacja/ then '🥗'
     else '🍽️'
     end

@@ -1,0 +1,44 @@
+<%= form_with(model: recipe, local: true) do |form| %>
+  <% if recipe.errors.any? %>
+    <div class="mb-4 rounded-md bg-rose-50 p-4 text-sm text-rose-700">
+      <%= recipe.errors.full_messages.join(', ') %>
+    </div>
+  <% end %>
+
+  <div class="space-y-6">
+    <div>
+      <%= form.label :name, 'Nazwa', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+      <%= form.text_field :name, class: 'mt-2 block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+    </div>
+
+    <div>
+      <%= form.label :meal_type, 'Slot posiłku', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+      <%= form.select :meal_type, Meal::SLOTS.invert, { include_blank: 'Dowolny' }, class: 'mt-2 block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+    </div>
+
+    <div>
+      <%= form.label :ingredients_text, 'Składniki (jedna linia = jeden składnik, np. "Kurczak - 200 g")', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+      <%= form.text_area :ingredients_text, rows: 6, class: 'mt-2 block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+    </div>
+
+    <div>
+      <%= form.label :instructions, 'Sposób przygotowania', class: 'block text-sm font-medium leading-6 text-gray-900' %>
+      <%= form.text_area :instructions, rows: 4, class: 'mt-2 block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+    </div>
+
+    <div>
+      <p class="block text-sm font-medium leading-6 text-gray-900">Wartości odżywcze (opcjonalnie — jeśli puste, AI oszacuje ze składników)</p>
+      <div class="mt-2 grid grid-cols-4 gap-2">
+        <%= form.number_field :kcal, placeholder: 'kcal', class: 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm' %>
+        <%= form.number_field :protein, step: 0.1, placeholder: 'białko g', class: 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm' %>
+        <%= form.number_field :fat, step: 0.1, placeholder: 'tłuszcz g', class: 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm' %>
+        <%= form.number_field :carbs, step: 0.1, placeholder: 'węgle g', class: 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 flex items-center justify-end gap-x-4">
+    <%= link_to 'Anuluj', recipes_path, class: 'text-sm font-semibold text-gray-900' %>
+    <%= form.submit 'Zapisz', class: 'inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500' %>
+  </div>
+<% end %>

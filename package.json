@@ -17,12 +17,15 @@
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "tailwindcss --postcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css:app": "tailwindcss --postcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "build:css:admin": "sass ./app/assets/stylesheets/active_admin.scss ./app/assets/builds/active_admin.css --load-path=\"$(bundle show activeadmin)/app/assets/stylesheets\" --no-source-map --quiet-deps",
+    "build:css": "yarn build:css:app && yarn build:css:admin"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/typography": "^0.5.16"
+    "@tailwindcss/typography": "^0.5.16",
+    "sass": "^1.101.0"
   }
 }

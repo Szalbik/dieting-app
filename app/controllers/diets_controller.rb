@@ -30,12 +30,47 @@ class DietsController < ApplicationController
   end
 
   def create
-    @diet = Diet.new(diet_params.merge(user: Current.user))
+    @diet = Diet.new(diet_params.slice(:name, :active).merge(user: Current.user))
+
+    if diet_params[:pdf].present?
+      @diet.source = 'pdf'
+      @diet.pdf = diet_params[:pdf]
+      @diet.meals_per_day = diet_params[:meals_per_day]
+    elsif diet_params[:kcal_target].present?
+      slots = Array(params.dig(:diet, :slots)).reject(&:blank?)
+      slots = %w[breakfast lunch dinner] if slots.empty?
+
+      @diet.source = 'generated'
+      @diet.kcal_target = diet_params[:kcal_target]
+      @diet.meals_per_day = slots.size
+      @diet.generation_prefs = {
+        'days_count' => diet_params[:days_count].presence&.to_i || 1,
+        'slots' => slots,
+        'macro_split' => {
+          'protein_pct' => diet_params[:protein_pct],
+          'fat_pct' => diet_params[:fat_pct],
+          'carbs_pct' => diet_params[:carbs_pct],
+        }.compact_blank,
+        'preferences' => diet_params[:preferences],
+      }
+    else
+      @diet.source = 'manual'
+    end
 
     respond_to do |format|
       if @diet.save
-        DietBuilderJob.perform_later(@diet.id)
-        format.html { redirect_to diets_path, notice: 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.' }
+        case @diet.source
+        when 'pdf' then DietBuilderJob.perform_later(@diet.id)
+        when 'generated' then GenerateDietJob.perform_later(@diet.id)
+        end
+
+        notice = {
+          'pdf' => 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.',
+          'generated' => 'Dieta jest generowana przez AI. Za chwilę będzie gotowa.',
+          'manual' => 'Dieta została utworzona. Dodaj dni i posiłki ręcznie.',
+        }.fetch(@diet.source)
+
+        format.html { redirect_to diets_path, notice: notice }
         format.json { render :new, status: :created, location: diets_path }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -102,6 +137,9 @@ class DietsController < ApplicationController
   end
 
   def diet_params
-    params.require(:diet).permit(:pdf, :name, :active, :meals_per_day)
+    params.require(:diet).permit(
+      :pdf, :name, :active, :meals_per_day,
+      :kcal_target, :days_count, :protein_pct, :fat_pct, :carbs_pct, :preferences
+    )
   end
 end

@@ -49,14 +49,38 @@ RSpec.describe 'Diets', type: :request do
   end
 
   describe 'POST /diets' do
-    it 'enqueues DietBuilderJob and redirects on success' do
+    it 'creates a manual diet without enqueuing a job when no pdf or kcal_target is given' do
       login
       expect do
         post diets_path, params: { diet: { name: 'Fresh diet', meals_per_day: 5 } }
-      end.to have_enqueued_job(DietBuilderJob)
+      end.not_to have_enqueued_job(DietBuilderJob)
 
       expect(response).to redirect_to(diets_path)
-      expect(Diet.find_by(name: 'Fresh diet', user: user)).to be_present
+      diet = Diet.find_by(name: 'Fresh diet', user: user)
+      expect(diet).to be_present
+      expect(diet.source).to eq('manual')
+      expect(diet.active).to be true
+    end
+
+    it 'enqueues DietBuilderJob when a pdf is attached' do
+      login
+      pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
+      expect do
+        post diets_path, params: { diet: { name: 'PDF diet', meals_per_day: 5, pdf: pdf } }
+      end.to have_enqueued_job(DietBuilderJob)
+
+      expect(Diet.find_by(name: 'PDF diet', user: user).source).to eq('pdf')
+    end
+
+    it 'enqueues GenerateDietJob when a kcal_target is given' do
+      login
+      expect do
+        post diets_path, params: { diet: { name: 'AI diet', kcal_target: 1800 } }
+      end.to have_enqueued_job(GenerateDietJob)
+
+      diet = Diet.find_by(name: 'AI diet', user: user)
+      expect(diet.source).to eq('generated')
+      expect(diet.meals_per_day).to eq(3)
     end
   end
 

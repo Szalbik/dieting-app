@@ -60,7 +60,7 @@ class Chat::Diet::ParsingPipeline
             'properties' => {
               'type' => {
                 'type' => 'string',
-                'enum' => %w[breakfast lunch dinner snack],
+                'enum' => %w[breakfast second_breakfast lunch afternoon_snack dinner snack],
               },
               'name' => { 'type' => 'string', 'minLength' => 1 },
               'ingredients' => {

@@ -12,9 +12,13 @@ class Diet < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
   validates :meals_per_day, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 10 }, allow_nil: true
+  validates :source, inclusion: { in: %w[pdf generated manual] }
+  validates :kcal_target, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+
+  attribute :generation_prefs, :json, default: {}
 
   def classify_products!
     return unless products.any?

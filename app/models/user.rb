@@ -18,6 +18,7 @@ class User < ApplicationRecord
            inverse_of: :invitee
 
   has_many :diets, dependent: :nullify
+  has_many :recipes, dependent: :destroy
   has_many :canonical_products, dependent: :destroy
   has_many :product_substitutions, dependent: :destroy
   has_many :meal_plan_product_substitutions, dependent: :destroy

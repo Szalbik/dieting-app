@@ -1,0 +1,32 @@
+<div class="space-y-8 mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <%= render Ui::SectionHeaderComponent.new(label: "Biblioteka", title: "Twoje przepisy", subtitle: "Własne posiłki, które możesz dodawać do dowolnego dnia.") %>
+    <%= render(Ui::ButtonComponent.new(href: new_recipe_path).with_content("Dodaj przepis")) %>
+  </div>
+
+  <% if @recipes.empty? %>
+    <%= render Ui::CardComponent.new(padding: :md) do %>
+      <p class="text-brand-ink-soft">Nie masz jeszcze żadnych przepisów.</p>
+    <% end %>
+  <% else %>
+    <div class="grid gap-3 sm:grid-cols-2">
+      <% @recipes.each do |recipe| %>
+        <%= render Ui::CardComponent.new(padding: :sm) do %>
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <h3 class="truncate font-semibold text-brand-ink"><%= recipe.name %></h3>
+              <p class="text-xs text-brand-ink-soft"><%= Meal::SLOTS[recipe.meal_type] || 'Bez slotu' %></p>
+              <% if recipe.kcal.present? %>
+                <p class="mt-1 text-xs text-brand-ink"><b><%= recipe.kcal %></b> kcal · <%= recipe.protein&.round %>b · <%= recipe.fat&.round %>t · <%= recipe.carbs&.round %>w</p>
+              <% end %>
+            </div>
+            <div class="flex shrink-0 flex-col items-end gap-1 text-sm">
+              <%= link_to 'Edytuj', edit_recipe_path(recipe), class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
+              <%= button_to 'Usuń', recipe_path(recipe), method: :delete, data: { confirm: 'Usunąć przepis?' }, class: 'text-rose-600 hover:text-rose-700 font-medium' %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -8,6 +8,15 @@ class DietSet < ApplicationRecord
 
   validates :name, presence: true
 
+  def nutrition_totals
+    {
+      kcal: meals.sum { |m| m.kcal || 0 },
+      protein: meals.sum { |m| m.protein || 0 },
+      fat: meals.sum { |m| m.fat || 0 },
+      carbs: meals.sum { |m| m.carbs || 0 },
+    }
+  end
+
   def derived_name_from_meal
     # In-memory lookups (not .where) so a preloaded `meals` association costs 0 queries.
     obiad_meal = meals.detect { |m| %w[lunch dinner].include?(m.meal_type) }

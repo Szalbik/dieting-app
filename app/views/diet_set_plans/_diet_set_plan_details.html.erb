@@ -1,10 +1,11 @@
 <!-- Meal Plan Details -->
 <div class="mt-4">
   <% if @diet_set_plan.meal_plans.any? %>
-    <% daily_totals  = @diet_set_plan.meal_plans.sum { |mp| mp.kcal || 0 } %>
-    <% daily_protein = @diet_set_plan.meal_plans.sum { |mp| mp.protein || 0 } %>
-    <% daily_fat     = @diet_set_plan.meal_plans.sum { |mp| mp.fat || 0 } %>
-    <% daily_carbs   = @diet_set_plan.meal_plans.sum { |mp| mp.carbs || 0 } %>
+    <% totals = @diet_set_plan.nutrition_totals %>
+    <% daily_totals  = totals[:kcal] %>
+    <% daily_protein = totals[:protein] %>
+    <% daily_fat     = totals[:fat] %>
+    <% daily_carbs   = totals[:carbs] %>
     <% total_meals = @diet_set_plan.meal_plans.size %>
     <% done_meals  = @diet_set_plan.meal_plans.count { |mp| meal_status_for(mp, @date) == :done } %>
     <% progress_pct = total_meals.positive? ? (done_meals * 100 / total_meals) : 0 %>

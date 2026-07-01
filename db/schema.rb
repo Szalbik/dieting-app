@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_30_072112) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_01_191648) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -131,6 +131,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_30_072112) do
     t.boolean "active", default: true, null: false
     t.text "parsed_json"
     t.integer "meals_per_day"
+    t.string "source", default: "pdf", null: false
+    t.integer "kcal_target"
+    t.text "generation_prefs"
     t.index ["user_id"], name: "index_diets_on_user_id"
   end
 
@@ -255,6 +258,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_30_072112) do
     t.index ["diet_set_id"], name: "index_products_on_diet_set_id"
     t.index ["meal_id"], name: "index_products_on_meal_id"
     t.index ["unit_id"], name: "index_products_on_unit_id"
+  end
+
+  create_table "recipes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name"
+    t.string "meal_type"
+    t.text "instructions"
+    t.integer "kcal"
+    t.float "protein"
+    t.float "fat"
+    t.float "carbs"
+    t.text "ingredients"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|

@@ -34,6 +34,10 @@ Rails.application.routes.draw do
 
   resources :product_categories,       only: %i[index edit update show]
   resources :product_name_suggestions, only: %i[index update]
+  resources :recipes
+  resources :diet_sets, only: %i[show create destroy]
+  resources :meals, only: %i[create destroy]
+
   resources :diets, only: %i[edit update show new destroy] do
     member do
       patch :toggle_active
