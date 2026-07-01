@@ -6,6 +6,19 @@ class ShoppingCart < ApplicationRecord
   has_many :custom_cart_items, dependent: :destroy
   has_many :active_users, class_name: 'User', foreign_key: :active_shopping_cart_id, inverse_of: :active_shopping_cart
 
+  # Diets actually driving the current cart (via the selected diet_set_plans),
+  # not whatever Diet carries the `active:` flag.
+  def diets_in_cart
+    diet_ids = ShoppingCartItem
+      .with_current_or_future_diet_set_plan_for_users(member_users)
+      .where(shopping_cart: self)
+      .joins(meal_plan: :diet_set_plan)
+      .where(meal_plans: { selected_for_cart: true })
+      .distinct
+      .pluck('diet_set_plans.diet_id')
+    Diet.where(id: diet_ids)
+  end
+
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.
     # Use the new method that properly scopes to the current user

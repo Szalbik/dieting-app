@@ -4,7 +4,7 @@
     <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
     <% groups = diet_items_empty ? [] : shopping_cart.group_and_sum_by_cart_items %>
     <% tints = %i[sky mint peach] %>
-    <% active_diet = Current.user.diets.where(active: true).first %>
+    <% cart_diets = shopping_cart.diets_in_cart %>
 
     <% if shopping_cart.shared? %>
       <div class="mb-3.5 rounded-2xl border border-brand-sky/60 bg-brand-sky-soft px-4 py-3">
@@ -122,15 +122,15 @@
           </div>
         <% end %>
 
-        <%# Active-diet footer card %>
-        <% if active_diet %>
+        <%# Diets behind the current cart (from selected plans) %>
+        <% cart_diets.each do |cart_diet| %>
           <div class="flex items-center gap-2.5 dietcard-peach p-3.5 shadow-soft">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A874" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" /></svg>
             <div class="min-w-0 flex-1">
-              <div class="truncate text-[13px] font-bold text-brand-ink"><%= active_diet.name %></div>
-              <div class="text-[11px] text-brand-ink-soft"><%= active_diet.diet_sets.count %> zestawów · aktywna</div>
+              <div class="truncate text-[13px] font-bold text-brand-ink"><%= cart_diet.name %></div>
+              <div class="text-[11px] text-brand-ink-soft"><%= cart_diet.diet_sets.count %> zestawów</div>
             </div>
-            <span class="shrink-0 rounded-full bg-brand-mint-soft px-2 py-0.5 text-[11px] font-semibold text-brand-mint-strong">Aktywna</span>
+            <span class="shrink-0 rounded-full bg-brand-mint-soft px-2 py-0.5 text-[11px] font-semibold text-brand-mint-strong">W koszyku</span>
           </div>
         <% end %>
       </div>
