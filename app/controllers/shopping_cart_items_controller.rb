@@ -83,6 +83,8 @@ class ShoppingCartItemsController < ApplicationController
         item_ids = removal_record['item_ids'] || removal_record[:item_ids]
         RemoveShoppingCartItemsJob.cancel_scheduled_jobs(item_ids, Current.user.id)
         ShoppingCartItem.only_deleted.where(id: item_ids).each(&:restore)
+        # restore skips after_commit, so broadcast to the shared cart explicitly.
+        Current.user.shopping_cart.broadcast_contents
         @restored = true
       end
     end
