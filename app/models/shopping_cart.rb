@@ -19,6 +19,19 @@ class ShoppingCart < ApplicationRecord
     Diet.where(id: diet_ids)
   end
 
+  # How many day-plans of `diet` are actually feeding the current cart,
+  # as opposed to Diet#diet_sets.count (every day-template the diet defines,
+  # whether or not it's scheduled).
+  def diet_set_plans_count_in_cart(diet)
+    ShoppingCartItem
+      .with_current_or_future_diet_set_plan_for_users(member_users)
+      .where(shopping_cart: self)
+      .joins(meal_plan: :diet_set_plan)
+      .where(meal_plans: { selected_for_cart: true }, diet_set_plans: { diet_id: diet.id })
+      .distinct
+      .count('diet_set_plans.id')
+  end
+
   def group_and_sum_by_cart_items
     # Eager-load associated product, its ingredient_measures, and category.
     # Use the new method that properly scopes to the current user

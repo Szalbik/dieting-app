@@ -33,7 +33,7 @@
        },
        removeChip(i) { this.chips.splice(i, 1); }
      }">
-  <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "diet_set_plan_details" } do |f| %>
+  <%= form_with model: @diet_set_plan, url: diet_set_plans_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
     <%= hidden_field_tag :date, params[:date] %>
     <h3 class="mb-6 flex items-center justify-center gap-2 text-center text-xl font-bold text-brand-sage-dark">
       <span class="inline-block text-2xl">🥗</span> Przypisz zestaw

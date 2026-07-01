@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import DateStripController from "./date_strip_controller"
+application.register("date-strip", DateStripController)
+
 import DietSwapController from "./diet_swap_controller"
 application.register("diet-swap", DietSwapController)
 
@@ -16,11 +19,14 @@ application.register("filter", FilterController)
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
-import ToastController from "./toast_controller"
-application.register("toast", ToastController)
+import StickyNavbarController from "./sticky_navbar_controller"
+application.register("sticky-navbar", StickyNavbarController)
 
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
+
+import ToastController from "./toast_controller"
+application.register("toast", ToastController)
 
 import ToggleMealController from "./toggle_meal_controller"
 application.register("toggle-meal", ToggleMealController)

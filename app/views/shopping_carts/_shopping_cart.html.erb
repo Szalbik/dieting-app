@@ -128,7 +128,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A874" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" /></svg>
             <div class="min-w-0 flex-1">
               <div class="truncate text-[13px] font-bold text-brand-ink"><%= cart_diet.name %></div>
-              <div class="text-[11px] text-brand-ink-soft"><%= cart_diet.diet_sets.count %> zestawów</div>
+              <div class="text-[11px] text-brand-ink-soft"><%= shopping_cart.diet_set_plans_count_in_cart(cart_diet) %> dni w koszyku</div>
             </div>
             <span class="shrink-0 rounded-full bg-brand-mint-soft px-2 py-0.5 text-[11px] font-semibold text-brand-mint-strong">W koszyku</span>
           </div>

@@ -12,22 +12,24 @@
     </div>
   <% end %>
 
-  <!-- Header -->
-  <div class="min-w-0">
-    <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink">Twój plan dnia</h1>
-    <p class="mt-1 text-sm text-brand-ink-soft"><%= pl_days[display_date.wday] %>, <%= display_date.day %> <%= pl_months[display_date.month - 1] %></p>
-  </div>
+  <%= turbo_frame_tag "day_view" do %>
+    <!-- Header -->
+    <div class="min-w-0">
+      <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink">Twój plan dnia</h1>
+      <p class="mt-1 text-sm text-brand-ink-soft"><%= pl_days[display_date.wday] %>, <%= display_date.day %> <%= pl_months[display_date.month - 1] %></p>
+    </div>
 
-  <!-- Day strip -->
-  <div id="date_picker" class="mt-4">
-    <%= render "date_picker" %>
-  </div>
+    <!-- Day strip -->
+    <div id="date_picker" class="mt-4">
+      <%= render "date_picker" %>
+    </div>
 
-  <div id="diet_set_plan_details">
-    <% if @diet_set_plan.meals.empty? %>
-      <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
-    <% else %>
-      <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
-    <% end %>
-  </div>
+    <div id="diet_set_plan_details">
+      <% if @diet_set_plan.meals.empty? %>
+        <%= render 'diet_form', locals: { diet_set_plan: @diet_set_plan } %>
+      <% else %>
+        <%= render 'diet_set_plan_details', locals: { diet_set_plan: @diet_set_plan } %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

@@ -1,13 +1,15 @@
 <% weekday_abbrw = %w[Nd Pn Wt Śr Cz Pt So] %>
 
-<div class="flex gap-1.5">
-  <% ((Date.current - 1.day)..(Date.current + 5.days)).each do |d| %>
-    <% is_selected = (d.to_s == @date.to_s) %>
-    <%= link_to diet_set_plans_path(date: d.to_s),
-        aria_current: (is_selected ? 'date' : nil),
-        class: "flex-1 select-none rounded-[14px] border py-2 text-center transition-colors #{is_selected ? 'border-brand-navy bg-brand-navy text-white' : 'border-brand-ink/10 bg-white text-brand-ink hover:border-brand-peach hover:bg-brand-peach-soft'}" do %>
-      <div class="text-[10px] font-semibold <%= is_selected ? 'opacity-80' : 'opacity-60' %>"><%= weekday_abbrw[d.wday] %></div>
-      <div class="mt-0.5 text-[15px] font-bold leading-none"><%= d.day %></div>
+<div data-controller="date-strip" class="snap-x snap-mandatory overflow-x-auto scroll-smooth pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+  <div data-date-strip-target="track" class="flex flex-nowrap gap-1.5">
+    <% ((Date.current - 1.month)..(Date.current + 1.month)).each do |d| %>
+      <% is_selected = (d.to_s == @date.to_s) %>
+      <%= link_to diet_set_plans_path(date: d.to_s),
+          aria: { current: is_selected ? 'date' : nil },
+          class: "w-14 shrink-0 select-none snap-center rounded-[14px] border py-2 text-center transition-colors #{is_selected ? 'border-brand-navy bg-brand-navy text-white' : 'border-brand-ink/10 bg-white text-brand-ink hover:border-brand-peach hover:bg-brand-peach-soft'}" do %>
+        <div class="text-[10px] font-semibold <%= is_selected ? 'opacity-80' : 'opacity-60' %>"><%= weekday_abbrw[d.wday] %></div>
+        <div class="mt-0.5 text-[15px] font-bold leading-none"><%= d.day %></div>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 </div>
