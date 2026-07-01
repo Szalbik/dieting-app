@@ -55,8 +55,9 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get install --no-install-recommends -y curl libvips postgresql-client python3 python3-pip && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
+    pip3 install --no-cache-dir --break-system-packages pymupdf4llm
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle

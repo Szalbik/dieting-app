@@ -63,7 +63,7 @@ User
 ### PDF → structured diet pipeline
 
 1. User uploads a PDF to a `Diet` via Active Storage.
-2. `Diet#parse_pdf_content_with_chat!` calls `Chat::DietParserService` (OpenAI `gpt-4.1` with a structured JSON schema response). OCR fallback: if `PdfTextExtractor` detects image-based pages (`source: :ocr`), page images are base64-encoded and sent alongside the text.
+2. `Diet#parse_pdf_content_with_chat!` calls `Chat::DietParserService` → `Chat::Diet::ParsingPipeline`. `Chat::Diet::MarkdownExtractor` converts the PDF to per-page Markdown (`bin/pdf_to_markdown.py`, PyMuPDF4LLM — requires `pip install pymupdf4llm`; preserves meal/ingredient tables that flat-text extraction loses), falling back to `PdfTextExtractor` (text → OCR tiers) for scanned PDFs. `Chat::Diet::DaySegmenter` splits the markdown into one chunk per diet day; one structured-JSON OpenAI call (`config.x.openai.diet_parsing_model`, default `gpt-5.1`) parses each full day. OCR fallback: if extraction falls back to `source: :ocr`, that day's page images are base64-encoded and sent alongside the text.
 3. The returned JSON is validated by `DietJsonValidator` against `app/schemas/diet_parser_schema.json` and consolidated by `Chat::DietMealConsolidator`.
 4. `PopulateDietFromJsonJob` (background) creates the `DietSet → Meal → Product` tree from the validated JSON.
 5. `ClassifyProductsJob` runs the local Naive Bayes classifier (`Classifier::Category`) on each product.

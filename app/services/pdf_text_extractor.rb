@@ -19,6 +19,16 @@ class PdfTextExtractor
     end
   end
 
+  # Shared "is this text usable, or do we need a stronger extraction tier" heuristic.
+  # Reused by MarkdownExtractor so it can fall back to this class's OCR pipeline.
+  def self.sufficient_text?(text, page_count)
+    return false if text.blank?
+    return true if page_count <= 0
+
+    normalized = text.gsub(/\s+/, ' ').strip
+    normalized.length >= (page_count * MIN_TEXT_CHARS_PER_PAGE)
+  end
+
   def initialize(file_path)
     @file_path = file_path
   end
@@ -88,11 +98,7 @@ class PdfTextExtractor
   end
 
   def sufficient_text?(text, page_count)
-    return false if text.blank?
-    return true if page_count <= 0
-
-    normalized = text.gsub(/\s+/, ' ').strip
-    normalized.length >= (page_count * MIN_TEXT_CHARS_PER_PAGE)
+    self.class.sufficient_text?(text, page_count)
   end
 
   def extract_text_with_ocr

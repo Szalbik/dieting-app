@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Chat::Diet::ParsingPipeline do
-  subject(:pipeline) { described_class.new('/tmp/example.pdf', expected_meals_per_day: 4) }
+  subject(:pipeline) { described_class.new('/tmp/example.pdf', expected_meals_per_day: 2) }
 
   let(:page_1) do
     PdfTextExtractor::Page.new(
       page_number: 1,
       text: <<~TEXT
-        Zestaw 1
+        ## Zestaw 1
 
-        1) Śniadanie
+        ## 1) Śniadanie
         Kanapki
         -chleb razowy -2kromki (70g)
       TEXT
@@ -21,13 +21,11 @@ RSpec.describe Chat::Diet::ParsingPipeline do
     PdfTextExtractor::Page.new(
       page_number: 2,
       text: <<~TEXT
-        2) Obiad
+        ## Zestaw 2
+
+        ## 1) Obiad
         Sałatka z kurczakiem
         -mięso z piersi kurczaka (150g)
-        Dressing:
-        -oliwa z oliwek -1łyżka (10ml)
-        Sposób wykonania:
-        1. Wymieszaj.
       TEXT
     )
   end
@@ -44,22 +42,41 @@ RSpec.describe Chat::Diet::ParsingPipeline do
   let(:image_set) { instance_double(Chat::Diet::PageImageSet, image_parts_for: [{ type: 'image_url', image_url: { url: 'data:image/png;base64,abc', detail: 'high' } }], cleanup: true) }
 
   before do
-    allow(PdfTextExtractor).to receive(:new).and_return(instance_double(PdfTextExtractor, extract: extraction))
+    allow(Chat::Diet::MarkdownExtractor).to receive(:new).and_return(instance_double(Chat::Diet::MarkdownExtractor,
+                                                                                     extract: extraction))
     allow(Chat::Diet::PageImageSet).to receive(:new).and_return(image_set)
     allow(pipeline).to receive(:openai_client).and_return(client)
     allow(DietJsonValidator).to receive(:validate!)
     allow(Chat::DietMealConsolidator).to receive(:new).and_call_original
   end
 
-  it 'assembles final parsed_json from staged OpenAI responses and validates at the end' do
+  it 'makes one OpenAI call per day and assembles the final parsed_json' do
     calls = []
     responses = [
-      { type: 'breakfast', name: 'Kanapki' },
-      { ingredients: [{ product: 'chleb razowy', quantity: '2 kromki' }] },
-      { instructions: '', nutrition: { kcal: 200, protein: 8, fat: 4, carbs: 30 } },
-      { type: 'dinner', name: 'Sałatka z kurczakiem' },
-      { ingredients: [{ product: 'mięso z piersi kurczaka', quantity: '150g' }, { product: 'oliwa z oliwek', quantity: '1 łyżka' }] },
-      { instructions: "1. Wymieszaj.", nutrition: { kcal: 450, protein: 32, fat: 20, carbs: 18 } },
+      {
+        day: 1,
+        meals: [
+          {
+            type: 'breakfast',
+            name: 'Kanapki',
+            ingredients: [{ product: 'chleb razowy', quantity: '2 kromki' }],
+            instructions: '',
+            nutrition: { kcal: 200, protein: 8, fat: 4, carbs: 30 }
+          }
+        ]
+      },
+      {
+        day: 1, # deliberately wrong - pipeline must override with chunk.day
+        meals: [
+          {
+            type: 'dinner',
+            name: 'Sałatka z kurczakiem',
+            ingredients: [{ product: 'mięso z piersi kurczaka', quantity: '150g' }],
+            instructions: '',
+            nutrition: { kcal: 450, protein: 32, fat: 20, carbs: 18 }
+          }
+        ]
+      }
     ]
 
     allow(client).to receive(:chat) do |parameters:|
@@ -70,56 +87,52 @@ RSpec.describe Chat::Diet::ParsingPipeline do
     result = pipeline.call
 
     expect(result).to eq([
-      {
-        'day' => 1,
-        'meals' => [
-          {
-            'type' => 'breakfast',
-            'name' => 'Kanapki',
-            'ingredients' => [{ 'product' => 'chleb razowy', 'quantity' => '2 kromki' }],
-            'instructions' => '',
-            'nutrition' => { 'kcal' => 200, 'protein' => 8, 'fat' => 4, 'carbs' => 30 },
-          },
-          {
-            'type' => 'dinner',
-            'name' => 'Sałatka z kurczakiem',
-            'ingredients' => [
-              { 'product' => 'mięso z piersi kurczaka', 'quantity' => '150g' },
-              { 'product' => 'oliwa z oliwek', 'quantity' => '1 łyżka' },
-            ],
-            'instructions' => "1. Wymieszaj.",
-            'nutrition' => { 'kcal' => 450, 'protein' => 32, 'fat' => 20, 'carbs' => 18 },
-          },
-        ],
-      },
-    ])
+                           {
+                             'day' => 1,
+                             'meals' => [
+                               {
+                                 'type' => 'breakfast',
+                                 'name' => 'Kanapki',
+                                 'ingredients' => [{ 'product' => 'chleb razowy', 'quantity' => '2 kromki' }],
+                                 'instructions' => '',
+                                 'nutrition' => { 'kcal' => 200, 'protein' => 8, 'fat' => 4, 'carbs' => 30 }
+                               }
+                             ]
+                           },
+                           {
+                             'day' => 2,
+                             'meals' => [
+                               {
+                                 'type' => 'dinner',
+                                 'name' => 'Sałatka z kurczakiem',
+                                 'ingredients' => [{ 'product' => 'mięso z piersi kurczaka', 'quantity' => '150g' }],
+                                 'instructions' => '',
+                                 'nutrition' => { 'kcal' => 450, 'protein' => 32, 'fat' => 20, 'carbs' => 18 }
+                               }
+                             ]
+                           }
+                         ])
 
-    expect(Chat::DietMealConsolidator).to have_received(:new).with(result, expected_meals_per_day: 4)
+    expect(calls.size).to eq(2)
+    expect(Chat::DietMealConsolidator).to have_received(:new).with(result, expected_meals_per_day: 2)
     expect(DietJsonValidator).to have_received(:validate!).with(result)
-    expect(calls).to all(include(:messages))
     expect(calls.map { |call| call[:model] }).to eq([
-      Rails.application.config.x.openai.diet_parsing_models.metadata,
-      Rails.application.config.x.openai.diet_parsing_models.ingredients,
-      Rails.application.config.x.openai.diet_parsing_models.instructions_nutrition,
-      Rails.application.config.x.openai.diet_parsing_models.metadata,
-      Rails.application.config.x.openai.diet_parsing_models.ingredients,
-      Rails.application.config.x.openai.diet_parsing_models.instructions_nutrition,
-    ])
+                                                      Rails.application.config.x.openai.diet_parsing_model,
+                                                      Rails.application.config.x.openai.diet_parsing_model
+                                                    ])
   end
 
-  it 'sends only segment-specific page images in OCR mode' do
-    captured_messages = []
+  it 'attaches only that day\'s page images, and only in OCR mode' do
     responses = [
-      { type: 'breakfast', name: 'Kanapki' },
-      { ingredients: [{ product: 'chleb razowy', quantity: '2 kromki' }] },
-      { instructions: '', nutrition: { kcal: 200, protein: 8, fat: 4, carbs: 30 } },
-      { type: 'dinner', name: 'Sałatka z kurczakiem' },
-      { ingredients: [{ product: 'mięso z piersi kurczaka', quantity: '150g' }] },
-      { instructions: '1. Wymieszaj.', nutrition: { kcal: 450, protein: 32, fat: 20, carbs: 18 } },
+      { day: 1,
+        meals: [{ type: 'breakfast', name: 'Kanapki', ingredients: [], instructions: '',
+                  nutrition: { kcal: 1, protein: 1, fat: 1, carbs: 1 } }] },
+      { day: 2,
+        meals: [{ type: 'dinner', name: 'Sałatka', ingredients: [], instructions: '',
+                  nutrition: { kcal: 1, protein: 1, fat: 1, carbs: 1 } }] }
     ]
 
-    allow(client).to receive(:chat) do |parameters:|
-      captured_messages << parameters[:messages].last[:content]
+    allow(client).to receive(:chat) do |**|
       { 'choices' => [{ 'message' => { 'content' => responses.shift.to_json } }] }
     end
 
@@ -127,7 +140,31 @@ RSpec.describe Chat::Diet::ParsingPipeline do
 
     expect(image_set).to have_received(:image_parts_for).with([1]).at_least(:once)
     expect(image_set).to have_received(:image_parts_for).with([2]).at_least(:once)
-    expect(captured_messages.first).to be_an(Array)
-    expect(captured_messages.first.first[:text]).to include('attached page images')
+  end
+
+  context 'when extraction did not require OCR' do
+    let(:source) { :markdown }
+
+    it 'sends plain text without page images' do
+      responses = [
+        { day: 1,
+          meals: [{ type: 'breakfast', name: 'Kanapki', ingredients: [], instructions: '',
+                    nutrition: { kcal: 1, protein: 1, fat: 1, carbs: 1 } }] },
+        { day: 2,
+          meals: [{ type: 'dinner', name: 'Sałatka', ingredients: [], instructions: '',
+                    nutrition: { kcal: 1, protein: 1, fat: 1, carbs: 1 } }] }
+      ]
+      captured_messages = []
+
+      allow(client).to receive(:chat) do |parameters:|
+        captured_messages << parameters[:messages].last[:content]
+        { 'choices' => [{ 'message' => { 'content' => responses.shift.to_json } }] }
+      end
+
+      pipeline.call
+
+      expect(image_set).not_to have_received(:image_parts_for)
+      expect(captured_messages).to all(be_a(String))
+    end
   end
 end

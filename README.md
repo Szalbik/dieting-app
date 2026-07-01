@@ -1,24 +1,37 @@
-# README
+# DietingApp
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Ruby version
 
-Things you may want to cover:
+See `.ruby-version` / `Gemfile`.
 
-* Ruby version
+## System dependencies
 
-* System dependencies
+* `poppler-utils` (`pdftotext`, `pdftoppm`) and `tesseract-ocr` (with `pol` + `eng` language data) — PDF text extraction and OCR fallback.
+* Python 3 + `pymupdf4llm` — PDF → Markdown conversion for diet parsing (`bin/pdf_to_markdown.py`). Install with:
 
-* Configuration
+  ```bash
+  pip3 install pymupdf4llm
+  ```
 
-* Database creation
+## Setup
 
-* Database initialization
+```bash
+bin/setup
+bin/dev          # starts Puma + esbuild + Tailwind watchers
+```
 
-* How to run the test suite
+## Tests
 
-* Services (job queues, cache servers, search engines, etc.)
+```bash
+bundle exec rspec
+```
 
-* Deployment instructions
+## Linting
 
-* ...
+```bash
+bundle exec rubocop
+```
+
+## Deployment
+
+Kamal (`config/deploy.yml`); see `Dockerfile` for the production image (installs the system dependencies above).
