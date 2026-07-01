@@ -83,6 +83,8 @@
   }
 }
 
+[x-cloak] { display: none !important; }
+
 /* iPhone Safari fixed positioning fix */
 @supports (-webkit-touch-callout: none) {
   /* Safari-specific styles for fixed elements */

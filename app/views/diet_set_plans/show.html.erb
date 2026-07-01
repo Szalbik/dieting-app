@@ -13,14 +13,9 @@
   <% end %>
 
   <!-- Header -->
-  <div class="flex items-start justify-between gap-3">
-    <div class="min-w-0 flex-1">
-      <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink">Twój plan dnia</h1>
-      <p class="mt-1 text-sm text-brand-ink-soft"><%= pl_days[display_date.wday] %>, <%= display_date.day %> <%= pl_months[display_date.month - 1] %></p>
-    </div>
-    <%= link_to profile_path, class: "grid h-10 w-10 shrink-0 place-items-center rounded-full border border-brand-ink/10 bg-white" do %>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-brand-ink"><circle cx="12" cy="8" r="3.5" /><path d="M5 21 C 5 16 8 14 12 14 C 16 14 19 16 19 21" /></svg>
-    <% end %>
+  <div class="min-w-0">
+    <h1 class="font-serif text-[26px] font-extrabold leading-tight tracking-tight text-brand-ink">Twój plan dnia</h1>
+    <p class="mt-1 text-sm text-brand-ink-soft"><%= pl_days[display_date.wday] %>, <%= display_date.day %> <%= pl_months[display_date.month - 1] %></p>
   </div>
 
   <!-- Day strip -->
