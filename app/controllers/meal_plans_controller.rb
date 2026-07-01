@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class MealPlansController < ApplicationController
+  include PlanSubstitutionSuggestions
+
   before_action :set_meal_plan
 
-  def show; end
+  def show
+    load_substitution_suggestions(meal_plans: [@meal_plan])
+  end
 
   def toggle_eaten
     @meal_plan.update(eaten: !@meal_plan.eaten)

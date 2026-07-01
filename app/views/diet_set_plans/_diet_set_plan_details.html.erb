@@ -111,7 +111,7 @@
         <div class="space-y-2">
           <% ((Date.current - 1.day)..(Date.current + 5.days)).each do |d| %>
             <% next if d.to_s == @date.to_s %>
-            <% other_plan = Current.user.diet_set_plans.where(date: d).order(created_at: :desc).first %>
+            <% other_plan = @swap_day_plans&.dig(d) %>
             <div class="flex items-center justify-between rounded-xl border border-brand-ink/10 bg-brand-paper px-3 py-2.5">
               <div class="min-w-0 flex-1">
                 <span class="text-sm font-semibold capitalize text-brand-ink"><%= weekday_names[d.wday] %> <%= d.strftime('%d.%m') %></span>

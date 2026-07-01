@@ -9,10 +9,9 @@ class DietSet < ApplicationRecord
   validates :name, presence: true
 
   def derived_name_from_meal
-    # Try to find obiad meal by meal_type first (more reliable)
-    obiad_meal = meals.where(meal_type: ['lunch', 'dinner']).first
-    # Fallback to name search if meal_type not available
-    obiad_meal ||= meals.where('name LIKE ?', '%Obiad%').first
+    # In-memory lookups (not .where) so a preloaded `meals` association costs 0 queries.
+    obiad_meal = meals.detect { |m| %w[lunch dinner].include?(m.meal_type) }
+    obiad_meal ||= meals.detect { |m| m.name.to_s.downcase.include?('obiad') }
 
     return name unless obiad_meal
 
