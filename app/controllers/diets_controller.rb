@@ -40,17 +40,16 @@ class DietsController < ApplicationController
       slots = Array(params.dig(:diet, :slots)).reject(&:blank?)
       slots = %w[breakfast lunch dinner] if slots.empty?
 
+      goal = Diet::GOAL_MACROS.key?(diet_params[:goal]) ? diet_params[:goal] : 'zwykla'
+
       @diet.source = 'generated'
       @diet.kcal_target = diet_params[:kcal_target]
       @diet.meals_per_day = slots.size
       @diet.generation_prefs = {
         'days_count' => diet_params[:days_count].presence&.to_i || 1,
         'slots' => slots,
-        'macro_split' => {
-          'protein_pct' => diet_params[:protein_pct],
-          'fat_pct' => diet_params[:fat_pct],
-          'carbs_pct' => diet_params[:carbs_pct],
-        }.compact_blank,
+        'goal' => goal,
+        'macro_split' => Diet::GOAL_MACROS.fetch(goal).slice('protein_pct', 'fat_pct', 'carbs_pct'),
         'preferences' => diet_params[:preferences],
       }
     else
@@ -139,7 +138,7 @@ class DietsController < ApplicationController
   def diet_params
     params.require(:diet).permit(
       :pdf, :name, :active, :meals_per_day,
-      :kcal_target, :days_count, :protein_pct, :fat_pct, :carbs_pct, :preferences
+      :kcal_target, :days_count, :goal, :preferences
     )
   end
 end

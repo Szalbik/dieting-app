@@ -15,6 +15,27 @@ class Diet < ApplicationRecord
   validates :source, inclusion: { in: %w[pdf generated manual] }
   validates :kcal_target, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
+  # ponytail: starter macro ratios per goal, not personalized (age/weight/activity) —
+  # tune from real generated plans once we have usage data.
+  GOAL_MACROS = {
+    'zwykla' => {
+      'protein_pct' => 25, 'fat_pct' => 30, 'carbs_pct' => 45,
+                  'label' => 'Zwykła / zbilansowana', 'hint' => 'Standardowe proporcje, bez konkretnego celu sylwetkowego.'
+    },
+    'masa' => {
+      'protein_pct' => 35, 'fat_pct' => 25, 'carbs_pct' => 40,
+                'label' => 'Na siłownię (budowanie mięśni)', 'hint' => 'Więcej białka i węglowodanów, wsparcie treningu i regeneracji.'
+    },
+    'redukcja' => {
+      'protein_pct' => 40, 'fat_pct' => 30, 'carbs_pct' => 30,
+                    'label' => 'Odchudzanie / redukcja', 'hint' => 'Więcej białka, mniej węglowodanów — sprzyja utracie tkanki tłuszczowej.'
+    },
+    'utrzymanie' => {
+      'protein_pct' => 25, 'fat_pct' => 30, 'carbs_pct' => 45,
+                       'label' => 'Utrzymaniowa', 'hint' => 'Stabilizacja obecnej wagi.'
+    },
+  }.freeze
+
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
@@ -38,45 +59,10 @@ class Diet < ApplicationRecord
         state: prediction[:state]
       )
     end
-  end
 
-  # def categorize_products!
-  #   return unless products.any?
-
-  #   batch_size = 15
-  #   offset = 0
-
-  #   loop do
-  #     products_batch = products.includes(:product_category).offset(offset).limit(batch_size)
-  #     break if products_batch.empty?
-
-  #     products_without_categories = products_batch.where(product_categories: { id: nil })
-  #     # Use products_with_categories as needed (e.g., display, process, etc.)
-
-  #     if products_without_categories.any?
-  #       Chat::CategorizeProducts.call(products: products_without_categories, diet: self)
-  #     else
-  #       break
-  #     end
-
-  #     offset += batch_size
-  #   end
-  # end
-
-  def parse_pdf_content!
-    return unless pdf.attached?
-
-    builder = DietBuilder.new(self)
-
-    pdf.open do |file|
-      PDF::Reader.open(file) do |reader|
-        reader.pages.each do |page|
-          builder.process_page(page)
-        end
-      end
-    end
-
-    builder.save_ingredients
+    # Last-resort AI fallback for whatever the local classifier couldn't place —
+    # one batched call for the whole diet, not per-product.
+    Chat::ProductCategorizerService.new(products: products.uncategorized).call
   end
 
   attribute :parsed_json, :json, default: {}

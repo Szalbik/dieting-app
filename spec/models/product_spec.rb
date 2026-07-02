@@ -22,6 +22,5 @@ RSpec.describe Product, type: :model do
 
     expect(category).to be_present
     expect(product.reload.category&.name).to eq('Mięso i Ryby')
-    expect(enqueued_jobs.none? { |job| job[:job] == CategorizeProductJob }).to be(true)
   end
 end

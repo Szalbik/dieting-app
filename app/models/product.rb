@@ -160,8 +160,9 @@ class Product < ApplicationRecord
       return
     end
 
-    # Trigger the categorization job
-    CategorizeProductJob.perform_later(id)
+    # No local match — leave uncategorized. Picked up as a last-resort AI fallback
+    # by the batched CategorizeProductsJob sweep (Chat::ProductCategorizerService)
+    # or the next ClassifyProductsJob run on the owning diet.
   end
 
   # Get a reasonable category name, with fallback to "Inne"

@@ -20,7 +20,6 @@
 <div class="mx-auto flex w-full max-w-7xl items-start gap-x-8 px-4 pb-10 sm:px-6 lg:px-8">
   <aside class="sticky mt-6 top-8 hidden w-44 shrink-0 lg:block">
     <!-- Left column area -->
-    <%#= form_with model: @diet, url: diet_search_path(@diet), method: :get, data: { turbo_frame: 'dupa' }, class: "space-y-12 sm:space-y-16" do |f| %>
     <%= form_tag diet_path(@diet), method: :get, class: "space-y-12 sm:space-y-16" do %>
       <fieldset>
         <legend class="text-base font-semibold leading-6 text-gray-900">Zestawy:</legend>
@@ -48,23 +47,19 @@
     <div class="mt-2 flow-root">  
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">  
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">  
-          <div class="relative">  
-
-            <%#= turbo_frame_tag 'dupa' do %>
-              <table class="min-w-full table-fixed divide-y divide-gray-300">  
-                <thead>  
-                <tr>  
-                  <th scope="col" class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">Name</th>  
-                  <th scope="col" colspan="3" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Measurements</th>  
-                </tr>  
-                </thead>  
-                <tbody class="divide-y divide-gray-200 bg-white">  
-                  <%= render 'products/products', products: @products %>
-                </tbody>  
-              </table>  
-            <%# end %>
-          
-          </div>  
+          <div class="relative">
+            <table class="min-w-full table-fixed divide-y divide-gray-300">
+              <thead>
+              <tr>
+                <th scope="col" class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">Name</th>
+                <th scope="col" colspan="3" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Measurements</th>
+              </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <%= render 'products/products', products: @products %>
+              </tbody>
+            </table>
+          </div>
         </div>  
       </div>  
     </div>  

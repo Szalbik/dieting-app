@@ -82,6 +82,24 @@ RSpec.describe 'Diets', type: :request do
       expect(diet.source).to eq('generated')
       expect(diet.meals_per_day).to eq(3)
     end
+
+    it 'derives macro_split from the chosen goal instead of raw percentages' do
+      login
+      post diets_path, params: { diet: { name: 'Bulk diet', kcal_target: 2800, goal: 'masa' } }
+
+      diet = Diet.find_by(name: 'Bulk diet', user: user)
+      expect(diet.generation_prefs['goal']).to eq('masa')
+      expect(diet.generation_prefs['macro_split']).to eq(Diet::GOAL_MACROS.fetch('masa').slice('protein_pct',
+                                                                                               'fat_pct', 'carbs_pct'))
+    end
+
+    it 'falls back to the default goal when an unknown goal is submitted' do
+      login
+      post diets_path, params: { diet: { name: 'Weird goal diet', kcal_target: 1800, goal: 'nonsense' } }
+
+      diet = Diet.find_by(name: 'Weird goal diet', user: user)
+      expect(diet.generation_prefs['goal']).to eq('zwykla')
+    end
   end
 
   describe 'GET /diets/:id' do

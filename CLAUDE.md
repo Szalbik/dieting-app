@@ -51,12 +51,15 @@ The core data model is hierarchical:
 
 ```
 User
-└── Diet           (has_one_attached :pdf)
-    └── DietSet    (a "day" within a diet)
-        └── Meal
-            └── Product   (ingredient line item)
-                └── ProductCategory  (ML-assigned category)
+├── Diet           (has_one_attached :pdf; source: pdf | generated | manual)
+│   └── DietSet    (a "day" within a diet)
+│       └── Meal
+│           └── Product   (ingredient line item)
+│               └── ProductCategory  (ML/AI-assigned category)
+└── Recipe         (reusable meal library; meal_type from Meal::SLOTS)
 ```
+
+`Diet#source` distinguishes the three ways a diet is created — `pdf` (parsed from an upload), `generated` (AI wizard), `manual` (user-authored). Only `manual` diets allow adding/removing days (`DietSetsController`) and meals (`MealsController`); `pdf`/`generated` diets stay a read-only pristine copy of what was parsed or generated. A `Meal` can be added to a manual diet's day three ways: hand-written, from the user's `Recipe` library (`Recipe#to_meal!`), or copied from a meal in *any* of the user's other diets (`Meal#copy_into`) — all three deep-copy content, so later edits/deletion of the source never affect the copy.
 
 `DietSetPlan` is a user-selected combination of `DietSet`s (one per day of the week) and drives the shopping workflow. `MealPlan` and `MealPlanProductSubstitution` handle per-plan product swaps. `ShoppingCart` aggregates items from the active `DietSetPlan` and supports collaborative access via `ShoppingCartInvitation`.
 
@@ -68,9 +71,13 @@ User
 4. `PopulateDietFromJsonJob` (background) creates the `DietSet → Meal → Product` tree from the validated JSON.
 5. `ClassifyProductsJob` runs the local Naive Bayes classifier (`Classifier::Category`) on each product.
 
-### Product classification (ML)
+### AI diet wizard
 
-`Classifier::Category` (`app/services/classifier/category.rb`) is a Naive Bayes classifier backed by `nbayes` gem. The trained model is persisted to `tmp/classifier/category_model.dat` via `Marshal`. Prediction falls back through three strategies in order: exact match on confirmed examples → token-similarity match → Naive Bayes. The model is retrained nightly by `TrainCategoryModelJob`.
+`DietsController#create` also accepts a `kcal_target`, in which case `source` is set to `generated`. The wizard asks for a plain-language **goal** (`Diet::GOAL_MACROS` — zwykła/masa/redukcja/utrzymanie) rather than raw macro percentages, and maps the goal to a `protein_pct/fat_pct/carbs_pct` split server-side. `GenerateDietJob` calls `Chat::DietGeneratorService` (same structured-output pattern as the PDF pipeline, wraps the day array in a root JSON object for OpenAI's strict schema mode) to produce the same `days` JSON shape, which then flows through the identical `DietJsonValidator` → `PopulateDietFromJsonJob` path as a parsed PDF. Hand-written recipes/meals with blank macros are estimated via `Chat::MealMacroEstimatorService` (one structured-output call per meal).
+
+### Product classification (ML + AI fallback)
+
+`Classifier::Category` (`app/services/classifier/category.rb`) is a Naive Bayes classifier backed by the `nbayes` gem — the primary, zero-cost path. The trained model is persisted to `tmp/classifier/category_model.dat` via `Marshal`. Prediction falls back through four tiers in order: exact match on confirmed examples → token-similarity match → hardcoded Polish keyword rules → Naive Bayes. Whatever the local classifier leaves uncategorized is picked up by `Chat::ProductCategorizerService` — a **batched, last-resort AI fallback** (one structured-output OpenAI call per diet or per daily sweep, never per-product) that maps products to the seeded `Category` set. All non-exact-match assignments (local or AI) are unconfirmed (`ProductCategory#state: false`); an admin confirms them via `ProductCategoriesController`, and confirming retrains the local model via `TrainCategoryModelJob`.
 
 ### Product substitutions
 
@@ -78,7 +85,7 @@ User
 
 - `Chat::SubstitutionExpanderService` (AI) generates synonym/substitute names.
 - `ExpandSubstitutionsWithAiJob` runs this in the background.
-- `Local::SubstitutionProductMatcherService` or `Chat::SubstitutionProductMatcherService` resolves those names to canonical products.
+- `Local::SubstitutionProductMatcherService` resolves those names to canonical products.
 - `SubstitutionProductMatch` joins a `ProductSubstitution` to a matched `CanonicalProduct`.
 
 ### Shopping cart sync
@@ -95,7 +102,6 @@ Service objects live in `app/services/` and are namespaced by concern:
 | `Local::*` | Non-AI local alternatives to Chat:: services |
 | `Classifier::*` | Naive Bayes ML classifier |
 | `Todoist::*` | Todoist REST API wrapper |
-| `*LineParser` / `LineParserfactory` | Legacy regex-based PDF text parsers (superseded by Chat::DietParserService) |
 
 ### Authentication
 
@@ -119,7 +125,7 @@ Custom session-based auth — no Devise. `ApplicationController` includes `Conce
 - Multi-database: `config/database.yml` defines `primary`, `queue` (Solid Queue), and `cache` (Solid Cache) SQLite databases.
 - Background jobs are monitored at `/jobs` (MissionControl::Jobs, admin-only in production).
 - Error tracking: Honeybadger (`config/initializers/honeybadger.rb`).
-- Cron schedule: `config/schedule.rb` (Whenever gem) — `CategorizeProductsJob` at midnight, `TrainCategoryModelJob` at 01:00.
+- Cron schedule: `config/schedule.rb` (Whenever gem) — `CategorizeProductsJob` (local classifier sweep + one batched AI fallback call) at midnight, `TrainCategoryModelJob` at 01:00.
 - Deployment: Kamal (`config/deploy.yml`).
 
 <!-- BEGIN @przeprogramowani/10x-cli -->

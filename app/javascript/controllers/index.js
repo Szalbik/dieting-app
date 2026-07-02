@@ -13,15 +13,6 @@ application.register("diet-swap", DietSwapController)
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 
-import FilterController from "./filter_controller"
-application.register("filter", FilterController)
-
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
-
-import StickyNavbarController from "./sticky_navbar_controller"
-application.register("sticky-navbar", StickyNavbarController)
-
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
 

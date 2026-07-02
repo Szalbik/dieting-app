@@ -60,6 +60,10 @@ class Chat::DietGeneratorService
     prefs['macro_split']
   end
 
+  def goal_label
+    Diet::GOAL_MACROS.dig(prefs['goal'], 'label')
+  end
+
   def system_prompt
     <<~PROMPT
       You are a dietitian generating a personalized diet plan.
@@ -74,6 +78,7 @@ class Chat::DietGeneratorService
 
       - Daily calorie target: ~#{diet.kcal_target} kcal per day (each day's meals should sum close to this).
       - Meals per day, in order: #{meal_slots.join(', ')}.
+      #{goal_label.present? ? "- Diet goal: #{goal_label}." : ''}
       #{macro_split.present? ? "- Macro split target: #{macro_split['protein_pct']}% protein / #{macro_split['fat_pct']}% fat / #{macro_split['carbs_pct']}% carbs." : ''}
       #{prefs['preferences'].present? ? "- Preferences / exclusions: #{prefs['preferences']}" : ''}
       - Every meal needs realistic ingredients with quantities, preparation instructions, and calculated nutrition (kcal/protein/fat/carbs). Round to whole numbers.
