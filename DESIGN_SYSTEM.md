@@ -1,4 +1,4 @@
-# DietApp Design System
+# AsystentDiety Design System
 
 ## Foundations
 

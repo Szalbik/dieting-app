@@ -1,9 +1,9 @@
 <% content_for :marketing_page, true %>
-<% content_for :title, "DietApp — Twój plan dietetyczny, w końcu bez wysiłku" %>
+<% content_for :title, "AsystentDiety — Twój plan dietetyczny, w końcu bez wysiłku" %>
 <% content_for :head do %>
-  <meta name="description" content="Wgraj PDF od dietetyka, a DietApp zbuduje harmonogram posiłków i listę zakupów automatycznie. Załóż darmowe konto — 1 operacja AI w miesiącu gratis.">
-  <meta property="og:title" content="DietApp — Twój plan dietetyczny, w końcu bez wysiłku">
-  <meta property="og:description" content="Wgraj PDF od dietetyka, a DietApp zbuduje harmonogram posiłków i listę zakupów automatycznie.">
+  <meta name="description" content="Wgraj PDF od dietetyka, a AsystentDiety zbuduje harmonogram posiłków i listę zakupów automatycznie. Załóż darmowe konto — 1 operacja AI w miesiącu gratis.">
+  <meta property="og:title" content="AsystentDiety — Twój plan dietetyczny, w końcu bez wysiłku">
+  <meta property="og:description" content="Wgraj PDF od dietetyka, a AsystentDiety zbuduje harmonogram posiłków i listę zakupów automatycznie.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="<%= root_url %>">
   <link rel="canonical" href="<%= root_url %>">
@@ -26,7 +26,7 @@
     <div class="relative z-10">
       <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-sage/35 bg-brand-sage/10 px-4 py-1 text-xs font-medium uppercase tracking-[0.08em] text-brand-sage-dark">● Dla pacjentów i ich dietetyków</div>
       <h1 class="mb-6 text-5xl font-black leading-[1.08] tracking-tight font-serif lg:text-7xl">Twój plan diety,<br><em class="italic text-brand-accent">w końcu</em><br>bez wysiłku.</h1>
-      <p class="mb-10 max-w-xl text-lg leading-8 text-brand-soft-gray">Wgraj PDF, który dał Ci dietetyk. DietApp odczytuje go, buduje harmonogram posiłków i generuje dokładną listę zakupów — automatycznie.</p>
+      <p class="mb-10 max-w-xl text-lg leading-8 text-brand-soft-gray">Wgraj PDF, który dał Ci dietetyk. AsystentDiety odczytuje go, buduje harmonogram posiłków i generuje dokładną listę zakupów — automatycznie.</p>
       <div class="flex flex-wrap gap-4">
         <%= link_to "Załóż darmowe konto", new_registration_path, class: "rounded-full bg-brand-sage-dark px-8 py-3.5 text-sm font-medium text-white shadow-[0_4px_24px_rgba(74,110,76,0.25)] hover:-translate-y-px hover:bg-brand-accent hover:shadow-[0_6px_32px_rgba(200,116,74,0.3)]" %>
         <a href="#how" class="rounded-full border border-brand-charcoal/20 px-8 py-3.5 text-sm font-medium text-brand-charcoal hover:border-brand-sage-dark hover:text-brand-sage-dark">Zobacz jak to działa</a>
@@ -57,7 +57,7 @@
     <h2 class="max-w-3xl text-4xl font-black font-serif tracking-tight">Od PDF do koszyka zakupów w kilka minut.</h2>
     <p class="mt-4 mb-14 max-w-2xl text-lg leading-8 text-brand-soft-gray">Bez ręcznego wpisywania. Bez zgadywania. Plan Twojego dietetyka zamienia się w jasną, gotową do działania rutynę.</p>
     <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      <% [["01","📄","Wgraj PDF diety","Dodaj plik PDF od dietetyka. DietApp odczyta go automatycznie — niezależnie od formatu i układu."],["02","🍽️","Przeglądaj posiłki","Zobacz wszystkie posiłki poukładane wg dni i typów. Zamień na alternatywy sugerowane w planie jednym kliknięciem."],["03","📅","Zaplanuj tydzień","Wybierz posiłki na każdy dzień tygodnia. Mieszaj, powtarzaj albo trzymaj się dokładnie zaleceń dietetyka."],["04","🛒","Odbierz listę zakupów","Dokładna lista — ilości, kategorie, wszystko — gotowa do zabrania do sklepu lub udostępnienia w aplikacji dostawczej."]].each do |s| %>
+      <% [["01","📄","Wgraj PDF diety","Dodaj plik PDF od dietetyka. AsystentDiety odczyta go automatycznie — niezależnie od formatu i układu."],["02","🍽️","Przeglądaj posiłki","Zobacz wszystkie posiłki poukładane wg dni i typów. Zamień na alternatywy sugerowane w planie jednym kliknięciem."],["03","📅","Zaplanuj tydzień","Wybierz posiłki na każdy dzień tygodnia. Mieszaj, powtarzaj albo trzymaj się dokładnie zaleceń dietetyka."],["04","🛒","Odbierz listę zakupów","Dokładna lista — ilości, kategorie, wszystko — gotowa do zabrania do sklepu lub udostępnienia w aplikacji dostawczej."]].each do |s| %>
         <div class="relative overflow-hidden rounded-3xl bg-brand-cream p-8 transition hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)]"><div class="absolute right-4 top-1 text-8xl font-black font-serif text-brand-sage/15"><%= s[0] %></div><div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-sage-dark text-2xl"><%= s[1] %></div><h3 class="mb-2 text-xl font-bold font-serif"><%= s[2] %></h3><p class="text-sm leading-6 text-brand-soft-gray"><%= s[3] %></p></div>
       <% end %>
     </div>
@@ -84,7 +84,7 @@
       <div>
         <div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Zainstaluj na telefonie</div>
         <h2 class="max-w-2xl text-4xl font-black font-serif tracking-tight">Dodaj do ekranu głównego.</h2>
-        <p class="mt-4 mb-10 max-w-2xl text-lg leading-8 text-brand-soft-gray">DietApp to Progresywna Aplikacja Webowa — zainstaluj ją prosto z przeglądarki, bez sklepu z aplikacjami. Otwiera się na pełnym ekranie jak natywna aplikacja i synchronizuje się między telefonami, więc Ty i Twój partner możecie odhaczać produkty na tej samej liście zakupów podczas robienia zakupów.</p>
+        <p class="mt-4 mb-10 max-w-2xl text-lg leading-8 text-brand-soft-gray">AsystentDiety to Progresywna Aplikacja Webowa — zainstaluj ją prosto z przeglądarki, bez sklepu z aplikacjami. Otwiera się na pełnym ekranie jak natywna aplikacja i synchronizuje się między telefonami, więc Ty i Twój partner możecie odhaczać produkty na tej samej liście zakupów podczas robienia zakupów.</p>
         <div class="space-y-5">
           <% [["📲","Dodaj do ekranu głównego","Na iPhonie stuknij Udostępnij → „Dodaj do ekranu początkowego”. Na Androidzie Chrome zaproponuje „Zainstaluj aplikację” z menu."],["🚀","Otwiera się jak natywna aplikacja","Uruchamia się na pełnym ekranie bez paska przeglądarki — od razu do planu na dziś."],["👫","Róbcie zakupy razem, na żywo","Udostępnij listę i odhaczajcie produkty razem. Aktualizacje pojawiają się na obu telefonach od razu."]].each do |f| %>
             <div class="flex gap-5 rounded-3xl bg-brand-cream p-6 transition hover:translate-x-1"><div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)]"><%= f[0] %></div><div><h4 class="mb-1 text-base font-semibold"><%= f[1] %></h4><p class="text-sm leading-6 text-brand-soft-gray"><%= f[2] %></p></div></div>
@@ -167,7 +167,7 @@
         ["Co dokładnie obejmuje darmowy plan?", "Darmowe konto daje 1 operację AI w miesiącu — możesz wgrać jeden PDF od dietetyka albo wygenerować jedną dietę kreatorem AI. Plan Pro (10 zł/mies.) podnosi limit do 3 operacji AI w miesiącu. Limity odnawiają się pierwszego dnia każdego miesiąca."],
         ["Czy mogę anulować subskrypcję Pro w każdej chwili?", "Tak. Zarządzasz subskrypcją przez bezpieczny panel Stripe dostępny w ustawieniach konta — możesz anulować w dowolnym momencie, dostęp Pro trwa do końca opłaconego okresu."],
         ["Jak działa parsowanie PDF?", "Wgrywasz plik PDF od dietetyka, a AI odczytuje posiłki, porcje i wartości odżywcze — niezależnie od formatu i układu dokumentu."],
-        ["Czy płatności są bezpieczne?", "Płatności obsługuje Stripe — DietApp nigdy nie przechowuje danych Twojej karty."],
+        ["Czy płatności są bezpieczne?", "Płatności obsługuje Stripe — AsystentDiety nigdy nie przechowuje danych Twojej karty."],
         ["Czy moje dane diety są prywatne?", "Tak. Twój plan diety i lista zakupów są widoczne tylko dla Ciebie i osób, którym jawnie udostępnisz wspólną listę zakupów."],
       ].each do |q, a| %>
         <details class="group rounded-2xl bg-brand-cream p-6">
@@ -180,5 +180,5 @@
 
   <section id="cta" class="relative overflow-hidden bg-brand-charcoal px-6 py-24 text-center text-white lg:px-16"><div class="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(124,158,126,0.15)_0%,transparent_65%)]"></div><div class="relative mx-auto max-w-3xl"><h2 class="mb-4 text-5xl font-black font-serif tracking-tight">Zacznij za darmo<br><em class="text-brand-sage-light">— 1 operacja AI</em> w każdym miesiącu.</h2><p class="mb-10 text-lg text-white/50">Pacjenci mogą założyć konto już dziś. Dietetycy mogą aplikować o dostęp do bety — zaprosimy wybrane zespoły po rozmowie demo.</p><div class="mx-auto flex max-w-2xl flex-wrap justify-center gap-3"><%= link_to "Załóż darmowe konto", new_registration_path, class: "rounded-full bg-brand-sage px-7 py-3 text-sm font-medium text-white hover:-translate-y-px hover:bg-brand-accent" %><%= link_to "Dołącz do listy oczekujących", new_dietitian_waitlist_entry_path, class: "rounded-full border border-white/20 px-7 py-3 text-sm font-medium text-white hover:border-brand-sage-light hover:text-brand-sage-light" %></div><p class="mt-4 text-sm text-white/60">Masz już konto? <%= link_to "Zaloguj się", new_session_path, class: "text-brand-sage-light hover:text-white" %></p></div></section>
 
-  <footer class="flex flex-col gap-3 border-t border-brand-charcoal/10 px-6 py-10 text-center text-sm text-brand-soft-gray lg:flex-row lg:items-center lg:justify-between lg:px-16"><div class="logo text-lg font-bold font-serif text-brand-sage-dark">Diet<span class="text-brand-accent">App</span></div><span>© 2026 DietApp. Wszelkie prawa zastrzeżone.</span><div class="flex justify-center gap-6"><%= link_to "Prywatność", privacy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Regulamin", terms_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Cookies", cookies_policy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %></div></footer>
+  <footer class="flex flex-col gap-3 border-t border-brand-charcoal/10 px-6 py-10 text-center text-sm text-brand-soft-gray lg:flex-row lg:items-center lg:justify-between lg:px-16"><div class="logo text-lg font-bold font-serif text-brand-sage-dark">Asystent<span class="text-brand-accent">Diety</span></div><span>© 2026 AsystentDiety. Wszelkie prawa zastrzeżone.</span><div class="flex justify-center gap-6"><%= link_to "Prywatność", privacy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Regulamin", terms_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Cookies", cookies_policy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %></div></footer>
 </div>

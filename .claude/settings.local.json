@@ -8,7 +8,9 @@
       "Bash(bin/rails db:migrate)",
       "Bash(bin/rails db:migrate RAILS_ENV=test)",
       "Bash(bundle exec *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(find /Users/damians/Projects/MovaApp/app/views -path \"*subscriptions*\" -name \"*.erb\" -o -path \"*subscriptions*\" -name \"*.html\")",
+      "Bash(ls -la /Users/damians/Projects/MovaApp/app/views/subscriptions/)"
     ]
   }
 }

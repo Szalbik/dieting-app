@@ -1,4 +1,4 @@
-# DietingApp
+# AsystentDiety
 
 ## Ruby version
 
