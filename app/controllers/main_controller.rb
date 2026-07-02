@@ -11,4 +11,8 @@ class MainController < ApplicationController
   end
 
   def style_guide; end
+
+  def terms; end
+
+  def privacy; end
 end

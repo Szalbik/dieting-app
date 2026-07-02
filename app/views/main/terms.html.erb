@@ -1,0 +1,93 @@
+<% content_for :marketing_page, true %>
+<% content_for :title, "Regulamin — DietApp" %>
+<div class="bg-brand-warm-white text-brand-charcoal">
+  <div class="mx-auto max-w-3xl px-6 py-16">
+    <%= link_to "← Wróć na stronę główną", root_path, class: "text-sm text-brand-sage-dark hover:text-brand-accent" %>
+
+    <h1 class="mt-6 mb-2 text-4xl font-black font-serif tracking-tight">Regulamin serwisu DietApp</h1>
+    <p class="mb-10 text-sm text-brand-soft-gray">Obowiązuje od: [DO UZUPEŁNIENIA — data publikacji]</p>
+
+    <%# PROJEKT DOKUMENTU — wymaga weryfikacji prawnej i uzupełnienia danych przedsiębiorcy przed publikacją. %>
+    <div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§1. Postanowienia ogólne</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Niniejszy regulamin określa zasady korzystania z serwisu internetowego DietApp, dostępnego pod adresem [DO UZUPEŁNIENIA — domena] („Serwis").</li>
+          <li>Usługodawcą jest [DO UZUPEŁNIENIA — pełna nazwa, forma prawna, adres, NIP, REGON] („Usługodawca").</li>
+          <li>Kontakt z Usługodawcą: [DO UZUPEŁNIENIA — adres e-mail].</li>
+          <li>Korzystanie z Serwisu oznacza akceptację niniejszego regulaminu.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§2. Zakres usług</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Serwis umożliwia: wczytywanie planów dietetycznych z plików PDF, generowanie propozycji diet z pomocą sztucznej inteligencji, planowanie posiłków oraz tworzenie list zakupów.</li>
+          <li>Treści generowane przez Serwis (w tym diety tworzone z pomocą AI) mają charakter wyłącznie informacyjny i nie stanowią porady medycznej, dietetycznej ani zdrowotnej. Przed zastosowaniem diety skonsultuj się z lekarzem lub dietetykiem.</li>
+          <li>Usługodawca nie ponosi odpowiedzialności za skutki zdrowotne stosowania planów żywieniowych przetworzonych lub wygenerowanych w Serwisie.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§3. Konto użytkownika</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Korzystanie z Serwisu wymaga założenia konta (adres e-mail + hasło).</li>
+          <li>Użytkownik zobowiązuje się do podawania prawdziwych danych i nieudostępniania konta osobom trzecim.</li>
+          <li>Użytkownik może w każdej chwili zażądać usunięcia konta, kontaktując się z Usługodawcą.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§4. Plany i płatności</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Serwis oferuje plan bezpłatny (1 operacja AI miesięcznie) oraz płatny plan Pro — subskrypcję w cenie 10 zł brutto miesięcznie, obejmującą 3 operacje AI miesięcznie.</li>
+          <li>„Operacja AI" oznacza wczytanie planu diety z pliku PDF albo wygenerowanie diety kreatorem AI. Limity odnawiają się pierwszego dnia każdego miesiąca kalendarzowego.</li>
+          <li>Płatności obsługuje Stripe Payments Europe, Ltd. Usługodawca nie przechowuje danych kart płatniczych.</li>
+          <li>Subskrypcja odnawia się automatycznie co miesiąc do momentu anulowania. Anulować można w każdej chwili w panelu zarządzania subskrypcją (portal Stripe) — dostęp do planu Pro trwa wtedy do końca opłaconego okresu.</li>
+          <li>Ceny mogą ulec zmianie; o zmianie ceny subskrypcji użytkownik zostanie poinformowany z wyprzedzeniem co najmniej jednego okresu rozliczeniowego.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§5. Prawo odstąpienia od umowy</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Konsument ma prawo odstąpić od umowy w terminie 14 dni od jej zawarcia bez podania przyczyny, składając oświadczenie na adres e-mail Usługodawcy.</li>
+          <li>Rozpoczęcie korzystania z operacji AI w ramach planu Pro przed upływem terminu odstąpienia oznacza żądanie rozpoczęcia świadczenia usługi przed upływem tego terminu; w przypadku odstąpienia użytkownik ponosi koszt proporcjonalny do zakresu wykorzystanej usługi.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§6. Reklamacje</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Reklamacje można składać na adres e-mail Usługodawcy.</li>
+          <li>Usługodawca rozpatruje reklamacje w terminie 14 dni od ich otrzymania.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§7. Treści użytkownika</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Użytkownik wczytuje do Serwisu pliki PDF z planami diet na własną odpowiedzialność i oświadcza, że jest uprawniony do korzystania z tych treści.</li>
+          <li>Pliki i dane użytkownika są przetwarzane wyłącznie w celu świadczenia usług Serwisu, zgodnie z Polityką prywatności.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§8. Wymagania techniczne i dostępność</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Do korzystania z Serwisu wymagana jest aktualna przeglądarka internetowa oraz połączenie z internetem.</li>
+          <li>Usługodawca dokłada starań, aby Serwis działał nieprzerwanie, zastrzega jednak możliwość przerw technicznych.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">§9. Postanowienia końcowe</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Usługodawca może zmienić regulamin z ważnych przyczyn; o zmianach poinformuje użytkowników z co najmniej 14-dniowym wyprzedzeniem drogą e-mailową.</li>
+          <li>W sprawach nieuregulowanych stosuje się prawo polskie.</li>
+          <li>Konsument może skorzystać z pozasądowych sposobów rozpatrywania reklamacji, w tym z platformy ODR: <a href="https://ec.europa.eu/consumers/odr" class="text-brand-sage-dark hover:text-brand-accent">ec.europa.eu/consumers/odr</a>.</li>
+        </ol>
+      </section>
+    </div>
+  </div>
+</div>

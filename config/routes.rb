@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   root to: 'main#index'
   get 'style-guide', to: 'main#style_guide'
+  get 'regulamin', to: 'main#terms', as: :terms
+  get 'polityka-prywatnosci', to: 'main#privacy', as: :privacy
 
   get 'up', to: 'health#show'
 

@@ -19,6 +19,12 @@ class RegistrationsController < ApplicationController
   def create
     @user = User.new(safe_params)
 
+    unless params[:terms] == '1'
+      flash.now[:alert] = 'Musisz zaakceptować Regulamin i Politykę prywatności.'
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     if @user.save
       start_new_session_for @user
       redirect_to(params[:plan] == 'pro' ? upgrade_path : after_authentication_url, notice: 'Welcome!')

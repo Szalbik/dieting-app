@@ -1,0 +1,75 @@
+<% content_for :marketing_page, true %>
+<% content_for :title, "Polityka prywatności — DietApp" %>
+<div class="bg-brand-warm-white text-brand-charcoal">
+  <div class="mx-auto max-w-3xl px-6 py-16">
+    <%= link_to "← Wróć na stronę główną", root_path, class: "text-sm text-brand-sage-dark hover:text-brand-accent" %>
+
+    <h1 class="mt-6 mb-2 text-4xl font-black font-serif tracking-tight">Polityka prywatności DietApp</h1>
+    <p class="mb-10 text-sm text-brand-soft-gray">Obowiązuje od: [DO UZUPEŁNIENIA — data publikacji]</p>
+
+    <%# PROJEKT DOKUMENTU — wymaga weryfikacji prawnej i uzupełnienia danych administratora przed publikacją. %>
+    <div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">1. Administrator danych</h2>
+        <p>Administratorem Twoich danych osobowych jest [DO UZUPEŁNIENIA — pełna nazwa, adres, NIP]. Kontakt: [DO UZUPEŁNIENIA — adres e-mail].</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">2. Jakie dane przetwarzamy</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li><strong>Dane konta:</strong> adres e-mail, imię (opcjonalnie), hasło (przechowywane wyłącznie w postaci zaszyfrowanej — bcrypt).</li>
+          <li><strong>Treści użytkownika:</strong> wczytane pliki PDF z planami diet, dane posiłków i produktów, listy zakupów, preferencje żywieniowe podane w kreatorze AI.</li>
+          <li><strong>Dane płatności:</strong> identyfikator klienta i status subskrypcji w systemie Stripe. Nie przechowujemy numerów kart płatniczych.</li>
+          <li><strong>Dane techniczne:</strong> adres IP i identyfikator przeglądarki powiązane z sesją logowania.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">3. Cele i podstawy przetwarzania</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>Świadczenie usług Serwisu (art. 6 ust. 1 lit. b RODO — wykonanie umowy).</li>
+          <li>Obsługa płatności i rozliczeń (art. 6 ust. 1 lit. b i c RODO).</li>
+          <li>Obsługa reklamacji i kontaktu (art. 6 ust. 1 lit. b i f RODO).</li>
+          <li>Zapewnienie bezpieczeństwa Serwisu, w tym monitorowanie błędów (art. 6 ust. 1 lit. f RODO — prawnie uzasadniony interes).</li>
+        </ul>
+        <p class="mt-2"><strong>Uwaga:</strong> dane o preferencjach żywieniowych i planach diet mogą stanowić dane dotyczące zdrowia. Przetwarzamy je wyłącznie w celu świadczenia usługi, na podstawie Twojej wyraźnej zgody wyrażonej przez dobrowolne wprowadzenie tych danych do Serwisu (art. 9 ust. 2 lit. a RODO). Możesz je usunąć w każdej chwili, usuwając dietę lub konto.</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">4. Odbiorcy danych (podmioty przetwarzające)</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li><strong>Stripe Payments Europe, Ltd.</strong> — obsługa płatności i subskrypcji.</li>
+          <li><strong>OpenAI</strong> — przetwarzanie treści planów diet (tekst z PDF, preferencje) w celu ich analizy i generowania diet. Treści przekazywane są bez danych konta (e-mail, imię).</li>
+          <li><strong>Todoist (Doist Inc.)</strong> — wyłącznie jeśli połączysz konto Todoist, w celu eksportu list zakupów.</li>
+          <li><strong>Honeybadger Industries LLC</strong> — monitorowanie błędów aplikacji.</li>
+          <li><strong>[DO UZUPEŁNIENIA — dostawca hostingu/serwera]</strong> — utrzymanie infrastruktury.</li>
+        </ul>
+        <p class="mt-2">Część odbiorców może przetwarzać dane poza EOG; przekazanie odbywa się na podstawie standardowych klauzul umownych (SCC).</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">5. Okres przechowywania</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>Dane konta i treści — do czasu usunięcia konta.</li>
+          <li>Dane rozliczeniowe — przez okres wymagany przepisami podatkowymi (co do zasady 5 lat).</li>
+          <li>Logi techniczne — do 12 miesięcy.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">6. Twoje prawa</h2>
+        <p>Masz prawo do: dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia, sprzeciwu oraz cofnięcia zgody w dowolnym momencie. Masz też prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych (uodo.gov.pl). W celu realizacji praw napisz na adres e-mail administratora.</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">7. Pliki cookies</h2>
+        <p>Serwis używa wyłącznie niezbędnych plików cookies: ciasteczka sesji (logowanie) oraz zabezpieczenia CSRF. Nie używamy cookies marketingowych ani śledzących. [DO AKTUALIZACJI, jeśli zostanie dodana analityka.]</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">8. Zmiany polityki</h2>
+        <p>O istotnych zmianach niniejszej polityki poinformujemy drogą e-mailową lub komunikatem w Serwisie.</p>
+      </section>
+    </div>
+  </div>
+</div>

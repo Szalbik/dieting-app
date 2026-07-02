@@ -33,6 +33,11 @@
         <%= form.password_field :password_confirmation, class: "app-input" %>
       <% end %>
 
+      <label class="flex items-start gap-2 text-xs text-brand-soft-gray">
+        <%= check_box_tag :terms, '1', params[:terms] == '1', required: true, class: "mt-0.5" %>
+        <span>Akceptuję <%= link_to "Regulamin", terms_path, target: "_blank", class: "font-semibold text-brand-sage-dark hover:text-brand-accent" %> i <%= link_to "Politykę prywatności", privacy_path, target: "_blank", class: "font-semibold text-brand-sage-dark hover:text-brand-accent" %>.</span>
+      </label>
+
       <%= render Ui::ButtonComponent.new(type: "submit", variant: :primary, size: :lg, full_width: true).with_content("Create account") %>
     <% end %>
 
