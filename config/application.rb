@@ -43,6 +43,8 @@ module DietingApp
     config.x.openai.diet_parsing_model = ENV.fetch('OPENAI_DIET_PARSER_MODEL', 'gpt-5.1')
 
     config.time_zone = 'Warsaw'
+    config.i18n.default_locale = :pl
+    config.i18n.available_locales = %i[pl en]
     # config.eager_load_paths << Rails.root.join("extras")
 
     # Don't generate system test files.

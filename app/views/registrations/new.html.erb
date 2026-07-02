@@ -10,6 +10,7 @@
     </div>
 
     <%= form_with model: @user, url: registrations_path, data: { turbo: false }, class: "mt-8 space-y-4" do |form| %>
+      <%= hidden_field_tag :plan, params[:plan] if params[:plan].present? %>
       <% if form.object.errors.any? %>
         <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
           <ul class="list-disc space-y-1 pl-4">

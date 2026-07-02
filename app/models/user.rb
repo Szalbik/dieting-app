@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
+
+  AI_QUOTA_LIMITS = { free: 1, pro: 3 }.freeze
+
   after_create -> (first_name) { email_address.split('@').first }
   after_create :create_owned_shopping_cart
 
@@ -82,7 +86,48 @@ class User < ApplicationRecord
     [invitation.inviter, invitation.invitee]
   end
 
+  def subscribed?
+    subscription_active? || subscription_lifetime? || subscription_end_date&.future?
+  end
+
+  # nil means unlimited (lifetime plan)
+  def ai_quota_limit
+    return nil if subscription_lifetime?
+
+    subscribed? ? AI_QUOTA_LIMITS.fetch(:pro) : AI_QUOTA_LIMITS.fetch(:free)
+  end
+
+  def ai_quota_available?
+    limit = ai_quota_limit
+    return true if limit.nil?
+
+    reset_ai_quota_period_if_stale!
+    ai_quota_used_count < limit
+  end
+
+  # ponytail: if the enqueued parsing job later fails, quota stays spent; refund manually if it matters
+  def consume_ai_quota!
+    return if subscription_lifetime?
+
+    reset_ai_quota_period_if_stale!
+    increment!(:ai_quota_used_count)
+  end
+
+  def stripe_customer
+    return Stripe::Customer.retrieve(stripe_customer_id) if stripe_customer_id?
+
+    customer = Stripe::Customer.create(email: email_address)
+    update_column(:stripe_customer_id, customer.id)
+    customer
+  end
+
   private
+
+  def reset_ai_quota_period_if_stale!
+    return if ai_quota_period_started_at.present? && ai_quota_period_started_at >= Time.current.beginning_of_month
+
+    update_columns(ai_quota_used_count: 0, ai_quota_period_started_at: Time.current.beginning_of_month)
+  end
 
   def create_owned_shopping_cart
     cart = ShoppingCart.create!(user: self)

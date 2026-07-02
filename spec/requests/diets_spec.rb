@@ -102,6 +102,48 @@ RSpec.describe 'Diets', type: :request do
     end
   end
 
+  describe 'POST /diets free-plan AI quota' do
+    it 'blocks a second pdf/generated diet in the same month for a free user' do
+      login
+      pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
+      post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf } }
+
+      expect do
+        post diets_path, params: { diet: { name: 'Second AI diet', kcal_target: 1800 } }
+      end.not_to have_enqueued_job(GenerateDietJob)
+
+      expect(response).to redirect_to(new_diet_path)
+      expect(Diet.find_by(name: 'Second AI diet')).to be_nil
+    end
+
+    it 'always allows manual diets regardless of quota' do
+      login
+      user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      post diets_path, params: { diet: { name: 'Manual diet', meals_per_day: 5 } }
+      expect(response).to redirect_to(diets_path)
+      expect(Diet.find_by(name: 'Manual diet')).to be_present
+    end
+
+    it 'allows a Pro user up to 3 pdf/generated diets per month, then blocks the 4th' do
+      login
+      user.update!(subscription: :active)
+      3.times { |i| post diets_path, params: { diet: { name: "Pro AI diet #{i}", kcal_target: 1800 } } }
+      expect(Diet.where(user: user).count).to eq(3)
+
+      expect do
+        post diets_path, params: { diet: { name: 'Pro AI diet 4', kcal_target: 1800 } }
+      end.not_to have_enqueued_job(GenerateDietJob)
+      expect(Diet.find_by(name: 'Pro AI diet 4')).to be_nil
+    end
+
+    it 'allows unlimited pdf/generated diets for a lifetime user' do
+      login
+      user.update!(subscription: :lifetime)
+      4.times { |i| post diets_path, params: { diet: { name: "Lifetime AI diet #{i}", kcal_target: 1800 } } }
+      expect(Diet.where(user: user).count).to eq(4)
+    end
+  end
+
   describe 'GET /diets/:id' do
     let(:diet) { create(:diet, user: user, name: 'Owned diet') }
 
@@ -151,6 +193,15 @@ RSpec.describe 'Diets', type: :request do
       expect(response).to redirect_to(diets_path)
       follow_redirect!
       expect(response.body).to include('Brak załączonego PDF')
+    end
+
+    it 'blocks reparse when the free quota is already spent' do
+      user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.not_to have_enqueued_job(DietBuilderJob)
+      expect(response).to redirect_to(diets_path)
     end
   end
 end

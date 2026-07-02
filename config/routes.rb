@@ -96,5 +96,9 @@ Rails.application.routes.draw do
   get 'receive_code', to: 'todoist#receive_code', as: 'todoist_receive_code'
 
   get 'profile', to: 'profile#show', as: 'profile'
+
+  get 'upgrade', to: 'subscriptions#new', as: :upgrade
+  post 'billing_portal', to: 'subscriptions#billing_portal', as: :billing_portal
+  mount StripeEvent::Engine, at: '/stripe_webhooks'
 end
 # Rubocop: enable Metrics/BlockLength

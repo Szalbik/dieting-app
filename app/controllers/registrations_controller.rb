@@ -21,7 +21,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for @user
-      redirect_to after_authentication_url, notice: 'Welcome!'
+      redirect_to(params[:plan] == 'pro' ? upgrade_path : after_authentication_url, notice: 'Welcome!')
     else
       flash[:alert] = 'Email or password confirmation invalid.'
       render :new, status: :unprocessable_entity

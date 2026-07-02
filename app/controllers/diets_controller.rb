@@ -56,12 +56,19 @@ class DietsController < ApplicationController
       @diet.source = 'manual'
     end
 
+    if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
+      redirect_to new_diet_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
+      return
+    end
+
     respond_to do |format|
       if @diet.save
         case @diet.source
         when 'pdf' then DietBuilderJob.perform_later(@diet.id)
         when 'generated' then GenerateDietJob.perform_later(@diet.id)
         end
+
+        Current.user.consume_ai_quota! if %w[pdf generated].include?(@diet.source)
 
         notice = {
           'pdf' => 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.',
@@ -125,7 +132,14 @@ class DietsController < ApplicationController
       redirect_to diets_path, alert: 'Brak załączonego PDF. Nie można przeparsować diety.'
       return
     end
+
+    unless Current.user.ai_quota_available?
+      redirect_to diets_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
+      return
+    end
+
     DietBuilderJob.perform_later(@diet.id)
+    Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'
   end
 

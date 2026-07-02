@@ -46,6 +46,8 @@ gem 'json-schema'
 gem 'nbayes'
 gem 'pdf-reader'
 gem 'ruby-openai'
+gem 'stripe'
+gem 'stripe_event'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -71,6 +73,7 @@ group :test do
   gem 'faker'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
+  gem 'webmock'
 end
 
 group :development do
