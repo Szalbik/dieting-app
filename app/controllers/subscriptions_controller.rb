@@ -12,6 +12,16 @@ class SubscriptionsController < ApplicationController
       customer: Current.user.stripe_customer.id,
       line_items: [{ price: Rails.application.credentials.dig(:stripe, :monthly_price_id), quantity: 1 }],
       locale: 'pl',
+      # Art. 38 pkt 13 ustawy o prawach konsumenta: wyraźna zgoda na natychmiastowe świadczenie
+      # = utrata prawa odstąpienia; brak zgody blokuje zakup (Regulamin §6).
+      consent_collection: { terms_of_service: 'required' },
+      custom_text: {
+        terms_of_service_acceptance: {
+          message: 'Akceptuję [Regulamin](https://diety.rubydive.com/regulamin) i wyrażam zgodę na ' \
+                   'natychmiastowe rozpoczęcie świadczenia usługi, przyjmując do wiadomości utratę ' \
+                   'prawa odstąpienia od umowy (art. 38 pkt 13 ustawy o prawach konsumenta).',
+        },
+      },
       success_url: profile_url(checkout: 'success'),
       cancel_url: profile_url
     )

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'style-guide', to: 'main#style_guide'
   get 'regulamin', to: 'main#terms', as: :terms
   get 'polityka-prywatnosci', to: 'main#privacy', as: :privacy
+  get 'polityka-cookies', to: 'main#cookies_policy', as: :cookies_policy
 
   get 'up', to: 'health#show'
 

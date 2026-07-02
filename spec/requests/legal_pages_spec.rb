@@ -14,4 +14,10 @@ RSpec.describe 'Legal pages', type: :request do
     expect(response).to have_http_status(:success)
     expect(response.body).to include('Polityka prywatności DietApp')
   end
+
+  it 'renders the cookies policy without authentication' do
+    get cookies_policy_path
+    expect(response).to have_http_status(:success)
+    expect(response.body).to include('Polityka cookies DietApp')
+  end
 end

@@ -1,0 +1,61 @@
+<% content_for :marketing_page, true %>
+<% content_for :title, "Polityka cookies — DietApp" %>
+<div class="bg-brand-warm-white text-brand-charcoal">
+  <div class="mx-auto max-w-3xl px-6 py-16">
+    <%= link_to "← Wróć na stronę główną", root_path, class: "text-sm text-brand-sage-dark hover:text-brand-accent" %>
+
+    <h1 class="mt-6 mb-2 text-4xl font-black font-serif tracking-tight">Polityka cookies DietApp</h1>
+    <p class="mb-10 text-sm text-brand-soft-gray">Ostatnia aktualizacja: 02.07.2026</p>
+
+    <div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">1. Postanowienia ogólne</h2>
+        <p>Niniejsza Polityka plików cookies (zwana dalej „Polityką cookies") dotyczy serwisu internetowego <strong>DietApp</strong> dostępnego pod adresem diety.rubydive.com (zwanego dalej „Serwisem"), którego Administratorem jest RubyDive Sp. z o.o. z siedzibą w Piotrkowie Trybunalskim (97-300) przy ul. Juliusza Słowackiego 67/109, NIP 7712942854, KRS 0001226665.</p>
+        <p class="mt-2">Pliki cookies stanowią dane informatyczne, w szczególności pliki tekstowe, które przechowywane są w urządzeniu końcowym Użytkownika i wykorzystywane w celu prawidłowego świadczenia Usług.</p>
+        <p class="mt-2">Niniejsza Polityka cookies jest integralną częścią <%= link_to "Polityki prywatności serwisu DietApp", privacy_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent underline" %>.</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">2. Rodzaje i cele wykorzystania plików cookies</h2>
+        <p class="mb-2">Serwis wykorzystuje wyłącznie <strong>cookies niezbędne (funkcjonalne)</strong> — pliki konieczne do prawidłowego funkcjonowania Serwisu i korzystania z Usług:</p>
+        <ul class="list-disc space-y-1 pl-5">
+          <li><strong>Sesja Użytkownika</strong> — utrzymanie sesji po zalogowaniu, dostęp do diet, planów posiłków i list zakupów (plik <code>session_id</code>).</li>
+          <li><strong>Zabezpieczenia CSRF</strong> — ochrona formularzy i transakcji przed atakami typu Cross-Site Request Forgery.</li>
+          <li><strong>Obsługa płatności</strong> — pliki niezbędne do realizacji płatności przez operatora Stripe.</li>
+        </ul>
+        <p class="mt-2"><strong>Cel:</strong> świadczenie Usług zgodnie z Regulaminem (art. 6 ust. 1 lit. b RODO). Użycie tych plików nie wymaga zgody, gdyż są one niezbędne do świadczenia usługi telekomunikacyjnej.</p>
+        <div class="mt-3 rounded-2xl border border-brand-sage/30 bg-brand-cream/40 p-4">
+          <p class="font-semibold">Serwis nie używa:</p>
+          <ul class="list-disc space-y-1 pl-5">
+            <li>cookies analitycznych (Google Analytics, statystyki zewnętrzne),</li>
+            <li>cookies marketingowych (Facebook Pixel, reklamy, retargeting),</li>
+            <li>zewnętrznych narzędzi śledzących.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">3. Zarządzanie plikami cookies i zgoda</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>Zgodnie z przepisami prawa telekomunikacyjnego, przechowywanie informacji lub uzyskiwanie dostępu do informacji już przechowywanej w urządzeniu końcowym Użytkownika wymaga jego zgody, za wyjątkiem plików niezbędnych do świadczenia Usługi. Serwis używa wyłącznie plików niezbędnych, dlatego nie wyświetla banera zgody na cookies.</li>
+          <li>Użytkownik może w każdej chwili samodzielnie zmienić ustawienia dotyczące plików cookies w swojej przeglądarce internetowej — usunąć pliki, zablokować ich stosowanie lub włączyć informowanie o ich każdorazowym umieszczeniu na urządzeniu.</li>
+          <li>Ograniczenie stosowania plików cookies może wpłynąć na funkcjonalności dostępne w Serwisie, w tym może uniemożliwić zalogowanie się lub dokonanie płatności.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">4. Cookies podmiotów trzecich</h2>
+        <p>Serwis współpracuje z podmiotem trzecim w zakresie obsługi płatności: <strong>Stripe, Inc.</strong> W trakcie realizacji płatności (strona płatności Stripe Checkout oraz panel zarządzania subskrypcją) Stripe może używać własnych plików cookies zgodnie ze swoją polityką prywatności, dostępną pod adresem <a href="https://stripe.com/privacy" target="_blank" class="text-brand-sage-dark hover:text-brand-accent underline">stripe.com/privacy</a>.</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">5. Okres przechowywania plików cookies</h2>
+        <ol class="list-decimal space-y-1 pl-5">
+          <li><strong>Sesyjne pliki cookies</strong> — przechowywane na urządzeniu Użytkownika do momentu zakończenia sesji przeglądarki; zapisane informacje są wówczas trwale usuwane z pamięci urządzenia.</li>
+          <li><strong>Stałe pliki cookies</strong> — przechowywane na urządzeniu do momentu ich ręcznego skasowania lub wygaśnięcia (np. plik <code>session_id</code> utrzymujący zalogowanie). Cookies podmiotów trzecich mają własne okresy przechowywania określone przez tych dostawców.</li>
+        </ol>
+        <p class="mt-2">Powyższy wykaz może ulec zmianie w zależności od rozwoju funkcjonalności Serwisu. Administrator informuje o istotnych zmianach w niniejszej Polityce cookies.</p>
+      </section>
+    </div>
+  </div>
+</div>
