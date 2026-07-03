@@ -26,7 +26,7 @@
                 <% @diets.each do |diet| %>
                   <tr class="transition-colors duration-200 hover:bg-brand-paper/50" id="diet_row_<%= diet.id %>">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium text-brand-ink whitespace-nowrap sm:pl-0">
-                      <%= diet.name %>
+                      <%= link_to diet.name, diet_path(diet), class: 'hover:underline' %>
                     </td>
                     <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap">
                       <%= diet_sets_status(diet) %>
@@ -75,7 +75,7 @@
                 <div class="flex items-start gap-3">
                   <div class="foodtile foodtile-<%= diet_tile_tint_for(diet) %> h-11 w-11 text-xl"><%= diet_glyph_for(diet) %></div>
                   <div class="min-w-0 flex-1">
-                    <h2 class="truncate font-semibold text-brand-ink"><%= diet.name %></h2>
+                    <h2 class="truncate font-semibold text-brand-ink"><%= link_to diet.name, diet_path(diet), class: 'hover:underline' %></h2>
                     <p class="text-xs text-brand-ink-soft"><%= diet_sets_status(diet) %> · <%= diet.created_at.strftime("%d.%m.%Y") %></p>
                   </div>
                   <span id="diet_toggle_mobile_<%= diet.id %>" class="shrink-0">

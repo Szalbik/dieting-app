@@ -18,7 +18,7 @@
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
     "build:css:app": "tailwindcss --postcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
-    "build:css:admin": "sass ./app/assets/stylesheets/active_admin.scss ./app/assets/builds/active_admin.css --load-path=\"$(bundle show activeadmin)/app/assets/stylesheets\" --no-source-map --quiet-deps",
+    "build:css:admin": "sass ./app/assets/stylesheets/active_admin.scss ./app/assets/builds/active_admin.css --load-path=\"$(bundle show activeadmin)/app/assets/stylesheets\" --no-source-map --quiet-deps --silence-deprecation=import",
     "build:css": "yarn build:css:app && yarn build:css:admin"
   },
   "devDependencies": {

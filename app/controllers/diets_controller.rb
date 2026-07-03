@@ -11,18 +11,18 @@ class DietsController < ApplicationController
     @diet = Current.user.diets.find(params[:id])
 
     products = if params[:diet].present?
-      @diet.products.where(diet_set_id: search_params[:diet_set_ids])
+      @diet.products.joins(:meal).where(meals: { diet_set_id: search_params[:diet_set_ids] })
               else
                 @diet.products
     end
 
-    @products = Product.group_and_sum_by_name_and_unit(products)
+    @products = Product.group_and_sum_by_name_then_category(products)
   end
 
   def search
     @diet = Current.user.diets.find(params[:id])
-    products = @diet.products.where(diet_set_id: search_params[:diet_set_ids])
-    @products = Product.group_and_sum_by_name_and_unit(products)
+    products = @diet.products.joins(:meal).where(meals: { diet_set_id: search_params[:diet_set_ids] })
+    @products = Product.group_and_sum_by_name_then_category(products)
   end
 
   def new
