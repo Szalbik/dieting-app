@@ -43,6 +43,7 @@ class DietsController < ApplicationController
       goal = Diet::GOAL_MACROS.key?(diet_params[:goal]) ? diet_params[:goal] : 'zwykla'
 
       @diet.source = 'generated'
+      @diet.status = 'generating'
       @diet.kcal_target = diet_params[:kcal_target]
       @diet.meals_per_day = slots.size
       @diet.generation_prefs = {

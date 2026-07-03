@@ -1,0 +1,37 @@
+<%# Structured add/remove ingredient rows (name + amount + unit), backed by
+    the ingredient-rows Stimulus controller. Caller's <form> tag must carry
+    data-controller="ingredient-rows" data-action="submit->ingredient-rows#serialize"
+    and data-ingredient-rows-seed-value (JSON array of {name, amount, unit} —
+    empty for a new recipe/meal) — the controller must live on the form
+    itself since a "submit" event never bubbles down into descendants.
+    `hidden_field` is the already-rendered free-text field
+    (form.text_area :ingredients_text, or text_area_tag "meal[ingredients_text]")
+    that gets serialized into on submit — no backend change needed, it's
+    parsed the same way the old textarea was. %>
+<div data-ingredient-rows-target="list" class="space-y-2"></div>
+
+<template data-ingredient-rows-target="template">
+  <div data-ingredient-rows-target="row" class="flex items-center gap-2">
+    <input type="text" data-field="name" placeholder="Składnik, np. Kurczak" aria-label="Nazwa składnika"
+           class="min-w-0 flex-1 rounded-md border-0 py-2 px-2.5 text-sm text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy">
+    <input type="number" step="0.1" min="0" data-field="amount" placeholder="Ilość" aria-label="Ilość"
+           class="w-20 rounded-md border-0 py-2 px-2.5 text-sm text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy">
+    <select data-field="unit" aria-label="Jednostka"
+            class="w-24 rounded-md border-0 py-2 px-1 text-sm text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy">
+      <% %w[g ml szt łyżka łyżeczka szklanka plasterek opak.].each do |unit| %>
+        <option value="<%= unit %>"><%= unit %></option>
+      <% end %>
+    </select>
+    <button type="button" data-action="ingredient-rows#remove" aria-label="Usuń składnik"
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-brand-ink-soft transition-colors hover:bg-rose-50 hover:text-rose-600">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
+    </button>
+  </div>
+</template>
+
+<button type="button" data-action="ingredient-rows#add"
+        class="mt-2 rounded-full border border-dashed border-brand-navy/40 px-3 py-1.5 text-xs font-semibold text-brand-navy transition-colors hover:bg-brand-sky-soft">
+  + Dodaj składnik
+</button>
+
+<%= hidden_field %>

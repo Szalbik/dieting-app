@@ -14,6 +14,7 @@ class Diet < ApplicationRecord
   validates :meals_per_day, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 10 }, allow_nil: true
   validates :source, inclusion: { in: %w[pdf generated manual] }
   validates :kcal_target, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :status, inclusion: { in: %w[generating ready failed] }
 
   # ponytail: starter macro ratios per goal, not personalized (age/weight/activity) —
   # tune from real generated plans once we have usage data.
@@ -38,6 +39,14 @@ class Diet < ApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+
+  def generating?
+    status == 'generating'
+  end
+
+  def failed?
+    status == 'failed'
+  end
 
   attribute :generation_prefs, :json, default: {}
 

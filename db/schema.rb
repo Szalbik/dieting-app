@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_02_111946) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_03_072349) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -134,6 +134,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_02_111946) do
     t.string "source", default: "pdf", null: false
     t.integer "kcal_target"
     t.text "generation_prefs"
+    t.string "status", default: "ready", null: false
+    t.text "generation_error"
     t.index ["user_id"], name: "index_diets_on_user_id"
   end
 

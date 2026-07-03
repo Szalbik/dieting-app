@@ -7,17 +7,19 @@ module Ui
       success: 'bg-brand-mint-soft text-brand-mint-strong ring-brand-mint/60',
       accent: 'bg-brand-peach-soft text-brand-peach-strong ring-brand-peach/60',
       info: 'bg-brand-sky-soft text-brand-sky-strong ring-brand-sky/60',
+      danger: 'bg-rose-50 text-rose-700 ring-rose-600/20',
     }.freeze
 
-    def initialize(label:, variant: :neutral, classes: nil)
+    def initialize(label:, variant: :neutral, classes: nil, title: nil)
       @label = label
       @variant = variant.to_sym
       @classes = classes
+      @title = title
     end
 
     private
 
-    attr_reader :label, :variant, :classes
+    attr_reader :label, :variant, :classes, :title
 
     def badge_classes
       [

@@ -13,6 +13,9 @@ application.register("diet-swap", DietSwapController)
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 
+import IngredientRowsController from "./ingredient_rows_controller"
+application.register("ingredient-rows", IngredientRowsController)
+
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
 

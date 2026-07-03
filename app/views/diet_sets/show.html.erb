@@ -37,9 +37,20 @@
   </div>
 
   <div class="dietcard p-4" data-controller="tabs">
-    <h2 class="mb-3 font-serif text-lg font-bold text-brand-ink">Dodaj posiłek</h2>
+    <div class="mb-1 flex items-baseline justify-between gap-2">
+      <h2 class="font-serif text-lg font-bold text-brand-ink">Dodaj posiłek</h2>
+      <%= link_to "Twoje przepisy →", recipes_path, class: "text-xs font-semibold text-brand-navy hover:underline" %>
+    </div>
+    <% if @recipes.any? %>
+      <p class="mb-3 text-xs text-brand-ink-soft">Masz <%= pluralize(@recipes.size, "przepis", "przepisy") %> w bibliotece — dodaj gotowy posiłek jednym kliknięciem.</p>
+    <% end %>
+    <%
+      # "Z biblioteki" leads when the user has recipes to add — that's the
+      # fast path; otherwise default to hand-writing a meal.
+      tabs = @recipes.any? ? [["library", "Z biblioteki"], ["manual", "Napisz przepis"], ["other", "Z innej diety"]] : [["manual", "Napisz przepis"], ["library", "Z biblioteki"], ["other", "Z innej diety"]]
+    %>
     <div class="mb-4 flex rounded-full bg-brand-paper p-1">
-      <% [["manual", "Napisz przepis"], ["library", "Z biblioteki"], ["other", "Z innej diety"]].each_with_index do |(val, label), i| %>
+      <% tabs.each_with_index do |(val, label), i| %>
         <button type="button" data-tabs-target="pill" data-tab-value="<%= val %>" data-action="tabs#select" aria-selected="<%= i.zero? %>"
                 class="flex-1 rounded-full py-2 text-xs font-semibold text-brand-ink-soft aria-selected:bg-brand-navy aria-selected:text-white">
           <%= label %>
@@ -47,36 +58,38 @@
       <% end %>
     </div>
 
-    <div data-tabs-target="panel" data-tab-value="manual">
-      <%= form_with url: meals_path, method: :post, local: true, html: { class: "space-y-4" } do |f| %>
+    <div data-tabs-target="panel" data-tab-value="manual" <%= "hidden" unless tabs.first.first == "manual" %>>
+      <%= form_with url: meals_path, method: :post, local: true, html: { class: "space-y-4", data: { controller: "ingredient-rows", action: "submit->ingredient-rows#serialize", ingredient_rows_seed_value: "[]" } } do |f| %>
         <%= hidden_field_tag "meal[diet_set_id]", @diet_set.id %>
         <div>
-          <%= label_tag "meal[meal_type]", "Slot posiłku", class: "block text-sm font-medium text-gray-900" %>
-          <%= select_tag "meal[meal_type]", options_for_select(Meal::SLOTS.invert), class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
+          <%= label_tag "meal[meal_type]", "Slot posiłku", class: "block text-sm font-medium text-brand-ink" %>
+          <%= select_tag "meal[meal_type]", options_for_select(Meal::SLOTS.invert), class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
         </div>
         <div>
-          <%= label_tag "meal[name]", "Nazwa", class: "block text-sm font-medium text-gray-900" %>
-          <%= text_field_tag "meal[name]", nil, class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
+          <%= label_tag "meal[name]", "Nazwa", class: "block text-sm font-medium text-brand-ink" %>
+          <%= text_field_tag "meal[name]", nil, class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
         </div>
         <div>
-          <%= label_tag "meal[ingredients_text]", 'Składniki (jedna linia = jeden składnik, np. "Kurczak - 200 g")', class: "block text-sm font-medium text-gray-900" %>
-          <%= text_area_tag "meal[ingredients_text]", nil, rows: 4, class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
+          <p class="block text-sm font-medium text-brand-ink">Składniki</p>
+          <div class="mt-1">
+            <%= render "shared/ingredient_rows", hidden_field: text_area_tag("meal[ingredients_text]", nil, class: "hidden", data: { ingredient_rows_target: "hidden" }) %>
+          </div>
         </div>
         <div>
-          <%= label_tag "meal[instructions]", "Sposób przygotowania", class: "block text-sm font-medium text-gray-900" %>
-          <%= text_area_tag "meal[instructions]", nil, rows: 3, class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
+          <%= label_tag "meal[instructions]", "Sposób przygotowania", class: "block text-sm font-medium text-brand-ink" %>
+          <%= text_area_tag "meal[instructions]", nil, rows: 3, class: "mt-1 block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
         </div>
         <div class="grid grid-cols-4 gap-2">
-          <%= number_field_tag "meal[kcal]", nil, placeholder: "kcal", class: "block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
-          <%= number_field_tag "meal[protein]", nil, step: 0.1, placeholder: "białko", class: "block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
-          <%= number_field_tag "meal[fat]", nil, step: 0.1, placeholder: "tłuszcz", class: "block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
-          <%= number_field_tag "meal[carbs]", nil, step: 0.1, placeholder: "węgle", class: "block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm" %>
+          <%= number_field_tag "meal[kcal]", nil, placeholder: "kcal", class: "block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
+          <%= number_field_tag "meal[protein]", nil, step: 0.1, placeholder: "białko", class: "block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
+          <%= number_field_tag "meal[fat]", nil, step: 0.1, placeholder: "tłuszcz", class: "block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
+          <%= number_field_tag "meal[carbs]", nil, step: 0.1, placeholder: "węgle", class: "block w-full rounded-md border-0 py-1.5 px-2 text-brand-ink shadow-sm ring-1 ring-inset ring-brand-ink/15 focus:ring-2 focus:ring-inset focus:ring-brand-navy sm:text-sm" %>
         </div>
-        <%= submit_tag "Dodaj posiłek", class: "rounded-full bg-brand-navy px-4 py-2 text-sm font-semibold text-white" %>
+        <%= submit_tag "Dodaj posiłek", class: "rounded-full bg-brand-navy px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-navy-strong" %>
       <% end %>
     </div>
 
-    <div data-tabs-target="panel" data-tab-value="library" hidden>
+    <div data-tabs-target="panel" data-tab-value="library" <%= "hidden" unless tabs.first.first == "library" %>>
       <% if @recipes.empty? %>
         <p class="text-sm text-brand-ink-soft">Nie masz jeszcze żadnych przepisów. <%= link_to "Dodaj przepis", new_recipe_path, class: "text-brand-navy hover:underline" %>.</p>
       <% else %>

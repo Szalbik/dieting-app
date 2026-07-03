@@ -29,7 +29,7 @@
                       <%= diet.name %>
                     </td>
                     <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap">
-                      <%= diet.diet_sets.count %>
+                      <%= diet_sets_status(diet) %>
                     </td>
                     <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap" id="diet_toggle_<%= diet.id %>">
                       <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
@@ -76,7 +76,7 @@
                   <div class="foodtile foodtile-<%= diet_tile_tint_for(diet) %> h-11 w-11 text-xl"><%= diet_glyph_for(diet) %></div>
                   <div class="min-w-0 flex-1">
                     <h2 class="truncate font-semibold text-brand-ink"><%= diet.name %></h2>
-                    <p class="text-xs text-brand-ink-soft"><%= diet.diet_sets.count %> zestawów · <%= diet.created_at.strftime("%d.%m.%Y") %></p>
+                    <p class="text-xs text-brand-ink-soft"><%= diet_sets_status(diet) %> · <%= diet.created_at.strftime("%d.%m.%Y") %></p>
                   </div>
                   <span id="diet_toggle_mobile_<%= diet.id %>" class="shrink-0">
                     <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
