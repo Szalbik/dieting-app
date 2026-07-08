@@ -76,12 +76,15 @@ class ShoppingCart < ApplicationRecord
       summed_products[display_name][:aggregated_ingredient_measures] = aggregated
     end
 
-    # Now, group the aggregated products by category.
-    groups = {}
+    # Group by category, keeping unbought and bought products in separate buckets
+    # so every bought item sinks below all the still-to-buy categories.
+    unbought_groups = {}
+    bought_groups = {}
     summed_products.each do |_name, data|
       category_obj = data[:category] || OpenStruct.new(name: 'Inne')
-      groups[category_obj.name] ||= { category: category_obj, products: [] }
-      groups[category_obj.name][:products] << data
+      target = data[:bought] ? bought_groups : unbought_groups
+      target[category_obj.name] ||= { category: category_obj, products: [], bought: data[:bought] }
+      target[category_obj.name][:products] << data
     end
 
     order_hash = {
@@ -98,9 +101,12 @@ class ShoppingCart < ApplicationRecord
       'Napoje' => 11,
     }
 
-    groups.values.sort_by do |group|
-      order_hash[group[:category].name] || Float::INFINITY
+    sort_groups = lambda do |groups|
+      groups.values.sort_by { |group| order_hash[group[:category].name] || Float::INFINITY }
     end
+
+    # Unbought categories on top, bought categories (same order) below.
+    sort_groups.call(unbought_groups) + sort_groups.call(bought_groups)
   end
 
   def member_users
