@@ -41,6 +41,14 @@
           <span class="text-xs text-brand-ink-soft">· <%= shopping_cart.member_users.size %> osoby</span>
         <% end %>
       </div>
+
+      <% if groups.any? { |g| g[:bought] } %>
+        <%= button_to clear_bought_shopping_cart_items_path, method: :delete, form: { data: { turbo_stream: true }, class: "mb-3.5" },
+              class: "flex w-full items-center justify-center gap-1.5 rounded-full border border-brand-ink/15 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink-soft hover:text-rose-500" do %>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7 H20 M9 7 V5 H15 V7 M6 7 L7 20 H17 L18 7" /></svg>
+          Wyczyść kupione
+        <% end %>
+      <% end %>
     <% end %>
 
     <%# Custom (non-diet) products %>

@@ -11,10 +11,7 @@ class MealPlansController < ApplicationController
 
   def toggle_eaten
     @meal_plan.update(eaten: !@meal_plan.eaten)
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to meal_plan_path(@meal_plan) }
-    end
+    redirect_to diet_set_plans_path
   end
 
   private

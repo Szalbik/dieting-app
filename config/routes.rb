@@ -78,6 +78,7 @@ Rails.application.routes.draw do
     end
     collection do
       post :undo
+      delete :clear_bought
     end
   end
   resources :custom_cart_items, only: %i[create destroy] do

@@ -4,7 +4,7 @@ class ShoppingCartItemsController < ApplicationController
   UNDO_TIME_LIMIT = 30.minutes
   MAX_REMOVAL_RECORDS = 10
 
-  before_action :cleanup_expired_removal_records, only: [:destroy, :undo]
+  before_action :cleanup_expired_removal_records, only: [:destroy, :undo, :clear_bought]
 
   def destroy
     shopping_cart = Current.user.shopping_cart
@@ -43,6 +43,26 @@ class ShoppingCartItemsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.html { redirect_to shopping_cart_path }
+    end
+  end
+
+  def clear_bought
+    shopping_cart = Current.user.shopping_cart
+    item_ids = shopping_cart.shopping_cart_items.where(bought: true).pluck(:id)
+
+    if item_ids.any?
+      session[:removed_items] = [] unless session[:removed_items].is_a?(Array)
+      session[:removed_items] << { item_ids: item_ids, removed_at: Time.current.to_i, product_name: 'kupione produkty' }
+      session[:removed_items] = session[:removed_items].last(MAX_REMOVAL_RECORDS)
+
+      RemoveShoppingCartItemsJob.set(wait: UNDO_TIME_LIMIT).perform_later(item_ids, Current.user.id)
+      ShoppingCartItem.where(id: item_ids).destroy_all
+      @removed_product_name = 'kupione produkty'
+    end
+
+    respond_to do |format|
+      format.turbo_stream { render :destroy }
       format.html { redirect_to shopping_cart_path }
     end
   end
