@@ -33,14 +33,21 @@ module DietingApp
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    # diet_eval is a dev/CI tool (parser benchmark); required explicitly by its rake task and specs.
+    config.autoload_lib(ignore: %w[assets tasks diet_eval diet_eval.rb])
 
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    # PDF diet parser knobs (see Chat::Diet::Strategies; compare with `bin/rails diet:benchmark`).
+    # Defaults = benchmark winner 2026-09-28 (context/changes/pdf-parsing-quality/benchmark.md):
+    # native_pdf was the only strategy that parsed grid layouts and scans.
     config.x.openai.diet_parsing_model = ENV.fetch('OPENAI_DIET_PARSER_MODEL', 'gpt-5.1')
+    config.x.openai.diet_parsing_strategy = ENV.fetch('OPENAI_DIET_PARSER_STRATEGY', 'native_pdf')
+    config.x.openai.diet_parsing_reasoning_effort = ENV.fetch('OPENAI_DIET_PARSER_REASONING', 'none')
+    config.x.openai.diet_parsing_concurrency = ENV.fetch('OPENAI_DIET_PARSER_CONCURRENCY', '4').to_i
 
     config.time_zone = 'Warsaw'
     config.i18n.default_locale = :pl

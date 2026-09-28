@@ -1,0 +1,871 @@
+{
+  "pdf": "../../files/diet_for_two_weeks.pdf",
+  "scanned": false,
+  "meals_per_day": null,
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jajka na miękko",
+          "ingredients": [
+            "jajka ugotowane na miękko",
+            "serek śmietankowy typu Almette",
+            "chleb razowy",
+            "chleb orkiszowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapka, Owoc",
+          "ingredients": [
+            "bułka grahamka",
+            "szynka z indyka",
+            "polędwica sopocka",
+            "ser żółty",
+            "sałata lodowa",
+            "ogórek kiszony",
+            "jabłko",
+            "woda mineralna"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Makaron z kurczakiem i orzechami",
+          "ingredients": [
+            "makaron spaghetti pełnoziarnisty",
+            "mięso z piersi kurczaka",
+            "cukinia",
+            "orzechy włoskie",
+            "olej rzepakowy",
+            "pietruszka liście",
+            "sól",
+            "pieprz",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Serek z rzodkiewkami",
+          "ingredients": [
+            "serek ziarnisty typu grani",
+            "rzodkiewki",
+            "chleb razowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z dodatkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi, karmelowe",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapka, Owoc",
+          "ingredients": [
+            "chleb razowy",
+            "sałata",
+            "szynka z indyka",
+            "ogórek kiszony",
+            "banan",
+            "woda mineralna"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Sałatka z burakami i kurczakiem",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "buraki ugotowane",
+            "pomidory",
+            "mix sałat",
+            "awokado",
+            "cebula czerwona",
+            "ser feta",
+            "orzechy włoskie",
+            "oliwa z oliwek",
+            "musztarda",
+            "syrop klonowy",
+            "ocet balsamiczny",
+            "sól",
+            "pieprz",
+            "bazylia",
+            "oregano",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Omlet z tortillą",
+          "ingredients": [
+            "jaja",
+            "szpinak",
+            "pomidor",
+            "tortilla pełnoziarnista",
+            "ser żółty tarty",
+            "sól",
+            "pieprz",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Serek ze szczypiorkiem",
+          "ingredients": [
+            "chleb razowy",
+            "masło",
+            "serek ziarnisty typu grani",
+            "szczypiorek",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Koktajl",
+          "ingredients": [
+            "jogurt naturalny",
+            "borówka amerykańska",
+            "banan",
+            "otręby żytnie"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kurczak w szynce, pieczony z warzywami",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "szynka parmeńska",
+            "cukinia",
+            "pomidor",
+            "ciecierzyca ze słoika",
+            "szalotka",
+            "czosnek",
+            "olej rzepakowy",
+            "oregano",
+            "tymianek",
+            "sól",
+            "pieprz",
+            "słodka mielona papryka",
+            "płatki chili",
+            "ryż brązowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Wrap z kurczakiem",
+          "ingredients": [
+            "tortilla pełnoziarnista",
+            "mięso z piersi kurczaka",
+            "mix sałat",
+            "ogórek kiszony",
+            "cebula",
+            "olej rzepakowy",
+            "pomidory krojone, puszka",
+            "czosnek",
+            "cukier",
+            "bazylia świeża",
+            "sól",
+            "pieprz",
+            "oregano suszone",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z dodatkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi, karmelowe",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Serek ziarnisty z rzodkiewkami, Owoc",
+          "ingredients": [
+            "serek ziarnisty typu grani",
+            "rzodkiewki",
+            "chleb razowy",
+            "banan",
+            "woda mineralna"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kasza smażona z kurczakiem i warzywami",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "czosnek",
+            "szalotka",
+            "papryka czerwona",
+            "fasolka szparagowa mrożona",
+            "groszek zielony mrożony",
+            "kasza jęczmienna perłowa",
+            "jajko",
+            "olej rzepakowy",
+            "curry w proszku",
+            "szczypiorek",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "szynka z indyka",
+            "ser mozzarella light",
+            "ogórek kiszony",
+            "sałata lodowa",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Omlet na słodko",
+          "ingredients": [
+            "jajka",
+            "masło",
+            "mleko 1,5% tł.",
+            "mąka pszenna, razowa",
+            "powidła",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Serek z rzodkiewką, Owoc",
+          "ingredients": [
+            "serek ziarnisty",
+            "rzodkiewki",
+            "chleb razowy",
+            "jabłko",
+            "woda mineralna"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Rosół",
+          "ingredients": [
+            "udka kurczaka, ze skórą",
+            "pietruszka korzeń",
+            "marchew",
+            "seler",
+            "makaron nitki",
+            "sól",
+            "pieprz",
+            "sok pomarańczowy"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Jogurt z dodatkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi, karmelowe",
+            "borówka amerykańska",
+            "siemię lniane",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "szynka z indyka",
+            "ser żółty",
+            "pomidory",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Jogurt pitny Twist, owoce leśne, Owoc",
+          "ingredients": [
+            "jogurt pitny Twist, owoce leśne",
+            "jabłko"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Filet z kurczaka w sosie curry",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "cukinia",
+            "oliwki czarne",
+            "suszone pomidory",
+            "czosnek",
+            "szalotka",
+            "oliwa z oliwek",
+            "curry w proszku",
+            "śmietana 12% tł.",
+            "ser typu feta",
+            "kasza orkiszowa",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "ser mozzarella, light",
+            "pomidory",
+            "rzodkiewki",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z dodatkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "płatki owsiane",
+            "borówka amerykańska",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Serek z rzodkiewką, Owoc",
+          "ingredients": [
+            "serek ziarnisty typu grani",
+            "rzodkiewki",
+            "chleb razowy",
+            "jabłko",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kurczak curry z dynią",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "czosnek",
+            "oliwa z oliwek",
+            "sok z cytryny",
+            "czerwona pasta curry",
+            "dynia hokkaido",
+            "bulion warzywny",
+            "sos sojowy",
+            "woda",
+            "mleczko kokosowe z puszki",
+            "ryż basmati",
+            "sól",
+            "pieprz czarny mielony",
+            "kurkuma mielona",
+            "woda mineralna"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Placuszki bananowe",
+          "ingredients": [
+            "jajka",
+            "mąka orkiszowa",
+            "banan",
+            "proszek do pieczenia",
+            "olej rzepakowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jajecznica",
+          "ingredients": [
+            "jajko",
+            "masło",
+            "chleb razowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Koktajl",
+          "ingredients": [
+            "kefir",
+            "wiśnie mrożone",
+            "banan",
+            "nasionka chia"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kurczak w płatkach migdałów z buraczkami",
+          "ingredients": [
+            "filet z piersi kurczaka bez skóry",
+            "olej rzepakowy",
+            "płatki migdałów",
+            "jajko",
+            "mąka pszenna",
+            "sól",
+            "pieprz",
+            "kasza orkiszowa",
+            "buraki",
+            "cebula",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapka",
+          "ingredients": [
+            "chleb razowy",
+            "serek ziarnisty typu grani",
+            "rzodkiewki",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Parówki na ciepło",
+          "ingredients": [
+            "parówki z szynki",
+            "keczup",
+            "pomidor",
+            "chleb razowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Jogurt pitny Twist, brzoskwinia-mango, Owoce",
+          "ingredients": [
+            "jogurt pitny Twist, brzoskwinia-mango",
+            "kiwi",
+            "jabłko"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Pstrąg pieczony z suszonymi pomidorami",
+          "ingredients": [
+            "pstrąg strumieniowy",
+            "ziemniaki",
+            "cytryna",
+            "cebula czerwona",
+            "suszone pomidory",
+            "koperek",
+            "sól",
+            "pieprz",
+            "słodka mielona papryka",
+            "czosnek",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "pasztet pieczony, drobiowy",
+            "sałata lodowa",
+            "ogórek kiszony",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z dodatkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "płatki owsiane",
+            "borówka amerykańska",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapka, Owoc",
+          "ingredients": [
+            "chleb razowy",
+            "szynka z indyka",
+            "ser żółty",
+            "rzodkiewki",
+            "jabłko",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kieszenie z kurczaka z pietruszką i fetą",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "pietruszka nać",
+            "ser typu feta",
+            "pomidor",
+            "czosnek",
+            "oliwa z oliwek",
+            "sól",
+            "pieprz",
+            "kurkuma",
+            "słodka papryka",
+            "suszone oregano",
+            "ostra papryka",
+            "kasza jęczmienna perłowa",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Sałatka z tuńczyka",
+          "ingredients": [
+            "tuńczyk w sosie własnym",
+            "ogórek kiszony",
+            "kukurydza konserwowa",
+            "majonez lekki",
+            "ryż basmati",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z musli",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi, karmelowe",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Jogurt pitny Twist, owoce leśne, Owoc",
+          "ingredients": [
+            "jogurt pitny Twist, owoce leśne",
+            "jabłko"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Schabowy z surówką",
+          "ingredients": [
+            "wieprzowina schab, chudy",
+            "jajko",
+            "sok z cytryny",
+            "bułka tarta",
+            "sól",
+            "pieprz",
+            "olej rzepakowy",
+            "ziemniaki",
+            "kapusta biała",
+            "marchew",
+            "cukier",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Wrap śniadaniowy z tortilli",
+          "ingredients": [
+            "tortilla pełnoziarnista",
+            "szpinak świeży",
+            "pomidor",
+            "boczek w plastrach",
+            "jajko",
+            "czosnek",
+            "masło",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z musli",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapka, Owoc",
+          "ingredients": [
+            "chleb razowy",
+            "pasztet pieczony, drobiowy",
+            "ogórek kiszony",
+            "banan",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Curry z kurczakiem i mango",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "mango",
+            "ryż brązowy",
+            "mleczko kokosowe",
+            "cebula",
+            "czosnek",
+            "olej rzepakowy",
+            "sos rybny",
+            "sok z cytryny",
+            "imbir świeży",
+            "papryczka chili",
+            "curry mielone",
+            "sól",
+            "pieprz",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Serek ze szczypiorkiem",
+          "ingredients": [
+            "chleb razowy",
+            "serek ziarnisty typu grani",
+            "szczypiorek",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Pasta jajeczna z fetą",
+          "ingredients": [
+            "jajko ugotowane na twardo",
+            "ser feta",
+            "majonez lekki",
+            "szczypiorek",
+            "rzeżucha",
+            "chleb razowy",
+            "sól",
+            "pieprz",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Jogurt z musli, Owoc",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi, karmelowe",
+            "banan",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Szybkie chili con carne",
+          "ingredients": [
+            "mięso mielone wołowe",
+            "cebula",
+            "oliwa z oliwek",
+            "pomidory krojone z puszki",
+            "czerwona fasola z puszki",
+            "chili mielone",
+            "sól",
+            "pieprz czarny mielony",
+            "ryż brązowy",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "polędwica sopocka",
+            "ser żółty",
+            "ogórek kiszony",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb razowy",
+            "polędwica sopocka",
+            "ser żółty",
+            "papryka czerwona",
+            "sałata lodowa",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Jogurt pitny Twist, brzoskwinia-mango, Owoce",
+          "ingredients": [
+            "jogurt pitny Twist, brzoskwinia-mango",
+            "banan",
+            "kiwi"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Zapiekanka makaronowa z mięsem mielonym i cukinią",
+          "ingredients": [
+            "mięso mielone z indyka",
+            "cebula",
+            "makaron penne, pełnoziarnisty",
+            "cukinia",
+            "ser parmezan, tarty",
+            "masło",
+            "oliwa z oliwek",
+            "panierka panko",
+            "bułka tarta",
+            "passata pomidorowa",
+            "bulion warzywny",
+            "woda",
+            "sos sojowy",
+            "czosnek",
+            "sól",
+            "pieprz",
+            "tymianek suszony",
+            "papryka słodka",
+            "papryka ostra",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Wrap z warzywami i kurczakiem",
+          "ingredients": [
+            "papier ryżowy",
+            "mięso z piersi kurczaka",
+            "olej rzepakowy",
+            "marchew",
+            "kapusta czerwona",
+            "sałata lodowa",
+            "kalarepa",
+            "papryka czerwona",
+            "kiełki lucerny",
+            "sos sojowy ciemny",
+            "miód pszczeli",
+            "limonka",
+            "herbata gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    }
+  ]
+}

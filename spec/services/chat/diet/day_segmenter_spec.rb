@@ -56,7 +56,7 @@ RSpec.describe Chat::Diet::DaySegmenter do
     let(:pages) do
       [
         PdfTextExtractor::Page.new(page_number: 1, text: "## **_Zestaw 1_** \n\n## **_1) Śniadanie_** \nOmlet"),
-        PdfTextExtractor::Page.new(page_number: 2, text: "## **_Zestaw 2_** \n\n## **_1) Śniadanie_** \nJajecznica"),
+        PdfTextExtractor::Page.new(page_number: 2, text: "## **_Zestaw 2_** \n\n## **_1) Śniadanie_** \nJajecznica")
       ]
     end
 
@@ -64,6 +64,40 @@ RSpec.describe Chat::Diet::DaySegmenter do
       expect(chunks.map(&:day)).to eq([1, 2])
       expect(chunks.first.markdown).to include('Omlet')
       expect(chunks.second.markdown).to include('Jajecznica')
+    end
+  end
+
+  context 'when model-provided headings are given' do
+    subject(:segmenter) { described_class.new(pages, headings: { 'Poniedziałek' => 1, '**Wtorek**' => 2 }) }
+
+    let(:pages) do
+      [
+        PdfTextExtractor::Page.new(page_number: 1, text: "# Poniedziałek\nOmlet\n"),
+        PdfTextExtractor::Page.new(page_number: 2, text: "## **_WTOREK_**\nJajecznica\n")
+      ]
+    end
+
+    it 'splits on those headings, ignoring markdown decoration and case' do
+      chunks = segmenter.call
+
+      expect(chunks.map(&:day)).to eq([1, 2])
+      expect(chunks.map(&:page_numbers)).to eq([[1], [2]])
+      expect(segmenter).not_to be_fallback
+    end
+
+    context 'when headings share a prefix or appear inside other lines' do
+      subject(:segmenter) { described_class.new(pages, headings: { 'Dzień 1' => 1, 'Dzień 10' => 10 }) }
+
+      let(:pages) do
+        [PdfTextExtractor::Page.new(page_number: 1, text: "Dzień 1 – 1800 kcal\n- 100 g ryżu\nDzień 10\nOmlet\n")]
+      end
+
+      it 'matches whole words only and prefers the longer heading' do
+        chunks = segmenter.call
+
+        expect(chunks.map(&:day)).to eq([1, 10])
+        expect(chunks.first.markdown).to include('100 g ryżu')
+      end
     end
   end
 

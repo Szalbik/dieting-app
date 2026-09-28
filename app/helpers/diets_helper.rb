@@ -14,14 +14,17 @@ module DietsHelper
     DIET_TILE_TINTS[diet.id % DIET_TILE_TINTS.size]
   end
 
-  # Sets-count cell: a status badge while an AI generation is running/failed,
-  # otherwise the plain "N zestawów" count.
+  # Sets-count cell: a status badge while a PDF parse / AI generation is
+  # running or failed, otherwise the plain "N zestawów" count.
   def diet_sets_status(diet)
+    pdf = diet.source == 'pdf'
+
     case diet.status
     when 'generating'
-      render(Ui::BadgeComponent.new(label: 'Generowanie…', variant: :accent))
+      render(Ui::BadgeComponent.new(label: pdf ? 'Wczytywanie PDF…' : 'Generowanie…', variant: :accent))
     when 'failed'
-      render(Ui::BadgeComponent.new(label: 'Błąd generowania', variant: :danger, classes: 'cursor-help', title: diet.generation_error))
+      render(Ui::BadgeComponent.new(label: pdf ? 'Błąd wczytywania PDF' : 'Błąd generowania', variant: :danger,
+                                    classes: 'cursor-help', title: diet.generation_error))
     else
       "#{diet.diet_sets.count} zestawów"
     end

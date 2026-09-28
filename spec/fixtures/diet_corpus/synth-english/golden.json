@@ -1,0 +1,86 @@
+{
+  "pdf": "diet.pdf",
+  "scanned": false,
+  "meals_per_day": null,
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Scrambled eggs on toast",
+          "ingredients": [
+            "eggs",
+            "wholemeal bread",
+            "butter",
+            "cherry tomatoes"
+          ],
+          "kcal": 420
+        },
+        {
+          "type": "lunch",
+          "name": "Chicken quinoa bowl",
+          "ingredients": [
+            "chicken breast",
+            "quinoa",
+            "avocado",
+            "spinach",
+            "lemon juice"
+          ],
+          "kcal": 640
+        },
+        {
+          "type": "dinner",
+          "name": "Baked cod with sweet potato",
+          "ingredients": [
+            "cod fillet",
+            "sweet potato",
+            "green peas",
+            "olive oil"
+          ],
+          "kcal": 520
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Overnight oats",
+          "ingredients": [
+            "rolled oats",
+            "almond milk",
+            "chia seeds",
+            "strawberries"
+          ],
+          "kcal": 360
+        },
+        {
+          "type": "lunch",
+          "name": "Turkey wrap",
+          "ingredients": [
+            "wholemeal tortilla",
+            "turkey breast slices",
+            "lettuce",
+            "hummus",
+            "cucumber"
+          ],
+          "kcal": 480
+        },
+        {
+          "type": "dinner",
+          "name": "Beef stir-fry with rice",
+          "ingredients": [
+            "lean beef",
+            "brown rice",
+            "bell pepper",
+            "broccoli",
+            "soy sauce"
+          ],
+          "kcal": 610
+        }
+      ]
+    }
+  ]
+}

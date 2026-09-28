@@ -69,7 +69,9 @@ RSpec.describe 'Diets', type: :request do
         post diets_path, params: { diet: { name: 'PDF diet', meals_per_day: 5, pdf: pdf } }
       end.to have_enqueued_job(DietBuilderJob)
 
-      expect(Diet.find_by(name: 'PDF diet', user: user).source).to eq('pdf')
+      diet = Diet.find_by(name: 'PDF diet', user: user)
+      expect(diet.source).to eq('pdf')
+      expect(diet.status).to eq('generating')
     end
 
     it 'rejects a submit without a pdf when only pdf mode is enabled' do
@@ -202,6 +204,21 @@ RSpec.describe 'Diets', type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include('Lista produktów')
     end
+
+    it 'shows the parsing state instead of an empty day list for a pdf diet still loading' do
+      loading = create(:diet, :with_pdf, user: user, source: 'pdf', status: 'generating')
+      login
+      get diet_path(loading)
+      expect(response.body).to include('Wczytujemy Twój PDF')
+    end
+
+    it 'shows the error and a retry for a pdf diet whose parse failed' do
+      failed = create(:diet, :with_pdf, user: user, source: 'pdf', status: 'failed',
+                                        generation_error: 'OpenAI API error: boom')
+      login
+      get diet_path(failed)
+      expect(response.body).to include('Nie udało się wczytać PDF', 'Przeparsuj')
+    end
   end
 
   describe 'PATCH /diets/:id/toggle_active' do
@@ -224,6 +241,27 @@ RSpec.describe 'Diets', type: :request do
         post reparse_diet_path(diet)
       end.to have_enqueued_job(DietBuilderJob)
       expect(response).to redirect_to(diets_path)
+      expect(diet.reload.status).to eq('generating')
+    end
+
+    it 'lets the user reparse a diet stuck in generating by a dead worker' do
+      diet.update!(status: 'generating')
+      diet.update_column(:updated_at, 2.hours.ago) # rubocop:disable Rails/SkipsModelValidations
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.to have_enqueued_job(DietBuilderJob)
+    end
+
+    it 'refuses to reparse while a parse is already running' do
+      diet.update!(status: 'generating')
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.not_to have_enqueued_job(DietBuilderJob)
+      expect(user.reload.ai_quota_used_count.to_i).to eq(0)
+      follow_redirect!
+      expect(response.body).to include('właśnie wczytywana')
     end
 
     it 'redirects with alert when PDF is missing' do

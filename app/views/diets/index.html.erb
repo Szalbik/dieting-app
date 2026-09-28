@@ -1,3 +1,6 @@
+<% content_for :head do %><%= turbo_refreshes_with method: :morph, scroll: :preserve %><% end %>
+<%= turbo_stream_from Current.user, :diets %>
+
 <div class="space-y-8">
   <div class="flex flex-wrap items-end justify-between gap-4">
     <%= render Ui::SectionHeaderComponent.new(label: "Planer", title: "Twoje diety", subtitle: "Wybierz, którą dietę chcesz teraz stosować.") %>

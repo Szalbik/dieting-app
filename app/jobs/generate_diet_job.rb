@@ -10,7 +10,7 @@ class GenerateDietJob < ApplicationJob
 
     PopulateDietFromJsonJob.perform_later(diet.id)
   rescue => e
-    diet&.update!(status: 'failed', generation_error: e.message)
+    diet&.fail_generation!(e)
     raise
   end
 end

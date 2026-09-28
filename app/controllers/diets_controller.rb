@@ -34,6 +34,7 @@ class DietsController < ApplicationController
 
     if diet_params[:pdf].present?
       @diet.source = 'pdf'
+      @diet.status = 'generating'
       @diet.pdf = diet_params[:pdf]
       @diet.meals_per_day = diet_params[:meals_per_day]
     elsif diet_params[:kcal_target].present?
@@ -143,11 +144,19 @@ class DietsController < ApplicationController
       return
     end
 
+    # Block a second parse while one runs, but let the user unstick a diet a
+    # killed worker left in "generating" for good.
+    if @diet.generating? && @diet.updated_at > Diet::STUCK_GENERATING_AFTER.ago
+      redirect_to diets_path, alert: 'Ta dieta jest właśnie wczytywana. Poczekaj, aż się zakończy.'
+      return
+    end
+
     unless Current.user.ai_quota_available?
       redirect_to diets_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
       return
     end
 
+    @diet.update!(status: 'generating', generation_error: nil)
     DietBuilderJob.perform_later(@diet.id)
     Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'
