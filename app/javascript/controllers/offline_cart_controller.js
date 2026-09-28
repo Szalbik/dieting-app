@@ -180,8 +180,8 @@ export default class extends Controller {
         ? "Synchronizuję…"
         : pending > 0 ? `Offline · ${pending} do zsynchronizowania` : "Offline"
     }
-    // Online-only actions (delete, clear bought, add custom) can't be queued: disable them while offline.
-    this.element.querySelectorAll("form:not([data-offline-check]) button, form:not([data-offline-check]) input[type=submit]").forEach((button) => {
+    // Online-only actions (delete, move, clear bought, add custom) can't be queued: disable them while offline.
+    this.element.querySelectorAll("form:not([data-offline-check]) button, form:not([data-offline-check]) input[type=submit], form:not([data-offline-check]) select").forEach((button) => {
       button.disabled = offline
       button.classList.toggle("opacity-40", offline)
     })
