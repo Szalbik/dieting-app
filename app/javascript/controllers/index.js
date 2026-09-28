@@ -16,6 +16,9 @@ application.register("dropdown", DropdownController)
 import IngredientRowsController from "./ingredient_rows_controller"
 application.register("ingredient-rows", IngredientRowsController)
 
+import OfflineCartController from "./offline_cart_controller"
+application.register("offline-cart", OfflineCartController)
+
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
 
