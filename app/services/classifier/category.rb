@@ -9,7 +9,15 @@ module Classifier
     MIN_CONFIDENCE = 0.45
     SIMILARITY_THRESHOLD = 0.6
     IGNORED_TOKENS = %w[g kg dag mg ml l szt sztuk op opak opakowanie opakowania].freeze
+    # Order matters: first matching category wins, so "Przyprawy: sól, pieprz,
+    # papryka" lands in spices before the vegetable rule sees "papryka".
     KEYWORD_RULES = {
+      'Przyprawy' => [
+        'bazylia', 'cukier', 'curry', 'oregano', 'papryka slodka', 'pieprz',
+        'przyprawa', 'przyprawy', 'sol', 'suszone pomidory', 'ziola'
+      ],
+      'Tłuszcze i oleje' => %w[olej oliwa maslo smalec],
+      'Słodycze i przekąski' => %w[baton batonik czekolada ciastka wafel chipsy zelki],
       'Mięso i Ryby' => [
         'boczek', 'cielecina', 'dorsz', 'filet z kurczaka', 'filet z indyka',
         'indyk', 'karkowka', 'kurczak', 'losos', 'mieso', 'piers z kurczaka',
@@ -36,12 +44,7 @@ module Classifier
         'pieczywo', 'platki', 'ryz', 'suchary', 'tortilla'
       ],
       'Przetwory' => [
-        'dzem', 'koncentrat', 'miod', 'musztarda', 'ocet', 'olej',
-        'oliwa', 'przecier', 'sos'
-      ],
-      'Przyprawy' => [
-        'bazylia', 'cukier', 'curry', 'oregano', 'papryka slodka', 'pieprz',
-        'przyprawa', 'sol', 'suszone pomidory', 'ziola'
+        'dzem', 'koncentrat', 'miod', 'musztarda', 'ocet', 'przecier', 'sos'
       ],
       'Napoje' => [
         'herbata', 'kawa', 'napoj', 'sok', 'woda'
@@ -56,8 +59,10 @@ module Classifier
       new(skip_load: true)
     end
 
+    # Transliterated so the diacritic-free KEYWORD_RULES match real Polish
+    # names ("Mięso" -> "mieso", "Mąka" -> "maka").
     def self.normalize_name(product_name)
-      product_name.to_s.downcase
+      I18n.transliterate(product_name.to_s).downcase
         .gsub(/[^[:alnum:]\s]/, ' ')
         .gsub(/\b\d+(?:[.,]\d+)?\b/, ' ')
         .gsub(/\s+/, ' ')
@@ -185,7 +190,7 @@ module Classifier
       substring_bonus = target_name.include?(candidate_name) || candidate_name.include?(target_name) ? 0.35 : 0.0
       prefix_bonus = target_tokens.first == candidate_tokens.first ? 0.15 : 0.0
 
-      token_score + substring_bonus + prefix_bonus
+      [token_score + substring_bonus + prefix_bonus, 1.0].min
     end
 
     def persist_model!

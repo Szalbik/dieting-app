@@ -63,6 +63,31 @@ RSpec.describe Classifier::Category, type: :service do
     expect(prediction[:confidence]).to be >= 0.8
   end
 
+  describe 'keyword rules on real Polish names (no training data)' do
+    {
+      'Mięso z piersi kurczaka' => 'Mięso i Ryby',
+      'Mąka pszenna' => 'Produkty zbożowe',
+      'Przyprawy: sól, pieprz, papryka czerwona ostra' => 'Przyprawy',
+      'Oliwa z oliwek' => 'Tłuszcze i oleje',
+      'Batonik białkowy Slimbel' => 'Słodycze i przekąski'
+    }.each do |name, expected|
+      it "places #{name.inspect} in #{expected}" do
+        expect(described_class.predict(name)[:name]).to eq(expected)
+      end
+    end
+
+    it 'does not send cream to vegetables' do
+      expect(described_class.predict('Śmietana 12% tłuszczu')[:name]).not_to eq('Warzywa')
+    end
+  end
+
+  it 'never reports similarity confidence above 1.0' do
+    category = create(:category, name: 'Przyprawy')
+    ProductCategory.create!(product: Product.create!(name: 'Suszone pomidory'), category: category, state: true)
+
+    expect(described_class.predict('Suszone pomidory w oleju')[:confidence]).to be <= 1.0
+  end
+
   it 'persists the trained model to disk' do
     category = create(:category, name: 'Warzywa')
     ProductCategory.create!(
