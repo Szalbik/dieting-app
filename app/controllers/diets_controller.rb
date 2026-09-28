@@ -58,7 +58,7 @@ class DietsController < ApplicationController
     end
 
     unless Diet::CREATION_MODES.include?(@diet.source)
-      @diet.errors.add(:pdf, 'Wybierz plik PDF z dietą.')
+      @diet.errors.add(:base, 'Wybierz plik PDF z dietą.')
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @diet.errors, status: :unprocessable_entity }

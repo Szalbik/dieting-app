@@ -46,6 +46,19 @@ RSpec.describe 'Diets', type: :request do
       get new_diet_path
       expect(response).to have_http_status(:success)
     end
+
+    it 'hides the AI wizard and blank diet tabs while only pdf mode is enabled' do
+      login
+      get new_diet_path
+      expect(response.body).not_to include('Kreator AI', 'Zacznij od zera')
+    end
+
+    it 'shows every tab when all creation modes are enabled' do
+      stub_const('Diet::CREATION_MODES', %w[pdf generated manual])
+      login
+      get new_diet_path
+      expect(response.body).to include('Wgraj PDF', 'Kreator AI', 'Zacznij od zera')
+    end
   end
 
   describe 'POST /diets' do
@@ -66,6 +79,7 @@ RSpec.describe 'Diets', type: :request do
       end.not_to change(Diet, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include('Wybierz plik PDF z dietą.')
     end
 
     it 'rejects the AI wizard when it is disabled without consuming quota' do
