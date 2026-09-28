@@ -10,7 +10,8 @@
       "Bash(bundle exec *)",
       "Bash(git stash *)",
       "Bash(find /Users/damians/Projects/MovaApp/app/views -path \"*subscriptions*\" -name \"*.erb\" -o -path \"*subscriptions*\" -name \"*.html\")",
-      "Bash(ls -la /Users/damians/Projects/MovaApp/app/views/subscriptions/)"
+      "Bash(ls -la /Users/damians/Projects/MovaApp/app/views/subscriptions/)",
+      "Bash(/Users/damians/.claude/skills/impeccable/scripts/impeccable context *)"
     ]
   }
 }
