@@ -47,6 +47,10 @@ class Diet < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
+  # Longer than any observed parse (14-day plan p95 ≈ 2 min); past this a
+  # "generating" diet is assumed orphaned by a dead worker and may be reparsed.
+  STUCK_GENERATING_AFTER = 30.minutes
+
   def generating?
     status == 'generating'
   end

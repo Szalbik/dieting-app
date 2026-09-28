@@ -244,6 +244,15 @@ RSpec.describe 'Diets', type: :request do
       expect(diet.reload.status).to eq('generating')
     end
 
+    it 'lets the user reparse a diet stuck in generating by a dead worker' do
+      diet.update!(status: 'generating')
+      diet.update_column(:updated_at, 2.hours.ago) # rubocop:disable Rails/SkipsModelValidations
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.to have_enqueued_job(DietBuilderJob)
+    end
+
     it 'refuses to reparse while a parse is already running' do
       diet.update!(status: 'generating')
       login

@@ -15,7 +15,10 @@ class Chat::Diet::DaySegmenter
   # when the document has no "Dzień/Zestaw N" markers the regex can find.
   def initialize(pages, headings: nil)
     @pages = Array(pages)
-    @headings = headings&.transform_keys { |heading| normalize(heading) }&.reject { |key, _| key.blank? }
+    # Longest key first so "wariant ab" isn't shadowed by "wariant a".
+    @headings = headings&.transform_keys { |heading| normalize(heading) }
+      &.reject { |key, _| key.blank? }
+      &.sort_by { |key, _| -key.size }&.to_h
     @fallback = false
   end
 
@@ -74,10 +77,11 @@ class Chat::Diet::DaySegmenter
 
   def detect_day_number(line)
     # A printed heading may carry a suffix the model dropped ("Poniedziałek –
-    # 1800 kcal"); match on the leading text.
+    # 1800 kcal"); match on the leading text, but only at a word boundary so
+    # "dzień 1" never claims "dzień 10".
     if @headings
       normalized = normalize(line)
-      return @headings.find { |heading, _day| normalized.start_with?(heading) }&.last
+      return @headings.find { |heading, _day| normalized == heading || normalized.start_with?("#{heading} ") }&.last
     end
 
     # Strip markdown emphasis (**bold**, _italic_) before matching: a day

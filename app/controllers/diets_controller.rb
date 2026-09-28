@@ -144,7 +144,9 @@ class DietsController < ApplicationController
       return
     end
 
-    if @diet.generating?
+    # Block a second parse while one runs, but let the user unstick a diet a
+    # killed worker left in "generating" for good.
+    if @diet.generating? && @diet.updated_at > Diet::STUCK_GENERATING_AFTER.ago
       redirect_to diets_path, alert: 'Ta dieta jest właśnie wczytywana. Poczekaj, aż się zakończy.'
       return
     end
