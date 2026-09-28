@@ -41,8 +41,10 @@ module DietingApp
     # in config/environments, which are processed later.
     #
     # PDF diet parser knobs (see Chat::Diet::Strategies; compare with `bin/rails diet:benchmark`).
+    # Defaults = benchmark winner 2026-09-28 (context/changes/pdf-parsing-quality/benchmark.md):
+    # native_pdf was the only strategy that parsed grid layouts and scans.
     config.x.openai.diet_parsing_model = ENV.fetch('OPENAI_DIET_PARSER_MODEL', 'gpt-5.1')
-    config.x.openai.diet_parsing_strategy = ENV.fetch('OPENAI_DIET_PARSER_STRATEGY', 'markdown_per_day')
+    config.x.openai.diet_parsing_strategy = ENV.fetch('OPENAI_DIET_PARSER_STRATEGY', 'native_pdf')
     config.x.openai.diet_parsing_reasoning_effort = ENV.fetch('OPENAI_DIET_PARSER_REASONING', 'none')
     config.x.openai.diet_parsing_concurrency = ENV.fetch('OPENAI_DIET_PARSER_CONCURRENCY', '4').to_i
 

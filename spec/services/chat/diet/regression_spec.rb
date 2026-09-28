@@ -10,8 +10,10 @@ require 'rails_helper'
 #
 # Run it before merging any change to the parser, its prompt or its schema.
 RSpec.describe 'PDF parser regression', :live_openai do
-  # Minimum per-PDF scores; set from the chosen config's benchmark minus slack.
-  thresholds = { composite: 0, ingredient_recall: 0, kcal_within_10pct: 0 }
+  # Minimum per-PDF scores = corpus minimums of the shipped config
+  # (native_pdf / none / gpt-5.1, 2026-09-28: composite 99.3, recall 0.98,
+  # kcal 1.00) minus slack. See context/changes/pdf-parsing-quality/benchmark.md.
+  thresholds = { composite: 96, ingredient_recall: 0.93, kcal_within_10pct: 0.95 }
 
   around do |example|
     WebMock.allow_net_connect!
