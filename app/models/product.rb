@@ -138,8 +138,12 @@ class Product < ApplicationRecord
     # Category chosen by the parse/generate LLM call (PopulateDietFromJsonJob).
     # Must be consumed here: has_one product_category means writing it after
     # create would collide with the row this hook makes.
+    # An admin-confirmed category for the same name still wins over the LLM guess.
     if preset_category.present?
-      ProductCategory.create!(product: self, category: preset_category, state: false)
+      confirmed = ProductCategory.joins(:product).where(state: true)
+        .where('LOWER(TRIM(products.name)) = ?', name.to_s.strip.downcase)
+        .where.not(product_id: id).first
+      ProductCategory.create!(product: self, category: confirmed&.category || preset_category, state: confirmed.present?)
       return
     end
 

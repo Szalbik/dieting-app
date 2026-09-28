@@ -20,8 +20,14 @@ class AddFatsAndSnacksCategories < ActiveRecord::Migration[8.0]
     TrainCategoryModelJob.perform_later
   end
 
+  # Assignments go back to "Inne" rather than vanishing with the categories.
+  # Junk categories removed in #up are not restored.
   def down
-    Category.where(name: [FATS, SNACKS]).find_each(&:destroy)
+    added = Category.where(name: [FATS, SNACKS])
+    inne = Category.find_or_create_by!(name: 'Inne')
+    ProductCategory.where(category_id: added.select(:id))
+                   .update_all(category_id: inne.id, updated_at: Time.current)
+    added.find_each(&:destroy)
   end
 
   private
