@@ -40,6 +40,31 @@ RSpec.describe DietJsonValidator do
     end
   end
 
+  describe 'ingredient category' do
+    def day_with_ingredient(ingredient)
+      valid_day.deep_dup.tap { |day| day['meals'][0]['ingredients'] = [ingredient] }
+    end
+
+    it 'accepts an ingredient carrying a category' do
+      day = day_with_ingredient('product' => 'Płatki owsiane', 'quantity' => '50g', 'category' => 'Produkty zbożowe')
+      expect(described_class.validate([day])[:valid]).to be true
+    end
+
+    it 'accepts an ingredient without a category' do
+      expect(described_class.validate([valid_day])[:valid]).to be true
+    end
+
+    it 'still rejects undefined ingredient keys' do
+      day = day_with_ingredient('product' => 'Płatki owsiane', 'quantity' => '50g', 'brand' => 'X')
+      expect(described_class.validate([day])[:valid]).to be false
+    end
+
+    it 'still rejects undefined meal keys' do
+      day = valid_day.deep_dup.tap { |d| d['meals'][0]['extra'] = 1 }
+      expect(described_class.validate([day])[:valid]).to be false
+    end
+  end
+
   describe '.validate!' do
     it 'returns the payload when valid' do
       payload = [valid_day]

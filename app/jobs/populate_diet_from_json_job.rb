@@ -8,6 +8,8 @@ class PopulateDietFromJsonJob < ApplicationJob
     parsed = diet.parsed_json
     return unless parsed.is_a?(Array)
 
+    categories_by_name = Category.all.index_by(&:name)
+
     ActiveRecord::Base.transaction do
       # Clear existing sets and associated meals/products
       diet.diet_sets.destroy_all
@@ -29,7 +31,8 @@ class PopulateDietFromJsonJob < ApplicationJob
           )
 
           Array(meal_hash['ingredients']).each do |ing|
-            product = meal.products.create!(name: ing['product'])
+            # LLM-assigned category (parse/generate call); unknown/missing -> local classifier.
+            product = meal.products.create!(name: ing['product'], preset_category: categories_by_name[ing['category']])
             quantity = ing['quantity'].to_s
             # Parse amount and unit if possible
             amount, unit = quantity.match(/([\d.,]+)\s*(.*)/)&.captures || [nil, quantity]

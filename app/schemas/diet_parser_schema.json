@@ -45,8 +45,13 @@
                     "type": "string",
                     "description": "Quantity of the product (e.g., '50g', '1', '200ml')",
                     "minLength": 1
+                  },
+                  "category": {
+                    "type": ["string", "null"],
+                    "description": "Optional grocery category name assigned by the LLM"
                   }
-                }
+                },
+                "additionalProperties": false
               }
             },
             "instructions": {
@@ -74,12 +79,15 @@
                   "type": ["number", "null"],
                   "description": "Carbohydrates in grams"
                 }
-              }
+              },
+              "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false
         }
       }
-    }
+    },
+    "additionalProperties": false
   }
 }
 

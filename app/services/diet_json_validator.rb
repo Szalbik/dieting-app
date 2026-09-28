@@ -39,8 +39,10 @@ class DietJsonValidator
 
   def validate(json_data)
     # Use validate_schema: false to skip meta-schema validation
-    # This avoids the need to register draft-07 meta-schema
-    errors = JSON::Validator.fully_validate(@schema, json_data, strict: true, validate_schema: false)
+    # This avoids the need to register draft-07 meta-schema.
+    # strict: false so optional fields (ingredient "category") stay optional;
+    # undefined keys are still rejected via additionalProperties: false in the schema.
+    errors = JSON::Validator.fully_validate(@schema, json_data, strict: false, validate_schema: false)
     {
       valid: errors.empty?,
       errors: errors,
@@ -50,7 +52,7 @@ class DietJsonValidator
     schema_without_meta = @schema.dup
     schema_without_meta.delete('$schema')
 
-    errors = JSON::Validator.fully_validate(schema_without_meta, json_data, strict: true, validate_schema: false)
+    errors = JSON::Validator.fully_validate(schema_without_meta, json_data, strict: false, validate_schema: false)
     {
       valid: errors.empty?,
       errors: errors,

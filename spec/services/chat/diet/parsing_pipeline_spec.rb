@@ -167,4 +167,20 @@ RSpec.describe Chat::Diet::ParsingPipeline do
       expect(captured_messages).to all(be_a(String))
     end
   end
+
+  it 'asks the model for a category per ingredient, limited to the seeded categories' do
+    create(:category, name: 'Warzywa')
+    create(:category, name: 'Inne')
+    schemas = []
+    allow(client).to receive(:chat) do |parameters:|
+      schemas << parameters[:response_format][:json_schema][:schema]
+      { 'choices' => [{ 'message' => { 'content' => { day: 1, meals: [] }.to_json } }] }
+    end
+
+    pipeline.call
+
+    ingredient = schemas.first.dig('properties', 'meals', 'items', 'properties', 'ingredients', 'items')
+    expect(ingredient['required']).to include('category')
+    expect(ingredient.dig('properties', 'category', 'enum')).to contain_exactly('Warzywa', 'Inne')
+  end
 end

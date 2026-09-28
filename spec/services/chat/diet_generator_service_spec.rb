@@ -73,4 +73,21 @@ RSpec.describe Chat::DietGeneratorService do
 
     expect { service.call }.to raise_error(DietJsonValidationError)
   end
+
+  it 'asks the model for a category per ingredient, limited to the seeded categories' do
+    create(:category, name: 'Warzywa')
+    create(:category, name: 'Inne')
+    schema = nil
+    allow(client).to receive(:chat) do |parameters:|
+      schema = parameters[:response_format][:json_schema][:schema]
+      raise Faraday::BadRequestError, 'stop after capture'
+    end
+
+    expect { service.call }.to raise_error(RuntimeError)
+
+    ingredient = schema.dig('properties', 'days', 'items', 'properties', 'meals', 'items',
+                            'properties', 'ingredients', 'items')
+    expect(ingredient['required']).to include('category')
+    expect(ingredient.dig('properties', 'category', 'enum')).to contain_exactly('Warzywa', 'Inne')
+  end
 end

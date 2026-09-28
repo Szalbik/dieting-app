@@ -83,7 +83,13 @@ class Chat::DietGeneratorService
       #{prefs['preferences'].present? ? "- Preferences / exclusions: #{prefs['preferences']}" : ''}
       - Every meal needs realistic ingredients with quantities, preparation instructions, and calculated nutrition (kcal/protein/fat/carbs). Round to whole numbers.
       - Each meal's "type" must be one of: #{meal_slots.join(', ')}, matching its position in the day.
+      - Give every ingredient the single best-fitting grocery "category" from the allowed list; use "Inne" only when nothing fits.
     PROMPT
+  end
+
+  # Same source of truth as Chat::ProductCategorizerService: the seeded categories.
+  def category_names
+    @_category_names ||= Category.pluck(:name).presence || ['Inne']
   end
 
   def response_schema
@@ -132,10 +138,11 @@ class Chat::DietGeneratorService
           'type' => 'array',
           'items' => {
             'type' => 'object',
-            'required' => %w[product quantity],
+            'required' => %w[product quantity category],
             'properties' => {
               'product' => { 'type' => 'string', 'minLength' => 1 },
               'quantity' => { 'type' => 'string', 'minLength' => 1 },
+              'category' => { 'type' => 'string', 'enum' => category_names },
             },
             'additionalProperties' => false,
           },

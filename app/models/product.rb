@@ -3,6 +3,8 @@
 class Product < ApplicationRecord
   SUGGESTION_FUZZY_THRESHOLD = 0.95
 
+  attr_accessor :preset_category
+
   belongs_to :diet_set, optional: true
   belongs_to :unit, optional: true
   has_many :ingredient_measures, dependent: :destroy
@@ -132,6 +134,14 @@ class Product < ApplicationRecord
   def categorize_if_needed
     # Only categorize if the product doesn't already have a category
     return if category.present?
+
+    # Category chosen by the parse/generate LLM call (PopulateDietFromJsonJob).
+    # Must be consumed here: has_one product_category means writing it after
+    # create would collide with the row this hook makes.
+    if preset_category.present?
+      ProductCategory.create!(product: self, category: preset_category, state: false)
+      return
+    end
 
     # Try to find a similar product that's already categorized
     similar_product = Product.joins(:product_category)

@@ -67,10 +67,11 @@ class Chat::Diet::ParsingPipeline
                 'type' => 'array',
                 'items' => {
                   'type' => 'object',
-                  'required' => %w[product quantity],
+                  'required' => %w[product quantity category],
                   'properties' => {
                     'product' => { 'type' => 'string', 'minLength' => 1 },
                     'quantity' => { 'type' => 'string', 'minLength' => 1 },
+                    'category' => { 'type' => 'string', 'enum' => category_names },
                   },
                   'additionalProperties' => false,
                 },
@@ -96,6 +97,11 @@ class Chat::Diet::ParsingPipeline
     }
   end
 
+  # Same source of truth as Chat::ProductCategorizerService: the seeded categories.
+  def category_names
+    @_category_names ||= Category.pluck(:name).presence || ['Inne']
+  end
+
   def day_prompt(chunk)
     meal_count_hint = if @expected_meals_per_day.present?
       "This day should contain exactly #{@expected_meals_per_day} meals; merge accessory items (e.g. a standalone drink) into the meal they belong to if the source lists more."
@@ -112,6 +118,7 @@ class Chat::Diet::ParsingPipeline
       - #{meal_count_hint}
       - Include every ingredient as a separate entry. If one line contains multiple comma-separated ingredients, split them into separate entries.
       - Include dressing, sauce, salad, condiment, spice, and beverage ingredients when they belong to a meal.
+      - Give every ingredient the single best-fitting grocery "category" from the allowed list; use "Inne" only when nothing fits.
       - Include the complete preparation instructions for each meal; put numbered steps on separate lines when the source contains numbered steps.
       - Nutrition is mandatory per meal. Prefer explicit values from the source; otherwise calculate realistic totals from the ingredients. Round to whole numbers.
 
