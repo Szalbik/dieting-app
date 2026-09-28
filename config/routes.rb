@@ -75,6 +75,7 @@ Rails.application.routes.draw do
   resources :shopping_cart_items, only: [:destroy] do
     member do
       patch :toggle_bought
+      patch :move
     end
     collection do
       post :undo
