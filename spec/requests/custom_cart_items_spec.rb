@@ -47,6 +47,11 @@ RSpec.describe 'Custom cart items', type: :request do
       expect(item.reload.bought).to be(true)
     end
 
+    it 'treats a blank target value as a plain flip' do
+      patch toggle_bought_custom_cart_item_path(item), params: { bought: '' }
+      expect(item.reload.bought).to be(true)
+    end
+
     it 'unsets a bought item when the target value is false' do
       item.update!(bought: true)
 

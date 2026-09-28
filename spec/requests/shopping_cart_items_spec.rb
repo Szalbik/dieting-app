@@ -50,6 +50,11 @@ RSpec.describe 'Shopping cart items', type: :request do
       expect(bought_flags).to eq([false, false])
     end
 
+    it 'treats a blank target value as a plain flip' do
+      patch toggle_bought_shopping_cart_item_path(product), params: { bought: '' }
+      expect(bought_flags).to eq([true, true])
+    end
+
     it 'redirects to the cart for HTML requests' do
       patch toggle_bought_shopping_cart_item_path(product), params: { bought: 'true' }
       expect(response).to redirect_to(shopping_cart_path)

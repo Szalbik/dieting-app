@@ -13,6 +13,9 @@
 
 const CACHE = "dieta-v2";
 const PRECACHE = ["/icon-192.png", "/icon-512.png", "/icon.svg", "/manifest.webmanifest"];
+// Only the daily pages are stored offline (authenticated HTML on disk stays scoped to what the offline page advertises).
+const PAGE_PREFIXES = ["/shopping_cart", "/diet_set_plans"];
+const MAX_ASSET_ENTRIES = 40;
 
 const OFFLINE_HTML = `<!doctype html>
 <html lang="pl">
@@ -59,9 +62,20 @@ function wantsHtml(request) {
 
 function cacheable(request, response) {
   if (!response || !response.ok || response.redirected || response.type !== "basic") return false;
+  if ((response.headers.get("Cache-Control") || "").includes("no-store")) return false;
   if (request.headers.has("Turbo-Frame")) return false;
   if ((request.headers.get("Accept") || "").includes("text/vnd.turbo-stream.html")) return false;
   return true;
+}
+
+function offlinePage(url) {
+  return PAGE_PREFIXES.some((prefix) => url.pathname === prefix || url.pathname.startsWith(prefix + "?"));
+}
+
+// Fingerprinted assets accumulate across deploys; keep only the newest few (Cache API keys are in insertion order).
+async function trimAssets(cache) {
+  const assetKeys = (await cache.keys()).filter((req) => new URL(req.url).pathname.startsWith("/assets/"));
+  await Promise.all(assetKeys.slice(0, Math.max(0, assetKeys.length - MAX_ASSET_ENTRIES)).map((req) => cache.delete(req)));
 }
 
 function offlineResponse() {
@@ -79,7 +93,7 @@ self.addEventListener("fetch", (event) => {
   const asset = url.pathname.startsWith("/assets/");
 
   if (!page && !asset) {
-    event.respondWith(fetch(request).catch(() => caches.match(request)));
+    event.respondWith(fetch(request).catch(() => caches.match(request).then((cached) => cached || Response.error())));
     return;
   }
 
@@ -89,9 +103,14 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (cacheable(request, response)) {
+        if (cacheable(request, response) && (asset || offlinePage(url))) {
           const copy = response.clone();
-          event.waitUntil(caches.open(CACHE).then((cache) => cache.put(url.href, copy)));
+          event.waitUntil(
+            caches.open(CACHE).then(async (cache) => {
+              await cache.put(url.href, copy);
+              if (asset) await trimAssets(cache);
+            })
+          );
         }
         return response;
       })

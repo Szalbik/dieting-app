@@ -114,23 +114,22 @@ export default class extends Controller {
 
   applyPending() {
     for (const entry of this.queue) {
-      const form = this.element.querySelector(`form[data-offline-check][action="${entry.url}"]`)
+      const form = this.element.querySelector(`form[data-offline-check][action="${CSS.escape(entry.url)}"]`)
       // hidden field holds the *target* value, so it equals entry.bought only when the DOM still shows the old state
       if (form && form.elements.bought.value === String(entry.bought)) this.patch(form, entry.bought)
     }
   }
 
   async flush() {
-    if (this.flushing || !navigator.onLine) return
-    let entries = this.queue
-    if (entries.length === 0) return
+    if (this.flushing || !navigator.onLine || this.queue.length === 0) return
 
     this.flushing = true
     this.render()
     const token = document.querySelector('meta[name="csrf-token"]')?.content
 
-    while (entries.length) {
-      const entry = entries[0]
+    // Re-read the queue each iteration and remove by identity: a tap that lands
+    // mid-flush (network flapping) must not be overwritten by a stale snapshot.
+    for (let entry = this.queue[0]; entry; entry = this.queue[0]) {
       let response
       try {
         response = await fetch(entry.url, {
@@ -143,15 +142,16 @@ export default class extends Controller {
       } catch {
         break // still offline: keep the queue
       }
-      // opaqueredirect = session gone (login redirect); 5xx = try later. 404 = item removed meanwhile, drop it.
-      if (!(response.ok || response.status === 404)) break
-      entries = entries.slice(1)
-      this.queue = entries
+      // Keep and retry later on: opaqueredirect (session gone), 401/403, 5xx.
+      // Drop on any other 4xx (404 item removed meanwhile, 422 stale token) so a dead entry can't block the queue forever.
+      const retryLater = response.type === "opaqueredirect" || response.status === 401 || response.status === 403 || response.status >= 500
+      if (retryLater) break
+      this.queue = this.queue.filter((e) => !(e.url === entry.url && e.at === entry.at))
     }
 
     this.flushing = false
     this.render()
-    if (entries.length === 0) Turbo.visit(window.location.pathname, { action: "replace" })
+    if (this.queue.length === 0) Turbo.visit(window.location.pathname, { action: "replace" })
   }
 
   // --- DOM ----------------------------------------------------------------
