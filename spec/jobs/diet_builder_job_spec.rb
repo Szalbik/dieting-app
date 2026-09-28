@@ -32,6 +32,17 @@ RSpec.describe DietBuilderJob, type: :job do
       expect(user.reload.ai_quota_used_count).to eq(0)
     end
 
+    it 'does not refund a second time when an already-failed job is retried by hand' do
+      allow(parser).to receive(:call).and_raise('still broken')
+      diet.update!(status: 'failed')
+      user.update!(ai_quota_used_count: 0)
+
+      expect { described_class.new.perform(diet.id) }.to raise_error('still broken')
+
+      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(diet.reload.generation_error).to eq('still broken')
+    end
+
     it 'treats an empty parse as a failure instead of silently skipping population' do
       allow(parser).to receive(:call).and_return([])
 

@@ -33,7 +33,8 @@ module DietingApp
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    # diet_eval is a dev/CI tool (parser benchmark); required explicitly by its rake task and specs.
+    config.autoload_lib(ignore: %w[assets tasks diet_eval diet_eval.rb])
 
     # Configuration for the application, engines, and railties goes here.
     #

@@ -41,23 +41,41 @@ class Chat::Diet::Strategies::NativePdf
 
   def call
     @stats.source = :native_pdf
-    file_id = client.files.upload(parameters: { file: @file_path.to_s, purpose: 'user_data' })['id']
+    file_id = X.with_api_errors do
+      client.files.upload(parameters: { file: @file_path.to_s, purpose: 'user_data' })['id']
+    end
 
-    outline = respond(outline_prompt, OUTLINE_SCHEMA, 'diet_outline', file_id)['days']
-    raise 'Parser nie znalazł dni diety w PDF.' if outline.blank?
+    outline = validate_outline(respond(outline_prompt, OUTLINE_SCHEMA, 'diet_outline', file_id)['days'])
 
     X.in_parallel(outline, @concurrency) do |entry|
       respond(day_prompt(entry), X::DAY_SCHEMA, 'diet_parsing_day', file_id).merge('day' => entry['day'])
     end
   ensure
-    begin
-      client.files.delete(id: file_id) if file_id
-    rescue StandardError => e
-      Rails.logger.warn("NativePdf: could not delete uploaded file #{file_id}: #{e.message}")
-    end
+    delete_upload(file_id) if file_id
   end
 
   private
+
+  # Cheap sanity check before the paid per-day fan-out.
+  def validate_outline(days)
+    days = Array(days)
+    raise 'Parser nie znalazł dni diety w PDF.' if days.empty?
+
+    numbers = days.map { |d| d['day'].to_i }
+    raise "Parser zwrócił nieprawidłowe numery dni: #{numbers.inspect}" if numbers.any? { |n| n < 1 }
+    raise "Parser zwrócił zduplikowane numery dni: #{numbers.inspect}" if numbers.uniq.size != numbers.size
+
+    days
+  end
+
+  # The user's PDF must not linger in OpenAI storage; a failed delete is an
+  # incident, not a log line.
+  def delete_upload(file_id)
+    client.files.delete(id: file_id)
+  rescue StandardError => e
+    Rails.logger.error("NativePdf: could not delete uploaded file #{file_id}: #{e.message}")
+    Honeybadger.notify(e, context: { file_id: file_id }) if defined?(Honeybadger)
+  end
 
   def outline_prompt
     <<~PROMPT
@@ -98,13 +116,21 @@ class Chat::Diet::Strategies::NativePdf
 
   # Reasoning models emit a `reasoning` item before the `message` item.
   def output_text(response)
+    if response['status'] == 'incomplete'
+      raise "OpenAI response incomplete: #{response.dig('incomplete_details', 'reason')}"
+    end
+
     message = Array(response['output']).find { |item| item['type'] == 'message' }
     raise "OpenAI returned no message (status #{response['status']})" unless message
 
-    Array(message['content']).find { |part| part['type'] == 'output_text' }&.dig('text')
+    parts = Array(message['content'])
+    refusal = parts.find { |part| part['type'] == 'refusal' }
+    raise "OpenAI refused: #{refusal['refusal']}" if refusal
+
+    parts.find { |part| part['type'] == 'output_text' }&.dig('text')
   end
 
   def client
-    @client ||= X.client
+    @_client ||= X.client
   end
 end

@@ -130,10 +130,28 @@ module Chat::Diet::DayExtraction
   end
 
   # Runs block for every item, at most `concurrency` at a time, preserving
-  # order. Thread#value re-raises, so the first failure aborts the parse.
+  # order. Every thread in a slice is joined before the first failure is
+  # re-raised, so a caller's `ensure` (e.g. deleting the uploaded file) never
+  # runs under still-active siblings.
   def in_parallel(items, concurrency)
     Array(items).each_slice([concurrency.to_i, 1].max).flat_map do |slice|
-      slice.map { |item| Thread.new { yield item } }.map(&:value)
+      threads = slice.map do |item|
+        Thread.new(item) do |value|
+          Thread.current.report_on_exception = false
+          yield value
+        end
+      end
+      outcomes = threads.map { |thread| settle(thread) }
+      failure = outcomes.find { |outcome| outcome.is_a?(Exception) }
+      raise failure if failure
+
+      outcomes
     end
+  end
+
+  def settle(thread)
+    thread.value
+  rescue StandardError => e
+    e
   end
 end

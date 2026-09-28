@@ -12,10 +12,7 @@ class DietBuilderJob < ApplicationJob
     # PopulateDietFromJsonJob flips status to ready and enqueues classification.
     PopulateDietFromJsonJob.perform_later(diet.id)
   rescue => e
-    if diet
-      diet.update!(status: 'failed', generation_error: e.message)
-      diet.user&.refund_ai_quota!
-    end
+    diet&.fail_generation!(e)
     raise
   end
 end

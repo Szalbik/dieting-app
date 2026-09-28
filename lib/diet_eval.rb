@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative 'diet_eval/scorer'
+require_relative 'diet_eval/report'
+
 # Offline evaluation of the PDF -> diet parser on a corpus of real PDFs.
 # Used by `bin/rails diet:benchmark` / `diet:golden:draft` and the tagged
 # regression spec. Runs the production ParsingPipeline unchanged; parser knobs

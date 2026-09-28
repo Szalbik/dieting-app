@@ -71,4 +71,40 @@ RSpec.describe Chat::Diet::Strategies::NativePdf do
     expect { strategy.call }.to raise_error(/OpenAI API error/)
     expect(files).to have_received(:delete).with(id: 'file-123')
   end
+
+  it 'deletes the upload only after every in-flight day call has finished when one day fails' do
+    allow(responses).to receive(:create) do |parameters:|
+      if parameters.dig(:text, :format, :name) == 'diet_outline'
+        next reply(days: [{ day: 1, title: 'A', pages: [1] }, { day: 2, title: 'B', pages: [2] }])
+      end
+
+      day = parameters[:input][0][:content][1][:text][/"day" must be (\d+)/, 1].to_i
+      raise 'day 1 exploded' if day == 1
+
+      sleep 0.02
+      expect(files).not_to have_received(:delete)
+      reply(day_json(2, 'B'))
+    end
+
+    expect { strategy.call }.to raise_error('day 1 exploded')
+    expect(files).to have_received(:delete).with(id: 'file-123')
+  end
+
+  it 'rejects a bad outline before paying for day calls' do
+    allow(responses).to receive(:create) do |parameters:|
+      requests << parameters
+      reply(days: [{ day: 1, title: 'A', pages: [1] }, { day: 1, title: 'A again', pages: [2] }])
+    end
+
+    expect { strategy.call }.to raise_error(/zduplikowane numery dni/)
+    expect(requests.size).to eq(1)
+    expect(files).to have_received(:delete).with(id: 'file-123')
+  end
+
+  it 'surfaces an incomplete response instead of a JSON error' do
+    allow(responses).to receive(:create).and_return('status' => 'incomplete', 'output' => [],
+                                                    'incomplete_details' => { 'reason' => 'max_output_tokens' })
+
+    expect { strategy.call }.to raise_error(/incomplete: max_output_tokens/)
+  end
 end

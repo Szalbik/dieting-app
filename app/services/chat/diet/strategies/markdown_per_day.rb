@@ -7,6 +7,10 @@
 class Chat::Diet::Strategies::MarkdownPerDay
   X = Chat::Diet::DayExtraction
 
+  # Day headings sit at the top of each day, so the heading-detection call
+  # never needs the whole document; cap it well under the model's context.
+  HEADINGS_INPUT_LIMIT = 60_000
+
   HEADINGS_SCHEMA = {
     'type' => 'object',
     'required' => %w[days],
@@ -72,7 +76,7 @@ class Chat::Diet::Strategies::MarkdownPerDay
       If the document describes a single day, return exactly one entry.
 
       Document:
-      #{markdown}
+      #{markdown.first(HEADINGS_INPUT_LIMIT)}
     PROMPT
     chat(prompt, HEADINGS_SCHEMA, 'diet_day_headings')['days'].to_h { |d| [d['heading'], d['day']] }
   end

@@ -51,6 +51,15 @@ class Diet < ApplicationRecord
     status == 'generating'
   end
 
+  # Shared by DietBuilderJob / GenerateDietJob / PopulateDietFromJsonJob:
+  # mark failed and give the AI op back — only on the generating→failed
+  # transition, so a manual job retry can't refund twice.
+  def fail_generation!(error)
+    refund = generating?
+    update!(status: 'failed', generation_error: error.message.to_s.truncate(1000))
+    user&.refund_ai_quota! if refund
+  end
+
   def failed?
     status == 'failed'
   end

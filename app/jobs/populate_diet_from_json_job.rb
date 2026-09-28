@@ -45,7 +45,7 @@ class PopulateDietFromJsonJob < ApplicationJob
     ClassifyProductsJob.perform_later(diet.id)
     SyncCanonicalProductsJob.perform_later(diet.user_id)
   rescue => e
-    diet&.update!(status: 'failed', generation_error: e.message)
+    diet&.fail_generation!(e)
     raise
   end
 end

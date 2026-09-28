@@ -144,6 +144,11 @@ class DietsController < ApplicationController
       return
     end
 
+    if @diet.generating?
+      redirect_to diets_path, alert: 'Ta dieta jest właśnie wczytywana. Poczekaj, aż się zakończy.'
+      return
+    end
+
     unless Current.user.ai_quota_available?
       redirect_to diets_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
       return

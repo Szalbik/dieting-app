@@ -244,6 +244,17 @@ RSpec.describe 'Diets', type: :request do
       expect(diet.reload.status).to eq('generating')
     end
 
+    it 'refuses to reparse while a parse is already running' do
+      diet.update!(status: 'generating')
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.not_to have_enqueued_job(DietBuilderJob)
+      expect(user.reload.ai_quota_used_count.to_i).to eq(0)
+      follow_redirect!
+      expect(response.body).to include('właśnie wczytywana')
+    end
+
     it 'redirects with alert when PDF is missing' do
       bare = create(:diet, user: user)
       login

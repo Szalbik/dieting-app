@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require Rails.root.join('lib/diet_eval').to_s
 
 RSpec.describe DietEval::Scorer do
   def golden(days)

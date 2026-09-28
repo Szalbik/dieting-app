@@ -11,6 +11,7 @@ namespace :diet do
   namespace :golden do
     desc 'Parse one PDF with the current pipeline and write golden.draft.json for a human to correct'
     task :draft, %i[slug pdf] => :environment do |_, args|
+      require Rails.root.join('lib/diet_eval').to_s
       slug = args.fetch(:slug)
       dir = DietEval::CORPUS_DIR.join(slug)
       FileUtils.mkdir_p(dir)
@@ -28,6 +29,7 @@ namespace :diet do
 
   desc 'Run parser configurations over the corpus and print quality / time / cost'
   task :benchmark, %i[strategies efforts models] => :environment do |_, args|
+    require Rails.root.join('lib/diet_eval').to_s
     $stdout.sync = true # progress lines show up live when redirected to a log
     list = ->(value, knob) { value.present? ? value.split(',').map(&:strip) : [DietEval.current(knob)] }
     configs = list.call(args[:strategies], :strategy).product(

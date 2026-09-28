@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require Rails.root.join('lib/diet_eval').to_s
 
 # Live regression gate for the PDF parser (PRD FR-004). Calls the real OpenAI
 # API with the default parser config over every corpus entry in

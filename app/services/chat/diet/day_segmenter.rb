@@ -73,7 +73,12 @@ class Chat::Diet::DaySegmenter
   end
 
   def detect_day_number(line)
-    return @headings[normalize(line)] if @headings
+    # A printed heading may carry a suffix the model dropped ("Poniedziałek –
+    # 1800 kcal"); match on the leading text.
+    if @headings
+      normalized = normalize(line)
+      return @headings.find { |heading, _day| normalized.start_with?(heading) }&.last
+    end
 
     # Strip markdown emphasis (**bold**, _italic_) before matching: a day
     # heading like "**_Zestaw 2_**" has an underscore directly adjacent to
