@@ -73,7 +73,7 @@
         <div class="flex flex-col gap-1.5">
           <% shopping_cart.custom_cart_items.order(:bought, :created_at).each do |item| %>
             <div id="<%= dom_id(item) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5 <%= 'opacity-60' if item.bought %>">
-              <%= button_to toggle_bought_custom_cart_item_path(item), method: :patch, form: { data: { turbo_stream: true }, class: "shrink-0" },
+              <%= button_to toggle_bought_custom_cart_item_path(item), method: :patch, params: { bought: !item.bought }, form: { data: { turbo_stream: true, offline_check: true }, class: "shrink-0" },
                     class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{item.bought ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
                 <% if item.bought %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% end %>
               <% end %>
@@ -102,7 +102,7 @@
               <div class="flex flex-col gap-1.5">
                 <% group[:products].each do |product_group| %>
                   <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5 <%= 'opacity-60' if product_group[:bought] %>">
-                    <%= button_to toggle_bought_shopping_cart_item_path(product_group[:product]), method: :patch, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                    <%= button_to toggle_bought_shopping_cart_item_path(product_group[:product]), method: :patch, params: { bought: !product_group[:bought] }, form: { data: { turbo_stream: true, offline_check: true }, class: "shrink-0" },
                           class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{product_group[:bought] ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
                       <% if product_group[:bought] %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% else %><span class="sr-only">Odhacz</span><% end %>
                     <% end %>

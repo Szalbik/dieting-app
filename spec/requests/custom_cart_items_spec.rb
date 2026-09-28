@@ -26,6 +26,35 @@ RSpec.describe 'Custom cart items', type: :request do
     end
   end
 
+  describe 'PATCH /custom_cart_items/:id/toggle_bought' do
+    let(:item) { user.shopping_cart.custom_cart_items.create!(name: 'Chleb', quantity: 1, unit: 'szt') }
+
+    before { login }
+
+    it 'flips the item when no target value is given' do
+      patch toggle_bought_custom_cart_item_path(item)
+      expect(item.reload.bought).to be(true)
+
+      patch toggle_bought_custom_cart_item_path(item)
+      expect(item.reload.bought).to be(false)
+    end
+
+    it 'sets the item to bought and stays bought when replayed' do
+      patch toggle_bought_custom_cart_item_path(item), params: { bought: 'true' }
+      expect(item.reload.bought).to be(true)
+
+      patch toggle_bought_custom_cart_item_path(item), params: { bought: 'true' }
+      expect(item.reload.bought).to be(true)
+    end
+
+    it 'unsets a bought item when the target value is false' do
+      item.update!(bought: true)
+
+      patch toggle_bought_custom_cart_item_path(item), params: { bought: 'false' }
+      expect(item.reload.bought).to be(false)
+    end
+  end
+
   describe 'DELETE /custom_cart_items/:id' do
     it 'removes the item from the current user cart' do
       login

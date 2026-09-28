@@ -78,8 +78,11 @@ class ShoppingCartItemsController < ApplicationController
       items = shopping_cart.shopping_cart_items
         .includes(product: [:category, :canonical_product])
         .select { |item| item.product.shopping_cart_group_key == group_key }
+      # An explicit `bought` target makes the request idempotent (offline replay);
+      # without it, flip the group as before.
+      bought = params.key?(:bought) ? ActiveModel::Type::Boolean.new.cast(params[:bought]) : !items.all?(&:bought)
       # update_all skips callbacks, so broadcast to the shared cart explicitly.
-      ShoppingCartItem.where(id: items.map(&:id)).update_all(bought: !items.all?(&:bought))
+      ShoppingCartItem.where(id: items.map(&:id)).update_all(bought: bought)
       shopping_cart.broadcast_contents
     end
 

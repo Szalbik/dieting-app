@@ -31,7 +31,8 @@ class CustomCartItemsController < ApplicationController
   def toggle_bought
     shopping_cart = Current.user.shopping_cart
     custom_item = shopping_cart.custom_cart_items.find(params[:id])
-    custom_item.update(bought: !custom_item.bought) # after_commit broadcasts to the shared cart
+    bought = params.key?(:bought) ? ActiveModel::Type::Boolean.new.cast(params[:bought]) : !custom_item.bought
+    custom_item.update(bought: bought) # after_commit broadcasts to the shared cart
 
     respond_to do |format|
       format.turbo_stream do
