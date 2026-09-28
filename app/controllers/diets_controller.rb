@@ -34,6 +34,7 @@ class DietsController < ApplicationController
 
     if diet_params[:pdf].present?
       @diet.source = 'pdf'
+      @diet.status = 'generating'
       @diet.pdf = diet_params[:pdf]
       @diet.meals_per_day = diet_params[:meals_per_day]
     elsif diet_params[:kcal_target].present?
@@ -148,6 +149,7 @@ class DietsController < ApplicationController
       return
     end
 
+    @diet.update!(status: 'generating', generation_error: nil)
     DietBuilderJob.perform_later(@diet.id)
     Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'

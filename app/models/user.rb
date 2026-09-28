@@ -105,12 +105,19 @@ class User < ApplicationRecord
     ai_quota_used_count < limit
   end
 
-  # ponytail: if the enqueued parsing job later fails, quota stays spent; refund manually if it matters
   def consume_ai_quota!
     return if subscription_lifetime?
 
     reset_ai_quota_period_if_stale!
     increment!(:ai_quota_used_count)
+  end
+
+  # Inverse of consume_ai_quota! — called when the enqueued AI job fails, so a
+  # free user isn't locked out for the month by our parsing error.
+  def refund_ai_quota!
+    return if subscription_lifetime? || ai_quota_used_count.to_i <= 0
+
+    decrement!(:ai_quota_used_count)
   end
 
   def stripe_customer

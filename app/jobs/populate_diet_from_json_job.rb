@@ -39,13 +39,13 @@ class PopulateDietFromJsonJob < ApplicationJob
       end
     end
 
-    diet.update!(status: 'ready') if diet.source == 'generated'
+    diet.update!(status: 'ready', generation_error: nil)
 
     # Classify products after they're created
     ClassifyProductsJob.perform_later(diet.id)
     SyncCanonicalProductsJob.perform_later(diet.user_id)
   rescue => e
-    diet&.update!(status: 'failed', generation_error: e.message) if diet&.source == 'generated'
+    diet&.update!(status: 'failed', generation_error: e.message)
     raise
   end
 end

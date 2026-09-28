@@ -39,8 +39,8 @@ RSpec.describe PopulateDietFromJsonJob, type: :job do
       expect(diet.generation_error).to be_present
     end
 
-    it 'does not touch status for a non-generated diet' do
-      diet = create(:diet, source: 'pdf', parsed_json: [])
+    it 'marks a pdf diet ready after population' do
+      diet = create(:diet, source: 'pdf', status: 'generating', parsed_json: [])
 
       described_class.new.perform(diet.id)
 

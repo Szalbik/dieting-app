@@ -135,6 +135,20 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#refund_ai_quota!' do
+    it 'gives back one consumed op' do
+      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      user.refund_ai_quota!
+      expect(user.reload.ai_quota_used_count).to eq(0)
+    end
+
+    it 'never goes below zero' do
+      user = create(:user, ai_quota_used_count: 0)
+      user.refund_ai_quota!
+      expect(user.reload.ai_quota_used_count).to eq(0)
+    end
+  end
+
   describe '#consume_ai_quota!' do
     it 'increments the counter for a free user' do
       user = create(:user)
