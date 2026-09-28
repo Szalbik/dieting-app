@@ -8,9 +8,7 @@ class ShoppingCartItemsController < ApplicationController
 
   def destroy
     shopping_cart = Current.user.shopping_cart
-    product = Product.joins(:shopping_cart_items)
-      .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
-      .find_by(id: params[:id])
+    product = find_cart_product(shopping_cart)
 
     if product.nil?
       respond_to do |format|
@@ -24,10 +22,7 @@ class ShoppingCartItemsController < ApplicationController
       return
     end
 
-    group_key = product.shopping_cart_group_key
-    items = shopping_cart.shopping_cart_items
-      .includes(product: [:category, :canonical_product])
-      .select { |item| item.product.shopping_cart_group_key == group_key }
+    items = shopping_cart.items_in_group_of(product)
 
     item_ids = items.map(&:id)
     group_name = Product.best_shopping_list_display_name(items.map(&:product))
@@ -69,15 +64,10 @@ class ShoppingCartItemsController < ApplicationController
 
   def toggle_bought
     shopping_cart = Current.user.shopping_cart
-    product = Product.joins(:shopping_cart_items)
-      .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
-      .find_by(id: params[:id])
+    product = find_cart_product(shopping_cart)
 
     if product
-      group_key = product.shopping_cart_group_key
-      items = shopping_cart.shopping_cart_items
-        .includes(product: [:category, :canonical_product])
-        .select { |item| item.product.shopping_cart_group_key == group_key }
+      items = shopping_cart.items_in_group_of(product)
       # An explicit `bought` target makes the request idempotent (offline replay);
       # without it, flip the group as before.
       bought = params[:bought].present? ? ActiveModel::Type::Boolean.new.cast(params[:bought]) == true : !items.all?(&:bought)
@@ -85,6 +75,23 @@ class ShoppingCartItemsController < ApplicationController
       ShoppingCartItem.where(id: items.map(&:id)).update_all(bought: bought)
       shopping_cart.broadcast_contents
     end
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('shopping_cart',
+          partial: 'shopping_carts/shopping_cart', locals: { shopping_cart: shopping_cart })
+      end
+      format.html { redirect_to shopping_cart_path }
+    end
+  end
+
+  # Online-only (not in the offline outbox): moves the whole row to another category.
+  def move
+    shopping_cart = Current.user.shopping_cart
+    product = find_cart_product(shopping_cart)
+    category = Category.find_by(id: params[:category_id])
+
+    shopping_cart.move_group_to_category!(product, category) if product && category
 
     respond_to do |format|
       format.turbo_stream do
@@ -119,6 +126,12 @@ class ShoppingCartItemsController < ApplicationController
   end
 
   private
+
+  def find_cart_product(shopping_cart)
+    Product.joins(:shopping_cart_items)
+      .where(shopping_cart_items: { shopping_cart_id: shopping_cart.id })
+      .find_by(id: params[:id])
+  end
 
   def cleanup_expired_removal_records
     return unless session[:removed_items].is_a?(Array)

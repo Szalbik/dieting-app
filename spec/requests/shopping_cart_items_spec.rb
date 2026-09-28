@@ -60,4 +60,32 @@ RSpec.describe 'Shopping cart items', type: :request do
       expect(response).to redirect_to(shopping_cart_path)
     end
   end
+
+  describe 'PATCH /shopping_cart_items/:product_id/move' do
+    let(:other) { create(:category, name: 'Inne') }
+
+    before { login }
+
+    it 'moves the product group to the chosen category and re-renders the cart' do
+      patch move_shopping_cart_item_path(product), params: { category_id: other.id }, as: :turbo_stream
+
+      expect(product.reload.product_category).to have_attributes(category_id: other.id, state: false)
+      expect(response.body).to include('turbo-stream action="replace" target="shopping_cart"')
+    end
+
+    it 'ignores an unknown category' do
+      expect do
+        patch move_shopping_cart_item_path(product), params: { category_id: 0 }, as: :turbo_stream
+      end.not_to(change { product.reload.product_category&.attributes })
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'ignores a product outside the user\'s cart' do
+      stranger = create(:product, meal: create(:meal, diet_set: create(:diet_set, diet: create(:diet))), name: 'Obcy')
+
+      expect do
+        patch move_shopping_cart_item_path(stranger), params: { category_id: other.id }, as: :turbo_stream
+      end.not_to(change { stranger.reload.product_category&.attributes })
+    end
+  end
 end

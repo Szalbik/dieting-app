@@ -1,10 +1,28 @@
 # frozen_string_literal: true
 
 class ShoppingCart < ApplicationRecord
+  CATEGORY_ORDER = {
+    'Pieczywo' => 1,
+    'Owoce' => 2,
+    'Warzywa' => 3,
+    'Przyprawy' => 4,
+    'Nabiał' => 5,
+    'Wędliny' => 6,
+    'Mięso i Ryby' => 7,
+    'Produkty zbożowe' => 8,
+    'Przetwory' => 9,
+    'Inne' => 10,
+    'Napoje' => 11,
+  }.freeze
+
   belongs_to :user
   has_many :shopping_cart_items, dependent: :destroy
   has_many :custom_cart_items, dependent: :destroy
   has_many :active_users, class_name: 'User', foreign_key: :active_shopping_cart_id, inverse_of: :active_shopping_cart
+
+  def self.categories_for_picker
+    Category.all.sort_by { |category| [CATEGORY_ORDER[category.name] || Float::INFINITY, category.name] }
+  end
 
   # Diets actually driving the current cart (via the selected diet_set_plans),
   # not whatever Diet carries the `active:` flag.
@@ -87,26 +105,37 @@ class ShoppingCart < ApplicationRecord
       target[category_obj.name][:products] << data
     end
 
-    order_hash = {
-      'Pieczywo' => 1,
-      'Owoce' => 2,
-      'Warzywa' => 3,
-      'Przyprawy' => 4,
-      'Nabiał' => 5,
-      'Wędliny' => 6,
-      'Mięso i Ryby' => 7,
-      'Produkty zbożowe' => 8,
-      'Przetwory' => 9,
-      'Inne' => 10,
-      'Napoje' => 11,
-    }
-
     sort_groups = lambda do |groups|
-      groups.values.sort_by { |group| order_hash[group[:category].name] || Float::INFINITY }
+      groups.values.sort_by { |group| CATEGORY_ORDER[group[:category].name] || Float::INFINITY }
     end
 
     # Unbought categories on top, bought categories (same order) below.
     sort_groups.call(unbought_groups) + sort_groups.call(bought_groups)
+  end
+
+  # Cart items rendered as one shopping-list row (same group key as `product`).
+  def items_in_group_of(product)
+    group_key = product.shopping_cart_group_key
+    shopping_cart_items
+      .includes(product: [:category, :canonical_product])
+      .select { |item| item.product.shopping_cart_group_key == group_key }
+  end
+
+  # User moved a row to another category. Stays unconfirmed (state: false) so one
+  # user's choice never becomes a global classifier example; update_all skips the
+  # ProductCategory retrain callback on purpose.
+  def move_group_to_category!(product, category)
+    product_ids = items_in_group_of(product).map(&:product_id).uniq
+
+    ProductCategory.transaction do
+      ProductCategory.where(product_id: product_ids)
+        .update_all(category_id: category.id, state: false, updated_at: Time.current)
+      missing_ids = product_ids - ProductCategory.where(product_id: product_ids).pluck(:product_id)
+      missing_ids.each { |id| ProductCategory.create!(product_id: id, category: category, state: false) }
+    end
+
+    broadcast_contents
+    product_ids
   end
 
   def member_users

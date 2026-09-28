@@ -281,4 +281,57 @@ RSpec.describe ShoppingCart, type: :model do
       )
     end
   end
+
+  describe '#move_group_to_category!' do
+    let(:user) { create(:user) }
+    let(:cart) { user.shopping_cart }
+    let(:diet_set) { create(:diet_set, diet: create(:diet, user: user)) }
+    let(:meal_a) { create(:meal, diet_set: diet_set) }
+    let(:meal_b) { create(:meal, diet_set: diet_set) }
+    let(:dairy) { create(:category, name: 'Nabiał') }
+    let(:other) { create(:category, name: 'Inne') }
+    let(:eggs_a) { create(:product, meal: meal_a, name: 'Jajka') }
+    let(:eggs_b) { create(:product, meal: meal_b, name: 'Jajka') }
+    let(:milk) { create(:product, meal: meal_a, name: 'Mleko 2%') }
+
+    before do
+      [eggs_a, eggs_b, milk].each do |product|
+        ProductCategory.where(product: product).delete_all
+        create(:shopping_cart_item, shopping_cart: cart, product: product, 
+meal_plan: create(:meal_plan, meal: product.meal))
+      end
+      create(:product_category, product: eggs_a, category: dairy, state: true)
+      create(:product_category, product: milk, category: dairy, state: true)
+    end
+
+    def category_of(product)
+      ProductCategory.find_by(product: product)
+    end
+
+    it 'moves every product of the row to the category, unconfirmed' do
+      cart.move_group_to_category!(eggs_a, other)
+
+      [eggs_a, eggs_b].each do |product|
+        expect(category_of(product)).to have_attributes(category_id: other.id, state: false)
+      end
+    end
+
+    it 'leaves products from other rows untouched' do
+      cart.move_group_to_category!(eggs_a, other)
+
+      expect(category_of(milk)).to have_attributes(category_id: dairy.id, state: true)
+    end
+
+    it 'does not retrain the category model' do
+      expect { cart.move_group_to_category!(eggs_a, other) }.not_to have_enqueued_job(TrainCategoryModelJob)
+    end
+  end
+
+  describe '.categories_for_picker' do
+    it 'orders categories like the shopping list, unknown ones last' do
+      %w[Zzz Warzywa Pieczywo Aaa].each { |name| create(:category, name: name) }
+
+      expect(described_class.categories_for_picker.map(&:name)).to eq(%w[Pieczywo Warzywa Aaa Zzz])
+    end
+  end
 end
