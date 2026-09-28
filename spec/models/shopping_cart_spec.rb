@@ -140,6 +140,17 @@ RSpec.describe ShoppingCart, type: :model do
       expect(product_group[:category].name).to start_with('Test Category')
     end
 
+    it 'orders category groups like a store walk, new categories included' do
+      %w[Napoje Warzywa Inne].push('Tłuszcze i oleje').each_with_index do |name, i|
+        item_product = create(:product, meal: meal, name: "Zzzprodukt#{i}", preset_category: create(:category, name: name))
+        create(:shopping_cart_item, shopping_cart: shopping_cart, product: item_product, meal_plan: meal_plan)
+      end
+
+      names = shopping_cart.group_and_sum_by_cart_items.map { |group| group[:category].name }
+
+      expect(names).to eq(['Warzywa', 'Tłuszcze i oleje', 'Napoje', 'Inne'])
+    end
+
     it 'filters out items where selected_for_cart is false' do
       # Create a meal plan that's not selected for cart
       unselected_meal_plan = create(:meal_plan, meal: meal, selected_for_cart: false)

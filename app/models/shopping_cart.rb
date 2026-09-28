@@ -87,22 +87,8 @@ class ShoppingCart < ApplicationRecord
       target[category_obj.name][:products] << data
     end
 
-    order_hash = {
-      'Pieczywo' => 1,
-      'Owoce' => 2,
-      'Warzywa' => 3,
-      'Przyprawy' => 4,
-      'Nabiał' => 5,
-      'Wędliny' => 6,
-      'Mięso i Ryby' => 7,
-      'Produkty zbożowe' => 8,
-      'Przetwory' => 9,
-      'Inne' => 10,
-      'Napoje' => 11,
-    }
-
     sort_groups = lambda do |groups|
-      groups.values.sort_by { |group| order_hash[group[:category].name] || Float::INFINITY }
+      groups.values.sort_by { |group| CategoriesHelper.category_position(group[:category].name) }
     end
 
     # Unbought categories on top, bought categories (same order) below.
