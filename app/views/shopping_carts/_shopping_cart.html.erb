@@ -123,8 +123,8 @@
                     <%# Online-only (no data-offline-check): offline-cart disables it while offline. %>
                     <%= form_with url: move_shopping_cart_item_path(product_group[:product]), method: :patch, data: { turbo_stream: true }, class: "relative shrink-0" do %>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="pointer-events-none absolute inset-0 m-auto text-brand-ink-faint"><path d="M3 7 H10 L12 9 H21 V19 H3 Z M12 14 H17 M15 12 L17 14 L15 16" /></svg>
-                      <%= select_tag :category_id, options_from_collection_for_select(picker_categories, :id, :name, group[:category].try(:id)),
-                            aria: { label: "Przenieś #{product_group[:name]} do kategorii" }, onchange: "this.form.requestSubmit()",
+                      <%= select_tag :category_id, options_from_collection_for_select(picker_categories, :id, :name, picker_categories.find { |c| c.name == (group[:category]&.name || 'Inne') }&.id),
+                            id: nil, aria: { label: "Przenieś #{product_group[:name]} do kategorii" }, onchange: "this.form.requestSubmit()",
                             class: "block h-11 w-11 cursor-pointer appearance-none rounded-lg border-0 bg-transparent bg-none p-0 text-transparent *:text-brand-ink hover:bg-brand-paper disabled:cursor-not-allowed" %>
                     <% end %>
                     <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
