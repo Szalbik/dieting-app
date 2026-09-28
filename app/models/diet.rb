@@ -16,6 +16,9 @@ class Diet < ApplicationRecord
   validates :kcal_target, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :status, inclusion: { in: %w[generating ready failed] }
 
+  # ponytail: launch toggle — add 'generated'/'manual' back to re-enable the AI wizard and blank diets.
+  CREATION_MODES = %w[pdf].freeze
+
   # ponytail: starter macro ratios per goal, not personalized (age/weight/activity) —
   # tune from real generated plans once we have usage data.
   GOAL_MACROS = {

@@ -49,19 +49,6 @@ RSpec.describe 'Diets', type: :request do
   end
 
   describe 'POST /diets' do
-    it 'creates a manual diet without enqueuing a job when no pdf or kcal_target is given' do
-      login
-      expect do
-        post diets_path, params: { diet: { name: 'Fresh diet', meals_per_day: 5 } }
-      end.not_to have_enqueued_job(DietBuilderJob)
-
-      expect(response).to redirect_to(diets_path)
-      diet = Diet.find_by(name: 'Fresh diet', user: user)
-      expect(diet).to be_present
-      expect(diet.source).to eq('manual')
-      expect(diet.active).to be true
-    end
-
     it 'enqueues DietBuilderJob when a pdf is attached' do
       login
       pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
@@ -72,75 +59,116 @@ RSpec.describe 'Diets', type: :request do
       expect(Diet.find_by(name: 'PDF diet', user: user).source).to eq('pdf')
     end
 
-    it 'enqueues GenerateDietJob when a kcal_target is given' do
+    it 'rejects a submit without a pdf when only pdf mode is enabled' do
       login
       expect do
-        post diets_path, params: { diet: { name: 'AI diet', kcal_target: 1800 } }
-      end.to have_enqueued_job(GenerateDietJob)
+        post diets_path, params: { diet: { name: 'No file diet', meals_per_day: 5 } }
+      end.not_to change(Diet, :count)
 
-      diet = Diet.find_by(name: 'AI diet', user: user)
-      expect(diet.source).to eq('generated')
-      expect(diet.meals_per_day).to eq(3)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it 'derives macro_split from the chosen goal instead of raw percentages' do
+    it 'rejects the AI wizard when it is disabled without consuming quota' do
       login
-      post diets_path, params: { diet: { name: 'Bulk diet', kcal_target: 2800, goal: 'masa' } }
+      expect do
+        post diets_path, params: { diet: { name: 'Blocked AI diet', kcal_target: 1800 } }
+      end.not_to have_enqueued_job(GenerateDietJob)
 
-      diet = Diet.find_by(name: 'Bulk diet', user: user)
-      expect(diet.generation_prefs['goal']).to eq('masa')
-      expect(diet.generation_prefs['macro_split']).to eq(Diet::GOAL_MACROS.fetch('masa').slice('protein_pct',
-                                                                                               'fat_pct', 'carbs_pct'))
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(Diet.find_by(name: 'Blocked AI diet')).to be_nil
+      expect(user.reload.ai_quota_used_count.to_i).to eq(0)
     end
 
-    it 'falls back to the default goal when an unknown goal is submitted' do
-      login
-      post diets_path, params: { diet: { name: 'Weird goal diet', kcal_target: 1800, goal: 'nonsense' } }
+    context 'with all creation modes enabled' do
+      before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
 
-      diet = Diet.find_by(name: 'Weird goal diet', user: user)
-      expect(diet.generation_prefs['goal']).to eq('zwykla')
+      it 'creates a manual diet without enqueuing a job when no pdf or kcal_target is given' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'Fresh diet', meals_per_day: 5 } }
+        end.not_to have_enqueued_job(DietBuilderJob)
+
+        expect(response).to redirect_to(diets_path)
+        diet = Diet.find_by(name: 'Fresh diet', user: user)
+        expect(diet).to be_present
+        expect(diet.source).to eq('manual')
+        expect(diet.active).to be true
+      end
+
+      it 'enqueues GenerateDietJob when a kcal_target is given' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'AI diet', kcal_target: 1800 } }
+        end.to have_enqueued_job(GenerateDietJob)
+
+        diet = Diet.find_by(name: 'AI diet', user: user)
+        expect(diet.source).to eq('generated')
+        expect(diet.meals_per_day).to eq(3)
+      end
+
+      it 'derives macro_split from the chosen goal instead of raw percentages' do
+        login
+        post diets_path, params: { diet: { name: 'Bulk diet', kcal_target: 2800, goal: 'masa' } }
+
+        diet = Diet.find_by(name: 'Bulk diet', user: user)
+        expect(diet.generation_prefs['goal']).to eq('masa')
+        expected_split = Diet::GOAL_MACROS.fetch('masa').slice('protein_pct', 'fat_pct', 'carbs_pct')
+        expect(diet.generation_prefs['macro_split']).to eq(expected_split)
+      end
+
+      it 'falls back to the default goal when an unknown goal is submitted' do
+        login
+        post diets_path, params: { diet: { name: 'Weird goal diet', kcal_target: 1800, goal: 'nonsense' } }
+
+        diet = Diet.find_by(name: 'Weird goal diet', user: user)
+        expect(diet.generation_prefs['goal']).to eq('zwykla')
+      end
     end
   end
 
   describe 'POST /diets free-plan AI quota' do
-    it 'blocks a second pdf/generated diet in the same month for a free user' do
-      login
-      pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
-      post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf } }
+    context 'with all creation modes enabled' do
+      before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
 
-      expect do
-        post diets_path, params: { diet: { name: 'Second AI diet', kcal_target: 1800 } }
-      end.not_to have_enqueued_job(GenerateDietJob)
+      it 'blocks a second pdf/generated diet in the same month for a free user' do
+        login
+        pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
+        post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf } }
 
-      expect(response).to redirect_to(new_diet_path)
-      expect(Diet.find_by(name: 'Second AI diet')).to be_nil
-    end
+        expect do
+          post diets_path, params: { diet: { name: 'Second AI diet', kcal_target: 1800 } }
+        end.not_to have_enqueued_job(GenerateDietJob)
 
-    it 'always allows manual diets regardless of quota' do
-      login
-      user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
-      post diets_path, params: { diet: { name: 'Manual diet', meals_per_day: 5 } }
-      expect(response).to redirect_to(diets_path)
-      expect(Diet.find_by(name: 'Manual diet')).to be_present
-    end
+        expect(response).to redirect_to(new_diet_path)
+        expect(Diet.find_by(name: 'Second AI diet')).to be_nil
+      end
 
-    it 'allows a Pro user up to 3 pdf/generated diets per month, then blocks the 4th' do
-      login
-      user.update!(subscription: :active)
-      3.times { |i| post diets_path, params: { diet: { name: "Pro AI diet #{i}", kcal_target: 1800 } } }
-      expect(Diet.where(user: user).count).to eq(3)
+      it 'always allows manual diets regardless of quota' do
+        login
+        user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+        post diets_path, params: { diet: { name: 'Manual diet', meals_per_day: 5 } }
+        expect(response).to redirect_to(diets_path)
+        expect(Diet.find_by(name: 'Manual diet')).to be_present
+      end
 
-      expect do
-        post diets_path, params: { diet: { name: 'Pro AI diet 4', kcal_target: 1800 } }
-      end.not_to have_enqueued_job(GenerateDietJob)
-      expect(Diet.find_by(name: 'Pro AI diet 4')).to be_nil
-    end
+      it 'allows a Pro user up to 3 pdf/generated diets per month, then blocks the 4th' do
+        login
+        user.update!(subscription: :active)
+        3.times { |i| post diets_path, params: { diet: { name: "Pro AI diet #{i}", kcal_target: 1800 } } }
+        expect(Diet.where(user: user).count).to eq(3)
 
-    it 'allows unlimited pdf/generated diets for a lifetime user' do
-      login
-      user.update!(subscription: :lifetime)
-      4.times { |i| post diets_path, params: { diet: { name: "Lifetime AI diet #{i}", kcal_target: 1800 } } }
-      expect(Diet.where(user: user).count).to eq(4)
+        expect do
+          post diets_path, params: { diet: { name: 'Pro AI diet 4', kcal_target: 1800 } }
+        end.not_to have_enqueued_job(GenerateDietJob)
+        expect(Diet.find_by(name: 'Pro AI diet 4')).to be_nil
+      end
+
+      it 'allows unlimited pdf/generated diets for a lifetime user' do
+        login
+        user.update!(subscription: :lifetime)
+        4.times { |i| post diets_path, params: { diet: { name: "Lifetime AI diet #{i}", kcal_target: 1800 } } }
+        expect(Diet.where(user: user).count).to eq(4)
+      end
     end
   end
 

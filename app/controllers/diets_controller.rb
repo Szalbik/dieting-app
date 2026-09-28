@@ -57,6 +57,15 @@ class DietsController < ApplicationController
       @diet.source = 'manual'
     end
 
+    unless Diet::CREATION_MODES.include?(@diet.source)
+      @diet.errors.add(:pdf, 'Wybierz plik PDF z dietą.')
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @diet.errors, status: :unprocessable_entity }
+      end
+      return
+    end
+
     if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
       redirect_to new_diet_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
       return
