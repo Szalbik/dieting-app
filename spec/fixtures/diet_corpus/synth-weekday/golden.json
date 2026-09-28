@@ -1,0 +1,149 @@
+{
+  "pdf": "diet.pdf",
+  "scanned": false,
+  "meals_per_day": null,
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Owsianka z bananem",
+          "ingredients": [
+            "płatki owsiane",
+            "mleko 2%",
+            "banan",
+            "cynamon"
+          ],
+          "kcal": 390
+        },
+        {
+          "type": "lunch",
+          "name": "Kurczak z ryżem i brokułem",
+          "ingredients": [
+            "pierś z kurczaka",
+            "ryż basmati",
+            "brokuł",
+            "oliwa z oliwek"
+          ],
+          "kcal": 610
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Jogurt z orzechami",
+          "ingredients": [
+            "jogurt naturalny",
+            "orzechy włoskie"
+          ],
+          "kcal": 190
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki z twarożkiem",
+          "ingredients": [
+            "chleb żytni razowy",
+            "twarożek półtłusty",
+            "rzodkiewki",
+            "szczypiorek"
+          ],
+          "kcal": 360
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jajecznica ze szczypiorkiem",
+          "ingredients": [
+            "jajka",
+            "masło",
+            "szczypiorek",
+            "pomidor"
+          ],
+          "kcal": 340
+        },
+        {
+          "type": "lunch",
+          "name": "Łosoś z ziemniakami",
+          "ingredients": [
+            "łosoś",
+            "ziemniaki",
+            "koperek",
+            "fasolka szparagowa"
+          ],
+          "kcal": 590
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Jabłko z masłem orzechowym",
+          "ingredients": [
+            "jabłko",
+            "masło orzechowe"
+          ],
+          "kcal": 180
+        },
+        {
+          "type": "dinner",
+          "name": "Sałatka grecka",
+          "ingredients": [
+            "pomidor",
+            "ogórek",
+            "ser feta",
+            "oliwki czarne",
+            "oliwa z oliwek"
+          ],
+          "kcal": 380
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jogurt z musli i borówkami",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli bez cukru",
+            "borówki"
+          ],
+          "kcal": 350
+        },
+        {
+          "type": "lunch",
+          "name": "Makaron z indykiem w sosie pomidorowym",
+          "ingredients": [
+            "makaron pełnoziarnisty",
+            "mięso z piersi indyka",
+            "passata pomidorowa",
+            "czosnek",
+            "bazylia"
+          ],
+          "kcal": 620
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Marchewki z hummusem",
+          "ingredients": [
+            "marchew",
+            "hummus"
+          ],
+          "kcal": 170
+        },
+        {
+          "type": "dinner",
+          "name": "Omlet ze szpinakiem",
+          "ingredients": [
+            "jajka",
+            "szpinak",
+            "ser żółty",
+            "olej rzepakowy"
+          ],
+          "kcal": 330
+        }
+      ]
+    }
+  ]
+}

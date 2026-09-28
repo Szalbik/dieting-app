@@ -11,8 +11,17 @@ class Chat::Diet::DaySegmenter
 
   Chunk = Struct.new(:day, :markdown, :page_numbers, keyword_init: true)
 
-  def initialize(pages)
+  # headings: optional { "heading line" => day_number } from the model, used
+  # when the document has no "Dzień/Zestaw N" markers the regex can find.
+  def initialize(pages, headings: nil)
     @pages = Array(pages)
+    @headings = headings&.transform_keys { |heading| normalize(heading) }&.reject { |key, _| key.blank? }
+    @fallback = false
+  end
+
+  # True when no day marker was found and the whole document became day 1.
+  def fallback?
+    @fallback
   end
 
   def call
@@ -41,7 +50,10 @@ class Chat::Diet::DaySegmenter
 
     chunks << build_chunk(current_day, lines, page_numbers) if current_day
 
-    return [whole_document_as_single_day] if chunks.empty?
+    if chunks.empty?
+      @fallback = true
+      return [whole_document_as_single_day]
+    end
 
     chunks
   end
@@ -61,11 +73,19 @@ class Chat::Diet::DaySegmenter
   end
 
   def detect_day_number(line)
+    return @headings[normalize(line)] if @headings
+
     # Strip markdown emphasis (**bold**, _italic_) before matching: a day
     # heading like "**_Zestaw 2_**" has an underscore directly adjacent to
     # both "Zestaw" and "2". Underscore counts as a \w character, so it
     # silently defeats \b word-boundary detection on both sides of the regex.
     normalized_line = line.gsub(/[*_]/, '')
     normalized_line.match(DAY_HEADER_REGEX)&.captures&.first&.to_i
+  end
+
+  # Markdown decoration and case differ between the model's copy of a heading
+  # and the extracted line; compare the bare text.
+  def normalize(text)
+    text.to_s.gsub(/[*_#|]/, ' ').squish.downcase
   end
 end

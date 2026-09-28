@@ -31,6 +31,15 @@ spec/fixtures/diet_corpus/<slug>/
 
 Minimum useful corpus: **≥ 6 entries, ≥ 2 different dietitians/layouts, ≥ 1 scanned PDF.**
 
+## Synthetic layouts (`synth-*`)
+
+`bin/diet_eval_synthetic.py` generates six PDFs whose goldens are exact by construction —
+weekday headings, a single-day plan, a days-as-columns grid, "Dzień N" without kcal,
+English, and an image-only scan. They test that the parser generalises beyond the one
+"Zestaw N" layout of the repo fixtures; they do **not** replace real dietitian PDFs.
+The PDFs are gitignored; regenerate them with the script (needs a TTF with Polish
+glyphs — `DIET_EVAL_FONT=/path/to/DejaVuSans.ttf` on Linux).
+
 Adding an entry:
 
 1. `mkdir spec/fixtures/diet_corpus/<slug>` and copy the PDF in as `diet.pdf`.

@@ -1,0 +1,54 @@
+{
+  "pdf": "diet.pdf",
+  "scanned": false,
+  "meals_per_day": null,
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Owsianka z bananem",
+          "ingredients": [
+            "płatki owsiane",
+            "mleko 2%",
+            "banan",
+            "cynamon"
+          ],
+          "kcal": 390
+        },
+        {
+          "type": "lunch",
+          "name": "Kurczak z ryżem i brokułem",
+          "ingredients": [
+            "pierś z kurczaka",
+            "ryż basmati",
+            "brokuł",
+            "oliwa z oliwek"
+          ],
+          "kcal": 610
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Jogurt z orzechami",
+          "ingredients": [
+            "jogurt naturalny",
+            "orzechy włoskie"
+          ],
+          "kcal": 190
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki z twarożkiem",
+          "ingredients": [
+            "chleb żytni razowy",
+            "twarożek półtłusty",
+            "rzodkiewki",
+            "szczypiorek"
+          ],
+          "kcal": 360
+        }
+      ]
+    }
+  ]
+}

@@ -40,7 +40,11 @@ module DietingApp
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    # PDF diet parser knobs (see Chat::Diet::Strategies; compare with `bin/rails diet:benchmark`).
     config.x.openai.diet_parsing_model = ENV.fetch('OPENAI_DIET_PARSER_MODEL', 'gpt-5.1')
+    config.x.openai.diet_parsing_strategy = ENV.fetch('OPENAI_DIET_PARSER_STRATEGY', 'markdown_per_day')
+    config.x.openai.diet_parsing_reasoning_effort = ENV.fetch('OPENAI_DIET_PARSER_REASONING', 'none')
+    config.x.openai.diet_parsing_concurrency = ENV.fetch('OPENAI_DIET_PARSER_CONCURRENCY', '4').to_i
 
     config.time_zone = 'Warsaw'
     config.i18n.default_locale = :pl
