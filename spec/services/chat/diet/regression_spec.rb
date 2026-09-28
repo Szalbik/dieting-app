@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+# Live regression gate for the PDF parser (PRD FR-004). Calls the real OpenAI
+# API with the default parser config over every corpus entry in
+# spec/fixtures/diet_corpus/*/golden.json. Excluded from the default run:
+#
+#   bundle exec rspec --tag live_openai
+#
+# Run it before merging any change to the parser, its prompt or its schema.
+RSpec.describe 'PDF parser regression', :live_openai do
+  # Minimum per-PDF scores; set from the chosen config's benchmark minus slack.
+  thresholds = { composite: 0, ingredient_recall: 0, kcal_within_10pct: 0 }
+
+  around do |example|
+    WebMock.allow_net_connect!
+    example.run
+  ensure
+    WebMock.disable_net_connect!(allow_localhost: true)
+  end
+
+  entries = DietEval.entries
+  it('has a corpus to check') { expect(entries).not_to be_empty }
+
+  entries.each do |entry|
+    it "parses #{entry.slug} at or above the thresholds" do
+      run = DietEval.run(entry)
+
+      expect(run.error).to be_nil
+      thresholds.each do |metric, minimum|
+        expect(run.score[metric]).to be >= minimum, "#{metric} #{run.score[metric]} < #{minimum}"
+      end
+    end
+  end
+end

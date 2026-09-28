@@ -4,13 +4,37 @@ require 'json'
 require 'openai'
 
 class Chat::Diet::ParsingPipeline
+  # Token/time accounting read by the diet:benchmark task; production ignores it.
+  Stats = Struct.new(:calls, :input_tokens, :cached_tokens, :output_tokens, :seconds, :source, keyword_init: true) do
+    def self.empty
+      new(calls: 0, input_tokens: 0, cached_tokens: 0, output_tokens: 0, seconds: 0.0, source: nil)
+    end
+
+    # Accepts both Chat Completions (prompt/completion_tokens) and Responses
+    # (input/output_tokens) usage shapes.
+    def record(usage)
+      usage ||= {}
+      self.calls += 1
+      self.input_tokens += (usage['prompt_tokens'] || usage['input_tokens']).to_i
+      self.output_tokens += (usage['completion_tokens'] || usage['output_tokens']).to_i
+      details = usage['prompt_tokens_details'] || usage['input_tokens_details'] || {}
+      self.cached_tokens += details['cached_tokens'].to_i
+    end
+  end
+
+  attr_reader :stats
+
   def initialize(file_path, expected_meals_per_day: nil)
     @file_path = file_path
     @expected_meals_per_day = expected_meals_per_day
+    @stats = Stats.empty
+    @stats_lock = Mutex.new
   end
 
   def call
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     extraction = Chat::Diet::MarkdownExtractor.new(@file_path).extract
+    @stats.source = extraction.source
     day_chunks = Chat::Diet::DaySegmenter.new(extraction.pages).call
     image_set = Chat::Diet::PageImageSet.new(@file_path)
 
@@ -26,6 +50,7 @@ class Chat::Diet::ParsingPipeline
     DietJsonValidator.validate!(days)
     days
   ensure
+    @stats.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started if started
     image_set&.cleanup
   end
 
@@ -147,6 +172,7 @@ class Chat::Diet::ParsingPipeline
       }
     )
 
+    @stats_lock.synchronize { @stats.record(response['usage']) }
     json_str = response.dig('choices', 0, 'message', 'content')
     JSON.parse(clean_gpt_json(json_str))
   rescue Faraday::BadRequestError => e

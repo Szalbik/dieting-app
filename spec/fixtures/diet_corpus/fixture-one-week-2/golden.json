@@ -1,0 +1,491 @@
+{
+  "pdf": "../../files/diet_for_one_week2.pdf",
+  "scanned": false,
+  "meals_per_day": null,
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Owsianka",
+          "ingredients": [
+            "mleko 1,5% tł.",
+            "płatki owsiane",
+            "borówka amerykańska",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapka",
+          "ingredients": [
+            "bułka grahamka",
+            "masło",
+            "polędwica sopocka",
+            "ser żółty",
+            "pomidorki koktajlowe",
+            "sałata lodowa",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Pieczony kurczak z warzywami",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "fasolka szparagowa świeża lub mrożona",
+            "marchew",
+            "pietruszka nać",
+            "bulion warzywny",
+            "sos sojowy",
+            "masło",
+            "sól",
+            "pieprz",
+            "ryż basmati",
+            "sok pomarańczowy"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Pudding proteinowy",
+          "ingredients": [
+            "pudding proteinowy o smaku czekoladowym",
+            "arbuz"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Serek z grzankami",
+          "ingredients": [
+            "serek ziarnisty typu grani",
+            "chleb graham",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Owsianka",
+          "ingredients": [
+            "mleko 1,5% tł.",
+            "płatki owsiane",
+            "borówka amerykańska",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "bułka grahamka",
+            "pasztet pieczony drobiowy",
+            "sałata lodowa",
+            "ogórek zielony",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Grillowany kurczak z sosem tzatziki",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "pomidor",
+            "sałata lodowa",
+            "oliwa z oliwek",
+            "sok z cytryny",
+            "suszone oregano",
+            "sól",
+            "pieprz",
+            "ziemniaki",
+            "ogórek zielony",
+            "ocet winny",
+            "jogurt naturalny",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr pitny, truskawkowy",
+            "arbuz"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb graham",
+            "masło",
+            "jajko ugotowane na twardo",
+            "majonez lekki",
+            "rukola lub inna sałata",
+            "pudding proteinowy o smaku czekoladowym",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "bułka grahamka",
+            "ser żółty",
+            "polędwica sopocka",
+            "pomidor",
+            "sałata lodowa",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr waniliowy, pitny",
+            "orzechy włoskie, niesolone"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Gulasz z pyzami",
+          "ingredients": [
+            "mięso z piersi kurczak bez skóry",
+            "pieczarki",
+            "mąka pszenna",
+            "papryka czerwona",
+            "pomidory krojone w sosie własnym",
+            "olej rzepakowy",
+            "pyzy na parze",
+            "sól",
+            "pieprz",
+            "papryka czerwona ostra",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Owoce",
+          "ingredients": [
+            "czereśnie",
+            "banan"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Sałatka z kukurydzą, żółtym serem i szynką",
+          "ingredients": [
+            "polędwica sopocka",
+            "ser żółty",
+            "kukurydza konserwowa",
+            "seler konserwowy",
+            "ananas z puszki",
+            "majonez lekki",
+            "jogurt grecki 0% tł.",
+            "pieprz",
+            "sól",
+            "chleb graham",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb graham",
+            "masło",
+            "polędwica sopocka",
+            "sałata lodowa",
+            "pomidor",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr pitny, jagodowy",
+            "arbuz"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kokardki z mięsem z suszonymi pomidorami",
+          "ingredients": [
+            "makaron pełnoziarnisty kokardki lub penne",
+            "mięso z piersi kurczaka",
+            "cebula",
+            "suszone pomidory w oleju",
+            "ser parmezan, starty",
+            "pietruszka nać, posiekana",
+            "śmietana 12% tłuszczu",
+            "olej rzepakowy",
+            "sól",
+            "pieprz",
+            "ostra papryka",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Pudding proteinowy",
+          "ingredients": [
+            "pudding proteinowy o smaku waniliowym",
+            "banan",
+            "czereśnie"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Parówki na ciepło",
+          "ingredients": [
+            "parówki drobiowe",
+            "chleb graham",
+            "masło",
+            "keczup",
+            "pomidor",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Jajecznica",
+          "ingredients": [
+            "jajko",
+            "masło",
+            "chleb graham",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr pitny, mango-marakuja",
+            "truskawki",
+            "brzoskwinie"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Dorada pieczona z ziemniakami",
+          "ingredients": [
+            "dorada",
+            "mintaj",
+            "pstrąg tęczowy",
+            "sos sojowy",
+            "oliwa z oliwek",
+            "sok z cytryny",
+            "czosnek",
+            "musztarda",
+            "ziemniaki",
+            "sól",
+            "pieprz kolorowy",
+            "rozmaryn",
+            "surówka coleslaw",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Pudding proteinowy",
+          "ingredients": [
+            "pudding proteinowy o smaku czekoladowym",
+            "czereśnie"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb graham",
+            "ser twarogowy chudy",
+            "dżem niskosłodzony, dowolny smak",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Owsianka",
+          "ingredients": [
+            "mleko 1,5% tł.",
+            "płatki owsiane",
+            "nektarynka",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "bułka grahamka",
+            "ser żółty",
+            "ogórek małosolny",
+            "sałata lodowa",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Spaghetti ze szparagami i z pistacjami",
+          "ingredients": [
+            "makaron spaghetti, pełnoziarnisty",
+            "szparagi jasne",
+            "mięso z piersi kurczaka",
+            "suszone pomidory",
+            "pistacje",
+            "oliwa z oliwek",
+            "sok z cytryny",
+            "ser parmezan, starty",
+            "ser żółty, tarty",
+            "sól",
+            "pieprz",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr pitny, jagodowy",
+            "jabłko",
+            "borówka amerykańska"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "bułka grahamka",
+            "polędwica sopocka",
+            "ogórek małosolny",
+            "sałata lodowa",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "meals": [
+        {
+          "type": "breakfast",
+          "name": "Musli",
+          "ingredients": [
+            "jogurt naturalny",
+            "musli z owocami liofilizowanymi",
+            "banan",
+            "orzechy włoskie, niesolone",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "second_breakfast",
+          "name": "Kanapki",
+          "ingredients": [
+            "bułka grahamka",
+            "pasztet pieczony drobiowy",
+            "sałata lodowa",
+            "papryka czerwona",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "lunch",
+          "name": "Kotlety drobiowe z surówką",
+          "ingredients": [
+            "mięso z piersi kurczaka",
+            "jajko",
+            "bułka tarta",
+            "olej rzepakowy",
+            "ziemniak",
+            "sól",
+            "pieprz",
+            "kapusta kiszona",
+            "cebula",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "afternoon_snack",
+          "name": "Skyr",
+          "ingredients": [
+            "skyr pitny, waniliowy",
+            "arbuz",
+            "jabłko"
+          ],
+          "kcal": null
+        },
+        {
+          "type": "dinner",
+          "name": "Kanapki",
+          "ingredients": [
+            "chleb grahamka",
+            "masło",
+            "polędwica sopocka",
+            "ogórek zielony",
+            "sałata lodowa",
+            "herbata, gorzka"
+          ],
+          "kcal": null
+        }
+      ]
+    }
+  ]
+}

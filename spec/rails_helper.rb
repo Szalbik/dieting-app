@@ -60,6 +60,10 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
+  # Live OpenAI parser regression (spec/services/chat/diet/regression_spec.rb)
+  # costs money; run it explicitly with `bundle exec rspec --tag live_openai`.
+  config.filter_run_excluding live_openai: true
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end

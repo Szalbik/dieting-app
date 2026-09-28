@@ -142,6 +142,22 @@ RSpec.describe Chat::Diet::ParsingPipeline do
     expect(image_set).to have_received(:image_parts_for).with([2]).at_least(:once)
   end
 
+  it 'reports call count, token usage and extraction source for the benchmark' do
+    meal = { type: 'breakfast', name: 'X', ingredients: [], instructions: '',
+             nutrition: { kcal: 1, protein: 1, fat: 1, carbs: 1 } }
+    responses = [{ day: 1, meals: [meal] }, { day: 2, meals: [meal] }]
+    usage = { 'prompt_tokens' => 1000, 'completion_tokens' => 200, 'prompt_tokens_details' => { 'cached_tokens' => 100 } }
+    allow(client).to receive(:chat) do |**|
+      { 'choices' => [{ 'message' => { 'content' => responses.shift.to_json } }], 'usage' => usage }
+    end
+
+    pipeline.call
+
+    expect(pipeline.stats.to_h)
+      .to include(calls: 2, input_tokens: 2000, cached_tokens: 200, output_tokens: 400, source: :ocr)
+    expect(pipeline.stats.seconds).to be >= 0
+  end
+
   context 'when extraction did not require OCR' do
     let(:source) { :markdown }
 
