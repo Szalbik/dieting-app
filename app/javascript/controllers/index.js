@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import CartDragController from "./cart_drag_controller"
+application.register("cart-drag", CartDragController)
+
 import DateStripController from "./date_strip_controller"
 application.register("date-strip", DateStripController)
 
