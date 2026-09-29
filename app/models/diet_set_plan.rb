@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DietSetPlan < ApplicationRecord
+  SERVINGS_RANGE = 1..10
+
   belongs_to :diet
   belongs_to :diet_set
   has_many :meal_plans, dependent: :destroy
@@ -10,6 +12,8 @@ class DietSetPlan < ApplicationRecord
 
   delegate :name, to: :diet_set
   delegate :derived_name_from_meal, to: :diet_set
+
+  validates :servings, numericality: { only_integer: true, in: SERVINGS_RANGE }
 
   def nutrition_totals
     {

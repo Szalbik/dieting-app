@@ -39,4 +39,17 @@ RSpec.describe ShoppingCartSyncService do
 
     expect(shopping_cart.shopping_cart_items.where(product: product, date: Date.current).count).to eq(1)
   end
+
+  it 'multiplies item quantity and shopping-list amounts by the plan servings' do
+    product.ingredient_measures.create!(amount: 100.0, unit: 'g')
+    diet_set_plan = create(:diet_set_plan, diet_set: diet_set, diet: diet, date: Date.current, servings: 2)
+    create(:meal_plan, diet_set_plan: diet_set_plan, meal: meal, selected_for_cart: true)
+
+    sync!
+
+    expect(shopping_cart.shopping_cart_items.find_by!(product: product).quantity).to eq(2)
+    products = shopping_cart.group_and_sum_by_cart_items.flat_map { |group| group[:products] }
+    amounts = products.flat_map { |p| p[:aggregated_ingredient_measures] }
+    expect(amounts).to include(a_hash_including(unit: 'g', amount: 200.0))
+  end
 end

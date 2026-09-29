@@ -20,7 +20,7 @@ class ShoppingCartSyncService
 
     meal_plans.each do |meal_plan|
       meal_plan.meal.products.each do |product|
-        grouped_items[[product.id, meal_plan.id, meal_plan.diet_set_plan.date]] += 1
+        grouped_items[[product.id, meal_plan.id, meal_plan.diet_set_plan.date]] += meal_plan.diet_set_plan.servings
       end
     end
 

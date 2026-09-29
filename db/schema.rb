@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -96,8 +96,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
     t.datetime "updated_at", null: false
     t.integer "diet_set_id", null: false
     t.boolean "shopping_done", default: false, null: false
+    t.integer "servings", default: 1, null: false
     t.index ["diet_id"], name: "index_diet_set_plans_on_diet_id"
     t.index ["diet_set_id"], name: "index_diet_set_plans_on_diet_set_id"
+    t.check_constraint "servings BETWEEN 1 AND 10", name: "diet_set_plans_servings_range"
   end
 
   create_table "diet_sets", force: :cascade do |t|
