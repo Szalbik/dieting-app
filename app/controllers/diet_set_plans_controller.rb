@@ -37,7 +37,8 @@ class DietSetPlansController < ApplicationController
 
   def create
     diet_set = DietSet.find(diet_set_plan_params[:diet_set_id])
-    @diet_set_plan = DietSetPlan.new(date: date, diet_set: diet_set, diet: diet_set.diet)
+    servings = newest_plan_for(date)&.servings || 1
+    @diet_set_plan = DietSetPlan.new(date: date, diet_set: diet_set, diet: diet_set.diet, servings: servings)
 
     if @diet_set_plan.save
       Current.user.diet_set_plans.where(date: date).update_all(shopping_done: false)
@@ -55,8 +56,8 @@ class DietSetPlansController < ApplicationController
     current_date = Date.parse(params[:current_date])
     target_date = Date.parse(params[:target_date])
 
-    current_plan = Current.user.diet_set_plans.where(date: current_date).order(created_at: :desc).first
-    target_plan = Current.user.diet_set_plans.where(date: target_date).order(created_at: :desc).first
+    current_plan = newest_plan_for(current_date)
+    target_plan = newest_plan_for(target_date)
 
     if current_plan.nil? && target_plan.nil?
       redirect_to diet_set_plans_path(date: current_date), alert: 'Żaden z wybranych dni nie ma przypisanej diety.'
@@ -69,6 +70,10 @@ class DietSetPlansController < ApplicationController
         current_plan.update!(date: temp_date)
         target_plan.update!(date: current_date)
         current_plan.update!(date: target_date)
+        # Head-count belongs to the date, not the menu.
+        current_servings = current_plan.servings
+        current_plan.update!(servings: target_plan.servings)
+        target_plan.update!(servings: current_servings)
       elsif current_plan
         current_plan.update!(date: target_date)
       else
@@ -80,6 +85,18 @@ class DietSetPlansController < ApplicationController
     redirect_to diet_set_plans_path(date: current_date), notice: 'Zestawy diety zostały zamienione.'
   rescue Date::Error
     redirect_to diet_set_plans_path, alert: 'Nieprawidłowy format daty.'
+  end
+
+  def update_servings
+    plan = newest_plan_for(date)
+    unless plan
+      redirect_to diet_set_plans_path(date: date), alert: 'Brak diety przypisanej do tego dnia.'
+      return
+    end
+
+    plan.update!(servings: params[:servings].to_i.clamp(DietSetPlan::SERVINGS_RANGE))
+    sync_current_shopping_cart!
+    redirect_to diet_set_plans_path(date: date)
   end
 
   def replace_product
@@ -276,6 +293,10 @@ class DietSetPlansController < ApplicationController
   def set_diet_set_plan
     @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last unless params['reassign'].present?
     @diet_set_plan ||= DietSetPlan.new(date: date)
+  end
+
+  def newest_plan_for(day)
+    Current.user.diet_set_plans.where(date: day).order(created_at: :desc).first
   end
 
   def date

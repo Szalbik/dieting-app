@@ -35,7 +35,27 @@
       <% end %>
     <% end %>
 
-    <h3 id="posilki" class="mb-2 mt-[18px] font-serif text-[17px] font-bold text-brand-ink">Posiłki</h3>
+    <% servings = @diet_set_plan.servings %>
+    <div class="mb-2 mt-[18px] flex items-center justify-between gap-2">
+      <h3 id="posilki" class="font-serif text-[17px] font-bold text-brand-ink">Posiłki</h3>
+      <div class="flex items-center gap-1 rounded-full bg-brand-paper px-1 shadow-soft">
+        <%= button_to "−", servings_diet_set_plans_path,
+              method: :patch,
+              params: { date: @date, servings: servings - 1 },
+              disabled: servings <= DietSetPlan::SERVINGS_RANGE.min,
+              form_class: "contents",
+              "aria-label": "Mniej osób",
+              class: "flex h-11 w-11 items-center justify-center rounded-full text-lg font-semibold text-brand-navy hover:bg-brand-peach/30 disabled:opacity-30" %>
+        <span class="min-w-[3.5rem] whitespace-nowrap text-center text-[13px] font-semibold text-brand-ink"><%= servings %> os.</span>
+        <%= button_to "+", servings_diet_set_plans_path,
+              method: :patch,
+              params: { date: @date, servings: servings + 1 },
+              disabled: servings >= DietSetPlan::SERVINGS_RANGE.max,
+              form_class: "contents",
+              "aria-label": "Więcej osób",
+              class: "flex h-11 w-11 items-center justify-center rounded-full text-lg font-semibold text-brand-navy hover:bg-brand-peach/30 disabled:opacity-30" %>
+      </div>
+    </div>
     <div class="flex flex-col gap-2">
       <% @diet_set_plan.meal_plans.each do |meal_plan| %>
         <% status = meal_status_for(meal_plan, @date) %>

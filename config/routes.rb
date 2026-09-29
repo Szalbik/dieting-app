@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   resource :diet_set_plans, only: %i[show create] do
     post 'toggle_shopping_bag/:id', to: 'diet_set_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
     post 'swap', to: 'diet_set_plans#swap', as: 'swap'
+    patch 'servings', to: 'diet_set_plans#update_servings', as: 'servings'
     post 'replace_product', to: 'diet_set_plans#replace_product', as: 'replace_product'
     post 'cycle_product_replacement', to: 'diet_set_plans#cycle_product_replacement', as: 'cycle_product_replacement'
     post 'add_product_substitution', to: 'diet_set_plans#add_product_substitution', as: 'add_product_substitution'
