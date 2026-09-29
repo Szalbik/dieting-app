@@ -5,6 +5,8 @@
     <% groups = diet_items_empty ? [] : shopping_cart.group_and_sum_by_cart_items %>
     <% cart_diets = shopping_cart.diets_in_cart %>
     <% picker_categories = groups.empty? ? [] : ShoppingCart.categories_for_picker %>
+    <% inne_id = picker_categories.find { |c| c.name == 'Inne' }&.id %>
+    <% unbought_category_ids = groups.reject { |g| g[:bought] }.map { |g| g[:category]&.id || inne_id } %>
 
     <% if shopping_cart.shared? %>
       <div class="mb-3.5 rounded-2xl border border-brand-sky/60 bg-brand-sky-soft px-4 py-3">
@@ -94,12 +96,12 @@
 
     <%# Diet products, grouped by category %>
     <% unless diet_items_empty %>
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-3" data-controller="cart-drag">
         <% groups.each do |group| %>
           <% slug = group[:category]&.name&.parameterize || 'inne' %>
           <% group_name = group[:category]&.name || 'Inne' %>
           <% look = category_presentation(group_name) %>
-          <div id="category_<%= slug %><%= '_bought' if group[:bought] %>" data-tabs-target="panel" data-tab-value="<%= slug %>">
+          <div id="category_<%= slug %><%= '_bought' if group[:bought] %>" data-tabs-target="panel" data-tab-value="<%= slug %>"<% unless group[:bought] %> data-drop-category-id="<%= group[:category]&.id || inne_id %>"<% end %>>
             <%= render Ui::CardComponent.new(tint: group[:bought] ? :mint : look[:tint], padding: :sm) do %>
               <div class="mb-2.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft">
                 <span class="text-base leading-none" aria-hidden="true"><%= look[:icon] %></span>
@@ -108,7 +110,8 @@
               </div>
               <div class="flex flex-col gap-1.5">
                 <% group[:products].each do |product_group| %>
-                  <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5 <%= 'opacity-60' if product_group[:bought] %>">
+                  <div id="<%= shopping_cart_item_id_for(group[:category], product_group[:name]) %>" class="flex items-center gap-2.5 rounded-xl border border-brand-ink/10 bg-white px-3 py-2.5 <%= product_group[:bought] ? 'opacity-60' : 'select-none [-webkit-touch-callout:none]' %>"
+                       <% unless product_group[:bought] %>data-cart-drag-target="row" data-move-url="<%= move_shopping_cart_item_path(product_group[:product]) %>" data-category-id="<%= group[:category]&.id || inne_id %>"<% end %>>
                     <%= button_to toggle_bought_shopping_cart_item_path(product_group[:product]), method: :patch, params: { bought: !product_group[:bought] }, form: { data: { turbo_stream: true, offline_check: true }, class: "shrink-0" },
                           class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{product_group[:bought] ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
                       <% if product_group[:bought] %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% else %><span class="sr-only">Odhacz</span><% end %>
@@ -126,13 +129,6 @@
                         </span>
                       <% end %>
                     </div>
-                    <%# Online-only (no data-offline-check): offline-cart disables it while offline. %>
-                    <%= form_with url: move_shopping_cart_item_path(product_group[:product]), method: :patch, data: { turbo_stream: true }, class: "relative shrink-0" do %>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="pointer-events-none absolute inset-0 m-auto text-brand-ink-faint"><path d="M3 7 H10 L12 9 H21 V19 H3 Z M12 14 H17 M15 12 L17 14 L15 16" /></svg>
-                      <%= select_tag :category_id, options_from_collection_for_select(picker_categories, :id, :name, picker_categories.find { |c| c.name == (group[:category]&.name || 'Inne') }&.id),
-                            id: nil, aria: { label: "Przenieś #{product_group[:name]} do kategorii" }, onchange: "this.form.requestSubmit()",
-                            class: "block h-11 w-11 cursor-pointer appearance-none rounded-lg border-0 bg-transparent bg-none p-0 text-transparent *:text-brand-ink hover:bg-brand-paper disabled:cursor-not-allowed" %>
-                    <% end %>
                     <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
                           class: "text-brand-ink-faint hover:text-rose-500" do %>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
@@ -143,6 +139,17 @@
             <% end %>
           </div>
         <% end %>
+
+        <%# Drop targets for categories without an unbought group; shown only while dragging. %>
+        <div class="hidden grid-cols-2 gap-2" data-cart-drag-target="tiles">
+          <% picker_categories.reject { |c| unbought_category_ids.include?(c.id) }.each do |category| %>
+            <% look = category_presentation(category.name) %>
+            <div data-drop-category-id="<%= category.id %>" class="flex items-center gap-1.5 rounded-xl border border-dashed border-brand-ink/25 bg-white px-3 py-3 text-xs font-bold text-brand-ink-soft">
+              <span class="text-base leading-none" aria-hidden="true"><%= look[:icon] %></span>
+              <span class="truncate"><%= category.name %></span>
+            </div>
+          <% end %>
+        </div>
 
         <%# Diets behind the current cart (from selected plans) %>
         <% cart_diets.each do |cart_diet| %>
