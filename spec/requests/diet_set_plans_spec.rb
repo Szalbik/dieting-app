@@ -61,6 +61,17 @@ RSpec.describe 'DietSetPlans servings', type: :request do
     end
   end
 
+  describe 'GET show with a garbage date' do
+    it 'falls back to today instead of 500' do
+      plan_for(Date.current)
+      login
+
+      get diet_set_plans_path(date: 'foo')
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe 'POST create (reassign)' do
     it 'carries servings over to the new plan' do
       plan_for(date, servings: 2)

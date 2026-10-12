@@ -4,7 +4,8 @@ module StripeWebhooks
   class SyncSubscription
     def call(event)
       subscription = event.data.object
-      user = User.find_by!(stripe_customer_id: subscription.customer)
+      user = User.find_by(stripe_customer_id: subscription.customer)
+      return unless user # customer from another env / test mode
 
       if subscription.status == 'active' && !subscription.cancel_at_period_end
         user.update!(subscription: :active, subscription_end_date: nil)

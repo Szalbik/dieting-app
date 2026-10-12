@@ -2,14 +2,14 @@
 
 class TodoistController < ApplicationController
   def create
-    if session[:todoist_token].blank?
+    if todoist_token.blank?
       redirect_to profile_path, alert: 'Please authorize Todoist first in your profile'
     else
       SendToTodoistJob.perform_later(
         params[:diet][:project_id],
         params[:diet][:diet_set_ids],
         diet_set_quantities_params[:diet_set_quantities],
-        session[:todoist_token],
+        todoist_token,
         Current.user.id
       )
       redirect_to diets_path, notice: 'Products sent to Todoist'
@@ -17,7 +17,7 @@ class TodoistController < ApplicationController
   end
 
   def authorize
-    session[:state] ||= SecureRandom.hex(10)
+    session[:state] = SecureRandom.hex(10)
     redirect_to("https://todoist.com/oauth/authorize?client_id=#{client_id}&scope=data:read_write&state=#{session[:state]}",
                 allow_other_host: true)
   end
@@ -26,7 +26,10 @@ class TodoistController < ApplicationController
     code = auth_code_params[:code]
     state = auth_code_params[:state]
 
-    return render plain: 'Invalid state', status: :bad_request if state != session[:state]
+    expected_state = session.delete(:state).to_s
+    if state.blank? || !ActiveSupport::SecurityUtils.secure_compare(state, expected_state)
+      return render plain: 'Invalid state', status: :bad_request
+    end
 
     response = HTTParty.post('https://todoist.com/oauth/access_token',
                              body: {

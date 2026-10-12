@@ -77,7 +77,11 @@
     <div class="mt-6">
       <div class="flex flex-col">
         <h2 class="text-base font-semibold leading-6 text-gray-900">Integracje:</h2>
-        <%= button_to "Wyślij listę do #{image_tag('icons/todoist.svg', size: '16x16', class: 'ml-2')}".html_safe, todoist_create_path, method: :post, params: { diet: { id: @diet.id, diet_set_ids: params[:diet].present? ? params[:diet][:diet_set_ids] : [] } }, class: "flex text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-2 mt-2", disabled: params[:diet].blank? || params[:sent_to_todoist] %>
+        <% if params[:diet].present? && !params[:sent_to_todoist] %>
+          <%= link_to "Wyślij listę do #{image_tag('icons/todoist.svg', size: '16x16', class: 'ml-2')}".html_safe, todoist_projects_path(diet_set_ids: params[:diet][:diet_set_ids]), class: "flex text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-2 mt-2" %>
+        <% else %>
+          <span class="flex ml-2 mt-2 text-sm font-medium text-gray-400">Wyślij listę do <%= image_tag('icons/todoist.svg', size: '16x16', class: 'ml-2 opacity-50') %></span>
+        <% end %>
       </div>
     </div>
   </aside>

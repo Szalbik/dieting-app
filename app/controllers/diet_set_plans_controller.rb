@@ -48,7 +48,7 @@ class DietSetPlansController < ApplicationController
       sync_current_shopping_cart!
       redirect_to diet_set_plans_path(date: date), notice: 'Meal plan was successfully updated.'
     else
-      render :show
+      redirect_to diet_set_plans_path(date: date), alert: @diet_set_plan.errors.full_messages.to_sentence
     end
   end
 
@@ -300,7 +300,11 @@ class DietSetPlansController < ApplicationController
   end
 
   def date
-    @date = params['date'].present? ? Date.parse(params['date']).to_s : Date.current.to_s
+    @date = begin
+      Date.parse(params['date']).to_s
+    rescue TypeError, Date::Error # missing or garbage ?date=
+      Date.current.to_s
+    end
   end
 
   def diet_set_plan_params

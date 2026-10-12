@@ -5,7 +5,6 @@ class User < ApplicationRecord
 
   AI_QUOTA_LIMITS = { free: 3, pro: 20 }.freeze # free = lifetime total, pro = per month
 
-  after_create -> (first_name) { email_address.split('@').first }
   after_create :create_owned_shopping_cart
 
   belongs_to :active_shopping_cart, class_name: 'ShoppingCart', optional: true, inverse_of: :active_users

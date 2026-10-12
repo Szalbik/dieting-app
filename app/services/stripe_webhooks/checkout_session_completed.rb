@@ -6,7 +6,9 @@ module StripeWebhooks
       session = event.data.object
       return unless session.mode == 'subscription'
 
-      user = User.find_by!(stripe_customer_id: session.customer)
+      user = User.find_by(stripe_customer_id: session.customer)
+      return unless user # customer from another env / test mode
+
       user.update!(subscription: :active, subscription_end_date: nil)
     end
   end

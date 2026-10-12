@@ -31,7 +31,8 @@ RSpec.describe StripeWebhooks::SyncSubscription do
     expect(user.reload).not_to be_subscribed
   end
 
-  it 'raises when no user matches the customer id' do
-    expect { described_class.new.call(event_for(status: 'active', customer: 'cus_unknown')) }.to raise_error(ActiveRecord::RecordNotFound)
+  it 'ignores customers we do not know (no 500 → no Stripe retry storm)' do
+    expect { described_class.new.call(event_for(status: 'active', customer: 'cus_unknown')) }.not_to raise_error
+    expect(user.reload).not_to be_subscribed
   end
 end

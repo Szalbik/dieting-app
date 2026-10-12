@@ -20,8 +20,8 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: '/jobs'
 
   constraints lambda { |request|
-                user_id = request.session[:user_id]
-                user_id && User.find_by(id: user_id)&.admin?
+                session_id = request.cookie_jar.signed[:session_id]
+                session_id && Session.find_by(id: session_id)&.user&.admin?
               } do
                 mount RailsPerformance::Engine, at: 'rails/performance'
               end
@@ -98,7 +98,6 @@ Rails.application.routes.draw do
   get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
   get 'diets', to: 'diets#index'
-  get 'diets/:id/load_pdf', to: 'diets#load_pdf', as: 'load_pdf'
 
   namespace :todoist do
     resources :projects, only: :index
