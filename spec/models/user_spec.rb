@@ -90,80 +90,77 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#ai_quota_limit' do
-    it 'is 1 for a free user' do
-      expect(build(:user).ai_quota_limit).to eq(1)
-    end
-
-    it 'is 3 for a subscribed (Pro) user' do
-      expect(build(:user, subscription: :active).ai_quota_limit).to eq(3)
-    end
-
-    it 'is nil (unlimited) for a lifetime user' do
-      expect(build(:user, subscription: :lifetime).ai_quota_limit).to be_nil
-    end
-  end
-
   describe '#ai_quota_available?' do
-    it 'is true for a free user who has not used the quota this month' do
-      user = create(:user, ai_quota_used_count: 0, ai_quota_period_started_at: nil)
+    it 'allows a free user 3 ops in total, then blocks' do
+      user = create(:user, ai_free_used_count: 2)
       expect(user).to be_ai_quota_available
-    end
-
-    it 'is false for a free user who already used their 1 op this month' do
-      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      user.update!(ai_free_used_count: 3)
       expect(user).not_to be_ai_quota_available
     end
 
-    it 'resets once the period rolls into a new month' do
-      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: 2.months.ago.beginning_of_month)
-      expect(user).to be_ai_quota_available
+    it 'never resets the free limit with a new month' do
+      user = create(:user, ai_free_used_count: 3, ai_quota_period_started_at: 2.months.ago.beginning_of_month)
+      expect(user).not_to be_ai_quota_available
     end
 
-    it 'allows a Pro user up to 3 ops before blocking' do
-      user = create(:user, subscription: :active, ai_quota_used_count: 2,
+    it 'allows a Pro user up to 20 ops per month before blocking' do
+      user = create(:user, subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 19,
                            ai_quota_period_started_at: Time.current.beginning_of_month)
       expect(user).to be_ai_quota_available
-      user.update!(ai_quota_used_count: 3)
+      user.update!(ai_quota_used_count: 20)
       expect(user).not_to be_ai_quota_available
+    end
+
+    it 'resets the Pro limit once the period rolls into a new month' do
+      user = create(:user, subscription: :active, ai_quota_used_count: 20,
+                           ai_quota_period_started_at: 2.months.ago.beginning_of_month)
+      expect(user).to be_ai_quota_available
     end
 
     it 'is always true for a lifetime user regardless of usage' do
-      user = build(:user, subscription: :lifetime, ai_quota_used_count: 999,
+      user = build(:user, subscription: :lifetime, ai_quota_used_count: 999, ai_free_used_count: 999,
                           ai_quota_period_started_at: Time.current.beginning_of_month)
       expect(user).to be_ai_quota_available
     end
   end
 
   describe '#refund_ai_quota!' do
-    it 'gives back one consumed op' do
-      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+    it 'gives back one consumed free op' do
+      user = create(:user, ai_free_used_count: 1)
+      user.refund_ai_quota!
+      expect(user.reload.ai_free_used_count).to eq(0)
+    end
+
+    it 'gives back one consumed Pro op' do
+      user = create(:user, subscription: :active, ai_quota_used_count: 1,
+                           ai_quota_period_started_at: Time.current.beginning_of_month)
       user.refund_ai_quota!
       expect(user.reload.ai_quota_used_count).to eq(0)
     end
 
     it 'never goes below zero' do
-      user = create(:user, ai_quota_used_count: 0)
+      user = create(:user, ai_free_used_count: 0)
       user.refund_ai_quota!
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(0)
     end
   end
 
   describe '#consume_ai_quota!' do
-    it 'increments the counter for a free user' do
+    it 'increments the lifetime counter for a free user' do
       user = create(:user)
       user.consume_ai_quota!
-      expect(user.reload.ai_quota_used_count).to eq(1)
+      expect(user.reload).to have_attributes(ai_free_used_count: 1, ai_quota_used_count: 0)
     end
 
-    it 'increments the counter for a subscribed Pro user' do
+    it 'increments the monthly counter for a subscribed Pro user' do
       user = create(:user, subscription: :active)
       user.consume_ai_quota!
-      expect(user.reload.ai_quota_used_count).to eq(1)
+      expect(user.reload).to have_attributes(ai_free_used_count: 0, ai_quota_used_count: 1)
     end
 
-    it 'resets the counter before incrementing when the period is stale' do
-      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: 2.months.ago.beginning_of_month)
+    it 'resets the monthly counter before incrementing when the period is stale' do
+      user = create(:user, subscription: :active, ai_quota_used_count: 5,
+                           ai_quota_period_started_at: 2.months.ago.beginning_of_month)
       user.consume_ai_quota!
       expect(user.reload.ai_quota_used_count).to eq(1)
     end
@@ -171,7 +168,7 @@ RSpec.describe User, type: :model do
     it 'does nothing for a lifetime user' do
       user = create(:user, subscription: :lifetime)
       user.consume_ai_quota!
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload).to have_attributes(ai_free_used_count: 0, ai_quota_used_count: 0)
     end
   end
 end

@@ -68,7 +68,7 @@ class DietsController < ApplicationController
     end
 
     if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
-      redirect_to new_diet_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
+      redirect_to new_diet_path, alert: ai_quota_exhausted_alert
       return
     end
 
@@ -152,7 +152,7 @@ class DietsController < ApplicationController
     end
 
     unless Current.user.ai_quota_available?
-      redirect_to diets_path, alert: 'Wykorzystałeś darmową operację AI w tym miesiącu. Przejdź na Pro, aby kontynuować.'
+      redirect_to diets_path, alert: ai_quota_exhausted_alert
       return
     end
 
@@ -163,6 +163,14 @@ class DietsController < ApplicationController
   end
 
   private
+
+  def ai_quota_exhausted_alert
+    if Current.user.subscribed?
+      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:pro)} operacji AI w tym miesiącu. Limit odnowi się 1. dnia przyszłego miesiąca."
+    else
+      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:free)} darmowe operacje AI. Przejdź na Pro, aby kontynuować."
+    end
+  end
 
   def search_params
     params.require(:diet).permit(diet_set_ids: [])

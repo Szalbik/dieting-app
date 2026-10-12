@@ -67,7 +67,7 @@ RSpec.describe PopulateDietFromJsonJob, type: :job do
     end
 
     it 'records the failure, refunds the AI op and re-raises on malformed parsed_json' do
-      user = create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      user = create(:user, ai_free_used_count: 1)
       diet = create(:diet, user: user, source: 'generated', status: 'generating', parsed_json: [{ 'day' => 1 }])
 
       expect { described_class.new.perform(diet.id) }.to raise_error(NoMethodError)
@@ -75,7 +75,7 @@ RSpec.describe PopulateDietFromJsonJob, type: :job do
       diet.reload
       expect(diet.status).to eq('failed')
       expect(diet.generation_error).to be_present
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(0)
     end
 
     it 'marks a pdf diet ready after population' do

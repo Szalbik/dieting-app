@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_12_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -356,6 +356,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.datetime "subscription_end_date"
     t.integer "ai_quota_used_count", default: 0, null: false
     t.datetime "ai_quota_period_started_at"
+    t.integer "ai_free_used_count", default: 0, null: false
     t.index ["active_shopping_cart_id"], name: "index_users_on_active_shopping_cart_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true

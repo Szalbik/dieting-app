@@ -92,7 +92,7 @@ RSpec.describe 'Diets', type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(Diet.find_by(name: 'Blocked AI diet')).to be_nil
-      expect(user.reload.ai_quota_used_count.to_i).to eq(0)
+      expect(user.reload.ai_free_used_count.to_i).to eq(0)
     end
 
     context 'with all creation modes enabled' do
@@ -146,37 +146,41 @@ RSpec.describe 'Diets', type: :request do
     context 'with all creation modes enabled' do
       before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
 
-      it 'blocks a second pdf/generated diet in the same month for a free user' do
+      it 'allows a free user 3 pdf/generated diets in total, then blocks the 4th' do
         login
         pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
         post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf } }
+        2.times { |i| post diets_path, params: { diet: { name: "Free AI diet #{i}", kcal_target: 1800 } } }
+        expect(Diet.where(user: user).count).to eq(3)
 
         expect do
-          post diets_path, params: { diet: { name: 'Second AI diet', kcal_target: 1800 } }
+          post diets_path, params: { diet: { name: 'Fourth AI diet', kcal_target: 1800 } }
         end.not_to have_enqueued_job(GenerateDietJob)
 
         expect(response).to redirect_to(new_diet_path)
-        expect(Diet.find_by(name: 'Second AI diet')).to be_nil
+        expect(flash[:alert]).to include('Przejdź na Pro')
+        expect(Diet.find_by(name: 'Fourth AI diet')).to be_nil
       end
 
       it 'always allows manual diets regardless of quota' do
         login
-        user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+        user.update!(ai_free_used_count: 3)
         post diets_path, params: { diet: { name: 'Manual diet', meals_per_day: 5 } }
         expect(response).to redirect_to(diets_path)
         expect(Diet.find_by(name: 'Manual diet')).to be_present
       end
 
-      it 'allows a Pro user up to 3 pdf/generated diets per month, then blocks the 4th' do
+      it 'lets a Pro user past the free limit, up to 20 per month' do
         login
-        user.update!(subscription: :active)
-        3.times { |i| post diets_path, params: { diet: { name: "Pro AI diet #{i}", kcal_target: 1800 } } }
-        expect(Diet.where(user: user).count).to eq(3)
+        user.update!(subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 19,
+                     ai_quota_period_started_at: Time.current.beginning_of_month)
+        post diets_path, params: { diet: { name: 'Pro AI diet 20', kcal_target: 1800 } }
+        expect(Diet.find_by(name: 'Pro AI diet 20')).to be_present
 
         expect do
-          post diets_path, params: { diet: { name: 'Pro AI diet 4', kcal_target: 1800 } }
+          post diets_path, params: { diet: { name: 'Pro AI diet 21', kcal_target: 1800 } }
         end.not_to have_enqueued_job(GenerateDietJob)
-        expect(Diet.find_by(name: 'Pro AI diet 4')).to be_nil
+        expect(Diet.find_by(name: 'Pro AI diet 21')).to be_nil
       end
 
       it 'allows unlimited pdf/generated diets for a lifetime user' do
@@ -259,7 +263,7 @@ RSpec.describe 'Diets', type: :request do
       expect do
         post reparse_diet_path(diet)
       end.not_to have_enqueued_job(DietBuilderJob)
-      expect(user.reload.ai_quota_used_count.to_i).to eq(0)
+      expect(user.reload.ai_free_used_count.to_i).to eq(0)
       follow_redirect!
       expect(response.body).to include('właśnie wczytywana')
     end
@@ -276,7 +280,7 @@ RSpec.describe 'Diets', type: :request do
     end
 
     it 'blocks reparse when the free quota is already spent' do
-      user.update!(ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month)
+      user.update!(ai_free_used_count: 3)
       login
       expect do
         post reparse_diet_path(diet)

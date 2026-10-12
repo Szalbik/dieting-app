@@ -26,11 +26,7 @@
           <% else %>
             <p class="mt-2 text-sm text-gray-700">Plan: <span class="font-semibold">Darmowy</span></p>
             <p class="mt-1 text-sm text-gray-500">
-              <% if Current.user.ai_quota_available? %>
-                Dostępna 1 operacja AI w tym miesiącu (wgranie PDF).
-              <% else %>
-                Wykorzystana — odnowi się 1. dnia miesiąca.
-              <% end %>
+              Pozostało <%= Current.user.ai_free_remaining %> z <%= User::AI_QUOTA_LIMITS.fetch(:free) %> darmowych operacji AI (wgranie PDF lub kreator AI).
             </p>
           <% end %>
         </div>
@@ -39,7 +35,7 @@
         <% elsif Current.user.stripe_customer_id.present? %>
           <%= button_to "Zarządzaj subskrypcją", billing_portal_path, method: :post, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
         <% else %>
-          <%= link_to "Przejdź na Pro — 10 zł/mies.", upgrade_path, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
+          <%= link_to "Przejdź na Pro — 20 zł/mies.", upgrade_path, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
         <% end %>
       </div>
     </div>

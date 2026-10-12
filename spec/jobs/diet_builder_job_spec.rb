@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe DietBuilderJob, type: :job do
-  let(:user) { create(:user, ai_quota_used_count: 1, ai_quota_period_started_at: Time.current.beginning_of_month) }
+  let(:user) { create(:user, ai_free_used_count: 1) }
   let(:diet) { create(:diet, :with_pdf, user: user, source: 'pdf', status: 'generating') }
   let(:parser) { instance_double(Chat::DietParserService) }
 
@@ -18,7 +18,7 @@ RSpec.describe DietBuilderJob, type: :job do
         .to have_enqueued_job(PopulateDietFromJsonJob).with(diet.id)
 
       expect(diet.reload.parsed_json).to eq(days)
-      expect(user.reload.ai_quota_used_count).to eq(1)
+      expect(user.reload.ai_free_used_count).to eq(1)
     end
 
     it 'marks the diet failed, refunds the quota and re-raises when parsing errors' do
@@ -29,17 +29,17 @@ RSpec.describe DietBuilderJob, type: :job do
       diet.reload
       expect(diet.status).to eq('failed')
       expect(diet.generation_error).to eq('OpenAI API error: boom')
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(0)
     end
 
     it 'does not refund a second time when an already-failed job is retried by hand' do
       allow(parser).to receive(:call).and_raise('still broken')
       diet.update!(status: 'failed')
-      user.update!(ai_quota_used_count: 0)
+      user.update!(ai_free_used_count: 0)
 
       expect { described_class.new.perform(diet.id) }.to raise_error('still broken')
 
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(0)
       expect(diet.reload.generation_error).to eq('still broken')
     end
 
@@ -51,7 +51,7 @@ RSpec.describe DietBuilderJob, type: :job do
       end.not_to have_enqueued_job(PopulateDietFromJsonJob)
 
       expect(diet.reload.status).to eq('failed')
-      expect(user.reload.ai_quota_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(0)
     end
   end
 end

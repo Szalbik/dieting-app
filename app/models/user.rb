@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
 
-  AI_QUOTA_LIMITS = { free: 1, pro: 3 }.freeze
+  AI_QUOTA_LIMITS = { free: 3, pro: 20 }.freeze # free = lifetime total, pro = per month
 
   after_create -> (first_name) { email_address.split('@').first }
   after_create :create_owned_shopping_cart
@@ -90,34 +90,34 @@ class User < ApplicationRecord
     subscription_active? || subscription_lifetime? || subscription_end_date&.future?
   end
 
-  # nil means unlimited (lifetime plan)
-  def ai_quota_limit
-    return nil if subscription_lifetime?
-
-    subscribed? ? AI_QUOTA_LIMITS.fetch(:pro) : AI_QUOTA_LIMITS.fetch(:free)
-  end
-
+  # Free: lifetime total (never resets). Pro: per calendar month. Lifetime plan: unlimited.
   def ai_quota_available?
-    limit = ai_quota_limit
-    return true if limit.nil?
+    return true if subscription_lifetime?
+    return ai_free_used_count < AI_QUOTA_LIMITS.fetch(:free) unless subscribed?
 
     reset_ai_quota_period_if_stale!
-    ai_quota_used_count < limit
+    ai_quota_used_count < AI_QUOTA_LIMITS.fetch(:pro)
   end
 
   def consume_ai_quota!
     return if subscription_lifetime?
+    return increment!(:ai_free_used_count) unless subscribed?
 
     reset_ai_quota_period_if_stale!
     increment!(:ai_quota_used_count)
   end
 
   # Inverse of consume_ai_quota! — called when the enqueued AI job fails, so a
-  # free user isn't locked out for the month by our parsing error.
+  # user isn't charged a parse for our parsing error.
   def refund_ai_quota!
-    return if subscription_lifetime? || ai_quota_used_count.to_i <= 0
+    return if subscription_lifetime?
 
-    decrement!(:ai_quota_used_count)
+    column = subscribed? ? :ai_quota_used_count : :ai_free_used_count
+    decrement!(column) if self[column].to_i.positive?
+  end
+
+  def ai_free_remaining
+    [AI_QUOTA_LIMITS.fetch(:free) - ai_free_used_count, 0].max
   end
 
   def stripe_customer
