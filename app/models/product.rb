@@ -6,7 +6,6 @@ class Product < ApplicationRecord
   attr_accessor :preset_category
 
   belongs_to :diet_set, optional: true
-  belongs_to :unit, optional: true
   has_many :ingredient_measures, dependent: :destroy
   has_many :meal_plan_product_substitutions, dependent: :destroy
   has_many :shopping_cart_items

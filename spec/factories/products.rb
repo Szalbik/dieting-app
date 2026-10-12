@@ -4,7 +4,6 @@ FactoryBot.define do
   factory(:product) do
     meal
     name { "Product #{Faker::Commerce.product_name}" }
-    unit
     diet_set
 
     trait :with_category do

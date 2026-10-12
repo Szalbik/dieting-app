@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_12_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_12_200000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -247,21 +247,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_12_120000) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "unit_id"
     t.integer "diet_set_id"
-    t.integer "associated_product_id"
     t.integer "meal_id"
     t.string "base_product_name"
     t.integer "canonical_product_id"
     t.integer "base_canonical_product_id"
     t.string "original_name"
     t.index "LOWER(TRIM(name))", name: "index_products_on_normalized_name"
-    t.index ["associated_product_id"], name: "index_products_on_associated_product_id"
     t.index ["base_canonical_product_id"], name: "index_products_on_base_canonical_product_id"
     t.index ["canonical_product_id"], name: "index_products_on_canonical_product_id"
     t.index ["diet_set_id"], name: "index_products_on_diet_set_id"
     t.index ["meal_id"], name: "index_products_on_meal_id"
-    t.index ["unit_id"], name: "index_products_on_unit_id"
   end
 
   create_table "recipes", force: :cascade do |t|
@@ -337,12 +333,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_12_120000) do
     t.index ["user_id"], name: "index_substitution_product_matches_on_user_id"
   end
 
-  create_table "units", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.datetime "created_at", null: false
@@ -388,8 +378,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_12_120000) do
   add_foreign_key "products", "canonical_products", column: "base_canonical_product_id"
   add_foreign_key "products", "diet_sets"
   add_foreign_key "products", "meals", on_delete: :nullify
-  add_foreign_key "products", "products", column: "associated_product_id"
-  add_foreign_key "products", "units"
   add_foreign_key "sessions", "users"
   add_foreign_key "shopping_cart_invitations", "users", column: "invitee_id"
   add_foreign_key "shopping_cart_invitations", "users", column: "inviter_id"
