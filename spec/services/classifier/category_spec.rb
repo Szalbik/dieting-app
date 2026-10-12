@@ -24,6 +24,14 @@ RSpec.describe Classifier::Category, type: :service do
     expect(prediction[:confidence]).to eq(1.0)
   end
 
+  it 'trains past a confirmed row whose product no longer exists' do
+    orphan = ProductCategory.create!(product: Product.create!(name: 'Mleko'), category: create(:category), state: true)
+    ActiveRecord::Base.connection.disable_referential_integrity { orphan.update_column(:product_id, 0) }
+
+    expect { described_class.train! }.not_to raise_error
+    expect(File).to exist(described_class::PATH)
+  end
+
   it 'falls back to a similar confirmed product and ignores quantity tokens' do
     category = create(:category, name: 'Nabial')
     ProductCategory.create!(

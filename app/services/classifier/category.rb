@@ -5,7 +5,7 @@ require 'nbayes'
 
 module Classifier
   class Category
-    PATH = Rails.root.join('tmp/classifier/category_model.dat').to_path
+    PATH = Rails.root.join('storage/classifier/category_model.dat').to_path
     MIN_CONFIDENCE = 0.45
     SIMILARITY_THRESHOLD = 0.6
     IGNORED_TOKENS = %w[g kg dag mg ml l szt sztuk op opak opakowanie opakowania].freeze
@@ -144,7 +144,7 @@ module Classifier
     end
 
     def confirmed_examples
-      @_confirmed_examples ||= ProductCategory.where(state: true).includes(:product, :category).to_a
+      @_confirmed_examples ||= ProductCategory.where(state: true).joins(:product, :category).includes(:product, :category).to_a
     end
 
     def normalized_product_name(product_category)

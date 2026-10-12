@@ -80,7 +80,7 @@ User
 
 ### Product classification (ML + AI fallback)
 
-`Classifier::Category` (`app/services/classifier/category.rb`) is a Naive Bayes classifier backed by the `nbayes` gem — the primary, zero-cost path. The trained model is persisted to `tmp/classifier/category_model.dat` via `Marshal`. Prediction falls back through four tiers in order: exact match on confirmed examples → token-similarity match → hardcoded Polish keyword rules → Naive Bayes. Whatever the local classifier leaves uncategorized is picked up by `Chat::ProductCategorizerService` — a **batched, last-resort AI fallback** (one structured-output OpenAI call per diet or per daily sweep, never per-product) that maps products to the seeded `Category` set. All non-exact-match assignments (local or AI) are unconfirmed (`ProductCategory#state: false`); an admin confirms them via `ProductCategoriesController`, and confirming retrains the local model via `TrainCategoryModelJob`.
+`Classifier::Category` (`app/services/classifier/category.rb`) is a Naive Bayes classifier backed by the `nbayes` gem — the primary, zero-cost path. The trained model is persisted to `storage/classifier/category_model.dat` (on the Kamal storage volume, so it survives deploys) via `Marshal`. Prediction falls back through four tiers in order: exact match on confirmed examples → token-similarity match → hardcoded Polish keyword rules → Naive Bayes. Whatever the local classifier leaves uncategorized is picked up by `Chat::ProductCategorizerService` — a **batched, last-resort AI fallback** (one structured-output OpenAI call per diet or per daily sweep, never per-product) that maps products to the seeded `Category` set. All non-exact-match assignments (local or AI) are unconfirmed (`ProductCategory#state: false`); an admin confirms them via `ProductCategoriesController`, and confirming retrains the local model via `TrainCategoryModelJob`.
 
 ### Product substitutions
 
@@ -128,7 +128,7 @@ Custom session-based auth — no Devise. `ApplicationController` includes `Conce
 - Multi-database: `config/database.yml` defines `primary`, `queue` (Solid Queue), and `cache` (Solid Cache) SQLite databases.
 - Background jobs are monitored at `/jobs` (MissionControl::Jobs, admin-only in production).
 - Error tracking: Honeybadger (`config/initializers/honeybadger.rb`).
-- Cron schedule: `config/schedule.rb` (Whenever gem) — `CategorizeProductsJob` (local classifier sweep + one batched AI fallback call) at midnight, `TrainCategoryModelJob` at 01:00.
+- Recurring jobs: `config/recurring.yml` (Solid Queue, `production:` only) — `CategorizeProductsJob` (local classifier sweep + one batched AI fallback call) at midnight, `TrainCategoryModelJob` at 01:00.
 - Deployment: Kamal (`config/deploy.yml`).
 
 <!-- BEGIN @przeprogramowani/10x-cli -->
