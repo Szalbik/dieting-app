@@ -2,7 +2,10 @@
 
 Resend.api_key = Rails.application.credentials.dig(:resend, :api_key)
 
-# ponytail: retries every Resend::Error, incl. permanent 4xx; narrow to ServerError if it gets noisy
+# Retry only transient failures (429, 500). Bad key / unverified domain (400/401/422 →
+# InvalidRequestError) and a missing key fail the mail job at once so Honeybadger sees them.
 ActiveSupport.on_load(:action_mailer) do
-  ActionMailer::MailDeliveryJob.retry_on Resend::Error, wait: :polynomially_longer, attempts: 5
+  ActionMailer::MailDeliveryJob.retry_on Resend::Error::RateLimitExceededError,
+                                         Resend::Error::InternalServerError,
+                                         wait: :polynomially_longer, attempts: 5
 end
