@@ -34,8 +34,10 @@
           <!-- brak Stripe dla planu dożywotniego -->
         <% elsif Current.user.stripe_customer_id.present? %>
           <%= button_to "Zarządzaj subskrypcją", billing_portal_path, method: :post, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
-        <% else %>
+        <% elsif payments_enabled? %>
           <%= link_to "Przejdź na Pro — 20 zł/mies.", upgrade_path, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
+        <% else %>
+          <span class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-500">Plan Pro — wkrótce</span>
         <% end %>
       </div>
     </div>

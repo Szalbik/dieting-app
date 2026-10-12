@@ -27,6 +27,13 @@ RSpec.describe 'Subscriptions', type: :request do
       expect(user.reload.stripe_customer_id).to eq('cus_123')
     end
 
+    it 'redirects to profile without hitting Stripe when payments are not configured' do
+      allow(Stripe).to receive(:api_key).and_return(nil)
+      login
+      get upgrade_path
+      expect(response).to redirect_to(profile_path)
+    end
+
     it 'redirects to profile without hitting Stripe when already subscribed' do
       user.update!(subscription: :active)
       login

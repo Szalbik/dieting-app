@@ -2,6 +2,11 @@
 
 class SubscriptionsController < ApplicationController
   def new
+    unless payments_enabled?
+      redirect_to profile_path, notice: 'Plan Pro będzie dostępny wkrótce.'
+      return
+    end
+
     if Current.user.subscribed?
       redirect_to profile_path, notice: 'Masz już aktywny plan Pro.'
       return

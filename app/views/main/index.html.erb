@@ -140,7 +140,11 @@
           <li>✓ Pełne śledzenie wartości odżywczych</li>
           <li>✓ Anuluj w każdej chwili</li>
         </ul>
-        <%= link_to "Przejdź na Pro", new_registration_path(plan: 'pro'), class: "block rounded-full border border-white bg-white px-4 py-3 text-center text-sm font-medium text-brand-sage-dark hover:border-brand-accent hover:bg-brand-accent hover:text-white" %>
+        <% if payments_enabled? %>
+          <%= link_to "Przejdź na Pro", new_registration_path(plan: 'pro'), class: "block rounded-full border border-white bg-white px-4 py-3 text-center text-sm font-medium text-brand-sage-dark hover:border-brand-accent hover:bg-brand-accent hover:text-white" %>
+        <% else %>
+          <div class="block rounded-full border border-white/40 px-4 py-3 text-center text-sm font-medium text-white/70">Wkrótce</div>
+        <% end %>
       </div>
       <div class="rounded-3xl border border-transparent bg-white p-8 transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
         <div class="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] opacity-60">Clinic <span class="rounded-full bg-brand-accent/15 px-2 py-0.5 text-brand-accent normal-case">Wkrótce</span></div>
