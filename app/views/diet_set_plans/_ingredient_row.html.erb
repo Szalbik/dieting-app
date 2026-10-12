@@ -1,4 +1,4 @@
-<li id="<%= dom_id(product, :ingredient_row) %>" class="mt-4" data-action="click->toggle-meal#ignore">
+<li id="<%= dom_id(product, :ingredient_row) %>" class="mt-4">
   <% base_name = product.base_product_name.presence || product.base_canonical_product&.name || product.name %>
   <% local_substitutions = [] %>
   <% library_suggestions = [] %>
@@ -27,8 +27,7 @@
               <%= button_to cycle_product_replacement_diet_set_plans_path(format: :turbo_stream),
                             method: :post,
                             params: { meal_plan_id: meal_plan.id, product_id: product.id, date: params['date'] },
-                            form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
-                            data: { action: "click->toggle-meal#ignore" },
+                            form: { data: { turbo: true, turbo_stream: true } },
                             class: "inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600",
                             onclick: "event.stopPropagation()" do %>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
@@ -69,8 +68,7 @@
                               remove_product_substitution_diet_set_plans_path(substitution, format: :turbo_stream),
                               method: :delete,
                               params: { date: params['date'] },
-                              form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
-                              data: { action: "click->toggle-meal#ignore" },
+                              form: { data: { turbo: true, turbo_stream: true } },
                               class: "font-semibold text-rose-600" %>
               </div>
             <% end %>
@@ -82,7 +80,7 @@
         <%= form_with url: add_product_substitution_diet_set_plans_path(format: :turbo_stream),
                       method: :post,
                       class: "grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_92px_88px_auto]",
-                      data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } do |f| %>
+                      data: { turbo: true, turbo_stream: true } do |f| %>
           <%= hidden_field_tag :meal_plan_id, meal_plan.id %>
           <%= hidden_field_tag :product_id, product.id %>
           <%= hidden_field_tag :date, params['date'] %>
@@ -118,8 +116,7 @@
                                 replacement_unit: default_unit,
                                 date: params['date']
                               },
-                              form: { data: { turbo: true, turbo_stream: true, action: "click->toggle-meal#ignore" } },
-                              data: { action: "click->toggle-meal#ignore" },
+                              form: { data: { turbo: true, turbo_stream: true } },
                               class: "rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200 hover:text-emerald-600 hover:ring-emerald-300" %>
               <% end %>
             </div>

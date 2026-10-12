@@ -5,25 +5,18 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.12",
     "@tailwindcss/cli": "^4.0.5",
-    "@tailwindcss/postcss": "^4.0.5",
     "alpine-turbo-drive-adapter": "^2.1.0",
     "alpinejs": "^3.14.8",
     "esbuild": "^0.25.0",
-    "flatpickr": "^4.6.9",
-    "postcss": "^8.5.1",
-    "postcss-cli": "^11.0.0",
-    "tailwindcss": "^4.0.5",
-    "tailwindcss-stimulus-components": "^6.1.3"
+    "tailwindcss": "^4.0.5"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css:app": "tailwindcss --postcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "build:css:app": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
     "build:css:admin": "sass ./app/assets/stylesheets/active_admin.scss ./app/assets/builds/active_admin.css --load-path=\"$(bundle show activeadmin)/app/assets/stylesheets\" --no-source-map --quiet-deps --silence-deprecation=import",
     "build:css": "yarn build:css:app && yarn build:css:admin"
   },
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "sass": "^1.101.0"

@@ -28,5 +28,3 @@ application.register("tabs", TabsController)
 import ToastController from "./toast_controller"
 application.register("toast", ToastController)
 
-import ToggleMealController from "./toggle_meal_controller"
-application.register("toggle-meal", ToggleMealController)

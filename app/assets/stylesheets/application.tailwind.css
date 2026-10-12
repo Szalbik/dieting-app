@@ -58,28 +58,12 @@
 }
 
 @layer components {
-  .app-shell {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .app-section {
-    @apply rounded-3xl border border-brand-peach/40 bg-white/90 p-6 shadow-soft backdrop-blur-sm;
-  }
-
   .app-input {
     @apply block w-full rounded-xl border border-brand-ink/15 bg-white px-3 py-2.5 text-brand-ink shadow-soft placeholder:text-brand-ink-faint focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy/30;
   }
 
   .app-label {
     @apply block text-sm font-semibold text-slate-700;
-  }
-
-  .brand-cta-primary {
-    @apply rounded-full bg-brand-sage-dark text-white transition hover:bg-brand-accent;
-  }
-
-  .brand-cta-secondary {
-    @apply rounded-full border border-brand-charcoal/20 text-brand-charcoal transition hover:border-brand-sage-dark hover:text-brand-sage-dark;
   }
 }
 
@@ -91,13 +75,5 @@
   .fixed {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-  }
-  
-  /* Fix for bottom navigation on iOS Safari */
-  [data-controller="sticky-navbar"] {
-    position: fixed !important;
-    bottom: 0 !important;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
   }
 }

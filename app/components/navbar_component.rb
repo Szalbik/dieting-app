@@ -3,7 +3,7 @@
 class NavbarComponent < ViewComponent::Base
   attr_reader :current_user
 
-  def initialize(current_user:)
+  def initialize
     @current_user = Current.user
   end
 
