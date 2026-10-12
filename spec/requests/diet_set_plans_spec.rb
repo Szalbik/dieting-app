@@ -72,6 +72,17 @@ RSpec.describe 'DietSetPlans servings', type: :request do
     end
   end
 
+  describe 'GET show without any diet' do
+    it 'redirects to the new-diet form instead of 500' do
+      dietless = create(:user, password: 'password123', password_confirmation: 'password123')
+      login(dietless)
+
+      get diet_set_plans_path
+
+      expect(response).to redirect_to(new_diet_path)
+    end
+  end
+
   describe 'POST create (reassign)' do
     it 'carries servings over to the new plan' do
       plan_for(date, servings: 2)

@@ -20,6 +20,7 @@ class DietSetPlansController < ApplicationController
   def show
     if Current.user.active_diets.empty?
       redirect_to new_diet_path, warning: 'You need to create a diet first.'
+      return
     end
 
     recover_missing_measures_if_needed

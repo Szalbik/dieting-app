@@ -43,7 +43,7 @@ Rails.application.routes.draw do
 
   resources :product_categories,       only: %i[index edit update show]
   resources :product_name_suggestions, only: %i[index update]
-  resources :recipes
+  resources :recipes, except: :show
   resources :diet_sets, only: %i[show create destroy]
   resources :meals, only: %i[create destroy]
 
