@@ -196,9 +196,11 @@ module Classifier
     def persist_model!
       FileUtils.mkdir_p(File.dirname(PATH))
       # Web and job roles share this file on the storage volume: write aside, then rename atomically.
-      tmp_path = "#{PATH}.#{Process.pid}.tmp"
+      tmp_path = "#{PATH}.#{SecureRandom.hex(6)}.tmp"
       File.binwrite(tmp_path, Marshal.dump(@nbayes))
       File.rename(tmp_path, PATH)
+    ensure
+      FileUtils.rm_f(tmp_path) if tmp_path
     end
 
     def blank_prediction
