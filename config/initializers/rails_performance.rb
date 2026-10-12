@@ -27,9 +27,12 @@ if defined?(RailsPerformance) && !Rails.env.test?
     config.http_basic_authentication_password  = 'password12'
 
     # if you need an additional rules to check user permissions
-    config.verify_access_proc = proc { |_controller| true }
-    # for example when you have `current_user`
-    # config.verify_access_proc = proc { |controller| controller.current_user && controller.current_user.admin? }
+    # Admin-only, same check as the route constraint in config/routes.rb. Belt and braces: the gem's own
+    # routes file also tries to mount the engine without a constraint (it currently loses on load order).
+    config.verify_access_proc = proc do |controller|
+      session_id = controller.send(:cookies).signed[:session_id]
+      session_id && Session.find_by(id: session_id)&.user&.admin?
+    end
 
     # store custom data for the request
     # config.custom_data_proc = proc do |env|
