@@ -19,7 +19,7 @@ class DietSetPlansController < ApplicationController
 
   def show
     if Current.user.active_diets.empty?
-      redirect_to new_diet_path, warning: 'You need to create a diet first.'
+      redirect_to new_diet_path, flash: { warning: 'Najpierw dodaj dietę.' }
       return
     end
 

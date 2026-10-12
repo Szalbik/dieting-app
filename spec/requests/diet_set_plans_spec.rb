@@ -80,6 +80,7 @@ RSpec.describe 'DietSetPlans servings', type: :request do
       get diet_set_plans_path
 
       expect(response).to redirect_to(new_diet_path)
+      expect(flash[:warning]).to be_present
     end
   end
 

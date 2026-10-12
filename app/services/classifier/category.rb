@@ -5,7 +5,7 @@ require 'nbayes'
 
 module Classifier
   class Category
-    PATH = Rails.root.join('storage/classifier/category_model.dat').to_path
+    PATH = Rails.root.join("storage/classifier/category_model.#{Rails.env}.dat").to_path
     MIN_CONFIDENCE = 0.45
     SIMILARITY_THRESHOLD = 0.6
     IGNORED_TOKENS = %w[g kg dag mg ml l szt sztuk op opak opakowanie opakowania].freeze
@@ -195,7 +195,10 @@ module Classifier
 
     def persist_model!
       FileUtils.mkdir_p(File.dirname(PATH))
-      File.binwrite(PATH, Marshal.dump(@nbayes))
+      # Web and job roles share this file on the storage volume: write aside, then rename atomically.
+      tmp_path = "#{PATH}.#{Process.pid}.tmp"
+      File.binwrite(tmp_path, Marshal.dump(@nbayes))
+      File.rename(tmp_path, PATH)
     end
 
     def blank_prediction
