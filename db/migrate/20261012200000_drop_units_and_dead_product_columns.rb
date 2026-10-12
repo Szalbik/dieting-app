@@ -10,13 +10,10 @@ class DropUnitsAndDeadProductColumns < ActiveRecord::Migration[8.0]
 
   def up
     without_foreign_keys do
-      if column_exists?(:products, :associated_product_id)
-        remove_reference :products, :associated_product, type: :integer, index: true,
-                                                         foreign_key: { to_table: :products }
-      end
-      if column_exists?(:products, :unit_id)
-        remove_reference :products, :unit, type: :integer, index: true, foreign_key: true
-      end
+      # One rebuild per column: SQLite's remove_column also drops the column's FK and
+      # index, so there is no half-done state between "FK gone" and "column gone".
+      remove_column :products, :associated_product_id if column_exists?(:products, :associated_product_id)
+      remove_column :products, :unit_id if column_exists?(:products, :unit_id)
       drop_table :units if table_exists?(:units)
     end
   end
