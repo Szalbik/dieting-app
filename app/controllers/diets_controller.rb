@@ -19,12 +19,6 @@ class DietsController < ApplicationController
     @products = Product.group_and_sum_by_name_then_category(products)
   end
 
-  def search
-    @diet = Current.user.diets.find(params[:id])
-    products = @diet.products.joins(:meal).where(meals: { diet_set_id: search_params[:diet_set_ids] })
-    @products = Product.group_and_sum_by_name_then_category(products)
-  end
-
   def new
     @diet = Diet.new
   end

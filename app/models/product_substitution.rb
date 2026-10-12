@@ -14,21 +14,6 @@ class ProductSubstitution < ApplicationRecord
   normalizes :source_product, with: ->(value) { value.to_s.strip.presence }
   normalizes :replacement_product, with: ->(value) { value.to_s.strip.presence }
 
-  def self.suggestions_for_names(user:, product_names:)
-    substitutions = user.product_substitutions.to_a
-    prepared = substitutions.map do |sub|
-      [normalize_name(sub.source_product), sub.replacement_product]
-    end
-
-    product_names.index_with do |name|
-      normalized_name = normalize_name(name)
-      prepared
-        .select { |source, _replacement| normalized_name.include?(source) || source.include?(normalized_name) }
-        .map(&:last)
-        .uniq
-    end
-  end
-
   def self.connected_names_for(user:, product_name:)
     rows = user.product_substitutions.pluck(:source_product, :replacement_product)
     return [] if rows.empty? || product_name.blank?
@@ -83,17 +68,6 @@ class ProductSubstitution < ApplicationRecord
     return 1.0 if from.blank? || to.blank? || from == to
 
     factor_between(graph, from, to) || 1.0
-  end
-
-  def self.next_replacement_for(user:, current_name:)
-    options = connected_names_for(user: user, product_name: current_name)
-    return nil if options.size < 2
-
-    current_norm = normalize_name(current_name)
-    current_idx = options.index { |name| normalize_name(name) == current_norm } || 0
-    next_name = options[(current_idx + 1) % options.size]
-    factor = conversion_factor_between(user: user, from_name: current_name, to_name: next_name)
-    { name: strip_quantity_from_name(next_name), factor: factor }
   end
 
   def self.local_replacements_for_base(user:, base_name:)

@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :product_categories,       only: %i[index edit update show]
+  resources :product_categories,       only: %i[index update]
   resources :product_name_suggestions, only: %i[index update]
   resources :recipes, except: :show
   resources :diet_sets, only: %i[show create destroy]
@@ -57,7 +57,6 @@ Rails.application.routes.draw do
     post 'toggle_shopping_bag/:id', to: 'diet_set_plans#toggle_shopping_bag', as: 'toggle_shopping_bag'
     post 'swap', to: 'diet_set_plans#swap', as: 'swap'
     patch 'servings', to: 'diet_set_plans#update_servings', as: 'servings'
-    post 'replace_product', to: 'diet_set_plans#replace_product', as: 'replace_product'
     post 'cycle_product_replacement', to: 'diet_set_plans#cycle_product_replacement', as: 'cycle_product_replacement'
     post 'add_product_substitution', to: 'diet_set_plans#add_product_substitution', as: 'add_product_substitution'
     delete 'remove_product_substitution/:substitution_id', to: 'diet_set_plans#remove_product_substitution',
@@ -94,7 +93,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'diets/:id/search', to: 'diets#search', as: 'diet_search'
   post 'diets', to: 'diets#create'
   get 'diets', to: 'diets#index'
 

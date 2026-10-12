@@ -63,11 +63,11 @@ RSpec.describe ShoppingCart, type: :model do
                                meal_plan: meal_plan1)
 
       # Test the new scope method directly
-      scoped_items = ShoppingCartItem.with_current_or_future_diet_set_plan_for_user(user1)
+      scoped_items = ShoppingCartItem.with_current_or_future_diet_set_plan_for_users(user1)
       expect(scoped_items).to include(user1_cart_item)
 
       # Test with user2 - should not include user1's items
-      scoped_items_user2 = ShoppingCartItem.with_current_or_future_diet_set_plan_for_user(user2)
+      scoped_items_user2 = ShoppingCartItem.with_current_or_future_diet_set_plan_for_users(user2)
       expect(scoped_items_user2).not_to include(user1_cart_item)
     end
 

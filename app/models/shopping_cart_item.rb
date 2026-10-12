@@ -11,10 +11,6 @@ class ShoppingCartItem < ApplicationRecord
 
   after_commit :broadcast_cart_changes
 
-  def self.with_current_or_future_diet_set_plan_for_user(user)
-    with_current_or_future_diet_set_plan_for_users(user)
-  end
-
   def self.with_current_or_future_diet_set_plan_for_users(users)
     user_ids = Array(users).compact.map { |user| user.respond_to?(:id) ? user.id : user }.uniq
     diet_ids = Diet.where(user_id: user_ids).pluck(:id)

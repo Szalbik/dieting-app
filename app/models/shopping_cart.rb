@@ -106,10 +106,6 @@ class ShoppingCart < ApplicationRecord
     member_users.many?
   end
 
-  def member_labels
-    member_users.map { |member| member.first_name.presence || member.email_address }
-  end
-
   def broadcast_contents
     broadcast_action_later_to(
       self,

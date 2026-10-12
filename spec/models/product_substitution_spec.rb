@@ -3,34 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe ProductSubstitution, type: :model do
-  describe '.suggestions_for_names' do
-    let(:user) { create(:user) }
-
-    before do
-      create(:product_substitution, user: user, source_product: 'tunczyk', replacement_product: 'losos')
-      create(:product_substitution, user: user, source_product: 'jogurt naturalny', replacement_product: 'skyr')
-    end
-
-    it 'returns replacement suggestions for similar names' do
-      result = described_class.suggestions_for_names(
-        user: user,
-        product_names: ['Tunczyk w sosie wlasnym', 'Jogurt naturalny 2%']
-      )
-
-      expect(result['Tunczyk w sosie wlasnym']).to include('losos')
-      expect(result['Jogurt naturalny 2%']).to include('skyr')
-    end
-
-    it 'returns empty array when no substitution is found' do
-      result = described_class.suggestions_for_names(
-        user: user,
-        product_names: ['kasza gryczana']
-      )
-
-      expect(result['kasza gryczana']).to eq([])
-    end
-  end
-
   describe '.connected_names_for' do
     let(:user) { create(:user) }
 

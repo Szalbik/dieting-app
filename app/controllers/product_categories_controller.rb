@@ -3,7 +3,6 @@
 class ProductCategoriesController < ApplicationController
   PER_PAGE = 20
 
-  before_action :set_product_category, only: %i[edit show]
   before_action :require_admin!
 
   def index
@@ -19,14 +18,6 @@ class ProductCategoriesController < ApplicationController
     end
   end
 
-  def show
-    redirect_to product_categories_path
-  end
-
-  def edit
-    redirect_to product_categories_path
-  end
-
   def update
     category_id = product_category_params[:category_id]
     product_name = params[:product_name].to_s.strip
@@ -38,10 +29,6 @@ class ProductCategoriesController < ApplicationController
   end
 
   private
-
-  def set_product_category
-    @product_category = ProductCategory.find(params[:id])
-  end
 
   def product_category_params
     params.require(:product_category).permit(:category_id, :state)

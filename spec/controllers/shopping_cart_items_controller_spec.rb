@@ -41,7 +41,7 @@ RSpec.describe ShoppingCartItemsController, type: :controller do
 
       expect(session[:removed_items]).to be_present
       expect(session[:removed_items].last[:item_ids]).to eq([shopping_cart_item.id])
-      expect(session[:removed_items].last[:product_name]).to eq(product.shopping_cart_group_name)
+      expect(session[:removed_items].last[:product_name]).to eq(product.shopping_list_grouping[:display_name])
     end
 
     it 'soft-deletes items so they can be restored later' do

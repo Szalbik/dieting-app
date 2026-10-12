@@ -24,48 +24,6 @@ class Product < ApplicationRecord
   # Automatically categorize products when they are created
   after_create :categorize_if_needed
 
-  # Class method to categorize all uncategorized products
-  def self.categorize_all_uncategorized!
-    uncategorized.find_each do |product|
-      product.categorize_if_needed
-    end
-  end
-
-  # Manual categorization method for console testing
-  def self.manual_categorize!(product_name, category_name)
-    product = find_by(name: product_name)
-    return "Product not found: #{product_name}" unless product
-
-    category = Category.find_by(name: category_name)
-    return "Category not found: #{category_name}" unless category
-
-    if product.category.present?
-      return "Product already has category: #{product.category.name}"
-    end
-
-    ProductCategory.create!(
-      product: product,
-      category: category,
-      state: true
-    )
-
-    "Successfully categorized: #{product_name} -> #{category_name}"
-  end
-
-  # Test method to check categorization
-  def self.test_categorization(product_name)
-    product = find_by(name: product_name)
-    return "Product not found: #{product_name}" unless product
-
-    if product.category.present?
-      "Product '#{product.name}' has category: #{product.category.name}"
-    else
-      "Product '#{product.name}' has no category. Attempting to categorize..."
-      categorize_if_needed
-      "Categorization job queued for #{product.name}"
-    end
-  end
-
   def self.group_and_sum_by_name_and_unit(scope = Product)
     grouped_products = group_by_shopping_list_key(scope)
     summed_products = {}
@@ -228,10 +186,6 @@ class Product < ApplicationRecord
 
   def shopping_list_grouping
     self.class.shopping_list_normalizer.call(raw_name: name, canonical_name: canonical_product&.name)
-  end
-
-  def shopping_cart_group_name
-    shopping_list_grouping[:display_name]
   end
 
   def shopping_cart_group_key

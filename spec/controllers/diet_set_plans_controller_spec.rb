@@ -32,36 +32,6 @@ RSpec.describe DietSetPlansController, type: :controller do
     end
   end
 
-  describe 'POST #replace_product' do
-    it 'replaces product name permanently for meal' do
-      allow(Current).to receive(:user).and_return(user)
-
-      post :replace_product, params: {
-        meal_plan_id: meal_plan.id,
-        product_id: product.id,
-        replacement_name: 'Losos',
-        date: Date.current
-      }
-
-      expect(response).to redirect_to(diet_set_plans_path(date: Date.current.to_s))
-      expect(product.reload.name).to eq('Losos')
-    end
-
-    it 'does not allow replacing product in another user meal' do
-      allow(Current).to receive(:user).and_return(other_user)
-
-      post :replace_product, params: {
-        meal_plan_id: meal_plan.id,
-        product_id: product.id,
-        replacement_name: 'Losos',
-        date: Date.current
-      }
-
-      expect(response).to redirect_to(diet_set_plans_path(date: Date.current.to_s))
-      expect(product.reload.name).to eq('Tunczyk')
-    end
-  end
-
   describe 'POST #add_product_substitution' do
     it 'adds a local substitution scoped to the meal plan and product' do
       allow(Current).to receive(:user).and_return(user)

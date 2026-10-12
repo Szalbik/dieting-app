@@ -26,9 +26,6 @@ class DietSetPlansController < ApplicationController
     recover_missing_measures_if_needed
     preload_plan_associations
     preload_swap_day_plans
-    # Plan dnia no longer renders ingredient rows (moved to meal_plans#show),
-    # so the per-product substitution precompute is dead weight here.
-    @replacement_cycles = {}
 
     respond_to do |format|
       format.turbo_stream
@@ -98,40 +95,6 @@ class DietSetPlansController < ApplicationController
     plan.update!(servings: params[:servings].to_i.clamp(DietSetPlan::SERVINGS_RANGE))
     sync_current_shopping_cart!
     redirect_to diet_set_plans_path(date: date)
-  end
-
-  def replace_product
-    meal_plan = MealPlan
-      .joins(diet_set_plan: :diet)
-      .find_by(id: replace_product_params[:meal_plan_id], diets: { user_id: Current.user.id })
-
-    unless meal_plan
-      redirect_to diet_set_plans_path(date: date), alert: 'Nie znaleziono posiłku do podmiany.'
-      return
-    end
-
-    product = meal_plan.products.find_by(id: replace_product_params[:product_id])
-    replacement_name = ProductSubstitution.strip_quantity_from_name(replace_product_params[:replacement_name].to_s)
-
-    if product.blank? || replacement_name.blank?
-      redirect_to diet_set_plans_path(date: date), alert: 'Podaj poprawny produkt zamienny.'
-      return
-    end
-
-    product = localize_product_for_meal_plan(meal_plan: meal_plan, product: product)
-
-    ActiveRecord::Base.transaction do
-      product.update!(
-        name: replacement_name,
-        base_product_name: product.base_product_name.presence || product.name
-      )
-      product.product_category&.destroy
-      product.categorize_if_needed
-    end
-
-    redirect_to diet_set_plans_path(date: date), notice: 'Produkt został trwale podmieniony w posiłku.'
-  rescue ActiveRecord::RecordInvalid => e
-    redirect_to diet_set_plans_path(date: date), alert: "Nie udało się podmienić produktu: #{e.message}"
   end
 
   def cycle_product_replacement
@@ -310,10 +273,6 @@ class DietSetPlansController < ApplicationController
 
   def diet_set_plan_params
     params.require(:diet_set_plan).permit(:diet_set_id)
-  end
-
-  def replace_product_params
-    params.permit(:meal_plan_id, :product_id, :replacement_name)
   end
 
   def product_substitution_params
