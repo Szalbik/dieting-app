@@ -3,7 +3,6 @@
     <% diet_items_empty = shopping_cart.shopping_cart_items.empty? %>
     <% custom_items_empty = shopping_cart.custom_cart_items.empty? %>
     <% groups = diet_items_empty ? [] : shopping_cart.group_and_sum_by_cart_items %>
-    <% cart_diets = shopping_cart.diets_in_cart %>
     <% picker_categories = groups.empty? ? [] : ShoppingCart.categories_for_picker %>
     <% inne_id = picker_categories.find { |c| c.name == 'Inne' }&.id %>
     <% unbought_category_ids = groups.reject { |g| g[:bought] }.map { |g| g[:category]&.id || inne_id } %>
@@ -150,18 +149,6 @@
             </div>
           <% end %>
         </div>
-
-        <%# Diets behind the current cart (from selected plans) %>
-        <% cart_diets.each do |cart_diet| %>
-          <div class="flex items-center gap-2.5 dietcard-peach p-3.5 shadow-soft">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A874" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M3 5 H6 L8 16 H18 L20 8 H7" /><circle cx="9" cy="20" r="1.5" /><circle cx="17" cy="20" r="1.5" /></svg>
-            <div class="min-w-0 flex-1">
-              <div class="truncate text-[13px] font-bold text-brand-ink"><%= cart_diet.name %></div>
-              <div class="text-[11px] text-brand-ink-soft"><%= shopping_cart.diet_set_plans_count_in_cart(cart_diet) %> dni w koszyku</div>
-            </div>
-            <span class="shrink-0 rounded-full bg-brand-mint-soft px-2 py-0.5 text-[11px] font-semibold text-brand-mint-strong">W koszyku</span>
-          </div>
-        <% end %>
       </div>
     <% end %>
 
