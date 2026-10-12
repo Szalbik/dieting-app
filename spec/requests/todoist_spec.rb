@@ -26,4 +26,62 @@ RSpec.describe 'Todoist OAuth callback', type: :request do
     expect(response).to have_http_status(:bad_request)
     expect(HTTParty).not_to have_received(:post)
   end
+
+  context 'with a valid state' do
+    include ActiveSupport::Testing::TimeHelpers
+
+    let(:token_response) do
+      instance_double(HTTParty::Response, code: 200, parsed_response: { 'access_token' => 'tok' })
+    end
+
+    before do
+      allow(Rails.application.credentials).to receive(:todoist).and_return({ client_id: 'id', client_secret: 'secret' })
+      allow(HTTParty).to receive(:post).and_return(token_response)
+      allow(Todoist::Api).to receive(:fetch_projects)
+        .and_return([{ 'id' => '42', 'name' => 'Zakupy', 'is_shared' => false }])
+    end
+
+    def authorize_todoist
+      get todoist_authorize_path
+      state = Rack::Utils.parse_query(URI(response.location).query)['state']
+      get todoist_receive_code_path(code: 'good-code', state: state)
+      state
+    end
+
+    it 'exchanges the code and stores the token' do
+      authorize_todoist
+
+      expect(response).to redirect_to(profile_path)
+      expect(HTTParty).to have_received(:post).once
+    end
+
+    it 'rejects replaying the same state' do
+      state = authorize_todoist
+
+      get todoist_receive_code_path(code: 'good-code', state: state)
+
+      expect(response).to have_http_status(:bad_request)
+      expect(HTTParty).to have_received(:post).once
+    end
+
+    it 'renders the project picker from the diet page (ids only, no quantities)' do
+      authorize_todoist
+
+      get todoist_projects_path(diet_set_ids: ['1'])
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Zakupy')
+    end
+
+    it 'treats the token as gone after 30 minutes' do
+      authorize_todoist
+
+      travel 31.minutes do
+        get todoist_projects_path(diet_set_ids: ['1'])
+      end
+
+      expect(response).to redirect_to(profile_path)
+      expect(Todoist::Api).not_to have_received(:fetch_projects)
+    end
+  end
 end
