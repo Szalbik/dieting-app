@@ -75,3 +75,6 @@ graphify-out/
 # PDF parser eval corpus: real diet PDFs carry personal data; goldens are committed.
 spec/fixtures/diet_corpus/**/*.pdf
 spec/fixtures/diet_corpus/**/golden.draft.json
+
+# Teaser video assets (screens, capture script, storyboard)
+/docs/teaser/
