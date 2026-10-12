@@ -32,8 +32,8 @@ module DietSetPlansHelper
     end
   end
 
-  # :done / :current / :upcoming based on the meal's time window — only
-  # meaningful for today; other days render neutral (:upcoming).
+  # :done only when the user marked the meal eaten; :current while today's
+  # clock is inside the meal's time window; otherwise :upcoming.
   def meal_status_for(meal, date)
     return :done if meal.try(:eaten?)
 
@@ -45,9 +45,6 @@ module DietSetPlansHelper
 
     end_h = time.scan(/(\d{1,2}):/).flatten.last.to_i
     now = Time.current.hour
-    if now >= end_h then :done
-    elsif now >= start_h then :current
-    else :upcoming
-    end
+    now >= start_h && now < end_h ? :current : :upcoming
   end
 end
