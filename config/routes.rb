@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   resources :registrations, only: %i[new create]
   resources :dietitian_waitlist_entries, path: 'dietitian-waitlist', only: %i[new create]
 
-  resources :products, only: :index
   resources :users, only: :update
   resources :product_substitutions, only: %i[index create destroy] do
     collection do

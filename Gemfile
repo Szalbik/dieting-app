@@ -29,7 +29,6 @@ gem 'rails_performance'
 gem 'bcrypt', '~> 3.1.12'
 gem 'bootsnap', require: false # Reduces boot times through caching; required in config/boot.rb
 gem 'httparty'
-gem 'jbuilder'
 gem 'kamal'
 gem 'mission_control-jobs'
 gem 'paranoia'
