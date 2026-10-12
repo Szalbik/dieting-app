@@ -2,6 +2,12 @@
 
 # Rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
+  # Old domain → 301 to the new one. kamal-proxy's healthcheck doesn't send this host, so /up is unaffected.
+  constraints(host: 'diety.rubydive.com') do
+    match '(*path)', to: redirect(status: 301) { |_params, req| "https://asystentdiet.pl#{req.fullpath}" },
+                     via: :all, format: false
+  end
+
   ActiveAdmin.routes(self)
   root to: 'main#index'
   get 'style-guide', to: 'main#style_guide'

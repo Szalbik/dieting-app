@@ -23,7 +23,9 @@ servers:
 proxy:
   app_port: 3000
   ssl: true
-  host: diety.rubydive.com
+  hosts:
+    - diety.rubydive.com
+    - asystentdiet.pl
   healthcheck:
     interval: 5
     path: /up

@@ -17,7 +17,7 @@ class SubscriptionsController < ApplicationController
       consent_collection: { terms_of_service: 'required' },
       custom_text: {
         terms_of_service_acceptance: {
-          message: 'Akceptuję [Regulamin](https://diety.rubydive.com/regulamin) i wyrażam zgodę na ' \
+          message: "Akceptuję [Regulamin](#{terms_url}) i wyrażam zgodę na " \
                    'natychmiastowe rozpoczęcie świadczenia usługi, przyjmując do wiadomości utratę ' \
                    'prawa odstąpienia od umowy (art. 38 pkt 13 ustawy o prawach konsumenta).',
         },
