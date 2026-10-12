@@ -354,6 +354,9 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
+    resend (1.17.0)
+      base64
+      httparty (>= 0.22.0)
     responders (3.2.0)
       actionpack (>= 7.0)
       railties (>= 7.0)
@@ -508,6 +511,7 @@ DEPENDENCIES
   rails (~> 8.0.1)
   rails_performance
   redis (~> 5.2)
+  resend (~> 1.17)
   rspec-rails
   rubocop
   rubocop-rails
