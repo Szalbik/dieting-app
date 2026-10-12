@@ -36,7 +36,7 @@ class DietSetPlansController < ApplicationController
   end
 
   def create
-    diet_set = DietSet.find(diet_set_plan_params[:diet_set_id])
+    diet_set = DietSet.joins(:diet).find_by!(id: diet_set_plan_params[:diet_set_id], diets: { user_id: Current.user.id })
     servings = newest_plan_for(date)&.servings || 1
     @diet_set_plan = DietSetPlan.new(date: date, diet_set: diet_set, diet: diet_set.diet, servings: servings)
 

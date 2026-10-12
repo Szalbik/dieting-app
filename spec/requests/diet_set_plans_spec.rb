@@ -79,6 +79,17 @@ RSpec.describe 'DietSetPlans servings', type: :request do
 
       expect(user.diet_set_plans.find_by!(date: date).servings).to eq(1)
     end
+
+    it "refuses another user's diet set" do
+      victim = create(:user)
+      victim_set = create(:diet_set, diet: create(:diet, user: victim))
+      login
+
+      post diet_set_plans_path, params: { date: date.to_s, diet_set_plan: { diet_set_id: victim_set.id } }
+
+      expect(response).to have_http_status(:not_found)
+      expect(victim.diet_set_plans).to be_empty
+    end
   end
 
   describe 'POST swap' do

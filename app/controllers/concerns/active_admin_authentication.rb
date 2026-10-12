@@ -12,10 +12,10 @@ module ActiveAdminAuthentication
     return if Current.user&.admin?
 
     if Current.user.present?
-      redirect_to root_path, alert: 'You are not authorized to access the admin panel.'
+      redirect_to main_app.root_path, alert: 'You are not authorized to access the admin panel.'
     else
       session[:return_to_after_authenticating] = request.url
-      redirect_to new_session_path, alert: 'Please sign in to access the admin panel.'
+      redirect_to main_app.new_session_path, alert: 'Please sign in to access the admin panel.'
     end
   end
 
@@ -25,7 +25,7 @@ module ActiveAdminAuthentication
   end
 
   def handle_active_admin_unauthorized(_exception)
-    redirect_to root_path, alert: 'You are not authorized to access the admin panel.'
+    redirect_to main_app.root_path, alert: 'You are not authorized to access the admin panel.'
   end
 
   private
