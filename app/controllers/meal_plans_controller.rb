@@ -11,7 +11,8 @@ class MealPlansController < ApplicationController
 
   def toggle_eaten
     @meal_plan.update(eaten: !@meal_plan.eaten)
-    redirect_to diet_set_plans_path
+    notice = @meal_plan.eaten? ? "Smacznego! #{@meal_plan.name} oznaczone jako zjedzone." : "#{@meal_plan.name} — cofnięto oznaczenie."
+    redirect_to diet_set_plans_path(date: @meal_plan.diet_set_plan.date), notice: notice
   end
 
   private
