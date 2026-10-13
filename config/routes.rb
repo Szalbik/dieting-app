@@ -106,6 +106,7 @@ Rails.application.routes.draw do
   get 'profile', to: 'profile#show', as: 'profile'
 
   get 'upgrade', to: 'subscriptions#new', as: :upgrade
+  post 'upgrade', to: 'subscriptions#create'
   post 'billing_portal', to: 'subscriptions#billing_portal', as: :billing_portal
   mount StripeEvent::Engine, at: '/stripe_webhooks'
 end

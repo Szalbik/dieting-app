@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class SubscriptionsController < ApplicationController
-  def new
-    unless payments_enabled?
-      redirect_to profile_path, notice: 'Plan Pro będzie dostępny wkrótce.'
-      return
-    end
+  before_action :ensure_can_upgrade, only: %i[new create]
 
-    if Current.user.subscribed?
-      redirect_to profile_path, notice: 'Masz już aktywny plan Pro.'
-      return
-    end
+  # Plan summary + recurring/BLIK terms; Stripe requires showing them before the BLIK code is collected.
+  def new; end
 
+  def create
     session = Stripe::Checkout::Session.create(
       mode: 'subscription',
       customer: Current.user.stripe_customer.id,
+      client_reference_id: Current.user.id,
       line_items: [{ price: Rails.application.credentials.dig(:stripe, :monthly_price_id), quantity: 1 }],
+      # The JDG is the seller (Terms); Managed Payments would make Stripe merchant of record.
+      managed_payments: { enabled: false },
+      # Owner decision: no buy-now-pay-later; card + BLIK (+ wallets) come from the Dashboard config.
+      excluded_payment_method_types: ['klarna'],
       locale: 'pl',
       # Art. 38 pkt 13 ustawy o prawach konsumenta: wyraźna zgoda na natychmiastowe świadczenie
       # = utrata prawa odstąpienia; brak zgody blokuje zakup (Regulamin §6).
@@ -42,5 +42,15 @@ class SubscriptionsController < ApplicationController
     )
 
     redirect_to session.url, allow_other_host: true
+  end
+
+  private
+
+  def ensure_can_upgrade
+    if !payments_enabled?
+      redirect_to profile_path, notice: 'Plan Pro będzie dostępny wkrótce.'
+    elsif Current.user.subscribed?
+      redirect_to profile_path, notice: 'Masz już aktywny plan Pro.'
+    end
   end
 end

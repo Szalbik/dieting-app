@@ -4,6 +4,7 @@ class User < ApplicationRecord
   enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
 
   AI_QUOTA_LIMITS = { free: 1, pro: 3 }.freeze # free = lifetime total, pro = per month
+  PRO_PRICE_PLN = 15 # monthly, shown everywhere; must match the Stripe Price in credentials stripe.monthly_price_id
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
 
   after_create :create_owned_shopping_cart

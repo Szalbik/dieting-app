@@ -141,7 +141,7 @@
       <div class="relative rounded-3xl border border-brand-sage-dark bg-brand-sage-dark p-8 text-white transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-accent px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em]">Najpopularniejszy</div>
         <div class="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-brand-sage-light">Pro</div>
-        <div class="text-6xl font-black font-serif leading-none">20 zł</div>
+        <div class="text-6xl font-black font-serif leading-none"><%= User::PRO_PRICE_PLN %> zł</div>
         <div class="mb-6 mt-2 text-sm opacity-70">miesięcznie</div>
         <ul class="mb-8 space-y-2 text-sm">
           <li>✓ 3 operacje AI / miesiąc (PDF + kreator diet)</li>
@@ -178,7 +178,7 @@
     </div>
     <div class="mx-auto max-w-3xl space-y-4">
       <% [
-        ["Co dokładnie obejmuje darmowy plan?", "Darmowe konto daje 1 operację AI na start — możesz wgrać PDF od dietetyka albo wygenerować dietę kreatorem AI. Darmowy limit się nie odnawia. Plan Pro (20 zł/mies.) daje 3 operacje AI w miesiącu, odnawiane pierwszego dnia każdego miesiąca."],
+        ["Co dokładnie obejmuje darmowy plan?", "Darmowe konto daje 1 operację AI na start — możesz wgrać PDF od dietetyka albo wygenerować dietę kreatorem AI. Darmowy limit się nie odnawia. Plan Pro (#{User::PRO_PRICE_PLN} zł/mies.) daje 3 operacje AI w miesiącu, odnawiane pierwszego dnia każdego miesiąca."],
         ["Czy mogę anulować subskrypcję Pro w każdej chwili?", "Tak. Zarządzasz subskrypcją przez bezpieczny panel Stripe dostępny w ustawieniach konta — możesz anulować w dowolnym momencie, dostęp Pro trwa do końca opłaconego okresu."],
         ["Jak działa parsowanie PDF?", "Wgrywasz plik PDF od dietetyka, a AI odczytuje posiłki, porcje i wartości odżywcze — niezależnie od formatu i układu dokumentu."],
         ["Czy płatności są bezpieczne?", "Płatności obsługuje Stripe — AsystentDiety nigdy nie przechowuje danych Twojej karty."],
