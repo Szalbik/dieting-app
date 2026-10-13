@@ -44,6 +44,15 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  # Admin panel filters only; never expose password_digest, consents or Stripe ids.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[admin created_at email_address first_name id subscription]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    []
+  end
+
   # scope :active_diets, -> { diets.where(active: true) }
 
   def diet_history_by_date
