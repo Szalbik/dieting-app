@@ -1,7 +1,8 @@
 // Network-first service worker with a runtime cache, so the last-visited
-// pages (today's plan, shopping list) and their fingerprinted assets render
-// offline. Online behaviour is unchanged: every request still goes to the
-// network first, the cache is only a fallback.
+// pages (plan days, meals, shopping list) and their fingerprinted assets
+// render offline. Every request still goes to the network first; a page that
+// is already cached gets NETWORK_TIMEOUT_MS before the cached copy is shown
+// (weak in-store signal), while the network answer still refreshes the cache.
 //
 // Cacheability guards — a response is stored only when it is a same-origin
 // GET for an HTML page or an /assets/ file, is ok and not a redirect (so a
@@ -11,10 +12,12 @@
 //
 // Non-GET requests (check-off, ActionCable) are never touched here.
 
-const CACHE = "dieta-v2";
+const CACHE = "dieta-v3";
 const PRECACHE = ["/icon-192.png", "/icon-512.png", "/icon.svg", "/manifest.webmanifest"];
-// Only the daily pages are stored offline (authenticated HTML on disk stays scoped to what the offline page advertises).
-const PAGE_PREFIXES = ["/shopping_cart", "/diet_set_plans"];
+// Only the daily pages are stored offline (authenticated HTML on disk stays scoped to daily use).
+const PAGE_PATHS = ["/shopping_cart", "/diet_set_plans"];
+const MEAL_PAGE = /^\/meal_plans\/\d+$/;
+const NETWORK_TIMEOUT_MS = 2500;
 const MAX_ASSET_ENTRIES = 40;
 
 const OFFLINE_HTML = `<!doctype html>
@@ -35,7 +38,7 @@ const OFFLINE_HTML = `<!doctype html>
 <body>
 <main>
   <h1>Brak połączenia</h1>
-  <p>Ta strona nie została jeszcze zapisana na telefonie. Otwórz jedną z ostatnio odwiedzonych.</p>
+  <p>Ta strona nie jest dostępna offline. Otwórz plan dnia lub listę zakupów.</p>
   <a href="/diet_set_plans">Twój plan dnia</a>
   <a class="secondary" href="/shopping_cart">Lista zakupów</a>
 </main>
@@ -69,7 +72,7 @@ function cacheable(request, response) {
 }
 
 function offlinePage(url) {
-  return PAGE_PREFIXES.some((prefix) => url.pathname === prefix || url.pathname.startsWith(prefix + "?"));
+  return PAGE_PATHS.includes(url.pathname) || MEAL_PAGE.test(url.pathname);
 }
 
 // Fingerprinted assets accumulate across deploys; keep only the newest few (Cache API keys are in insertion order).
@@ -100,24 +103,35 @@ self.addEventListener("fetch", (event) => {
   // Keyed by URL string and matched with ignoreVary: Rails answers with
   // `Vary: Accept`, and a Turbo Drive fetch and a cold browser navigation send
   // different Accept headers for the same page.
+  const network = fetch(request).then((response) => {
+    if (cacheable(request, response) && (asset || offlinePage(url))) {
+      const copy = response.clone();
+      event.waitUntil(
+        caches.open(CACHE).then(async (cache) => {
+          await cache.put(url.href, copy);
+          if (asset) await trimAssets(cache);
+        })
+      );
+    }
+    return response;
+  });
+  // Keep the SW alive until the network settles, so a late answer still refreshes the cache.
+  event.waitUntil(network.catch(() => {}));
+
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (cacheable(request, response) && (asset || offlinePage(url))) {
-          const copy = response.clone();
-          event.waitUntil(
-            caches.open(CACHE).then(async (cache) => {
-              await cache.put(url.href, copy);
-              if (asset) await trimAssets(cache);
-            })
-          );
-        }
-        return response;
-      })
-      .catch(async () => {
-        const cached = await caches.match(url.href, { ignoreVary: true });
+    (async () => {
+      const cached = await caches.match(url.href, { ignoreVary: true });
+      // Lie-fi: the browser says online but the network crawls. Give it a moment, then show what we have.
+      if (cached && page) {
+        const timeout = new Promise((resolve) => setTimeout(() => resolve(cached), NETWORK_TIMEOUT_MS));
+        return Promise.race([network.catch(() => cached), timeout]);
+      }
+      try {
+        return await network;
+      } catch {
         if (cached) return cached;
         return page ? offlineResponse() : Response.error();
-      })
+      }
+    })()
   );
 });

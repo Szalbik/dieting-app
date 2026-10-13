@@ -37,7 +37,7 @@ RSpec.describe 'User Sessions', type: :request do
     it 'wipes cached pages on the device' do
       post session_path, params: { email_address: user.email_address, password: 'password123' }
       delete session_path
-      expect(response.headers['Clear-Site-Data']).to eq('"cache"')
+      expect(response.headers['Clear-Site-Data']).to eq('"cache", "storage"')
     end
   end
 end
