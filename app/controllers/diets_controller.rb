@@ -138,17 +138,12 @@ class DietsController < ApplicationController
   end
 
   def toggle_active
-    @diet = Current.user.diets.find(params[:id])
-    @diet.update(active: !@diet.active)
-    @diet.reload
+    diet = Current.user.diets.find(params[:id])
+    diet.update(active: !diet.active)
 
-    respond_to do |format|
-      format.html { redirect_to diets_path, notice: @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.' }
-      format.turbo_stream do
-        flash.now[:notice] = @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.'
-        render :toggle_active
-      end
-    end
+    # Plain redirect for Turbo too: back to the same page it's a refresh, which the index morphs in place.
+    redirect_to diets_path, status: :see_other,
+                            notice: diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.'
   end
 
   def reparse

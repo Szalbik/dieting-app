@@ -289,6 +289,36 @@ RSpec.describe 'Diets', type: :request do
       expect(response).to redirect_to(diets_path)
       expect(diet.reload.active).to be true
     end
+
+    it 'answers a Turbo submission with a 303 redirect so the index morphs instead of a stream removing the row' do
+      diet.update!(active: true)
+      login
+
+      patch toggle_active_diet_path(diet), headers: { 'Accept' => 'text/vnd.turbo-stream.html, text/html' }
+
+      expect(response).to have_http_status(:see_other)
+      expect(response).to redirect_to(diets_path)
+      expect(response.media_type).not_to eq(Mime[:turbo_stream].to_s)
+      expect(diet.reload.active).to be false
+    end
+  end
+
+  describe 'GET /diets toggle markup' do
+    it 'renders every diet with a full row and a mobile card in the matching tab' do
+      active = create(:diet, user: user, active: true)
+      inactive = create(:diet, user: user, active: false)
+      login
+
+      get diets_path
+
+      html = Nokogiri::HTML(response.body)
+      [active, inactive].each do |d|
+        expect(html.css("#diet_row_#{d.id} > td").size).to eq(5)
+        expect(html.at_css("#diet_row_#{d.id} #diet_toggle_#{d.id} form")).to be_present
+      end
+      expect(html.at_css("#diet_card_mobile_#{active.id}")['data-tab-value']).to eq('aktywne')
+      expect(html.at_css("#diet_card_mobile_#{inactive.id}")['data-tab-value']).to eq('zakonczone')
+    end
   end
 
   describe 'POST /diets/:id/reparse' do
