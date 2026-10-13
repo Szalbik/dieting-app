@@ -77,10 +77,24 @@ RSpec.describe 'Product substitutions', type: :request do
       )
 
       expect do
-        post import_pdf_product_substitutions_path, params: { pdf: pdf }
+        post import_pdf_product_substitutions_path, params: { pdf: pdf, pii_confirmed: '1', health_data: '1' }
       end.to change { user.product_substitutions.count }.by(1)
 
       expect(response).to redirect_to(product_substitutions_path)
+      expect(user.reload.consented?(:health_data)).to be(true)
+    end
+
+    it 'does not send the pdf to the parser without the personal-data statement and health consent' do
+      login
+      allow(Chat::ProductSubstitutionParserService).to receive(:new)
+      pdf = Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'),
+                                         'application/pdf')
+
+      post import_pdf_product_substitutions_path, params: { pdf: pdf }
+
+      expect(Chat::ProductSubstitutionParserService).not_to have_received(:new)
+      expect(response).to redirect_to(product_substitutions_path)
+      expect(flash[:alert]).to include('danych osobowych')
     end
   end
 

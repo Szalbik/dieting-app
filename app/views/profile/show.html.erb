@@ -44,6 +44,24 @@
     </div>
 
     <div class="p-6 mb-8 bg-white border border-gray-200 shadow-sm rounded-2xl">
+      <h3 class="text-base font-semibold text-gray-900">Prywatność</h3>
+      <div class="flex flex-col gap-4 mt-2 lg:flex-row lg:items-center lg:justify-between">
+        <div class="max-w-2xl text-sm text-gray-700">
+          <% if Current.user.consented?(:health_data) %>
+            <p>Zgoda na przetwarzanie danych dotyczących zdrowia (art. 9 RODO) — <span class="font-semibold">udzielona</span>. Po jej wycofaniu wczytywanie diet z PDF będzie niedostępne; istniejące diety możesz usunąć osobno.</p>
+          <% else %>
+            <p>Zgoda na przetwarzanie danych dotyczących zdrowia (art. 9 RODO) — <span class="font-semibold">brak</span>. Jest potrzebna do wczytywania diet z PDF (dane trafiają do analizy OpenAI). <%= link_to "Polityka prywatności", privacy_path, class: "font-semibold underline" %></p>
+          <% end %>
+        </div>
+        <% if Current.user.consented?(:health_data) %>
+          <%= button_to "Wycofaj zgodę", health_data_consent_path, method: :delete, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50" %>
+        <% else %>
+          <%= button_to "Wyrażam zgodę", health_data_consent_path, method: :post, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="p-6 mb-8 bg-white border border-gray-200 shadow-sm rounded-2xl">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div class="max-w-2xl">
           <h3 class="text-base font-semibold text-gray-900">Wspolna lista zakupow</h3>

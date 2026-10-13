@@ -8,7 +8,7 @@ RSpec.describe 'Diets', type: :request do
   let(:user) { create(:user, password: 'password123', password_confirmation: 'password123') }
   let(:other_user) { create(:user, password: 'password123', password_confirmation: 'password123') }
 
-  let(:consents) { { pii_confirmed: '1', parse_disclaimer: '1' } }
+  let(:consents) { { pii_confirmed: '1', parse_disclaimer: '1', health_data: '1' } }
 
   def login(u = user)
     post session_path, params: { email_address: u.email_address, password: 'password123' }
@@ -134,21 +134,39 @@ RSpec.describe 'Diets', type: :request do
 
       it 'only asks for the personal-data statement once the disclaimer was accepted' do
         user.record_consent(:parse_disclaimer)
+        user.record_consent(:health_data)
         user.save!
         login
         get new_diet_path
         expect(response.body).to include('diet[pii_confirmed]')
-        expect(response.body).not_to include('diet[parse_disclaimer]')
+        expect(response.body).not_to include('diet[parse_disclaimer]', 'diet[health_data]')
 
         expect do
           post diets_path, params: { diet: { name: 'Second', pdf: pdf, pii_confirmed: '1' } }
         end.to have_enqueued_job(DietBuilderJob)
       end
 
-      it 'shows both checkboxes to a user who never accepted the disclaimer' do
+      it 'shows all checkboxes to a user who never accepted the disclaimer' do
         login
         get new_diet_path
-        expect(response.body).to include('diet[pii_confirmed]', 'diet[parse_disclaimer]')
+        expect(response.body).to include('diet[pii_confirmed]', 'diet[parse_disclaimer]', 'diet[health_data]')
+      end
+
+      it 'rejects a first pdf without the explicit health-data consent' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'No health consent', pdf: pdf, **consents.except(:health_data) } }
+        end.not_to have_enqueued_job(DietBuilderJob)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('danych dotyczących zdrowia')
+        expect(user.reload.consented?(:health_data)).to be(false)
+      end
+
+      it 'records the health-data consent with the accepted pdf' do
+        login
+        post diets_path, params: { diet: { name: 'Health ok', pdf: pdf, **consents } }
+        expect(user.reload.consented?(:health_data)).to be(true)
       end
     end
 
@@ -345,6 +363,18 @@ RSpec.describe 'Diets', type: :request do
 
   describe 'POST /diets/:id/reparse' do
     let(:diet) { create(:diet, :with_pdf, user: user) }
+
+    before { user.record_consent!(:health_data) }
+
+    it 'refuses to reparse after the health-data consent was withdrawn' do
+      user.update!(consents: {})
+      login
+      expect do
+        post reparse_diet_path(diet), params: { pii_confirmed: '1' }
+      end.not_to have_enqueued_job(DietBuilderJob)
+      expect(response).to redirect_to(profile_path)
+      expect(flash[:alert]).to include('danych dotyczących zdrowia')
+    end
 
     it 'enqueues DietBuilderJob when PDF is attached' do
       login

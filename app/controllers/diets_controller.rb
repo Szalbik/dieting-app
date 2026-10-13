@@ -68,6 +68,9 @@ class DietsController < ApplicationController
       unless Current.user.consented?(:parse_disclaimer) || params.dig(:diet, :parse_disclaimer) == '1'
         @diet.errors.add(:base, 'Zaakceptuj informację o automatycznym odczycie diety.')
       end
+      unless Current.user.consented?(:health_data) || params.dig(:diet, :health_data) == '1'
+        @diet.errors.add(:base, 'Wyraź zgodę na przetwarzanie danych dotyczących zdrowia, aby wczytać dietę.')
+      end
       if @diet.errors.any?
         respond_to do |format|
           format.html { render :new, status: :unprocessable_entity }
@@ -94,6 +97,7 @@ class DietsController < ApplicationController
         if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
           Current.user.record_consent!(:parse_disclaimer)
         end
+        Current.user.record_consent!(:health_data) if @diet.source == 'pdf' && !Current.user.consented?(:health_data)
 
         notice = {
           'pdf' => 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.',
@@ -150,6 +154,11 @@ class DietsController < ApplicationController
     @diet = Current.user.diets.find(params[:id])
     unless @diet.pdf.attached?
       redirect_to diets_path, alert: 'Brak załączonego PDF. Nie można przeparsować diety.'
+      return
+    end
+
+    unless Current.user.consented?(:health_data)
+      redirect_to profile_path, alert: 'Aby przetworzyć dietę, wyraź zgodę na przetwarzanie danych dotyczących zdrowia.'
       return
     end
 

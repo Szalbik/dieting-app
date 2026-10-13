@@ -41,6 +41,16 @@ RSpec.describe 'User Registration', type: :request do
       end
     end
 
+    it 'records which version of the legal documents was accepted' do
+      post registrations_path, params: valid_params
+      expect(User.last.consents['terms_version']).to eq(LegalDocuments::VERSION)
+    end
+
+    it 'asks to confirm being at least 18' do
+      get new_registration_path
+      expect(response.body).to include('ukończone 18 lat')
+    end
+
     it 'does not register without accepting the terms' do
       expect do
         post registrations_path, params: valid_params.except(:terms)

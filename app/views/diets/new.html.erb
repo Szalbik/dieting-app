@@ -79,6 +79,9 @@
               <span>Rozumiem, że dieta jest odczytywana z PDF automatycznie, jakość wyniku zależy od jakości pliku/skanu i wczytane dane muszę sprawdzić przed zastosowaniem.</span>
             </label>
           <% end %>
+          <% unless Current.user.consented?(:health_data) %>
+            <%= render "shared/health_data_consent", field: "diet[health_data]", checked: params.dig(:diet, :health_data) == "1" %>
+          <% end %>
         </div>
       </div>
 

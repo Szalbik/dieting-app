@@ -104,6 +104,7 @@ Rails.application.routes.draw do
   get 'receive_code', to: 'todoist#receive_code', as: 'todoist_receive_code'
 
   get 'profile', to: 'profile#show', as: 'profile'
+  resource :health_data_consent, only: %i[create destroy]
 
   get 'upgrade', to: 'subscriptions#new', as: :upgrade
   post 'upgrade', to: 'subscriptions#create'

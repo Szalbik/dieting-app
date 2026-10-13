@@ -1,0 +1,5 @@
+<%# Explicit art. 9 RODO consent, asked once before the first AI operation; withdrawable in the profile. %>
+<label class="flex items-start gap-2 text-sm text-gray-900">
+  <%= check_box_tag field, "1", checked, class: "mt-1" %>
+  <span>Wyrażam wyraźną zgodę na przetwarzanie danych dotyczących mojego zdrowia i sposobu odżywiania zawartych w planie diety, w tym na przekazanie ich do analizy OpenAI (art. 9 ust. 2 lit. a RODO). Zgodę mogę w każdej chwili wycofać w profilu. <%= link_to "Polityka prywatności", privacy_path, target: "_blank", class: "font-semibold underline" %></span>
+</label>

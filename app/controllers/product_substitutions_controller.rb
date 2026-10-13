@@ -46,6 +46,14 @@ class ProductSubstitutionsController < ApplicationController
       redirect_to product_substitutions_path, alert: 'Wybierz plik PDF z listą zamienników.'
       return
     end
+    unless params[:pii_confirmed] == '1' && (Current.user.consented?(:health_data) || params[:health_data] == '1')
+      redirect_to product_substitutions_path,
+                  alert: 'Potwierdź usunięcie danych osobowych z pliku i wyraź zgodę na przetwarzanie danych ' \
+                         'dotyczących zdrowia.'
+      return
+    end
+
+    Current.user.record_consent!(:health_data) unless Current.user.consented?(:health_data)
 
     rows = Chat::ProductSubstitutionParserService.new(file.tempfile.path).call
     inserted = 0
