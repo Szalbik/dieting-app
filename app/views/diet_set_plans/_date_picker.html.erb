@@ -2,7 +2,7 @@
 
 <div data-controller="date-strip" class="snap-x snap-mandatory overflow-x-auto scroll-smooth pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
   <div data-date-strip-target="track" class="flex flex-nowrap gap-1.5">
-    <% ((Date.current - 1.month)..(Date.current + 1.month)).each do |d| %>
+    <% Current.user.planning_range.each do |d| %>
       <% is_selected = (d.to_s == @date.to_s) %>
       <%# Full-page visit (not the day_view frame): the URL tracks the day and the service worker can store it offline. %>
       <%= link_to diet_set_plans_path(date: d.to_s),
@@ -11,6 +11,13 @@
           class: "w-14 shrink-0 select-none snap-center rounded-[14px] border py-2 text-center transition-colors #{is_selected ? 'border-brand-navy bg-brand-navy text-white' : 'border-brand-ink/10 bg-white text-brand-ink hover:border-brand-peach hover:bg-brand-peach-soft'}" do %>
         <div class="text-[10px] font-semibold <%= is_selected ? 'opacity-80' : 'opacity-60' %>"><%= weekday_abbrw[d.wday] %></div>
         <div class="mt-0.5 text-[15px] font-bold leading-none"><%= d.day %></div>
+      <% end %>
+    <% end %>
+    <% unless Current.user.unlimited_planning? %>
+      <%= link_to upgrade_path, data: { turbo_frame: '_top' }, title: 'Planuj dalej z Pro',
+          class: "flex w-14 shrink-0 snap-center flex-col items-center justify-center rounded-[14px] border border-dashed border-brand-ink/20 py-2 text-center text-brand-ink-soft hover:border-brand-peach hover:bg-brand-peach-soft" do %>
+        <div class="text-[13px] leading-none">🔒</div>
+        <div class="mt-1 text-[10px] font-semibold">Pro</div>
       <% end %>
     <% end %>
   </div>

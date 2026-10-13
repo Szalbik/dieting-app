@@ -4,6 +4,7 @@ class User < ApplicationRecord
   enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
 
   AI_QUOTA_LIMITS = { free: 3, pro: 20 }.freeze # free = lifetime total, pro = per month
+  FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
 
   after_create :create_owned_shopping_cart
 
@@ -87,6 +88,21 @@ class User < ApplicationRecord
 
   def subscribed?
     subscription_active? || subscription_lifetime? || subscription_end_date&.future?
+  end
+
+  def unlimited_planning?
+    admin? || subscribed?
+  end
+
+  # Days shown in the plan date strip.
+  def planning_range
+    window = unlimited_planning? ? 1.month : FREE_PLANNING_WINDOW
+    (Date.current - window)..(Date.current + window)
+  end
+
+  # Free plan is limited to today ± FREE_PLANNING_WINDOW; subscribers and admins can open any day.
+  def plannable_date?(day)
+    unlimited_planning? || planning_range.cover?(day)
   end
 
   # Free: lifetime total (never resets). Pro: per calendar month. Lifetime plan: unlimited.

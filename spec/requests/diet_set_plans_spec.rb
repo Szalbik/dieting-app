@@ -69,9 +69,9 @@ RSpec.describe 'DietSetPlans servings', type: :request do
     end
 
     it 'redirects with an alert when the date has no plan' do
-      patch servings_diet_set_plans_path, params: { date: (date + 3.days).to_s, servings: 4 }
+      patch servings_diet_set_plans_path, params: { date: (date + 1.day).to_s, servings: 4 }
 
-      expect(response).to redirect_to(diet_set_plans_path(date: (date + 3.days).to_s))
+      expect(response).to redirect_to(diet_set_plans_path(date: (date + 1.day).to_s))
       expect(flash[:alert]).to be_present
     end
   end
@@ -142,6 +142,47 @@ RSpec.describe 'DietSetPlans servings', type: :request do
       expect(monday.servings).to eq(1)
       expect(tuesday.reload.date).to eq(date)
       expect(tuesday.servings).to eq(2)
+    end
+  end
+  describe 'free plan date window' do
+    before { plan_for(date) && login }
+
+    it 'shows only today ± 3 days in the date strip' do
+      get diet_set_plans_path
+
+      expect(response.body).to include("date=#{(Date.current + 3.days)}")
+      expect(response.body).not_to include("date=#{(Date.current + 4.days)}")
+      expect(response.body).to include(upgrade_path)
+    end
+
+    it 'redirects a day outside the window back to today' do
+      get diet_set_plans_path(date: (Date.current + 4.days).to_s)
+
+      expect(response).to redirect_to(diet_set_plans_path)
+      expect(flash[:alert]).to include('3 dni')
+    end
+
+    it 'refuses swapping into a day outside the window' do
+      post swap_diet_set_plans_path, params: { current_date: date.to_s, target_date: (Date.current + 5.days).to_s }
+
+      expect(response).to redirect_to(diet_set_plans_path)
+      expect(user.diet_set_plans.find_by(date: date)).to be_present
+    end
+
+    it 'lets subscribers open any day' do
+      user.update!(subscription: :lifetime)
+
+      get diet_set_plans_path(date: (Date.current + 20.days).to_s)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'lets admins open any day' do
+      user.update!(admin: true)
+
+      get diet_set_plans_path(date: (Date.current + 20.days).to_s)
+
+      expect(response).to have_http_status(:ok)
     end
   end
 end

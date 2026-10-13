@@ -5,6 +5,7 @@ require 'digest'
 class DietSetPlansController < ApplicationController
   include PlanSubstitutionSuggestions
 
+  before_action :require_plannable_date, only: [:show, :create, :update_servings]
   before_action :set_diet_set_plan, only: [:show, :toggle_shopping_bag]
 
   def toggle_shopping_bag
@@ -53,6 +54,7 @@ class DietSetPlansController < ApplicationController
   def swap
     current_date = Date.parse(params[:current_date])
     target_date = Date.parse(params[:target_date])
+    return redirect_outside_planning_window unless [current_date, target_date].all? { |d| Current.user.plannable_date?(d) }
 
     current_plan = newest_plan_for(current_date)
     target_plan = newest_plan_for(target_date)
@@ -256,6 +258,15 @@ class DietSetPlansController < ApplicationController
   end
 
   private
+
+  def require_plannable_date
+    redirect_outside_planning_window unless Current.user.plannable_date?(Date.parse(date))
+  end
+
+  def redirect_outside_planning_window
+    redirect_to diet_set_plans_path,
+                alert: "W darmowym planie możesz planować #{User::FREE_PLANNING_WINDOW.in_days.to_i} dni wstecz i w przód. Przejdź na Pro, by planować dalej."
+  end
 
   def set_diet_set_plan
     @diet_set_plan = Current.user.diet_set_plans.where(date: date).sort.last unless params['reassign'].present?

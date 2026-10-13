@@ -131,7 +131,7 @@
         <h4 class="mb-3 text-sm font-semibold text-brand-ink">Zamień z:</h4>
         <div class="space-y-2">
           <% ((Date.current - 1.day)..(Date.current + 5.days)).each do |d| %>
-            <% next if d.to_s == @date.to_s %>
+            <% next if d.to_s == @date.to_s || !Current.user.plannable_date?(d) %>
             <% other_plan = @swap_day_plans&.dig(d) %>
             <div class="flex items-center justify-between rounded-xl border border-brand-ink/10 bg-brand-paper px-3 py-2.5">
               <div class="min-w-0 flex-1">
