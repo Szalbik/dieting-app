@@ -4,6 +4,8 @@ class DietSet < ApplicationRecord
   belongs_to :diet
   has_many :meals, dependent: :destroy
   has_many :products, through: :meals
+  # Products copied by MealPlanMealLocalizer used to point here directly; the FK has no on_delete.
+  has_many :localized_products, class_name: 'Product', dependent: :nullify
   has_many :diet_set_plans, dependent: :destroy
 
   validates :name, presence: true

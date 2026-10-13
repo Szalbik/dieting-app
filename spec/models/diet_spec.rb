@@ -37,6 +37,17 @@ RSpec.describe Diet, type: :model do
     it { is_expected.to have_many(:diet_sets).dependent(:destroy) }
   end
 
+  describe '#destroy' do
+    it 'succeeds when a day holds a product pointing at it via diet_set_id' do
+      diet = create(:diet)
+      diet_set = create(:diet_set, diet: diet)
+      product = create(:product, meal: create(:meal, diet_set: diet_set), diet_set: diet_set)
+
+      expect { diet.destroy! }.to change(described_class, :count).by(-1)
+      expect(product.reload.diet_set_id).to be_nil
+    end
+  end
+
   describe '#parse_pdf_content_with_chat!' do
     it 'saves parsed_json returned by the parser service' do
       diet = create(:diet, :with_pdf)
