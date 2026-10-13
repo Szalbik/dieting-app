@@ -28,8 +28,10 @@ export default class extends Controller {
   // This page, and the day page a meal page links back to (the SW stores both answers).
   refreshCachedCopies() {
     const onMeal = window.location.pathname.startsWith("/meal_plans/")
-    const back = onMeal ? this.element.querySelector('a[href^="/diet_set_plans?date="]')?.getAttribute("href") : null
-    for (const url of new Set([window.location.pathname + window.location.search, back].filter(Boolean))) {
+    const related = onMeal
+      ? [this.element.querySelector('a[href^="/diet_set_plans?date="]')?.getAttribute("href")] // the day it belongs to
+      : [...this.element.querySelectorAll('a[href^="/meal_plans/"]')].map((a) => a.getAttribute("href")) // the day's meals (servings, eaten)
+    for (const url of new Set([window.location.pathname + window.location.search, ...related].filter(Boolean))) {
       fetch(url, { headers: { Accept: "text/html", "X-Network-Only": "1" }, credentials: "same-origin" }).catch(() => {})
     }
   }

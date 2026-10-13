@@ -148,7 +148,14 @@ function remove(entry) {
   write(read().filter((e) => !(e.key === entry.key && e.at === entry.at)))
 }
 
-export async function flush() {
+// Callers (e.g. logout) can await the flush already in flight instead of racing it.
+let inflight = null
+export function flush() {
+  inflight ||= runFlush().finally(() => { inflight = null })
+  return inflight
+}
+
+async function runFlush() {
   const user = currentUser()
   if (flushing || !navigator.onLine || !user || read().length === 0) return
 
@@ -191,9 +198,14 @@ export async function flush() {
       break
     }
     if (response.status >= 500) {
-      const failures = (entry.failures || 0) + 1
+      // Count at most one failure per retry interval, so a burst of flush triggers
+      // (navigations, foregrounding) during a short outage can't burn through the budget.
+      const now = Date.now()
+      const fresh = !entry.failedAt || now - entry.failedAt >= RETRY_MS
+      const failures = (entry.failures || 0) + (fresh ? 1 : 0)
       if (failures < MAX_SERVER_FAILURES) {
-        write(read().map((e) => (e.key === entry.key && e.at === entry.at ? { ...e, failures } : e)))
+        const failedAt = fresh ? now : entry.failedAt
+        write(read().map((e) => (e.key === entry.key && e.at === entry.at ? { ...e, failures, failedAt } : e)))
         break // server hiccup: retry later
       }
     }

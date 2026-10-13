@@ -268,7 +268,7 @@ class DietSetPlansController < ApplicationController
 
   def redirect_outside_planning_window
     # outbox (servings): an explicit refusal it reports as lost, not a redirect it would read as "session gone"
-    return head(:conflict) if request.format.turbo_stream?
+    return head(:conflict) if action_name == 'update_servings' && request.format.turbo_stream?
 
     redirect_to diet_set_plans_path,
                 alert: "W darmowym planie możesz planować #{User::FREE_PLANNING_WINDOW.in_days.to_i} dni wstecz i w przód. Przejdź na Pro, by planować dalej."

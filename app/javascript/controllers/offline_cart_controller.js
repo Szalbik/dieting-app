@@ -35,7 +35,7 @@ export default class extends Controller {
     // The quiet refresh must show server truth: a cached pre-sync copy winning the SW's
     // weak-signal race would visibly undo the ticks that just synced.
     this.onBeforeFetch = (event) => {
-      if (this.glideFrom) event.detail.fetchOptions.headers["X-Network-Only"] = "1"
+      if (this.glideFrom && event.detail.url.href === window.location.href) event.detail.fetchOptions.headers["X-Network-Only"] = "1"
     }
     this.onRender = () => {
       this.applyPending()
