@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  # "19,90 zł" / "199 zł" — from User::PRO_PRICES_PLN, the single source of the Pro price.
+  def pro_price(interval)
+    amount = User::PRO_PRICES_PLN.fetch(interval)
+    number_to_currency(amount, unit: 'zł', format: '%n %u', separator: ',', delimiter: ' ',
+                               precision: amount.frac.zero? ? 0 : 2)
+  end
+
   # Unit strings from DB can include variants like "łyżka (10ml)". I18n keys use only the base name.
   def unit_key_for_i18n(unit_str)
     return '' if unit_str.blank?

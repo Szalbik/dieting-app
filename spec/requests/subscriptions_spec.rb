@@ -19,7 +19,7 @@ RSpec.describe 'Subscriptions', type: :request do
       get upgrade_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("#{User::PRO_PRICE_PLN} zł", 'odnawia się automatycznie', 'PKO BP', terms_path)
+      expect(response.body).to include("19,90 zł", 'odnawia się automatycznie', 'PKO BP', terms_path)
       expect(WebMock).not_to have_requested(:any, /api.stripe.com/)
     end
 
@@ -63,6 +63,34 @@ RSpec.describe 'Subscriptions', type: :request do
       expect(user.reload.stripe_customer_id).to eq('cus_123')
     end
 
+    it 'uses the yearly price for interval=yearly' do
+      allow(Rails.application.credentials).to receive(:dig).and_call_original
+      allow(Rails.application.credentials).to receive(:dig).with(:stripe, :yearly_price_id).and_return('price_yearly')
+      stub_request(:post, 'https://api.stripe.com/v1/customers').to_return(json_response(id: 'cus_123'))
+      yearly = stub_request(:post, 'https://api.stripe.com/v1/checkout/sessions')
+               .with(body: hash_including('line_items' => [{ 'price' => 'price_yearly', 'quantity' => '1' }]))
+               .to_return(json_response(id: 'cs_1', url: 'https://checkout.stripe.com/pay/cs_1'))
+
+      login
+      post upgrade_path, params: { interval: 'yearly' }
+
+      expect(yearly).to have_been_requested
+    end
+
+    it 'falls back to the monthly price for an unknown interval' do
+      allow(Rails.application.credentials).to receive(:dig).and_call_original
+      allow(Rails.application.credentials).to receive(:dig).with(:stripe, :monthly_price_id).and_return('price_monthly')
+      stub_request(:post, 'https://api.stripe.com/v1/customers').to_return(json_response(id: 'cus_123'))
+      monthly = stub_request(:post, 'https://api.stripe.com/v1/checkout/sessions')
+                .with(body: hash_including('line_items' => [{ 'price' => 'price_monthly', 'quantity' => '1' }]))
+                .to_return(json_response(id: 'cs_1', url: 'https://checkout.stripe.com/pay/cs_1'))
+
+      login
+      post upgrade_path, params: { interval: 'weekly' }
+
+      expect(monthly).to have_been_requested
+    end
+
     it 'redirects to profile without hitting Stripe when already subscribed' do
       user.update!(subscription: :active)
       login
@@ -77,7 +105,7 @@ RSpec.describe 'Subscriptions', type: :request do
       user.update!(stripe_customer_id: 'cus_123')
       login
       get profile_path
-      expect(response.body).to include("Przejdź na Pro — #{User::PRO_PRICE_PLN} zł/mies.")
+      expect(response.body).to include("Przejdź na Pro — 19,90 zł/mies.")
       expect(response.body).not_to include('Zarządzaj subskrypcją')
     end
 

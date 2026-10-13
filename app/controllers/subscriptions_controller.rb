@@ -11,7 +11,7 @@ class SubscriptionsController < ApplicationController
       mode: 'subscription',
       customer: Current.user.stripe_customer.id,
       client_reference_id: Current.user.id,
-      line_items: [{ price: Rails.application.credentials.dig(:stripe, :monthly_price_id), quantity: 1 }],
+      line_items: [{ price: Rails.application.credentials.dig(:stripe, :"#{interval}_price_id"), quantity: 1 }],
       # The JDG is the seller (Terms); Managed Payments would make Stripe merchant of record.
       managed_payments: { enabled: false },
       # Owner decision: no buy-now-pay-later; card + BLIK (+ wallets) come from the Dashboard config.
@@ -45,6 +45,10 @@ class SubscriptionsController < ApplicationController
   end
 
   private
+
+  def interval
+    User::PRO_PRICES_PLN.key?(params[:interval]&.to_sym) ? params[:interval] : 'monthly'
+  end
 
   def ensure_can_upgrade
     if !payments_enabled?
