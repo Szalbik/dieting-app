@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Warms the service worker cache with the next few plan days and their meal
 // pages, so the plan can be browsed in a shop without signal. Plain GETs with
 // `Accept: text/html` — the service worker stores them like any visited page.
-// Throttled per device; re-run after queued plan changes sync.
+// Throttled per device (synced plan changes refresh only the pages they touch: plan_outbox_controller).
 //
 // ponytail: sequential fetches (~4 days + their meals), fine at this size.
 
@@ -14,17 +14,11 @@ export default class extends Controller {
   static values = { today: String, days: { type: Number, default: 3 } }
 
   connect() {
-    this.onDrained = (event) => { if (event.detail.kinds.includes("plan")) this.run(true) }
-    window.addEventListener("outbox:drained", this.onDrained)
-    this.run(false)
+    this.run()
   }
 
-  disconnect() {
-    window.removeEventListener("outbox:drained", this.onDrained)
-  }
-
-  async run(force) {
-    if (this.running || !navigator.onLine || (!force && this.throttled())) return
+  async run() {
+    if (this.running || !navigator.onLine || this.throttled()) return
     this.running = true
     try {
       for (const date of this.dates()) {

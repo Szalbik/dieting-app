@@ -104,7 +104,8 @@ export default class extends Controller {
     })
   }
 
-  // Sign-out ends the session and wipes local storage (Clear-Site-Data): send what's pending first.
+  // Sign-out ends the session and wipes local storage (Clear-Site-Data): send what's pending
+  // first, and never drop what couldn't be sent without the user saying so.
   async logout(event) {
     const form = event.target
     if (!(form instanceof HTMLFormElement) || !form.matches("[data-outbox-logout]") || form.dataset.flushed) return
@@ -112,6 +113,8 @@ export default class extends Controller {
     event.preventDefault()
     event.stopImmediatePropagation()
     await flush()
+    const left = pending().length
+    if (left > 0 && !window.confirm(`Niezapisane zmiany: ${left}. Wylogować się i je utracić?`)) return
     clear()
     form.dataset.flushed = ""
     form.requestSubmit()

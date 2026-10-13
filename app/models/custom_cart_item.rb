@@ -6,6 +6,7 @@ class CustomCartItem < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validates :unit, length: { maximum: 50 }, allow_blank: true
+  validates :client_id, length: { maximum: 64 }, allow_nil: true
 
   normalizes :name, with: ->(n) { n.to_s.strip.presence }
   normalizes :unit, with: ->(u) { u.to_s.strip.presence || 'szt' }

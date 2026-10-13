@@ -90,7 +90,10 @@ class DietSetPlansController < ApplicationController
   def update_servings
     plan = newest_plan_for(date)
     unless plan
-      redirect_to diet_set_plans_path(date: date), alert: 'Brak diety przypisanej do tego dnia.'
+      respond_to do |format|
+        format.turbo_stream { head :not_found } # outbox: a redirect would read as "session gone" and block the queue
+        format.html { redirect_to diet_set_plans_path(date: date), alert: 'Brak diety przypisanej do tego dnia.' }
+      end
       return
     end
 
@@ -264,6 +267,9 @@ class DietSetPlansController < ApplicationController
   end
 
   def redirect_outside_planning_window
+    # outbox (servings): an explicit refusal it reports as lost, not a redirect it would read as "session gone"
+    return head(:conflict) if request.format.turbo_stream?
+
     redirect_to diet_set_plans_path,
                 alert: "W darmowym planie możesz planować #{User::FREE_PLANNING_WINDOW.in_days.to_i} dni wstecz i w przód. Przejdź na Pro, by planować dalej."
   end

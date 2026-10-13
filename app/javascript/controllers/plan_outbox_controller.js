@@ -5,20 +5,33 @@ import { enqueue, pending } from "../outbox"
 // servings ± (`form[data-offline-servings]`). Like the shopping list, they are
 // painted immediately and sent through the shared outbox with explicit target
 // values, so replays are idempotent. Pending entries are re-applied when a
-// (possibly cached) plan or meal page renders.
+// (possibly cached) plan or meal page renders; once they sync, the pages they
+// touched are re-fetched so the service worker's offline copies match.
 export default class extends Controller {
   connect() {
     this.onSubmit = (event) => this.submit(event)
     this.onRender = () => this.applyPending()
+    this.onDrained = (event) => { if (event.detail.kinds.includes("plan")) this.refreshCachedCopies() }
     // Capture phase: the servings forms live inside <turbo-frame id="day_view">.
     this.element.addEventListener("submit", this.onSubmit, true)
     document.addEventListener("turbo:render", this.onRender)
+    window.addEventListener("outbox:drained", this.onDrained)
     this.applyPending()
   }
 
   disconnect() {
     this.element.removeEventListener("submit", this.onSubmit, true)
     document.removeEventListener("turbo:render", this.onRender)
+    window.removeEventListener("outbox:drained", this.onDrained)
+  }
+
+  // This page, and the day page a meal page links back to (the SW stores both answers).
+  refreshCachedCopies() {
+    const onMeal = window.location.pathname.startsWith("/meal_plans/")
+    const back = onMeal ? this.element.querySelector('a[href^="/diet_set_plans?date="]')?.getAttribute("href") : null
+    for (const url of new Set([window.location.pathname + window.location.search, back].filter(Boolean))) {
+      fetch(url, { headers: { Accept: "text/html", "X-Network-Only": "1" }, credentials: "same-origin" }).catch(() => {})
+    }
   }
 
   submit(event) {

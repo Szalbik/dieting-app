@@ -18,6 +18,8 @@ const PRECACHE = ["/icon-192.png", "/icon-512.png", "/icon.svg", "/manifest.webm
 const PAGE_PATHS = ["/shopping_cart", "/diet_set_plans"];
 const MEAL_PAGE = /^\/meal_plans\/\d+$/;
 const NETWORK_TIMEOUT_MS = 2500;
+// Set by the page when it needs server truth (quiet refresh after a sync): no cached fallback race.
+const NETWORK_ONLY_HEADER = "X-Network-Only";
 const MAX_ASSET_ENTRIES = 40;
 
 const OFFLINE_HTML = `<!doctype html>
@@ -126,7 +128,7 @@ self.addEventListener("fetch", (event) => {
     (async () => {
       const cached = await caches.match(url.href, { ignoreVary: true });
       // Lie-fi: the browser says online but the network crawls. Give it a moment, then show what we have.
-      if (cached && page) {
+      if (cached && page && !request.headers.has(NETWORK_ONLY_HEADER)) {
         const timeout = new Promise((resolve) => setTimeout(() => resolve(cached), NETWORK_TIMEOUT_MS));
         return Promise.race([network.catch(() => cached), timeout]);
       }

@@ -39,6 +39,15 @@ RSpec.describe 'Custom cart items', type: :request do
     end
   end
 
+  describe 'client_id bounds' do
+    it 'rejects an oversized client_id' do
+      login
+      params = { custom_cart_item: { name: 'Chleb', quantity: 1, unit: 'szt', client_id: 'x' * 65 } }
+
+      expect { post custom_cart_items_path, params: params }.not_to change(CustomCartItem, :count)
+    end
+  end
+
   describe 'PATCH /custom_cart_items/:id/toggle_bought' do
     let(:item) { user.shopping_cart.custom_cart_items.create!(name: 'Chleb', quantity: 1, unit: 'szt') }
 

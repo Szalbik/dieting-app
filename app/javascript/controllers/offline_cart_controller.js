@@ -32,6 +32,11 @@ export default class extends Controller {
     this.onSubmit = (event) => this.submit(event)
     this.onDrained = (event) => { if (event.detail.kinds.some((k) => k.startsWith("cart"))) this.refresh(true) }
     this.onVisible = () => { if (document.visibilityState === "visible") this.refresh(false) }
+    // The quiet refresh must show server truth: a cached pre-sync copy winning the SW's
+    // weak-signal race would visibly undo the ticks that just synced.
+    this.onBeforeFetch = (event) => {
+      if (this.glideFrom) event.detail.fetchOptions.headers["X-Network-Only"] = "1"
+    }
     this.onRender = () => {
       this.applyPending()
       if (this.glideFrom) this.glide(this.glideFrom)
@@ -54,6 +59,7 @@ export default class extends Controller {
     window.addEventListener("outbox:drained", this.onDrained)
     document.addEventListener("visibilitychange", this.onVisible)
     document.addEventListener("turbo:render", this.onRender)
+    document.addEventListener("turbo:before-fetch-request", this.onBeforeFetch)
     document.addEventListener("turbo:before-stream-render", this.onStreamRender)
 
     this.applyPending()
@@ -64,6 +70,7 @@ export default class extends Controller {
     window.removeEventListener("outbox:drained", this.onDrained)
     document.removeEventListener("visibilitychange", this.onVisible)
     document.removeEventListener("turbo:render", this.onRender)
+    document.removeEventListener("turbo:before-fetch-request", this.onBeforeFetch)
     document.removeEventListener("turbo:before-stream-render", this.onStreamRender)
   }
 

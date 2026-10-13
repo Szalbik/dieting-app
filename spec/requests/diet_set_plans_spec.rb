@@ -41,6 +41,20 @@ RSpec.describe 'DietSetPlans servings', type: :request do
       expect(response).to have_http_status(:no_content)
     end
 
+    it 'answers 404 to the offline outbox when the date has no plan, so the queue is not stuck on a redirect' do
+      patch servings_diet_set_plans_path, params: { date: (date + 1).to_s, servings: 2 },
+                                          headers: { 'Accept' => 'text/vnd.turbo-stream.html, text/html' }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'answers 409 to the offline outbox outside the planning window' do
+      patch servings_diet_set_plans_path, params: { date: (date + 365).to_s, servings: 2 },
+                                          headers: { 'Accept' => 'text/vnd.turbo-stream.html, text/html' }
+
+      expect(response).to have_http_status(:conflict)
+    end
+
     it 'renders date strip tiles as full-page navigations' do
       get diet_set_plans_path(date: date.to_s)
       tiles = Nokogiri::HTML(response.body).css('[data-controller=date-strip] a')
@@ -144,6 +158,7 @@ RSpec.describe 'DietSetPlans servings', type: :request do
       expect(tuesday.servings).to eq(2)
     end
   end
+
   describe 'free plan date window' do
     before { plan_for(date) && login }
 

@@ -20,6 +20,7 @@ const LEGACY_KEY = "dieta:cart-outbox" // pre-offline-first cart queue: [{ url, 
 const REQUEST_TIMEOUT_MS = 8000
 const RETRY_MS = 30000
 const SYNCED_FLASH_MS = 2000
+const MAX_SERVER_FAILURES = 5 // a 5xx that keeps coming back is a bug, not a blip: stop blocking the queue
 
 const listeners = new Set()
 let flushing = false
@@ -89,10 +90,16 @@ export function pending(kind) {
   return kind ? entries.filter((e) => e.kind === kind) : entries
 }
 
+// Entries belong to whoever was signed in when they were made: on a shared device
+// a queue left by user A must never replay into user B's account.
+function currentUser() {
+  return document.querySelector('meta[name="current-user-id"]')?.content
+}
+
 // entry: { key, url, method, params, kind }
 export function enqueue(entry) {
   const entries = read().filter((e) => e.key !== entry.key)
-  entries.push({ ...entry, at: Date.now() })
+  entries.push({ ...entry, user: currentUser(), at: Date.now() })
   write(entries)
   synced = false
   notify()
@@ -110,23 +117,20 @@ function csrfToken() {
 
 // The token in a page served from the SW cache can be stale. Fetch a live page
 // past the cache (the SW leaves `cache: "no-store"` requests alone) and adopt its token.
+// Returns null when there is no live session; a network failure throws (= retry later).
 async function refreshCsrfToken() {
-  try {
-    const response = await fetch("/shopping_cart", {
-      cache: "no-store",
-      credentials: "same-origin",
-      redirect: "manual",
-      headers: { Accept: "text/html" },
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
-    })
-    if (!response.ok) return null
-    const html = await response.text()
-    const token = new DOMParser().parseFromString(html, "text/html").querySelector('meta[name="csrf-token"]')?.content
-    if (token) document.querySelector('meta[name="csrf-token"]')?.setAttribute("content", token)
-    return token
-  } catch {
-    return null
-  }
+  const response = await fetch("/shopping_cart", {
+    cache: "no-store",
+    credentials: "same-origin",
+    redirect: "manual",
+    headers: { Accept: "text/html" },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+  })
+  if (!response.ok) return null
+  const html = await response.text()
+  const token = new DOMParser().parseFromString(html, "text/html").querySelector('meta[name="csrf-token"]')?.content
+  if (token) document.querySelector('meta[name="csrf-token"]')?.setAttribute("content", token)
+  return token || null
 }
 
 function send(entry, token) {
@@ -140,8 +144,13 @@ function send(entry, token) {
   })
 }
 
+function remove(entry) {
+  write(read().filter((e) => !(e.key === entry.key && e.at === entry.at)))
+}
+
 export async function flush() {
-  if (flushing || !navigator.onLine || read().length === 0) return
+  const user = currentUser()
+  if (flushing || !navigator.onLine || !user || read().length === 0) return
 
   flushing = true
   authRequired = false
@@ -154,6 +163,11 @@ export async function flush() {
   // Re-read the queue each step and remove by identity: a tap that lands
   // mid-flush must not be overwritten by a stale snapshot.
   for (let entry = read()[0]; entry; entry = read()[0]) {
+    if (entry.user && entry.user !== user) {
+      remove(entry) // another account's change: never send it as this user
+      continue
+    }
+
     let response
     try {
       response = await send(entry, token)
@@ -176,11 +190,18 @@ export async function flush() {
       authRequired = true
       break
     }
-    if (response.status >= 500) break
+    if (response.status >= 500) {
+      const failures = (entry.failures || 0) + 1
+      if (failures < MAX_SERVER_FAILURES) {
+        write(read().map((e) => (e.key === entry.key && e.at === entry.at ? { ...e, failures } : e)))
+        break // server hiccup: retry later
+      }
+    }
 
-    // 404: target vanished; 422 with a live token: the server rejected the content. Neither will ever land.
-    if (response.status === 404 || response.status === 422) lost += 1
-    write(read().filter((e) => !(e.key === entry.key && e.at === entry.at)))
+    // Anything else that isn't a success will never land (404 target vanished, 422 with a live
+    // token = content rejected, 409 refused, repeated 5xx): drop it and tell the user.
+    if (!response.ok) lost += 1
+    remove(entry)
     sentKinds.add(entry.kind)
   }
 
