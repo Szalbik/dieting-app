@@ -78,3 +78,8 @@ spec/fixtures/diet_corpus/**/golden.draft.json
 
 # Teaser video assets (screens, capture script, storyboard)
 /docs/teaser/
+
+# Playwright
+/e2e/.auth/
+/test-results/
+/playwright-report/

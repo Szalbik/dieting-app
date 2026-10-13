@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Browser-level offline checks (Playwright). Needs the dev server (started if not running).
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec npx playwright test "$@"

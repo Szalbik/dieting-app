@@ -39,8 +39,9 @@
       </div>
       <% if Current.user.present? %>
         <%= render "shared/bottom_nav" %>
-        <%# Connection / offline-sync state for every signed-in page (sync_status_controller.js). %>
-        <div data-controller="sync-status" class="pointer-events-none fixed bottom-24 left-4 right-4 z-[60] flex justify-center sm:bottom-6">
+        <%# Connection / offline-sync state for every signed-in page (sync_status_controller.js).
+            Permanent: page morphs (quiet refresh after a sync) must not reset the pill to its server markup. %>
+        <div id="sync_status" data-turbo-permanent data-controller="sync-status" class="pointer-events-none fixed bottom-24 left-4 right-4 z-[60] flex justify-center sm:bottom-6">
           <a data-sync-status-target="pill" hidden role="status" aria-live="polite"
              class="pointer-events-auto rounded-full border border-brand-ink/10 bg-white px-4 py-2 text-center text-sm font-semibold text-brand-ink shadow-lg"></a>
         </div>

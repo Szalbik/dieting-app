@@ -156,7 +156,8 @@ export default class extends Controller {
     const box = form.querySelector("button")
     box.classList.remove(...(bought ? BOX_OFF : BOX_ON))
     box.classList.add(...(bought ? BOX_ON : BOX_OFF))
-    box.innerHTML = bought ? CHECK_SVG : '<span class="sr-only">Odhacz</span>'
+    box.innerHTML = bought ? CHECK_SVG : ""
+    box.setAttribute("aria-pressed", String(bought))
     const row = form.parentElement
     row.classList.toggle("opacity-60", bought)
     row.querySelector("span.font-semibold")?.classList.toggle("line-through", bought)
