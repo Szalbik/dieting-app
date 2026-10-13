@@ -19,6 +19,13 @@ RSpec.describe User, type: :model do
         expect(user.consented?('parse_disclaimer')).to be(true)
       end
     end
+
+    it 'persists a consent even when the record would fail validation' do
+      user = create :user
+      user.update_column(:email_address, 'legacy-invalid') # rubocop:disable Rails/SkipsModelValidations
+      user.reload.record_consent!(:parse_disclaimer)
+      expect(user.reload.consented?(:parse_disclaimer)).to be(true)
+    end
   end
 
   describe 'validations' do

@@ -152,6 +152,11 @@ class User < ApplicationRecord
     self.consents = consents.merge(key.to_s => Time.current.iso8601)
   end
 
+  # Like increment! in consume_ai_quota!: skips validations so a legacy record can't 500 a request that already did its work.
+  def record_consent!(key)
+    update_column(:consents, record_consent(key)) # rubocop:disable Rails/SkipsModelValidations
+  end
+
   private
 
   def reset_ai_quota_period_if_stale!

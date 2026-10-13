@@ -69,7 +69,10 @@ class DietsController < ApplicationController
         @diet.errors.add(:base, 'Zaakceptuj informację o automatycznym odczycie diety.')
       end
       if @diet.errors.any?
-        render :new, status: :unprocessable_entity
+        respond_to do |format|
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @diet.errors, status: :unprocessable_entity }
+        end
         return
       end
       @diet.pii_confirmed_at = Time.current
@@ -89,8 +92,7 @@ class DietsController < ApplicationController
 
         Current.user.consume_ai_quota! if %w[pdf generated].include?(@diet.source)
         if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
-          Current.user.record_consent(:parse_disclaimer)
-          Current.user.save!
+          Current.user.record_consent!(:parse_disclaimer)
         end
 
         notice = {
