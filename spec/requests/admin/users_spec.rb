@@ -57,6 +57,23 @@ RSpec.describe 'Admin users', type: :request do
     expect(response.body).not_to include('batch_action')
   end
 
+  it 'does not let a non-admin delete users' do
+    target = create(:user)
+    login(regular_user)
+
+    expect { delete admin_user_path(target) }.not_to change(User, :count)
+    expect(response).to redirect_to(root_path)
+  end
+
+  it 'has no data-method delete link on the show page (nothing runs it here)' do
+    login(admin_user)
+
+    get admin_user_path(regular_user)
+
+    dead_link = Nokogiri::HTML(response.body).at_css(%(a[data-method="delete"][href="#{admin_user_path(regular_user)}"]))
+    expect(dead_link).to be_nil
+  end
+
   describe 'DELETE /admin/users/:id' do
     before { login(admin_user) }
 

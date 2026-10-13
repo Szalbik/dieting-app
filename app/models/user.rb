@@ -7,8 +7,9 @@ class User < ApplicationRecord
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
 
   after_create :create_owned_shopping_cart
-  # Prepended so they run before the dependent: :destroy callbacks below delete the owned cart.
-  before_destroy :ensure_no_active_subscription, :release_shopping_carts, prepend: true
+  # Declared above the associations so they run (guard first) before dependent: :destroy deletes the owned cart.
+  # No prepend: true — it would reverse the pair and release carts before the guard.
+  before_destroy :ensure_no_active_subscription, :release_shopping_carts
 
   belongs_to :active_shopping_cart, class_name: 'ShoppingCart', optional: true, inverse_of: :active_users
   has_one :owned_shopping_cart, class_name: 'ShoppingCart', dependent: :destroy, inverse_of: :user
@@ -194,6 +195,10 @@ class User < ApplicationRecord
   def release_shopping_carts
     ShoppingCartInvitation.accepted.involving(self).find_each do |invitation|
       ShoppingCartSharingService.new(invitation).revoke!(actor: self)
+    end
+    # Any pointer left without an accepted invite would still block the cart delete.
+    User.where(active_shopping_cart_id: owned_shopping_cart&.id).where.not(id: id).find_each do |other|
+      other.update_column(:active_shopping_cart_id, other.owned_shopping_cart&.id)
     end
     update_column(:active_shopping_cart_id, nil)
   end

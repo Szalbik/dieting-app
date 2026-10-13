@@ -6,6 +6,8 @@ ActiveAdmin.register User do
   actions :index, :show, :destroy
   # Batch "Delete selected" would skip the self-delete guard, and its wrapping form swallows the row delete forms.
   config.batch_actions = false
+  # The default "Delete User" action item is a data-method link, dead without rails-ujs; delete lives on the index.
+  config.remove_action_item(:destroy)
 
   filter :email_address
   filter :admin

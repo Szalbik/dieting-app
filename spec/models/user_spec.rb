@@ -247,6 +247,24 @@ RSpec.describe User, type: :model do
       expect { user.destroy! }.to change { ShoppingCartItem.with_deleted.count }.by(-1)
     end
 
+    it 'refuses a subscribed user before touching their cart shares' do
+      create(:shopping_cart_invitation, inviter: user, invitee: create(:user)).accept!
+      user.reload.update!(subscription: :active)
+      allow(ShoppingCartSharingService).to receive(:new).and_call_original
+
+      expect(user.destroy).to be(false)
+      expect(ShoppingCartSharingService).not_to have_received(:new)
+    end
+
+    it 'moves any other user still pointing at the deleted cart back to their own cart' do
+      other = create(:user)
+      other.update_column(:active_shopping_cart_id, user.owned_shopping_cart.id) # rubocop:disable Rails/SkipsModelValidations
+
+      user.destroy!
+
+      expect(other.reload.active_shopping_cart).to eq(other.owned_shopping_cart)
+    end
+
     it 'removes product name suggestions' do
       ProductNameSuggestion.create!(user: user, raw_name: 'jablko', match_type: 'new', source: 'manual')
 
