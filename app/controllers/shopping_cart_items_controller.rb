@@ -76,10 +76,12 @@ class ShoppingCartItemsController < ApplicationController
       shopping_cart.broadcast_contents
     end
 
+    # 404 when the product left the cart, so the offline outbox can report the tick as lost.
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace('shopping_cart',
-          partial: 'shopping_carts/shopping_cart', locals: { shopping_cart: shopping_cart })
+          partial: 'shopping_carts/shopping_cart', locals: { shopping_cart: shopping_cart }),
+          status: product ? :ok : :not_found
       end
       format.html { redirect_to shopping_cart_path }
     end

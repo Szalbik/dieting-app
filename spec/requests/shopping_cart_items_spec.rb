@@ -55,6 +55,13 @@ RSpec.describe 'Shopping cart items', type: :request do
       expect(bought_flags).to eq([true, true])
     end
 
+    it 'answers 404 when the product is no longer in the cart' do
+      gone = create(:product, meal: meal, name: 'Ser')
+
+      patch toggle_bought_shopping_cart_item_path(gone), params: { bought: 'true' }, as: :turbo_stream
+      expect(response).to have_http_status(:not_found)
+    end
+
     it 'redirects to the cart for HTML requests' do
       patch toggle_bought_shopping_cart_item_path(product), params: { bought: 'true' }
       expect(response).to redirect_to(shopping_cart_path)

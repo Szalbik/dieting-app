@@ -3,9 +3,10 @@
 class CustomCartItemsController < ApplicationController
   def create
     @shopping_cart = Current.user.shopping_cart
-    @custom_item = @shopping_cart.custom_cart_items.build(custom_cart_item_params)
+    # A replayed offline add carries the same client_id: answer as if created, insert nothing.
+    @custom_item = replayed_item || @shopping_cart.custom_cart_items.build(custom_cart_item_params)
 
-    if @custom_item.save
+    if @custom_item.persisted? || save_once(@custom_item)
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to shopping_cart_path, notice: 'Produkt został dodany do listy.' }
@@ -46,6 +47,18 @@ class CustomCartItemsController < ApplicationController
   private
 
   def custom_cart_item_params
-    params.require(:custom_cart_item).permit(:name, :quantity, :unit)
+    params.require(:custom_cart_item).permit(:name, :quantity, :unit, :client_id)
+  end
+
+  def replayed_item
+    client_id = custom_cart_item_params[:client_id].presence
+    client_id && @shopping_cart.custom_cart_items.find_by(client_id: client_id)
+  end
+
+  # Two replays racing past replayed_item hit the unique index; the loser is still a success.
+  def save_once(item)
+    item.save
+  rescue ActiveRecord::RecordNotUnique
+    @custom_item = @shopping_cart.custom_cart_items.find_by!(client_id: item.client_id)
   end
 end

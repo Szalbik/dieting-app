@@ -24,6 +24,19 @@ RSpec.describe 'Custom cart items', type: :request do
       expect(response).to redirect_to(shopping_cart_path)
       expect(CustomCartItem.last.name).to eq('Mleko')
     end
+
+    it 'creates one item when the same client_id is replayed' do
+      login
+      item = { name: 'Chleb', quantity: 1, unit: 'szt', client_id: 'c0ffee00-0000-4000-8000-000000000001' }
+      params = { custom_cart_item: item }
+
+      expect do
+        post custom_cart_items_path, params: params
+        post custom_cart_items_path, params: params
+      end.to change(CustomCartItem, :count).by(1)
+
+      expect(response).to redirect_to(shopping_cart_path)
+    end
   end
 
   describe 'PATCH /custom_cart_items/:id/toggle_bought' do

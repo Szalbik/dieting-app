@@ -20,6 +20,8 @@ class SessionsController < ApplicationController
 
   def destroy
     terminate_session
+    # Drop the service worker's cached pages so the next person on this device can't open them offline.
+    response.headers['Clear-Site-Data'] = '"cache"'
     redirect_to root_path
   end
 end
