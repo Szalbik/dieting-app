@@ -51,6 +51,14 @@ RSpec.describe 'Shopping carts', type: :request do
       expect(page.css("[data-move-url='#{move_shopping_cart_item_path(bought)}']")).to be_empty
     end
 
+    it 'routes ticks and own-item adds through the offline outbox and locks server-only actions offline' do
+      expect(page.css('form[data-offline-check]').size).to eq(2)
+      expect(page.css('form[data-offline-add] input[name="custom_cart_item[client_id]"]').size).to eq(1)
+      expect(page.css("form[data-online-only][action='#{shopping_cart_item_path(unbought)}']").size).to eq(1)
+      expect(page.css("form[data-online-only][action='#{clear_bought_shopping_cart_items_path}']").size).to eq(1)
+      expect(page.css('[data-controller=sync-status] [data-sync-status-target=pill]').size).to eq(1)
+    end
+
     it 'makes unbought category cards drop targets and lists only unused categories as tiles' do
       expect(page.css("#category_nabial[data-drop-category-id='#{category_a.id}']").size).to eq(1)
       expect(page.css('#category_pieczywo_bought[data-drop-category-id]')).to be_empty

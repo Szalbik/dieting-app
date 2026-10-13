@@ -88,6 +88,8 @@ function offlineResponse() {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  // The outbox fetches a live page this way to renew a stale CSRF token: never answer it from cache.
+  if (request.cache === "no-store") return;
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;

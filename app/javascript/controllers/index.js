@@ -22,6 +22,9 @@ application.register("ingredient-rows", IngredientRowsController)
 import OfflineCartController from "./offline_cart_controller"
 application.register("offline-cart", OfflineCartController)
 
+import SyncStatusController from "./sync_status_controller"
+application.register("sync-status", SyncStatusController)
+
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
 

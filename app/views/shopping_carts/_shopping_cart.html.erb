@@ -45,7 +45,7 @@
       </div>
 
       <% if groups.any? { |g| g[:bought] } %>
-        <%= button_to clear_bought_shopping_cart_items_path, method: :delete, form: { data: { turbo_stream: true }, class: "mb-3.5" },
+        <%= button_to clear_bought_shopping_cart_items_path, method: :delete, form: { data: { turbo_stream: true, online_only: true }, class: "mb-3.5" },
               class: "flex w-full items-center justify-center gap-1.5 rounded-full border border-brand-ink/15 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink-soft hover:text-rose-500" do %>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7 H20 M9 7 V5 H15 V7 M6 7 L7 20 H17 L18 7" /></svg>
           Wyczyść kupione
@@ -57,8 +57,8 @@
     <div class="mb-5" data-tabs-target="panel" data-tab-value="wlasne">
       <h2 class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft">Własne produkty</h2>
       <div id="custom_cart_item_form_errors"></div>
-      <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, class: "custom-cart-form mb-3 dietcard p-4 shadow-soft" do |f| %>
-        <%# Filled per submit by offline-cart (a server value would repeat across offline adds from a cached page). %>
+      <%= form_with model: CustomCartItem.new, url: custom_cart_items_path, data: { offline_add: true }, class: "custom-cart-form mb-3 dietcard p-4 shadow-soft" do |f| %>
+        <%# Filled per add by offline-cart (a server value would repeat across offline adds from a cached page). %>
         <%= f.hidden_field :client_id, value: nil %>
         <div class="flex flex-col gap-3">
           <%= f.text_field :name, placeholder: "np. ręcznik papierowy", class: "custom-cart-input app-input min-h-[48px] w-full text-base", required: true %>
@@ -71,12 +71,22 @@
           </div>
         </div>
       <% end %>
+      <%# Row shown by offline-cart for an own item that is still waiting to sync. %>
+      <template data-offline-cart-target="pendingRow">
+        <div class="flex items-center gap-2.5 rounded-xl border border-dashed border-brand-peach bg-brand-peach-soft/60 px-3 py-2.5">
+          <span class="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-md border-[1.5px] border-brand-ink/15 bg-white/60"></span>
+          <div class="min-w-0 flex-1">
+            <span data-name class="text-[13px] font-semibold text-brand-ink"></span><span data-amount class="text-xs text-brand-ink-soft"></span>
+          </div>
+          <span class="shrink-0 text-[11px] font-semibold text-brand-ink-soft">czeka na sync</span>
+        </div>
+      </template>
       <% if custom_items_empty %>
-        <p class="text-sm text-brand-ink-soft">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
-      <% else %>
-        <div class="flex flex-col gap-1.5">
+        <p data-offline-cart-target="customEmpty" class="text-sm text-brand-ink-soft">Dodaj produkty spoza diety (np. ręcznik papierowy, środki czystości).</p>
+      <% end %>
+        <div class="flex flex-col gap-1.5" data-offline-cart-target="customList">
           <% shopping_cart.custom_cart_items.order(:bought, :created_at).each do |item| %>
-            <div id="<%= dom_id(item) %>" data-flip class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5 <%= 'opacity-60' if item.bought %>">
+            <div id="<%= dom_id(item) %>" data-flip data-client-id="<%= item.client_id %>" class="flex items-center gap-2.5 rounded-xl border border-brand-peach/70 bg-brand-peach-soft px-3 py-2.5 <%= 'opacity-60' if item.bought %>">
               <%= button_to toggle_bought_custom_cart_item_path(item), method: :patch, params: { bought: !item.bought }, form: { data: { turbo_stream: true, offline_check: true }, class: "shrink-0" },
                     class: "grid h-[22px] w-[22px] place-items-center rounded-md border-[1.5px] #{item.bought ? 'border-brand-mint-strong bg-brand-mint' : 'border-brand-ink/20 bg-white'}" do %>
                 <% if item.bought %><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg><% end %>
@@ -85,14 +95,13 @@
                 <span class="text-[13px] font-semibold text-brand-ink <%= 'line-through' if item.bought %>"><%= item.name %></span>
                 <span class="text-xs text-brand-ink-soft"> · <%= item.quantity %> <%= item.unit.presence || 'szt' %></span>
               </div>
-              <%= button_to custom_cart_item_path(item), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+              <%= button_to custom_cart_item_path(item), method: :delete, form: { data: { turbo_stream: true, online_only: true }, class: "shrink-0" },
                     class: "text-brand-ink-faint hover:text-rose-500" do %>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
               <% end %>
             </div>
           <% end %>
         </div>
-      <% end %>
     </div>
 
     <%# Diet products, grouped by category %>
@@ -130,7 +139,7 @@
                         </span>
                       <% end %>
                     </div>
-                    <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true }, class: "shrink-0" },
+                    <%= button_to shopping_cart_item_path(product_group[:product]), method: :delete, form: { data: { turbo_stream: true, online_only: true }, class: "shrink-0" },
                           class: "text-brand-ink-faint hover:text-rose-500" do %>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
                     <% end %>

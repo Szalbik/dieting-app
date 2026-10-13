@@ -1,38 +1,42 @@
 import { Controller } from "@hotwired/stimulus"
 import { Turbo } from "@hotwired/turbo-rails"
+import { enqueue, pending } from "../outbox"
 
-// Offline outbox for shopping-list check-off.
+// Outbox-first shopping list.
 //
-// Forms marked `data-offline-check` (the bought/unbought toggles) are
-// intercepted while offline: the tap is applied to the DOM immediately and
-// queued in localStorage keyed by the form's action URL (product / custom
-// item id — survives cart rehydration). When the browser is back online the
-// queue is flushed in order with the idempotent `bought` target, then the
-// page is reloaded so the DOM matches server truth. Pending entries are
-// re-applied after any cart re-render so an offline reopen or a partner's
-// broadcast never hides an unsynced tap.
-//
-// ponytail: last write wins on replay — no conflict detection, cart sharing
-// is dormant in MVP. Background Sync API deliberately not used (no iOS).
+// Ticks (`form[data-offline-check]`) and own-item adds (`form[data-offline-add]`)
+// never go through a Turbo submit: they are painted immediately and handed to
+// the shared outbox, which sends them in the background — same path online,
+// offline and on weak in-store signal, so a tap never waits on the network.
+// Tick entries are keyed by the form's action URL (product / custom item id —
+// survives cart rehydration); adds carry a client-minted id the server
+// dedupes on. Pending entries are re-applied after any cart re-render so an
+// offline reopen or a partner's broadcast never hides an unsynced change.
+// When the queue drains, the page refreshes quietly (morph) so it — and the
+// service worker's cached copy — match the server.
 
-const STORAGE_KEY = "dieta:cart-outbox"
 const CHECK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M5 12 L10 17 L19 7" /></svg>'
 const BOX_ON = ["border-brand-mint-strong", "bg-brand-mint"]
 const BOX_OFF = ["border-brand-ink/20", "bg-white"]
+const REFRESH_MIN_INTERVAL_MS = 10000
 
 // Strong ease-out (Emil Kowalski): starts fast, so the tap feels answered instantly.
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)"
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
 export default class extends Controller {
-  static targets = ["pill"]
+  static targets = ["pendingRow", "customList", "customEmpty"]
 
   connect() {
-    this.flushing = false
+    this.lastRefresh = Date.now()
     this.onSubmit = (event) => this.submit(event)
-    this.onFetchError = (event) => this.fetchError(event)
-    this.onOnline = () => { this.render(); this.flush() }
-    this.onOffline = () => this.render()
+    this.onDrained = (event) => { if (event.detail.kinds.some((k) => k.startsWith("cart"))) this.refresh(true) }
+    this.onVisible = () => { if (document.visibilityState === "visible") this.refresh(false) }
+    this.onRender = () => {
+      this.applyPending()
+      if (this.glideFrom) this.glide(this.glideFrom)
+      this.glideFrom = null
+    }
     this.onStreamRender = (event) => {
       const original = event.detail.render
       event.detail.render = async (stream) => {
@@ -40,7 +44,6 @@ export default class extends Controller {
         const before = event.target.getAttribute("target") === "shopping_cart" ? this.rowTops() : null
         await original(stream)
         this.applyPending()
-        this.render()
         if (before) this.glide(before)
       }
     }
@@ -48,125 +51,101 @@ export default class extends Controller {
     // Capture phase: the forms live inside <turbo-frame id="shopping_cart">, whose
     // own submit observer stops propagation in the bubble phase before it reaches us.
     this.element.addEventListener("submit", this.onSubmit, true)
-    this.element.addEventListener("turbo:fetch-request-error", this.onFetchError)
-    window.addEventListener("online", this.onOnline)
-    window.addEventListener("offline", this.onOffline)
+    window.addEventListener("outbox:drained", this.onDrained)
+    document.addEventListener("visibilitychange", this.onVisible)
+    document.addEventListener("turbo:render", this.onRender)
     document.addEventListener("turbo:before-stream-render", this.onStreamRender)
 
     this.applyPending()
-    this.render()
-    this.flush()
   }
 
   disconnect() {
     this.element.removeEventListener("submit", this.onSubmit, true)
-    this.element.removeEventListener("turbo:fetch-request-error", this.onFetchError)
-    window.removeEventListener("online", this.onOnline)
-    window.removeEventListener("offline", this.onOffline)
+    window.removeEventListener("outbox:drained", this.onDrained)
+    document.removeEventListener("visibilitychange", this.onVisible)
+    document.removeEventListener("turbo:render", this.onRender)
     document.removeEventListener("turbo:before-stream-render", this.onStreamRender)
   }
 
   // --- events -------------------------------------------------------------
 
   submit(event) {
-    const form = this.checkForm(event.target)
-    if (!form) return
-    if (navigator.onLine) {
-      // Remember what went out, so a late network error enqueues that intent
-      // and not whatever a re-tap changed the form to meanwhile.
-      form.dataset.submittedBought = form.elements.bought.value
-      this.paint(form, form.elements.bought.value === "true", true) // optimistic, before the round trip
-      return
-    }
-    // Turbo's submit handlers bail on defaultPrevented, so the request never starts.
-    event.preventDefault()
-    this.enqueue(form)
-  }
-
-  fetchError(event) {
-    // navigator.onLine said yes but the request failed: treat as offline.
-    const form = this.checkForm(event.target)
-    if (!form) return
-    event.preventDefault()
-    if (form.elements.bought.value === form.dataset.submittedBought) this.enqueue(form)
-  }
-
-  // --- queue --------------------------------------------------------------
-
-  get queue() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
-    } catch {
-      return []
+    if (!(event.target instanceof HTMLFormElement)) return
+    const form = event.target
+    if (form.matches("[data-offline-check]")) {
+      // Turbo's submit handlers bail on defaultPrevented, so no request starts here.
+      event.preventDefault()
+      this.tick(form)
+    } else if (form.matches("[data-offline-add]")) {
+      event.preventDefault()
+      this.add(form)
     }
   }
 
-  set queue(entries) {
-    try {
-      if (entries.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
-      else localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      // storage unavailable (private mode): optimistic UI still works, nothing persists
-    }
-  }
-
-  enqueue(form) {
+  tick(form) {
     const url = form.getAttribute("action")
     const bought = form.elements.bought.value === "true"
-    const entries = this.queue.filter((entry) => entry.url !== url)
-    entries.push({ url, bought, at: Date.now() })
-    this.queue = entries
     this.patch(form, bought)
-    this.render()
+    enqueue({ key: url, url, method: "PATCH", params: { bought: String(bought) }, kind: "cart" })
   }
+
+  add(form) {
+    const name = form.elements["custom_cart_item[name]"].value.trim()
+    if (!name) return
+    const clientId = crypto.randomUUID()
+    const params = {
+      "custom_cart_item[name]": name,
+      "custom_cart_item[quantity]": form.elements["custom_cart_item[quantity]"].value || "1",
+      "custom_cart_item[unit]": form.elements["custom_cart_item[unit]"].value || "szt",
+      "custom_cart_item[client_id]": clientId
+    }
+    enqueue({ key: `custom:${clientId}`, url: form.getAttribute("action"), method: "POST", params, kind: "cart-add" })
+    this.showPendingAdd(clientId, params)
+    form.elements["custom_cart_item[name]"].value = ""
+    form.elements["custom_cart_item[quantity]"].value = "1"
+  }
+
+  // Quiet refresh: morph the page to server truth (and let the SW store it).
+  // Only with nothing pending, so it never fights an optimistic state.
+  refresh(force) {
+    if (!navigator.onLine || pending().length > 0) return
+    if (!force && Date.now() - this.lastRefresh < REFRESH_MIN_INTERVAL_MS) return
+    this.lastRefresh = Date.now()
+    this.glideFrom = this.rowTops() // bought rows move to "kupione" in the refreshed page: glide them there
+    Turbo.visit(window.location.href, { action: "replace" })
+  }
+
+  // --- pending state ------------------------------------------------------
 
   applyPending() {
-    for (const entry of this.queue) {
-      const form = this.element.querySelector(`form[data-offline-check][action="${CSS.escape(entry.url)}"]`)
-      // hidden field holds the *target* value, so it equals entry.bought only when the DOM still shows the old state
-      if (form && form.elements.bought.value === String(entry.bought)) this.patch(form, entry.bought, false)
+    for (const entry of pending()) {
+      if (entry.kind === "cart") {
+        const form = this.element.querySelector(`form[data-offline-check][action="${CSS.escape(entry.url)}"]`)
+        const bought = entry.params.bought === "true"
+        // hidden field holds the *target* value, so it equals the entry only while the DOM still shows the old state
+        if (form && form.elements.bought.value === String(bought)) this.patch(form, bought, false)
+      } else if (entry.kind === "cart-add") {
+        this.showPendingAdd(entry.params["custom_cart_item[client_id]"], entry.params, false)
+      }
     }
   }
 
-  async flush() {
-    if (this.flushing || !navigator.onLine || this.queue.length === 0) return
-
-    this.flushing = true
-    this.render()
-    const token = document.querySelector('meta[name="csrf-token"]')?.content
-
-    // Re-read the queue each iteration and remove by identity: a tap that lands
-    // mid-flush (network flapping) must not be overwritten by a stale snapshot.
-    for (let entry = this.queue[0]; entry; entry = this.queue[0]) {
-      let response
-      try {
-        response = await fetch(entry.url, {
-          method: "PATCH",
-          headers: { "X-CSRF-Token": token, Accept: "text/vnd.turbo-stream.html, text/html" },
-          body: new URLSearchParams({ bought: String(entry.bought) }),
-          credentials: "same-origin",
-          redirect: "manual"
-        })
-      } catch {
-        break // still offline: keep the queue
-      }
-      // Keep and retry later on: opaqueredirect (session gone), 401/403, 5xx.
-      // Drop on any other 4xx (404 item removed meanwhile, 422 stale token) so a dead entry can't block the queue forever.
-      const retryLater = response.type === "opaqueredirect" || response.status === 401 || response.status === 403 || response.status >= 500
-      if (retryLater) break
-      this.queue = this.queue.filter((e) => !(e.url === entry.url && e.at === entry.at))
+  showPendingAdd(clientId, params, animate = true) {
+    if (!this.hasPendingRowTarget || !this.hasCustomListTarget) return
+    if (this.customListTarget.querySelector(`[data-client-id="${CSS.escape(clientId)}"]`)) return
+    const row = this.pendingRowTarget.content.firstElementChild.cloneNode(true)
+    row.dataset.clientId = clientId
+    row.querySelector("[data-name]").textContent = params["custom_cart_item[name]"]
+    row.querySelector("[data-amount]").textContent = ` · ${params["custom_cart_item[quantity]"]} ${params["custom_cart_item[unit]"]}`
+    this.customListTarget.prepend(row)
+    if (this.hasCustomEmptyTarget) this.customEmptyTarget.hidden = true
+    if (animate && !reducedMotion()) {
+      row.animate([{ opacity: 0, transform: "translateY(-4px)" }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: 200, easing: EASE_OUT })
     }
-
-    this.flushing = false
-    this.render()
-    if (this.queue.length === 0) Turbo.visit(window.location.pathname, { action: "replace" })
   }
 
   // --- DOM ----------------------------------------------------------------
-
-  checkForm(target) {
-    return target instanceof Element ? target.closest("form[data-offline-check]") : null
-  }
 
   patch(form, bought, animate = true) {
     form.elements.bought.value = String(!bought)
@@ -212,22 +191,6 @@ export default class extends Controller {
       if (Math.abs(dy) < 1) return
       el.animate([{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }],
         { duration: 260, easing: EASE_OUT })
-    })
-  }
-
-  render() {
-    const offline = !navigator.onLine
-    const pending = this.queue.length
-    if (this.hasPillTarget) {
-      this.pillTarget.hidden = !(offline || pending > 0)
-      this.pillTarget.textContent = this.flushing
-        ? "Synchronizuję…"
-        : pending > 0 ? `Offline · ${pending} do zsynchronizowania` : "Offline"
-    }
-    // Online-only actions (delete, move, clear bought, add custom) can't be queued: disable them while offline.
-    this.element.querySelectorAll("form:not([data-offline-check]) button, form:not([data-offline-check]) input[type=submit], form:not([data-offline-check]) select").forEach((button) => {
-      button.disabled = offline
-      button.classList.toggle("opacity-40", offline)
     })
   }
 }
