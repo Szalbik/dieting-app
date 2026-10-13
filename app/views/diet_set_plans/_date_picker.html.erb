@@ -4,7 +4,9 @@
   <div data-date-strip-target="track" class="flex flex-nowrap gap-1.5">
     <% ((Date.current - 1.month)..(Date.current + 1.month)).each do |d| %>
       <% is_selected = (d.to_s == @date.to_s) %>
+      <%# Full-page visit (not the day_view frame): the URL tracks the day and the service worker can store it offline. %>
       <%= link_to diet_set_plans_path(date: d.to_s),
+          data: { turbo_frame: '_top', turbo_action: 'advance' },
           aria: { current: is_selected ? 'date' : nil },
           class: "w-14 shrink-0 select-none snap-center rounded-[14px] border py-2 text-center transition-colors #{is_selected ? 'border-brand-navy bg-brand-navy text-white' : 'border-brand-ink/10 bg-white text-brand-ink hover:border-brand-peach hover:bg-brand-peach-soft'}" do %>
         <div class="text-[10px] font-semibold <%= is_selected ? 'opacity-80' : 'opacity-60' %>"><%= weekday_abbrw[d.wday] %></div>

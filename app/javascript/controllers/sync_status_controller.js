@@ -83,7 +83,8 @@ export default class extends Controller {
   lockOnlineOnly() {
     const offline = !navigator.onLine
     document.querySelectorAll("[data-online-only]").forEach((el) => {
-      const controls = el.matches("form") ? el.querySelectorAll("button, input[type=submit], select") : [el]
+      // a control itself, or a form / container whose controls all need the server
+      const controls = el.matches("button, a, select, input") ? [el] : el.querySelectorAll("button, a, select, input[type=submit]")
       controls.forEach((control) => {
         if (control.matches("a")) {
           control.toggleAttribute("aria-disabled", offline)

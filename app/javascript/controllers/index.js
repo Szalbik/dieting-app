@@ -22,6 +22,12 @@ application.register("ingredient-rows", IngredientRowsController)
 import OfflineCartController from "./offline_cart_controller"
 application.register("offline-cart", OfflineCartController)
 
+import PlanOutboxController from "./plan_outbox_controller"
+application.register("plan-outbox", PlanOutboxController)
+
+import PlanPrefetchController from "./plan_prefetch_controller"
+application.register("plan-prefetch", PlanPrefetchController)
+
 import SyncStatusController from "./sync_status_controller"
 application.register("sync-status", SyncStatusController)
 

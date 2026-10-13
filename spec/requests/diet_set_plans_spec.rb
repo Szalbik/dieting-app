@@ -33,6 +33,21 @@ RSpec.describe 'DietSetPlans servings', type: :request do
       expect(response).to redirect_to(diet_set_plans_path(date: date.to_s))
     end
 
+    it 'answers 204 to the offline outbox instead of redirecting' do
+      patch servings_diet_set_plans_path, params: { date: date.to_s, servings: 2 },
+                                          headers: { 'Accept' => 'text/vnd.turbo-stream.html, text/html' }
+
+      expect(plan.reload.servings).to eq(2)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'renders date strip tiles as full-page navigations' do
+      get diet_set_plans_path(date: date.to_s)
+      tiles = Nokogiri::HTML(response.body).css('[data-controller=date-strip] a')
+      expect(tiles).not_to be_empty
+      expect(tiles.map { |a| a['data-turbo-frame'] }.uniq).to eq(['_top'])
+    end
+
     it 'clamps to 1..10' do
       patch servings_diet_set_plans_path, params: { date: date.to_s, servings: 99 }
       expect(plan.reload.servings).to eq(10)

@@ -30,7 +30,7 @@
         </div>
         <div class="mt-3 flex gap-2">
           <a href="#posilki" class="flex flex-1 items-center justify-center rounded-full bg-brand-navy px-3 py-2 text-[13px] font-semibold text-white">Zobacz</a>
-          <%= link_to "Zamień", diet_set_plans_path(reassign: true, date: params['date']), class: "flex flex-1 items-center justify-center rounded-full border border-brand-ink/20 bg-white px-3 py-2 text-[13px] font-semibold text-brand-ink" %>
+          <%= link_to "Zamień", diet_set_plans_path(reassign: true, date: params['date']), data: { online_only: true }, class: "flex flex-1 items-center justify-center rounded-full border border-brand-ink/20 bg-white px-3 py-2 text-[13px] font-semibold text-brand-ink" %>
         </div>
       <% end %>
     <% end %>
@@ -41,14 +41,16 @@
       <div class="flex items-center gap-1 rounded-full bg-brand-paper px-1 shadow-soft">
         <%= button_to "−", servings_diet_set_plans_path,
               method: :patch,
+              form: { data: { offline_servings: true, step: -1, min: DietSetPlan::SERVINGS_RANGE.min, max: DietSetPlan::SERVINGS_RANGE.max } },
               params: { date: @date, servings: servings - 1 },
               disabled: servings <= DietSetPlan::SERVINGS_RANGE.min,
               form_class: "contents",
               "aria-label": "Mniej osób",
               class: "flex h-11 w-11 items-center justify-center rounded-full text-lg font-semibold text-brand-navy hover:bg-brand-peach/30 disabled:opacity-30" %>
-        <span class="min-w-[3.5rem] whitespace-nowrap text-center text-[13px] font-semibold text-brand-ink"><%= servings %> os.</span>
+        <span data-servings-count class="min-w-[3.5rem] whitespace-nowrap text-center text-[13px] font-semibold text-brand-ink"><%= servings %> os.</span>
         <%= button_to "+", servings_diet_set_plans_path,
               method: :patch,
+              form: { data: { offline_servings: true, step: 1, min: DietSetPlan::SERVINGS_RANGE.min, max: DietSetPlan::SERVINGS_RANGE.max } },
               params: { date: @date, servings: servings + 1 },
               disabled: servings >= DietSetPlan::SERVINGS_RANGE.max,
               form_class: "contents",
@@ -60,16 +62,14 @@
       <% @diet_set_plan.meal_plans.each do |meal_plan| %>
         <% status = meal_status_for(meal_plan, @date) %>
         <!-- Meal card: links to the meal detail screen -->
-        <div class="dietcard<%= '-peach' if status == :current %> p-3 shadow-soft transition hover:shadow-medium">
+        <div data-eaten-url="<%= toggle_eaten_meal_plan_path(meal_plan) %>" class="dietcard<%= '-peach' if status == :current %> p-3 shadow-soft transition hover:shadow-medium">
           <div class="flex items-center gap-3">
             <%= link_to meal_plan_path(meal_plan), data: { turbo_frame: "_top" }, class: "flex min-w-0 flex-1 items-center gap-3" do %>
-              <% if status == :done %>
-                <div class="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] border border-brand-mint-strong/30 bg-brand-mint">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg>
-                </div>
-              <% else %>
-                <div class="foodtile <%= status == :current ? 'foodtile-peach' : 'foodtile-cream' %> h-9 w-9 text-lg"><%= meal_glyph_for(meal_plan) %></div>
-              <% end %>
+              <%# Both tiles rendered so plan-outbox can show an offline "Zjadłem" on a cached day. %>
+              <div data-eaten-tile="done" <%= 'hidden' unless status == :done %> class="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] border border-brand-mint-strong/30 bg-brand-mint">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3AA48F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12 L10 17 L19 7" /></svg>
+              </div>
+              <div data-eaten-tile="todo" <%= 'hidden' if status == :done %> class="foodtile <%= status == :current ? 'foodtile-peach' : 'foodtile-cream' %> h-9 w-9 text-lg"><%= meal_glyph_for(meal_plan) %></div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
                   <span class="truncate text-sm font-bold text-brand-ink"><%= meal_plan.name %></span>
@@ -116,7 +116,7 @@
 
   <div class="mb-12 mt-4 space-y-2 text-center" data-controller="diet-swap">
     <div class="flex items-center justify-center space-x-4">
-      <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), class: "text-xs text-brand-ink-soft hover:text-brand-navy hover:underline" %>
+      <%= link_to "Przypisz nowy zestaw", diet_set_plans_path(reassign: true, date: params['date']), data: { online_only: true }, class: "text-xs text-brand-ink-soft hover:text-brand-navy hover:underline" %>
       <span class="text-brand-ink/20">|</span>
       <button type="button"
               class="text-xs text-brand-ink-soft hover:text-brand-navy hover:underline"
@@ -145,7 +145,7 @@
               <%= button_to "Zamień", swap_diet_set_plans_path,
                     params: { current_date: @date, target_date: d.to_s },
                     method: :post,
-                    form: { data: { turbo_frame: "_top" } },
+                    form: { data: { turbo_frame: "_top", online_only: true } },
                     class: "ml-3 shrink-0 rounded-full bg-brand-navy px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-navy-strong" %>
             </div>
           <% end %>

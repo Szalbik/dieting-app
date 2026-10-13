@@ -94,7 +94,10 @@ class DietSetPlansController < ApplicationController
 
     plan.update!(servings: params[:servings].to_i.clamp(DietSetPlan::SERVINGS_RANGE))
     sync_current_shopping_cart!
-    redirect_to diet_set_plans_path(date: date)
+    respond_to do |format|
+      format.turbo_stream { head :no_content } # outbox: the count was already painted client-side
+      format.html { redirect_to diet_set_plans_path(date: date) }
+    end
   end
 
   def cycle_product_replacement

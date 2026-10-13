@@ -1,4 +1,4 @@
-<%= form_with url: toggle_shopping_bag_diet_set_plans_path(meal_plan), method: :post, remote: true, data: { turbo_stream: true } do %>
+<%= form_with url: toggle_shopping_bag_diet_set_plans_path(meal_plan), method: :post, remote: true, data: { turbo_stream: true, online_only: true } do %>
   <button type="submit" class="focus:outline-none" id="<%= dom_id(meal_plan, :shopping_bag) %>" onclick="event.stopPropagation()">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" 
         fill="none" 

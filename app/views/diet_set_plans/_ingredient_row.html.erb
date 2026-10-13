@@ -1,4 +1,4 @@
-<li id="<%= dom_id(product, :ingredient_row) %>" class="mt-4">
+<li id="<%= dom_id(product, :ingredient_row) %>" data-online-only class="mt-4">
   <% base_name = product.base_product_name.presence || product.base_canonical_product&.name || product.name %>
   <% local_substitutions = [] %>
   <% library_suggestions = [] %>

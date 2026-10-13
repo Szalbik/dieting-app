@@ -1,6 +1,6 @@
 <% back_date = @meal_plan.diet_set_plan&.date %>
 
-<div class="pb-6" data-controller="tabs">
+<div class="pb-6" data-controller="tabs plan-outbox">
   <!-- Header -->
   <div class="flex items-center gap-3">
     <%= link_to diet_set_plans_path(date: back_date), class: "shrink-0 text-brand-ink" do %>

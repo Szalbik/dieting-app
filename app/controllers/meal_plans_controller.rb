@@ -9,10 +9,18 @@ class MealPlansController < ApplicationController
     load_substitution_suggestions(meal_plans: [@meal_plan])
   end
 
+  # An explicit `eaten` target makes the request idempotent (offline outbox replay); without it, flip.
   def toggle_eaten
-    @meal_plan.update(eaten: !@meal_plan.eaten)
-    notice = @meal_plan.eaten? ? "Smacznego! #{@meal_plan.name} oznaczone jako zjedzone." : "#{@meal_plan.name} — cofnięto oznaczenie."
-    redirect_to diet_set_plans_path(date: @meal_plan.diet_set_plan.date), notice: notice
+    eaten = params[:eaten].present? ? ActiveModel::Type::Boolean.new.cast(params[:eaten]) == true : !@meal_plan.eaten
+    @meal_plan.update(eaten: eaten)
+
+    respond_to do |format|
+      format.turbo_stream { head :no_content } # outbox: the button was already painted client-side
+      format.html do
+        notice = @meal_plan.eaten? ? "Smacznego! #{@meal_plan.name} oznaczone jako zjedzone." : "#{@meal_plan.name} — cofnięto oznaczenie."
+        redirect_to diet_set_plans_path(date: @meal_plan.diet_set_plan.date), notice: notice
+      end
+    end
   end
 
   private
