@@ -51,6 +51,11 @@ RSpec.describe Chat::Diet::Strategies::NativePdf do
     expect(files).to have_received(:delete).with(id: 'file-123')
   end
 
+  it 'asks OpenAI not to store the responses (privacy policy promise)' do
+    strategy.call
+    expect(requests.map { |r| r[:store] }).to all(be(false))
+  end
+
   it 'sends the per-day schema with the category enum to every day call' do
     create(:category, name: 'Warzywa')
 

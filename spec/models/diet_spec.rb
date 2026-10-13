@@ -38,6 +38,11 @@ RSpec.describe Diet, type: :model do
   end
 
   describe '#destroy' do
+    it 'purges the uploaded PDF file, not just the attachment row' do
+      diet = create(:diet, :with_pdf)
+      expect { diet.destroy! }.to have_enqueued_job(ActiveStorage::PurgeJob)
+    end
+
     it 'succeeds when a day holds a product pointing at it via diet_set_id' do
       diet = create(:diet)
       diet_set = create(:diet_set, diet: diet)

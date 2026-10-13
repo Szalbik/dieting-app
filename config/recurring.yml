@@ -5,3 +5,7 @@ production:
   train_category_model:
     class: TrainCategoryModelJob
     schedule: every day at 1am
+  # Deploy only once server backups are on — the first run deletes historical orphaned PDFs for good.
+  data_retention:
+    class: DataRetentionJob
+    schedule: every day at 2am

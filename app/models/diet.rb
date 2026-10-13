@@ -8,7 +8,7 @@ class Diet < ApplicationRecord
   has_many :products, through: :meals
   has_many :diet_set_plans, through: :diet_sets
   has_many :audit_logs, as: :trackable, dependent: :destroy
-  has_one_attached :pdf, dependent: :destroy
+  has_one_attached :pdf, dependent: :purge_later
 
   # Index/show subscribe to [user, :diets]; a status flip from the background
   # parse morphs the page in place (Turbo 8 refresh), no polling.
