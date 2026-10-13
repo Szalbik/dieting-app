@@ -75,7 +75,8 @@ RSpec.describe 'Subscriptions', type: :request do
       allow(Rails.application.credentials).to receive(:dig).with(:stripe, :yearly_price_id).and_return('price_yearly')
       stub_request(:post, 'https://api.stripe.com/v1/customers').to_return(json_response(id: 'cus_123'))
       yearly = stub_request(:post, 'https://api.stripe.com/v1/checkout/sessions')
-               .with(body: hash_including('line_items' => [{ 'price' => 'price_yearly', 'quantity' => '1' }]))
+               .with(body: hash_including('line_items' => [{ 'price' => 'price_yearly', 'quantity' => '1' }],
+                                          'metadata' => { 'interval' => 'yearly' }))
                .to_return(json_response(id: 'cs_1', url: 'https://checkout.stripe.com/pay/cs_1'))
 
       login

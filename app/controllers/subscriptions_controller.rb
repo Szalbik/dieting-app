@@ -12,6 +12,7 @@ class SubscriptionsController < ApplicationController
       customer: Current.user.stripe_customer.id,
       client_reference_id: Current.user.id,
       line_items: [{ price: Rails.application.credentials.dig(:stripe, :"#{interval}_price_id"), quantity: 1 }],
+      metadata: { interval: interval }, # read back by the purchase confirmation mail
       # The JDG is the seller (Terms); Managed Payments would make Stripe merchant of record.
       managed_payments: { enabled: false },
       # Owner decision: no buy-now-pay-later; card + BLIK (+ wallets) come from the Dashboard config.
