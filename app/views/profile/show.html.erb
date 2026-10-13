@@ -26,7 +26,7 @@
           <% else %>
             <p class="mt-2 text-sm text-gray-700">Plan: <span class="font-semibold">Darmowy</span></p>
             <p class="mt-1 text-sm text-gray-500">
-              Pozostało <%= Current.user.ai_free_remaining %> z <%= User::AI_QUOTA_LIMITS.fetch(:free) %> darmowych operacji AI (wgranie PDF lub kreator AI).
+              Pozostało <%= Current.user.ai_free_remaining %> z <%= User::AI_QUOTA_LIMITS.fetch(:free) %> darmowej operacji AI (wgranie PDF lub kreator AI).
             </p>
           <% end %>
         </div>

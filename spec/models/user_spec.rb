@@ -116,10 +116,10 @@ RSpec.describe User, type: :model do
   end
 
   describe '#ai_quota_available?' do
-    it 'allows a free user 3 ops in total, then blocks' do
-      user = create(:user, ai_free_used_count: 2)
+    it 'allows a free user 1 op in total, then blocks' do
+      user = create(:user, ai_free_used_count: 0)
       expect(user).to be_ai_quota_available
-      user.update!(ai_free_used_count: 3)
+      user.update!(ai_free_used_count: 1)
       expect(user).not_to be_ai_quota_available
     end
 

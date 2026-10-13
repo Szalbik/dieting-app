@@ -224,20 +224,19 @@ RSpec.describe 'Diets', type: :request do
     context 'with all creation modes enabled' do
       before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
 
-      it 'allows a free user 3 pdf/generated diets in total, then blocks the 4th' do
+      it 'allows a free user 1 pdf/generated diet in total, then blocks the next' do
         login
         pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
         post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf, **consents } }
-        2.times { |i| post diets_path, params: { diet: { name: "Free AI diet #{i}", kcal_target: 1800 } } }
-        expect(Diet.where(user: user).count).to eq(3)
+        expect(Diet.where(user: user).count).to eq(1)
 
         expect do
-          post diets_path, params: { diet: { name: 'Fourth AI diet', kcal_target: 1800 } }
+          post diets_path, params: { diet: { name: 'Second AI diet', kcal_target: 1800 } }
         end.not_to have_enqueued_job(GenerateDietJob)
 
         expect(response).to redirect_to(new_diet_path)
         expect(flash[:alert]).to include('Przejdź na Pro')
-        expect(Diet.find_by(name: 'Fourth AI diet')).to be_nil
+        expect(Diet.find_by(name: 'Second AI diet')).to be_nil
       end
 
       it 'always allows manual diets regardless of quota' do

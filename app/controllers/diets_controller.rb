@@ -182,7 +182,7 @@ class DietsController < ApplicationController
     if Current.user.subscribed?
       "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:pro)} operacji AI w tym miesiącu. Limit odnowi się 1. dnia przyszłego miesiąca."
     else
-      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:free)} darmowe operacje AI. Przejdź na Pro, aby kontynuować."
+      'Wykorzystałeś darmową operację AI. Przejdź na Pro, aby kontynuować.'
     end
   end
 

@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
 
-  AI_QUOTA_LIMITS = { free: 3, pro: 20 }.freeze # free = lifetime total, pro = per month
+  AI_QUOTA_LIMITS = { free: 1, pro: 20 }.freeze # free = lifetime total, pro = per month
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
 
   after_create :create_owned_shopping_cart
