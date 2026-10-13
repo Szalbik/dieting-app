@@ -247,17 +247,17 @@ RSpec.describe 'Diets', type: :request do
         expect(Diet.find_by(name: 'Manual diet')).to be_present
       end
 
-      it 'lets a Pro user past the free limit, up to 20 per month' do
+      it 'lets a Pro user past the free limit, up to 3 per month' do
         login
-        user.update!(subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 19,
+        user.update!(subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 2,
                      ai_quota_period_started_at: Time.current.beginning_of_month)
-        post diets_path, params: { diet: { name: 'Pro AI diet 20', kcal_target: 1800 } }
-        expect(Diet.find_by(name: 'Pro AI diet 20')).to be_present
+        post diets_path, params: { diet: { name: 'Pro AI diet 3', kcal_target: 1800 } }
+        expect(Diet.find_by(name: 'Pro AI diet 3')).to be_present
 
         expect do
-          post diets_path, params: { diet: { name: 'Pro AI diet 21', kcal_target: 1800 } }
+          post diets_path, params: { diet: { name: 'Pro AI diet 4', kcal_target: 1800 } }
         end.not_to have_enqueued_job(GenerateDietJob)
-        expect(Diet.find_by(name: 'Pro AI diet 21')).to be_nil
+        expect(Diet.find_by(name: 'Pro AI diet 4')).to be_nil
       end
 
       it 'allows unlimited pdf/generated diets for a lifetime user' do

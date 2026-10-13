@@ -128,11 +128,11 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_ai_quota_available
     end
 
-    it 'allows a Pro user up to 20 ops per month before blocking' do
-      user = create(:user, subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 19,
+    it 'allows a Pro user up to 3 ops per month before blocking' do
+      user = create(:user, subscription: :active, ai_free_used_count: 3, ai_quota_used_count: 2,
                            ai_quota_period_started_at: Time.current.beginning_of_month)
       expect(user).to be_ai_quota_available
-      user.update!(ai_quota_used_count: 20)
+      user.update!(ai_quota_used_count: 3)
       expect(user).not_to be_ai_quota_available
     end
 

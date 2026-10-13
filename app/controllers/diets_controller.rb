@@ -180,7 +180,7 @@ class DietsController < ApplicationController
 
   def ai_quota_exhausted_alert
     if Current.user.subscribed?
-      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:pro)} operacji AI w tym miesiącu. Limit odnowi się 1. dnia przyszłego miesiąca."
+      'Wykorzystałeś 3 operacje AI w tym miesiącu. Limit odnowi się 1. dnia przyszłego miesiąca.'
     else
       'Wykorzystałeś darmową operację AI. Przejdź na Pro, aby kontynuować.'
     end
