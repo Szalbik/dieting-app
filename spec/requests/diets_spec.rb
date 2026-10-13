@@ -163,6 +163,15 @@ RSpec.describe 'Diets', type: :request do
         expect(user.reload.consented?(:health_data)).to be(false)
       end
 
+      it 'gates the AI wizard on the health-data consent too, should it be re-enabled' do
+        stub_const('Diet::CREATION_MODES', %w[pdf generated])
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'Wizard', kcal_target: 1800, goal: 'redukcja' } }
+        end.not_to have_enqueued_job(GenerateDietJob)
+        expect(response.body).to include('danych dotyczących zdrowia')
+      end
+
       it 'records the health-data consent with the accepted pdf' do
         login
         post diets_path, params: { diet: { name: 'Health ok', pdf: pdf, **consents } }
@@ -192,7 +201,10 @@ RSpec.describe 'Diets', type: :request do
     end
 
     context 'with all creation modes enabled' do
-      before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
+      before do
+        stub_const('Diet::CREATION_MODES', %w[pdf generated manual])
+        user.record_consent!(:health_data)
+      end
 
       it 'creates a manual diet without enqueuing a job when no pdf or kcal_target is given' do
         login
@@ -240,7 +252,10 @@ RSpec.describe 'Diets', type: :request do
 
   describe 'POST /diets free-plan AI quota' do
     context 'with all creation modes enabled' do
-      before { stub_const('Diet::CREATION_MODES', %w[pdf generated manual]) }
+      before do
+        stub_const('Diet::CREATION_MODES', %w[pdf generated manual])
+        user.record_consent!(:health_data)
+      end
 
       it 'allows a free user 1 pdf/generated diet in total, then blocks the next' do
         login

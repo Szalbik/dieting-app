@@ -8,7 +8,7 @@ class User < ApplicationRecord
   # (credentials stripe.monthly_price_id / stripe.yearly_price_id).
   PRO_PRICES_PLN = { monthly: BigDecimal('19.90'), yearly: BigDecimal('199') }.freeze
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
-  LIVE_STRIPE_STATUSES = %w[active trialing past_due unpaid incomplete].freeze # cancelled on account deletion
+  LIVE_STRIPE_STATUSES = %w[active trialing past_due unpaid incomplete paused].freeze # cancelled on account deletion
 
   after_create :create_owned_shopping_cart
   # Declared above the associations so they run (guard first) before dependent: :destroy deletes the owned cart.
@@ -183,8 +183,10 @@ class User < ApplicationRecord
         Stripe::Subscription.cancel(sub.id) if LIVE_STRIPE_STATUSES.include?(sub.status)
       end
     end
-    update!(subscription: :inactive, subscription_end_date: nil) # lets ensure_no_active_subscription pass
-    destroy!
+    transaction do
+      update_columns(subscription: :inactive, subscription_end_date: nil) # lets ensure_no_active_subscription pass
+      destroy!
+    end
     delete_stripe_customer
   end
 

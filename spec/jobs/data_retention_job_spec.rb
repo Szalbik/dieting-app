@@ -32,4 +32,27 @@ RSpec.describe DataRetentionJob do
     expect(Session.exists?(old.id)).to be(false)
     expect(Session.exists?(recent.id)).to be(true)
   end
+
+  it 'deletes products left behind by deleted diets, keeping live and still-referenced ones' do
+    orphan = create(:product, meal: nil, diet_set: nil)
+    live = create(:product)
+    in_cart = create(:product, meal: nil, diet_set: nil)
+    create(:shopping_cart_item, product: in_cart, shopping_cart: create(:user).owned_shopping_cart)
+
+    described_class.perform_now
+
+    expect(Product.exists?(orphan.id)).to be(false)
+    expect(Product.exists?(live.id)).to be(true)
+    expect(Product.exists?(in_cart.id)).to be(true)
+  end
+
+  it 'deletes dietitian waitlist entries older than 2 years' do
+    old = create(:dietitian_waitlist_entry, created_at: 25.months.ago)
+    recent = create(:dietitian_waitlist_entry)
+
+    described_class.perform_now
+
+    expect(DietitianWaitlistEntry.exists?(old.id)).to be(false)
+    expect(DietitianWaitlistEntry.exists?(recent.id)).to be(true)
+  end
 end

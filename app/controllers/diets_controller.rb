@@ -68,9 +68,6 @@ class DietsController < ApplicationController
       unless Current.user.consented?(:parse_disclaimer) || params.dig(:diet, :parse_disclaimer) == '1'
         @diet.errors.add(:base, 'Zaakceptuj informację o automatycznym odczycie diety.')
       end
-      unless Current.user.consented?(:health_data) || params.dig(:diet, :health_data) == '1'
-        @diet.errors.add(:base, 'Wyraź zgodę na przetwarzanie danych dotyczących zdrowia, aby wczytać dietę.')
-      end
       if @diet.errors.any?
         respond_to do |format|
           format.html { render :new, status: :unprocessable_entity }
@@ -79,6 +76,17 @@ class DietsController < ApplicationController
         return
       end
       @diet.pii_confirmed_at = Time.current
+    end
+
+    # Art. 9 RODO: every AI operation needs the explicit health-data consent (wizard included, if re-enabled).
+    if %w[pdf generated].include?(@diet.source) &&
+       !(Current.user.consented?(:health_data) || params.dig(:diet, :health_data) == '1')
+      @diet.errors.add(:base, 'Wyraź zgodę na przetwarzanie danych dotyczących zdrowia, aby wczytać dietę.')
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @diet.errors, status: :unprocessable_entity }
+      end
+      return
     end
 
     if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
@@ -97,7 +105,9 @@ class DietsController < ApplicationController
         if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
           Current.user.record_consent!(:parse_disclaimer)
         end
-        Current.user.record_consent!(:health_data) if @diet.source == 'pdf' && !Current.user.consented?(:health_data)
+        if %w[pdf generated].include?(@diet.source) && !Current.user.consented?(:health_data)
+          Current.user.record_consent!(:health_data)
+        end
 
         notice = {
           'pdf' => 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.',

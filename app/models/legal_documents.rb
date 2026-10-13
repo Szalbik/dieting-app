@@ -10,6 +10,10 @@ module LegalDocuments
 
   # Mails every account that accepted an older version (or none) about VERSION, once; returns the count.
   def self.notify_change!
+    if EFFECTIVE_ON < Date.current + 14
+      raise ArgumentError, "EFFECTIVE_ON (#{EFFECTIVE_ON}) must be at least 14 days ahead — bump it and redeploy first"
+    end
+
     User.find_each.count do |user|
       next false if user.consents.values_at('terms_version', 'terms_notice').include?(VERSION)
 

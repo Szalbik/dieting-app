@@ -52,6 +52,12 @@ RSpec.describe StripeWebhooks::CheckoutSessionCompleted do
         .to have_enqueued_mail(SubscriptionMailer, :confirmation)
     end
 
+    it 'leaves the session unmarked when the mail cannot be queued, so the Stripe retry sends it' do
+      allow(SubscriptionMailer).to receive(:confirmation).and_raise(ActiveRecord::StatementInvalid, 'busy')
+      expect { described_class.new.call(event_for) }.to raise_error(ActiveRecord::StatementInvalid)
+      expect(user.reload.consents).not_to have_key('pro_early_start')
+    end
+
     it 'does not mail while the payment is pending' do
       expect { described_class.new.call(event_for(payment_status: 'unpaid')) }
         .not_to have_enqueued_mail(SubscriptionMailer, :confirmation)

@@ -43,7 +43,7 @@
               <tr>
                 <td class="px-3 py-2"><strong>Wczytywanie planów diet z PDF z użyciem AI</strong> — w tym dane mogące dotyczyć zdrowia</td>
                 <td class="px-3 py-2">Art. 9 ust. 2 lit. a RODO (wyraźna zgoda) oraz art. 6 ust. 1 lit. b RODO</td>
-                <td class="px-3 py-2">Do usunięcia diety lub Konta albo wycofania zgody (wtedy usuwamy dane przekazane do AI na Twoje żądanie)</td>
+                <td class="px-3 py-2">Do usunięcia diety lub Konta. Po wycofaniu zgody nie przetwarzamy nowych plików; wczytane diety usuniesz sam lub na Twoje żądanie usuniemy je my</td>
               </tr>
               <tr>
                 <td class="px-3 py-2"><strong>Plan Pro i płatności</strong> — zawarcie i wykonanie umowy, rozliczenia, faktury</td>
@@ -95,7 +95,7 @@
         <p class="mb-2">Dane powierzamy podmiotom przetwarzającym na podstawie umów powierzenia (art. 28 RODO) albo przekazujemy odrębnym administratorom, gdy wynika to z charakteru usługi:</p>
         <ul class="list-disc space-y-1 pl-5">
           <li><strong>DigitalOcean, LLC</strong> (USA) — hosting serwera, na którym przechowywane są dane Serwisu i pliki PDF (podmiot przetwarzający).</li>
-          <li><strong>OpenAI Ireland Ltd</strong> (Irlandia) — analiza wczytanych plików PDF i nazw produktów (podmiot przetwarzający); dalsze przetwarzanie przez OpenAI OpCo, LLC (USA). Przekazujemy cały plik PDF, bez Twojego adresu e-mail ani innych danych Konta. Plik jest usuwany u OpenAI po zakończeniu odczytu, a odpowiedzi nie są u OpenAI przechowywane; OpenAI może przechowywać dane wejściowe i wyjściowe do 30 dni wyłącznie w celu wykrywania nadużyć. Dane nie są wykorzystywane do trenowania modeli.</li>
+          <li><strong>OpenAI Ireland Ltd</strong> (Irlandia) — analiza wczytanych plików PDF (plany diet i listy zamienników), kategoryzacja nazw produktów, szacowanie wartości odżywczych posiłków i przepisów na podstawie ich nazw i składników oraz dopasowanie zamienników (podmiot przetwarzający); dalsze przetwarzanie przez OpenAI OpCo, LLC (USA). Przekazujemy cały plik PDF, bez Twojego adresu e-mail ani innych danych Konta. Plik jest usuwany u OpenAI po zakończeniu odczytu, a odpowiedzi nie są u OpenAI przechowywane; OpenAI może przechowywać dane wejściowe i wyjściowe do 30 dni wyłącznie w celu wykrywania nadużyć. Dane nie są wykorzystywane do trenowania modeli.</li>
           <li><strong>Stripe Payments Europe, Ltd.</strong> (Irlandia) — obsługa płatności i subskrypcji. Stripe jest podmiotem przetwarzającym w zakresie obsługi płatności oraz odrębnym administratorem w zakresie zapobiegania oszustwom i obowiązków regulacyjnych (<%= link_to "stripe.com/privacy", "https://stripe.com/privacy", class: link_class %>).</li>
           <li><strong>Resend</strong> (USA) — wysyłka wiadomości e-mail (reset hasła, potwierdzenie zakupu, informacje o zmianach) (podmiot przetwarzający).</li>
           <li><strong>Honeybadger Industries LLC</strong> (USA) — monitorowanie błędów aplikacji; raport błędu może zawierać adres IP, przeglądarkę i parametry żądania (podmiot przetwarzający).</li>
@@ -131,7 +131,7 @@
 
       <section>
         <h2 class="mb-2 text-xl font-bold font-serif">7. Bezpieczeństwo i zmiany polityki</h2>
-        <p>Stosujemy szyfrowane połączenie (HTTPS), hashowanie haseł, kontrolę dostępu do danych i kopie zapasowe. O zmianach Polityki prywatności informujemy e-mailem z co najmniej 14-dniowym wyprzedzeniem.</p>
+        <p>Stosujemy szyfrowane połączenie (HTTPS), hashowanie haseł, kontrolę dostępu do danych i kopie zapasowe serwera. Usunięte dane znikają z kopii zapasowych wraz z ich rotacją, nie później niż po 30 dniach. O zmianach Polityki prywatności informujemy e-mailem z co najmniej 14-dniowym wyprzedzeniem.</p>
       </section>
     </div>
   </div>

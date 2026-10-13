@@ -83,6 +83,16 @@ RSpec.describe 'Account deletion', type: :request do
     end
   end
 
+  it 'keeps the account and explains when the database refuses the deletion' do
+    allow_any_instance_of(User).to receive(:destroy!).and_raise(ActiveRecord::RecordNotDestroyed) # rubocop:disable RSpec/AnyInstance
+    login
+    delete account_path, params: { password: 'password123' }
+
+    expect(response).to redirect_to(profile_path)
+    expect(flash[:alert]).to include('kontakt@asystentdiet.pl')
+    expect(user.reload).to be_present
+  end
+
   it 'returns a shared shopping-cart partner to their own cart' do
     partner = create(:user, password: 'password123', password_confirmation: 'password123')
     invitation = ShoppingCartInvitation.create!(inviter: user, invitee: partner)

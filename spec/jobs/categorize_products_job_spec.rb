@@ -11,8 +11,10 @@ RSpec.describe CategorizeProductsJob, type: :job do
 
   it 'categorizes leftover products locally, then hands the rest to the AI fallback' do
     # Created before any category exists, so the create hook leaves it uncategorized.
-    product = Product.create!(name: 'Schab wieprzowy')
-    leftover = Product.create!(name: 'Xyzzy')
+    meal = create(:meal)
+    product = Product.create!(name: 'Schab wieprzowy', meal: meal)
+    leftover = Product.create!(name: 'Xyzzy', meal: meal)
+    Product.create!(name: 'Orphan of a deleted diet') # never sent to the AI
     create(:category, name: 'Mięso i Ryby')
     ai = instance_double(Chat::ProductCategorizerService, call: nil)
     allow(Chat::ProductCategorizerService).to receive(:new).and_return(ai)
