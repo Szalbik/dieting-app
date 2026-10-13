@@ -9,6 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bin/dev          # starts Puma + esbuild + Tailwind watchers (Procfile.dev)
 ```
 
+Stripe locally: `bin/dev` also runs `stripe listen` (forwarding to `/stripe_webhooks` with the app's own `stripe.secret_key`) and syncs its `whsec_…` into `.env` as `STRIPE_SIGNING_SECRET`, which the initializer prefers in development. Needs the `stripe` CLI and a sandbox `sk_test_…` + `monthly_price_id` in dev credentials. Test card `4242 4242 4242 4242`, BLIK sandbox code `123456`; send events with `stripe trigger <event> --api-key <sk_test>`.
+
 ### Tests
 ```bash
 bundle exec rspec                        # run full suite

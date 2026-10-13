@@ -3,3 +3,7 @@ js: yarn build --watch
 css: yarn build:css:admin && yarn build:css:app --watch
 jobs: bin/jobs
 services: docker-compose up
+# stripe forwards webhooks with the app's own test key, so events come from the account
+# Checkout uses, whatever the CLI is logged into. Restart loop: foreman kills the whole
+# group when any process exits (not logged in, network blip).
+stripe: while true; do stripe listen --api-key "$(bin/rails runner 'print Rails.application.credentials.dig(:stripe, :secret_key)')" --forward-to localhost:3000/stripe_webhooks; echo "[Procfile] stripe exited ($?), restarting in 1s"; sleep 1; done

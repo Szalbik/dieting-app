@@ -8,4 +8,19 @@ fi
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
+# Sync the `stripe listen` signing secret (see Procfile.dev) into .env, which foreman
+# loads into every process. Uses the app's own key so the secret matches the forwarder.
+if command -v stripe >/dev/null 2>&1; then
+  stripe_key="$(bin/rails runner 'print Rails.application.credentials.dig(:stripe, :secret_key)' 2>/dev/null)"
+  stripe_signing_secret="$([ -n "$stripe_key" ] && stripe listen --api-key "$stripe_key" --print-secret 2>/dev/null)"
+  if [ -n "$stripe_signing_secret" ]; then
+    touch .env
+    grep -v '^STRIPE_SIGNING_SECRET=' .env > .env.tmp 2>/dev/null || true
+    printf 'STRIPE_SIGNING_SECRET=%s\n' "$stripe_signing_secret" >> .env.tmp
+    mv .env.tmp .env
+  else
+    echo "bin/dev: could not read Stripe signing secret (no stripe.secret_key in credentials?); falling back to credentials." >&2
+  fi
+fi
+
 exec foreman start -f Procfile.dev "$@"
