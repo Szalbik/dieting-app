@@ -13,6 +13,12 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def require_admin!
+    return if Current.user&.admin?
+
+    redirect_to root_path, alert: 'Access denied.'
+  end
+
   # Todoist token lives in the session for 30 minutes (set in TodoistController#receive_code).
   def todoist_token
     token = session[:todoist_token]&.stringify_keys

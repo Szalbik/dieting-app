@@ -68,10 +68,4 @@ class ProductNameSuggestionsController < ApplicationController
       )
       .order('product_name_suggestions.occurrence_count DESC, product_name_suggestions.id ASC')
   end
-
-  def require_admin!
-    return if Current.user&.admin?
-
-    redirect_to root_path, alert: 'Access denied.'
-  end
 end

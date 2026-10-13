@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Todoist OAuth callback', type: :request do
-  let(:user) { create(:user, password: 'password123', password_confirmation: 'password123') }
+  let(:user) { create(:user, admin: true, password: 'password123', password_confirmation: 'password123') }
 
   before { post session_path, params: { email_address: user.email_address, password: 'password123' } }
 

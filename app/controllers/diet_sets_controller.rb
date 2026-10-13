@@ -4,7 +4,7 @@ class DietSetsController < ApplicationController
   def show
     @diet_set = owned_diet_sets.find(params[:id])
     @diet = @diet_set.diet
-    @recipes = Current.user.recipes.order(:name)
+    @recipes = Current.user.admin? ? Current.user.recipes.order(:name) : Recipe.none
     @other_meals = Meal.joins(diet_set: :diet)
       .where(diets: { user_id: Current.user.id })
       .where.not(diet_set_id: @diet_set.id)

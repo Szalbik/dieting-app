@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TodoistController < ApplicationController
+  before_action :require_admin!
+
   def create
     if todoist_token.blank?
       redirect_to profile_path, alert: 'Please authorize Todoist first in your profile'

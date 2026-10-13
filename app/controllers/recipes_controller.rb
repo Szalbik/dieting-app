@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class RecipesController < ApplicationController
+  before_action :require_admin!
+
   def index
     @recipes = Current.user.recipes.order(:name)
   end

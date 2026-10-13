@@ -80,10 +80,4 @@ class ProductCategoriesController < ApplicationController
       .select('classification_rows.id, classification_rows.name, classification_rows.category_id, classification_rows.count')
       .order('classification_rows.normalized_name ASC')
   end
-
-  def require_admin!
-    return if Current.user&.admin?
-
-    redirect_to root_path, alert: 'Access denied.'
-  end
 end
