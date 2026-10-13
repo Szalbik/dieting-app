@@ -61,6 +61,20 @@ class DietsController < ApplicationController
       return
     end
 
+    if @diet.source == 'pdf'
+      unless params.dig(:diet, :pii_confirmed) == '1'
+        @diet.errors.add(:base, 'Potwierdź, że plik nie zawiera danych osobowych. Wybierz plik ponownie.')
+      end
+      unless Current.user.consented?(:parse_disclaimer) || params.dig(:diet, :parse_disclaimer) == '1'
+        @diet.errors.add(:base, 'Zaakceptuj informację o automatycznym odczycie diety.')
+      end
+      if @diet.errors.any?
+        render :new, status: :unprocessable_entity
+        return
+      end
+      @diet.pii_confirmed_at = Time.current
+    end
+
     if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
       redirect_to new_diet_path, alert: ai_quota_exhausted_alert
       return
@@ -74,6 +88,10 @@ class DietsController < ApplicationController
         end
 
         Current.user.consume_ai_quota! if %w[pdf generated].include?(@diet.source)
+        if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
+          Current.user.record_consent(:parse_disclaimer)
+          Current.user.save!
+        end
 
         notice = {
           'pdf' => 'Dieta została utworzona. Produkty zostaną wczytane i zkategoryzowane.',
@@ -138,6 +156,11 @@ class DietsController < ApplicationController
       return
     end
 
+    unless params[:pii_confirmed] == '1'
+      redirect_to diets_path, alert: 'Potwierdź, że PDF nie zawiera danych osobowych, aby przeparsować dietę.'
+      return
+    end
+
     # Block a second parse while one runs, but let the user unstick a diet a
     # killed worker left in "generating" for good.
     if @diet.generating? && @diet.updated_at > Diet::STUCK_GENERATING_AFTER.ago
@@ -150,7 +173,7 @@ class DietsController < ApplicationController
       return
     end
 
-    @diet.update!(status: 'generating', generation_error: nil)
+    @diet.update!(status: 'generating', generation_error: nil, pii_confirmed_at: Time.current)
     DietBuilderJob.perform_later(@diet.id)
     Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'

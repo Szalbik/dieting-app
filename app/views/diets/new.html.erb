@@ -64,6 +64,21 @@
           <%= form.file_field :pdf, class: "mt-2 block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
               file:mr-4 file:ml-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700
           ", id: "file-upload" %>
+          <p class="mt-1 text-sm leading-6 text-gray-600">Przed wgraniem zamaż lub usuń stronę z danymi osobowymi.</p>
+        </div>
+
+        <%# ponytail: no `required` — this panel is `hidden` on other tabs and would block their submit; enforced in DietsController#create %>
+        <div class="mt-6 space-y-3">
+          <label class="flex items-start gap-2 text-sm text-gray-900">
+            <%= check_box_tag 'diet[pii_confirmed]', '1', params.dig(:diet, :pii_confirmed) == '1', class: 'mt-1' %>
+            <span>Oświadczam, że usunąłem z pliku dane osobowe (imię i nazwisko, PESEL, adres, dane kontaktowe). Plik jest przetwarzany przez zewnętrznego dostawcę AI (OpenAI).</span>
+          </label>
+          <% unless Current.user.consented?(:parse_disclaimer) %>
+            <label class="flex items-start gap-2 text-sm text-gray-900">
+              <%= check_box_tag 'diet[parse_disclaimer]', '1', params.dig(:diet, :parse_disclaimer) == '1', class: 'mt-1' %>
+              <span>Rozumiem, że dieta jest odczytywana z PDF automatycznie, jakość wyniku zależy od jakości pliku/skanu i wczytane dane muszę sprawdzić przed zastosowaniem.</span>
+            </label>
+          <% end %>
         </div>
       </div>
 

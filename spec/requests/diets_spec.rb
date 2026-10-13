@@ -8,6 +8,8 @@ RSpec.describe 'Diets', type: :request do
   let(:user) { create(:user, password: 'password123', password_confirmation: 'password123') }
   let(:other_user) { create(:user, password: 'password123', password_confirmation: 'password123') }
 
+  let(:consents) { { pii_confirmed: '1', parse_disclaimer: '1' } }
+
   def login(u = user)
     post session_path, params: { email_address: u.email_address, password: 'password123' }
   end
@@ -66,12 +68,65 @@ RSpec.describe 'Diets', type: :request do
       login
       pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
       expect do
-        post diets_path, params: { diet: { name: 'PDF diet', meals_per_day: 5, pdf: pdf } }
+        post diets_path, params: { diet: { name: 'PDF diet', meals_per_day: 5, pdf: pdf, **consents } }
       end.to have_enqueued_job(DietBuilderJob)
 
       diet = Diet.find_by(name: 'PDF diet', user: user)
       expect(diet.source).to eq('pdf')
       expect(diet.status).to eq('generating')
+    end
+
+    context 'with the upload consents' do
+      let(:pdf) { fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf') }
+
+      it 'rejects a pdf without the personal-data statement, without spending quota' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'No PII ack', pdf: pdf, parse_disclaimer: '1' } }
+        end.not_to have_enqueued_job(DietBuilderJob)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('nie zawiera danych osobowych')
+        expect(Diet.find_by(name: 'No PII ack')).to be_nil
+        expect(user.reload.ai_free_used_count.to_i).to eq(0)
+      end
+
+      it 'rejects a first pdf without the parsing disclaimer' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'No disclaimer', pdf: pdf, pii_confirmed: '1' } }
+        end.not_to change(Diet, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('automatycznym odczycie')
+      end
+
+      it 'records both statements when the pdf is accepted' do
+        login
+        post diets_path, params: { diet: { name: 'Acked', pdf: pdf, **consents } }
+
+        expect(Diet.find_by(name: 'Acked').pii_confirmed_at).to be_present
+        expect(user.reload.consented?(:parse_disclaimer)).to be(true)
+      end
+
+      it 'only asks for the personal-data statement once the disclaimer was accepted' do
+        user.record_consent(:parse_disclaimer)
+        user.save!
+        login
+        get new_diet_path
+        expect(response.body).to include('diet[pii_confirmed]')
+        expect(response.body).not_to include('diet[parse_disclaimer]')
+
+        expect do
+          post diets_path, params: { diet: { name: 'Second', pdf: pdf, pii_confirmed: '1' } }
+        end.to have_enqueued_job(DietBuilderJob)
+      end
+
+      it 'shows both checkboxes to a user who never accepted the disclaimer' do
+        login
+        get new_diet_path
+        expect(response.body).to include('diet[pii_confirmed]', 'diet[parse_disclaimer]')
+      end
     end
 
     it 'rejects a submit without a pdf when only pdf mode is enabled' do
@@ -149,7 +204,7 @@ RSpec.describe 'Diets', type: :request do
       it 'allows a free user 3 pdf/generated diets in total, then blocks the 4th' do
         login
         pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
-        post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf } }
+        post diets_path, params: { diet: { name: 'First AI diet', meals_per_day: 5, pdf: pdf, **consents } }
         2.times { |i| post diets_path, params: { diet: { name: "Free AI diet #{i}", kcal_target: 1800 } } }
         expect(Diet.where(user: user).count).to eq(3)
 
@@ -242,7 +297,7 @@ RSpec.describe 'Diets', type: :request do
     it 'enqueues DietBuilderJob when PDF is attached' do
       login
       expect do
-        post reparse_diet_path(diet)
+        post reparse_diet_path(diet), params: { pii_confirmed: '1' }
       end.to have_enqueued_job(DietBuilderJob)
       expect(response).to redirect_to(diets_path)
       expect(diet.reload.status).to eq('generating')
@@ -253,7 +308,7 @@ RSpec.describe 'Diets', type: :request do
       diet.update_column(:updated_at, 2.hours.ago) # rubocop:disable Rails/SkipsModelValidations
       login
       expect do
-        post reparse_diet_path(diet)
+        post reparse_diet_path(diet), params: { pii_confirmed: '1' }
       end.to have_enqueued_job(DietBuilderJob)
     end
 
@@ -261,7 +316,7 @@ RSpec.describe 'Diets', type: :request do
       diet.update!(status: 'generating')
       login
       expect do
-        post reparse_diet_path(diet)
+        post reparse_diet_path(diet), params: { pii_confirmed: '1' }
       end.not_to have_enqueued_job(DietBuilderJob)
       expect(user.reload.ai_free_used_count.to_i).to eq(0)
       follow_redirect!
@@ -272,18 +327,34 @@ RSpec.describe 'Diets', type: :request do
       bare = create(:diet, user: user)
       login
       expect do
-        post reparse_diet_path(bare)
+        post reparse_diet_path(bare), params: { pii_confirmed: '1' }
       end.not_to have_enqueued_job(DietBuilderJob)
       expect(response).to redirect_to(diets_path)
       follow_redirect!
       expect(response.body).to include('Brak załączonego PDF')
     end
 
+    it 'refuses to reparse without the personal-data statement' do
+      login
+      expect do
+        post reparse_diet_path(diet)
+      end.not_to have_enqueued_job(DietBuilderJob)
+      expect(response).to redirect_to(diets_path)
+      expect(flash[:alert]).to include('danych osobowych')
+      expect(user.reload.ai_free_used_count.to_i).to eq(0)
+    end
+
+    it 'records the personal-data statement on a confirmed reparse' do
+      login
+      post reparse_diet_path(diet), params: { pii_confirmed: '1' }
+      expect(diet.reload.pii_confirmed_at).to be_present
+    end
+
     it 'blocks reparse when the free quota is already spent' do
       user.update!(ai_free_used_count: 3)
       login
       expect do
-        post reparse_diet_path(diet)
+        post reparse_diet_path(diet), params: { pii_confirmed: '1' }
       end.not_to have_enqueued_job(DietBuilderJob)
       expect(response).to redirect_to(diets_path)
     end
