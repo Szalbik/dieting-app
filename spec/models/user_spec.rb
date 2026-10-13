@@ -3,6 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  include ActiveSupport::Testing::TimeHelpers
+
+  describe 'consents' do
+    let(:user) { build :user }
+
+    it 'starts with no consents' do
+      expect(user.consented?(:terms)).to be(false)
+    end
+
+    it 'records a consent with its acceptance time, keyed by string' do
+      freeze_time do
+        user.record_consent(:parse_disclaimer)
+        expect(user.consents).to eq('parse_disclaimer' => Time.current.iso8601)
+        expect(user.consented?('parse_disclaimer')).to be(true)
+      end
+    end
+  end
+
   describe 'validations' do
     subject { build :user }
 

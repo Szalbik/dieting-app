@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'User Registration', type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe 'GET /registrations/new' do
     it 'renders the registration form' do
       get new_registration_path
@@ -30,6 +32,13 @@ RSpec.describe 'User Registration', type: :request do
       end.to change(User, :count).by(1)
       expect(response).to redirect_to(root_path)
       follow_redirect!
+    end
+
+    it 'records when the terms were accepted' do
+      freeze_time do
+        post registrations_path, params: valid_params
+        expect(User.last.consents['terms']).to eq(Time.current.iso8601)
+      end
     end
 
     it 'does not register without accepting the terms' do

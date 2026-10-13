@@ -25,6 +25,8 @@ class RegistrationsController < ApplicationController
       return
     end
 
+    @user.record_consent(:terms)
+
     if @user.save
       start_new_session_for @user
       redirect_to(params[:plan] == 'pro' ? upgrade_path : after_authentication_url, notice: 'Welcome!')

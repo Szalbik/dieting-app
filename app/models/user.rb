@@ -143,6 +143,15 @@ class User < ApplicationRecord
     customer
   end
 
+  # consents: { 'terms' => '2026-10-13T09:00:00+02:00', 'parse_disclaimer' => ... } — key → acceptance time
+  def consented?(key)
+    consents.key?(key.to_s)
+  end
+
+  def record_consent(key)
+    self.consents = consents.merge(key.to_s => Time.current.iso8601)
+  end
+
   private
 
   def reset_ai_quota_period_if_stale!
