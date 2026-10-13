@@ -105,6 +105,7 @@ Rails.application.routes.draw do
 
   get 'profile', to: 'profile#show', as: 'profile'
   resource :health_data_consent, only: %i[create destroy]
+  resource :account, only: :destroy
 
   get 'upgrade', to: 'subscriptions#new', as: :upgrade
   post 'upgrade', to: 'subscriptions#create'

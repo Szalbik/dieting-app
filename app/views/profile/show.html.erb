@@ -186,5 +186,18 @@
         </div>  
       </div>  
     </div>   
+    <div class="p-6 mb-8 bg-white border border-red-200 shadow-sm rounded-2xl">
+      <h3 class="text-base font-semibold text-gray-900">Usuń konto</h3>
+      <p class="mt-2 max-w-2xl text-sm text-gray-700">Usunięcie konta jest nieodwracalne: usuniemy diety, wczytane pliki PDF, plany i listy zakupów. <% if Current.user.subscribed? && !Current.user.subscription_lifetime? %>Aktywna subskrypcja Pro zostanie anulowana od razu, bez zwrotu za bieżący okres — jeśli od zakupu minęło mniej niż 14 dni, najpierw <%= link_to "odstąp od umowy", terms_path(anchor: "formularz-odstapienia"), class: "font-semibold underline" %> (napisz na kontakt@asystentdiet.pl), aby otrzymać zwrot.<% end %></p>
+      <%# Redirects to another page on success: turbo off per lessons.md (no turbo_stream redirect surprises). %>
+      <%= form_with url: account_path, method: :delete, data: { turbo: false }, class: "flex flex-col gap-3 mt-4 sm:flex-row sm:items-end" do %>
+        <div>
+          <%= label_tag :account_password, "Hasło", class: "block text-sm font-medium text-gray-900" %>
+          <%= password_field_tag :password, nil, id: "account_password", required: true, autocomplete: "current-password", class: "mt-1 block rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+        </div>
+        <%= submit_tag "Usuń konto na zawsze", class: "rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500" %>
+      <% end %>
+    </div>
+
   </main>
 </div>

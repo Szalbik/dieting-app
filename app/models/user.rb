@@ -8,6 +8,7 @@ class User < ApplicationRecord
   # (credentials stripe.monthly_price_id / stripe.yearly_price_id).
   PRO_PRICES_PLN = { monthly: BigDecimal('19.90'), yearly: BigDecimal('199') }.freeze
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
+  LIVE_STRIPE_STATUSES = %w[active trialing past_due unpaid incomplete].freeze # cancelled on account deletion
 
   after_create :create_owned_shopping_cart
   # Declared above the associations so they run (guard first) before dependent: :destroy deletes the owned cart.
@@ -173,7 +174,27 @@ class User < ApplicationRecord
     update_column(:consents, record_consent(key)) # rubocop:disable Rails/SkipsModelValidations
   end
 
+  # Self-service deletion (RODO art. 17, Regulamin §9). Cancel billing first and let a Stripe error
+  # abort (better no deletion than charges for an account that is gone); the customer record is
+  # removed last, best effort — a failure there must not leave a half-deleted account.
+  def close_account!
+    if stripe_customer_id?
+      Stripe::Subscription.list(customer: stripe_customer_id, status: 'all').auto_paging_each do |sub|
+        Stripe::Subscription.cancel(sub.id) if LIVE_STRIPE_STATUSES.include?(sub.status)
+      end
+    end
+    update!(subscription: :inactive, subscription_end_date: nil) # lets ensure_no_active_subscription pass
+    destroy!
+    delete_stripe_customer
+  end
+
   private
+
+  def delete_stripe_customer
+    Stripe::Customer.delete(stripe_customer_id) if stripe_customer_id?
+  rescue Stripe::StripeError => e
+    Honeybadger.notify(e, context: { stripe_customer_id: stripe_customer_id }) if defined?(Honeybadger)
+  end
 
   def reset_ai_quota_period_if_stale!
     return if ai_quota_period_started_at.present? && ai_quota_period_started_at >= Time.current.beginning_of_month
