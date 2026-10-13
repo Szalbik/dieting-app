@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe StripeWebhooks::CheckoutSessionCompleted do
   let!(:user) { create(:user, stripe_customer_id: 'cus_123') }
 
-  def event_for(mode: 'subscription', customer: 'cus_123')
+  def event_for(mode: 'subscription', customer: 'cus_123', payment_status: 'paid')
     Stripe::Event.construct_from(
       type: 'checkout.session.completed',
-      data: { object: { object: 'checkout.session', mode: mode, customer: customer } }
+      data: { object: { object: 'checkout.session', mode: mode, customer: customer, payment_status: payment_status } }
     )
   end
 
@@ -16,6 +16,11 @@ RSpec.describe StripeWebhooks::CheckoutSessionCompleted do
     described_class.new.call(event_for)
     expect(user.reload).to be_subscribed
     expect(user.subscription_end_date).to be_nil
+  end
+
+  it 'waits for payment when the session is still unpaid (delayed methods)' do
+    described_class.new.call(event_for(payment_status: 'unpaid'))
+    expect(user.reload).not_to be_subscribed
   end
 
   it 'ignores one-time payment sessions' do
