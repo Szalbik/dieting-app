@@ -46,6 +46,18 @@ RSpec.describe 'Diets', type: :request do
       expect(response.body.scan(confirm).size).to eq(2) # desktop + mobile
       expect(response.body).not_to include('data-confirm=')
     end
+
+    it 'shows the diets list in Polish' do
+      login
+      create(:diet_set, diet: create(:diet, user: user, name: 'Keto', created_at: Time.zone.local(2026, 3, 5)))
+      get diets_path
+
+      expect(response.body).to include('1 zestaw', '05.03.2026', 'Edytuj', 'Nazwa')
+      expect(response.body).not_to include('1 zestawów')
+      ['>Edit<', '>Delete<', 'Preview pdf', 'Sets number', 'Are you sure', 'March'].each do |english|
+        expect(response.body).not_to include(english)
+      end
+    end
   end
 
   describe 'GET /diets/new' do

@@ -16,12 +16,12 @@
             <table class="min-w-full divide-y divide-brand-ink/10">
               <thead>
                 <tr>
-                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-brand-ink sm:pl-0">Name</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Sets number</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Active</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Date</th>
+                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-brand-ink sm:pl-0">Nazwa</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Zestawy</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Aktywna</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-brand-ink">Data</th>
                   <th scope="col" class="sticky top-0 z-10 border-b border-brand-ink/10 bg-white/80 backdrop-blur-sm py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
-                    <span class="sr-only">Edit</span>
+                    <span class="sr-only">Akcje</span>
                   </th>
                 </tr>
               </thead>
@@ -38,18 +38,18 @@
                       <%= render partial: 'diets/toggle_button', locals: { diet: diet } %>
                     </td>
                     <td class="px-3 py-4 text-sm text-brand-ink-soft whitespace-nowrap">
-                      <%= diet.created_at.strftime("%B %d, %Y") %>
+                      <%= diet.created_at.strftime("%d.%m.%Y") %>
                     </td>
                     <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right border-b border-brand-ink/10 whitespace-nowrap sm:pr-8 lg:pr-8">
                       <% if diet.pdf.attached? %>
-                        <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
+                        <%= link_to 'Podgląd PDF', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                         |
                         <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form_class: 'inline-block', form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL) ani informacji o stanie zdrowia? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                         |
                       <% end %>
-                      <%= link_to 'Edit', edit_diet_path(diet), class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
+                      <%= link_to 'Edytuj', edit_diet_path(diet), class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                       |
-                      <%= button_to 'Delete', diet_path(diet.id), method: :delete, form: { data: { turbo_confirm: "Usunąć dietę „#{diet.name}” wraz ze wszystkimi dniami i posiłkami? Tej operacji nie można cofnąć." } }, class: 'text-rose-600 hover:text-rose-700 transition-colors duration-200' %>
+                      <%= button_to 'Usuń', diet_path(diet.id), method: :delete, form: { data: { turbo_confirm: "Usunąć dietę „#{diet.name}” wraz ze wszystkimi dniami i posiłkami? Tej operacji nie można cofnąć." } }, class: 'text-rose-600 hover:text-rose-700 transition-colors duration-200' %>
                     </td>
                   </tr>
                 <% end %>
