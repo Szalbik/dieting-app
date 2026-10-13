@@ -7,4 +7,14 @@
 module LegalDocuments
   VERSION = '2026-10-13'
   EFFECTIVE_ON = Date.new(2026, 10, 27)
+
+  # Mails every account that accepted an older version (or none) about VERSION, once; returns the count.
+  def self.notify_change!
+    User.find_each.count do |user|
+      next false if user.consents.values_at('terms_version', 'terms_notice').include?(VERSION)
+
+      LegalMailer.terms_change(user).deliver_later
+      user.update_column(:consents, user.consents.merge('terms_notice' => VERSION)) # rubocop:disable Rails/SkipsModelValidations
+    end
+  end
 end
