@@ -17,15 +17,17 @@ class SubscriptionsController < ApplicationController
       # Owner decision: no buy-now-pay-later; card + BLIK (+ wallets) come from the Dashboard config.
       excluded_payment_method_types: ['klarna'],
       locale: 'pl',
-      # Art. 38 pkt 13 ustawy o prawach konsumenta: wyraźna zgoda na natychmiastowe świadczenie
-      # = utrata prawa odstąpienia; brak zgody blokuje zakup (Regulamin §6).
+      # Pro is a digital service: the consumer keeps the 14-day withdrawal right. Starting at once needs
+      # an express request (art. 21 ust. 2 upk); on withdrawal they pay pro rata (art. 35) — Regulamin §6.
       consent_collection: { terms_of_service: 'required' },
       custom_text: {
         terms_of_service_acceptance: {
-          message: "Akceptuję [Regulamin](#{terms_url}) i wyrażam zgodę na " \
-                   'natychmiastowe rozpoczęcie świadczenia usługi, przyjmując do wiadomości utratę ' \
-                   'prawa odstąpienia od umowy (art. 38 pkt 13 ustawy o prawach konsumenta).',
+          message: "Akceptuję [Regulamin](#{terms_url}) i żądam rozpoczęcia świadczenia usługi przed " \
+                   'upływem 14-dniowego terminu na odstąpienie od umowy. Rozumiem, że w razie odstąpienia ' \
+                   'zapłacę za okres korzystania do chwili odstąpienia.',
         },
+        # Art. 17 ust. 3 upk: the order step must state the obligation to pay.
+        submit: { message: 'Klikając przycisk, składasz zamówienie z obowiązkiem zapłaty.' },
       },
       success_url: profile_url(checkout: 'success'),
       cancel_url: profile_url

@@ -61,6 +61,12 @@ RSpec.describe 'Subscriptions', type: :request do
 
       expect(session_request).to have_been_requested
       expect(response).to redirect_to('https://checkout.stripe.com/pay/cs_123')
+      expect(a_request(:post, 'https://api.stripe.com/v1/checkout/sessions').with do |req|
+        text = Rack::Utils.parse_nested_query(req.body)['custom_text']
+        text['terms_of_service_acceptance']['message'].include?('żądam rozpoczęcia świadczenia') &&
+          text['terms_of_service_acceptance']['message'].exclude?('utrat') &&
+          text['submit']['message'].include?('z obowiązkiem zapłaty')
+      end).to have_been_made
       expect(user.reload.stripe_customer_id).to eq('cus_123')
     end
 

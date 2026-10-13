@@ -1,60 +1,56 @@
 <% content_for :marketing_page, true %>
 <% content_for :title, "Polityka cookies — AsystentDiety" %>
+<% link_class = "font-semibold text-brand-sage-dark hover:text-brand-accent underline" %>
 <div class="bg-brand-warm-white text-brand-charcoal">
   <div class="mx-auto max-w-3xl px-6 py-16">
     <%= link_to "← Wróć na stronę główną", root_path, class: "text-sm text-brand-sage-dark hover:text-brand-accent" %>
 
     <h1 class="mt-6 mb-2 text-4xl font-black font-serif tracking-tight">Polityka cookies AsystentDiety</h1>
-    <p class="mb-10 text-sm text-brand-soft-gray">Ostatnia aktualizacja: 13.10.2026</p>
+    <%= render "main/legal_version" %>
 
     <div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
       <section>
         <h2 class="mb-2 text-xl font-bold font-serif">1. Postanowienia ogólne</h2>
-        <p>Niniejsza Polityka plików cookies (zwana dalej „Polityką cookies") dotyczy serwisu internetowego <strong>AsystentDiety</strong> dostępnego pod adresem asystentdiet.pl (zwanego dalej „Serwisem"), którego Administratorem jest Damian Szalbierz, prowadzący jednoosobową działalność gospodarczą, ul. Tadeusza Mikke 12a/11, 60-461 Poznań, NIP 7812072186, e-mail: <a href="mailto:kontakt@asystentdiet.pl" class="font-semibold text-brand-sage-dark hover:text-brand-accent">kontakt@asystentdiet.pl</a>.</p>
-        <p class="mt-2">Pliki cookies stanowią dane informatyczne, w szczególności pliki tekstowe, które przechowywane są w urządzeniu końcowym Użytkownika i wykorzystywane w celu prawidłowego świadczenia Usług.</p>
-        <p class="mt-2">Niniejsza Polityka cookies jest integralną częścią <%= link_to "Polityki prywatności serwisu AsystentDiety", privacy_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent underline" %>.</p>
+        <p>Polityka dotyczy serwisu <strong>AsystentDiety</strong> (asystentdiet.pl, dalej „Serwis”), prowadzonego przez Damiana Szalbierza, prowadzącego jednoosobową działalność gospodarczą, ul. Tadeusza Mikke 12a/11, 60-461 Poznań, NIP 7812072186, e-mail: <%= mail_to "kontakt@asystentdiet.pl", "kontakt@asystentdiet.pl", class: link_class %>.</p>
+        <p class="mt-2">Pliki cookies to niewielkie pliki tekstowe zapisywane w urządzeniu Użytkownika. Serwis korzysta także z pamięci przeglądarki (localStorage, Cache Storage). Polityka cookies jest częścią <%= link_to "Polityki prywatności", privacy_path, class: link_class %>.</p>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">2. Rodzaje i cele wykorzystania plików cookies</h2>
-        <p class="mb-2">Serwis wykorzystuje wyłącznie <strong>cookies niezbędne (funkcjonalne)</strong> — pliki konieczne do prawidłowego funkcjonowania Serwisu i korzystania z Usług:</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">2. Czego używamy</h2>
+        <p class="mb-2">Serwis używa wyłącznie mechanizmów <strong>niezbędnych</strong> do świadczenia usługi, której żąda Użytkownik:</p>
         <ul class="list-disc space-y-1 pl-5">
-          <li><strong>Sesja Użytkownika</strong> — utrzymanie sesji po zalogowaniu, dostęp do diet, planów posiłków i list zakupów (plik <code>session_id</code>).</li>
-          <li><strong>Zabezpieczenia CSRF</strong> — ochrona formularzy i transakcji przed atakami typu Cross-Site Request Forgery.</li>
-          <li><strong>Obsługa płatności</strong> — pliki niezbędne do realizacji płatności przez operatora Stripe.</li>
+          <li><strong><code>session_id</code></strong> — utrzymanie zalogowania (plik stały, do wylogowania lub usunięcia; sesja wygasa po 12 miesiącach).</li>
+          <li><strong><code>_dieting_app_session</code></strong> — sesja aplikacji: zabezpieczenie formularzy przed atakami CSRF i komunikaty po wykonaniu akcji (plik sesyjny).</li>
+          <li><strong>localStorage</strong> — kolejka zmian wykonanych bez dostępu do Internetu (np. odhaczenie produktu na liście zakupów), wysyłana po odzyskaniu połączenia.</li>
+          <li><strong>Cache Storage (service worker)</strong> — kopie odwiedzonych stron planu, posiłków i listy zakupów do pracy offline; czyszczone przy wylogowaniu.</li>
         </ul>
-        <p class="mt-2"><strong>Cel:</strong> świadczenie Usług zgodnie z Regulaminem (art. 6 ust. 1 lit. b RODO). Użycie tych plików nie wymaga zgody, gdyż są one niezbędne do świadczenia usługi telekomunikacyjnej.</p>
         <div class="mt-3 rounded-2xl border border-brand-sage/30 bg-brand-cream/40 p-4">
           <p class="font-semibold">Serwis nie używa:</p>
           <ul class="list-disc space-y-1 pl-5">
-            <li>cookies analitycznych (Google Analytics, statystyki zewnętrzne),</li>
-            <li>cookies marketingowych (Facebook Pixel, reklamy, retargeting),</li>
-            <li>zewnętrznych narzędzi śledzących.</li>
+            <li>cookies analitycznych (np. Google Analytics),</li>
+            <li>cookies marketingowych (np. piksele reklamowe, retargeting),</li>
+            <li>zasobów ładowanych z zewnętrznych serwerów (czcionki, skrypty, obrazy są serwowane z Serwisu).</li>
           </ul>
         </div>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">3. Zarządzanie plikami cookies i zgoda</h2>
+        <h2 class="mb-2 text-xl font-bold font-serif">3. Podstawa prawna i zgoda</h2>
         <ol class="list-decimal space-y-1 pl-5">
-          <li>Zgodnie z przepisami prawa telekomunikacyjnego, przechowywanie informacji lub uzyskiwanie dostępu do informacji już przechowywanej w urządzeniu końcowym Użytkownika wymaga jego zgody, za wyjątkiem plików niezbędnych do świadczenia Usługi. Serwis używa wyłącznie plików niezbędnych, dlatego nie wyświetla banera zgody na cookies.</li>
-          <li>Użytkownik może w każdej chwili samodzielnie zmienić ustawienia dotyczące plików cookies w swojej przeglądarce internetowej — usunąć pliki, zablokować ich stosowanie lub włączyć informowanie o ich każdorazowym umieszczeniu na urządzeniu.</li>
-          <li>Ograniczenie stosowania plików cookies może wpłynąć na funkcjonalności dostępne w Serwisie, w tym może uniemożliwić zalogowanie się lub dokonanie płatności.</li>
+          <li>Przechowywanie informacji w urządzeniu Użytkownika i dostęp do nich nie wymagają zgody, jeżeli są niezbędne do dostarczania usługi świadczonej drogą elektroniczną, której żąda Użytkownik (art. 399 ust. 3 pkt 2 ustawy z dnia 12 lipca 2024 r. — Prawo komunikacji elektronicznej). Serwis używa wyłącznie takich mechanizmów, dlatego nie wyświetla banera zgody.</li>
+          <li>Dane osobowe zawarte w tych mechanizmach przetwarzamy w celu świadczenia usługi (art. 6 ust. 1 lit. b RODO) oraz zapewnienia bezpieczeństwa Serwisu (art. 6 ust. 1 lit. f RODO).</li>
+          <li>Możesz w każdej chwili usunąć pliki cookies i dane witryny w ustawieniach przeglądarki lub zablokować ich zapisywanie. Zablokowanie mechanizmów niezbędnych uniemożliwi zalogowanie się i korzystanie z Serwisu.</li>
         </ol>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">4. Cookies podmiotów trzecich</h2>
-        <p>Serwis współpracuje z podmiotem trzecim w zakresie obsługi płatności: <strong>Stripe, Inc.</strong> W trakcie realizacji płatności (strona płatności Stripe Checkout oraz panel zarządzania subskrypcją) Stripe może używać własnych plików cookies zgodnie ze swoją polityką prywatności, dostępną pod adresem <a href="https://stripe.com/privacy" target="_blank" class="text-brand-sage-dark hover:text-brand-accent underline">stripe.com/privacy</a>.</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">4. Strona płatności Stripe</h2>
+        <p>Płatności odbywają się na stronie Stripe Checkout oraz w panelu zarządzania subskrypcją Stripe. Na tych stronach Stripe używa własnych plików cookies zgodnie ze swoją polityką: <%= link_to "stripe.com/privacy", "https://stripe.com/privacy", class: link_class %>.</p>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">5. Okres przechowywania plików cookies</h2>
-        <ol class="list-decimal space-y-1 pl-5">
-          <li><strong>Sesyjne pliki cookies</strong> — przechowywane na urządzeniu Użytkownika do momentu zakończenia sesji przeglądarki; zapisane informacje są wówczas trwale usuwane z pamięci urządzenia.</li>
-          <li><strong>Stałe pliki cookies</strong> — przechowywane na urządzeniu do momentu ich ręcznego skasowania lub wygaśnięcia (np. plik <code>session_id</code> utrzymujący zalogowanie). Cookies podmiotów trzecich mają własne okresy przechowywania określone przez tych dostawców.</li>
-        </ol>
-        <p class="mt-2">Powyższy wykaz może ulec zmianie w zależności od rozwoju funkcjonalności Serwisu. Administrator informuje o istotnych zmianach w niniejszej Polityce cookies.</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">5. Zmiany</h2>
+        <p>Jeżeli Serwis zacznie używać mechanizmów wymagających zgody (np. analitycznych), zostanie to opisane w tej Polityce, a zgoda będzie zbierana przed ich użyciem.</p>
       </section>
     </div>
   </div>
