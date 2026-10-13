@@ -7,6 +7,8 @@ class User < ApplicationRecord
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
 
   after_create :create_owned_shopping_cart
+  # Prepended so they run before the dependent: :destroy callbacks below delete the owned cart.
+  before_destroy :ensure_no_active_subscription, :release_shopping_carts, prepend: true
 
   belongs_to :active_shopping_cart, class_name: 'ShoppingCart', optional: true, inverse_of: :active_users
   has_one :owned_shopping_cart, class_name: 'ShoppingCart', dependent: :destroy, inverse_of: :user
@@ -21,12 +23,13 @@ class User < ApplicationRecord
            dependent: :destroy,
            inverse_of: :invitee
 
-  has_many :diets, dependent: :nullify
+  has_many :diets, dependent: :destroy
   has_many :recipes, dependent: :destroy
   has_many :canonical_products, dependent: :destroy
   has_many :product_substitutions, dependent: :destroy
   has_many :meal_plan_product_substitutions, dependent: :destroy
   has_many :substitution_product_matches, dependent: :destroy
+  has_many :product_name_suggestions, dependent: :destroy
   has_many :diet_set_plans, through: :diets
   has_many :products, through: :diets
   has_many :audit_logs, through: :diets
@@ -168,5 +171,21 @@ class User < ApplicationRecord
   def create_owned_shopping_cart
     cart = ShoppingCart.create!(user: self)
     update_column(:active_shopping_cart_id, cart.id)
+  end
+
+  def ensure_no_active_subscription
+    return unless subscription_active?
+
+    errors.add(:base, 'Użytkownik ma aktywną subskrypcję — najpierw anuluj ją w Stripe.')
+    throw :abort
+  end
+
+  # Un-share accepted carts so partners fall back to their own cart, then drop our pointer
+  # to the owned cart that dependent: :destroy is about to delete.
+  def release_shopping_carts
+    ShoppingCartInvitation.accepted.involving(self).find_each do |invitation|
+      ShoppingCartSharingService.new(invitation).revoke!(actor: self)
+    end
+    update_column(:active_shopping_cart_id, nil)
   end
 end

@@ -196,4 +196,61 @@ RSpec.describe User, type: :model do
       expect(user.reload).to have_attributes(ai_free_used_count: 0, ai_quota_used_count: 0)
     end
   end
+
+  describe '#destroy' do
+    let(:user) { create(:user) }
+
+    it 'removes the user together with their diet tree' do
+      diet_set = create(:diet_set, diet: create(:diet, user: user))
+      product = create(:product, meal: create(:meal, diet_set: diet_set), diet_set: nil)
+
+      expect { user.destroy! }.to change(Diet, :count).by(-1)
+      expect(Meal.exists?(product.meal_id)).to be(false)
+    end
+
+    it 'succeeds while the user points at their own cart' do
+      user.update!(active_shopping_cart: user.owned_shopping_cart)
+
+      expect { user.destroy! }.to change(described_class, :count).by(-1)
+    end
+
+    it 'gives the invitee their own cart back when the deleted user owned the shared cart' do
+      partner = create(:user)
+      create(:shopping_cart_invitation, inviter: user, invitee: partner).accept!
+
+      user.reload.destroy!
+
+      expect(partner.reload.active_shopping_cart).to eq(partner.owned_shopping_cart)
+    end
+
+    it 'gives the inviter their own cart back when the deleted user was the invitee' do
+      partner = create(:user)
+      create(:shopping_cart_invitation, inviter: partner, invitee: user).accept!
+
+      user.reload.destroy!
+
+      expect(partner.reload.active_shopping_cart).to eq(partner.owned_shopping_cart)
+    end
+
+    it 'refuses to delete a user with an active subscription' do
+      user.update!(subscription: :active)
+
+      expect(user.destroy).to be(false)
+      expect(user.errors[:base]).to be_present
+      expect(described_class.exists?(user.id)).to be(true)
+    end
+
+    it 'hard-deletes cart items, including soft-deleted ones' do
+      item = create(:shopping_cart_item, shopping_cart: user.owned_shopping_cart)
+      item.destroy
+
+      expect { user.destroy! }.to change { ShoppingCartItem.with_deleted.count }.by(-1)
+    end
+
+    it 'removes product name suggestions' do
+      ProductNameSuggestion.create!(user: user, raw_name: 'jablko', match_type: 'new', source: 'manual')
+
+      expect { user.destroy! }.to change(ProductNameSuggestion, :count).by(-1)
+    end
+  end
 end
