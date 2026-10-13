@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  # "19,90 zł" / "199 zł" — from User::PRO_PRICES_PLN, the single source of the Pro price.
-  def pro_price(interval)
+  # Polish money format (comma decimals, whole złoty without ",00") from User::PRO_PRICES_PLN,
+  # the single source of the Pro price.
+  # per_month: true divides the yearly price by 12 for comparison ("16,58 zł").
+  def pro_price(interval, per_month: false)
     amount = User::PRO_PRICES_PLN.fetch(interval)
+    amount = (amount / 12).round(2) if per_month
     number_to_currency(amount, unit: 'zł', format: '%n %u', separator: ',', delimiter: ' ',
                                precision: amount.frac.zero? ? 0 : 2)
   end

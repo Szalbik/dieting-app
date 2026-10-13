@@ -19,7 +19,8 @@ RSpec.describe 'Subscriptions', type: :request do
       get upgrade_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("19,90 zł", 'odnawia się automatycznie', 'PKO BP', terms_path)
+      expect(response.body).to include('19,90 zł', '199 zł', 'odnawia się automatycznie', 'PKO BP', terms_path)
+      expect(response.body).to include('name="interval" value="monthly"', 'name="interval" value="yearly"')
       expect(WebMock).not_to have_requested(:any, /api.stripe.com/)
     end
 

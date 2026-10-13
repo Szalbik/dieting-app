@@ -10,9 +10,9 @@ RSpec.describe 'Pro price', type: :request do
 
   it 'shows the constant on the landing page and in the terms' do
     get root_path
-    expect(response.body).to include('24,90 zł', 'Plan Pro (24,90 zł/mies.)')
+    expect(response.body).to include('24,90 zł', 'lub 249 zł rocznie', 'Plan Pro (24,90 zł/mies. lub 249 zł/rok)')
     get terms_path
-    expect(response.body).to include('24,90 PLN brutto')
+    expect(response.body).to include('24,90 PLN brutto', '249 PLN brutto')
   end
 
   it 'shows the constant on the profile and upgrade page' do
@@ -20,6 +20,6 @@ RSpec.describe 'Pro price', type: :request do
     get profile_path
     expect(response.body).to include('Przejdź na Pro — 24,90 zł/mies.')
     get upgrade_path
-    expect(response.body).to include('24,90 zł')
+    expect(response.body).to include('24,90 zł', '249 zł', '20,75 zł')
   end
 end
