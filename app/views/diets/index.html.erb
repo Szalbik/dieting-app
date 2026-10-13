@@ -49,7 +49,7 @@
                       <% end %>
                       <%= link_to 'Edit', edit_diet_path(diet), class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                       |
-                      <%= button_to 'Delete', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-rose-600 hover:text-rose-700 transition-colors duration-200' %>
+                      <%= button_to 'Delete', diet_path(diet.id), method: :delete, form: { data: { turbo_confirm: "Usunąć dietę „#{diet.name}” wraz ze wszystkimi dniami i posiłkami? Tej operacji nie można cofnąć." } }, class: 'text-rose-600 hover:text-rose-700 transition-colors duration-200' %>
                     </td>
                   </tr>
                 <% end %>
@@ -91,7 +91,7 @@
                     <%= link_to 'Podgląd PDF', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
                     <%= button_to 'Przeparsuj', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL) ani informacji o stanie zdrowia? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, form_class: 'inline-block', class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
                   <% end %>
-                  <%= button_to 'Usuń', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, form_class: 'inline-block ml-auto', class: 'text-rose-600 hover:text-rose-700 font-medium' %>
+                  <%= button_to 'Usuń', diet_path(diet.id), method: :delete, form: { data: { turbo_confirm: "Usunąć dietę „#{diet.name}” wraz ze wszystkimi dniami i posiłkami? Tej operacji nie można cofnąć." } }, form_class: 'inline-block ml-auto', class: 'text-rose-600 hover:text-rose-700 font-medium' %>
                 </div>
               <% end %>
             </div>

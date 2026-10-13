@@ -35,6 +35,17 @@ RSpec.describe 'Diets', type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include('My diet plan')
     end
+
+    it 'asks for confirmation before deleting a diet' do
+      login
+      create(:diet, user: user, name: 'Keto')
+      get diets_path
+
+      confirm = 'data-turbo-confirm="Usunąć dietę „Keto” wraz ze wszystkimi dniami i posiłkami? ' \
+                'Tej operacji nie można cofnąć."'
+      expect(response.body.scan(confirm).size).to eq(2) # desktop + mobile
+      expect(response.body).not_to include('data-confirm=')
+    end
   end
 
   describe 'GET /diets/new' do

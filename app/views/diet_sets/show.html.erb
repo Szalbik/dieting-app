@@ -4,7 +4,7 @@
       <p class="text-xs text-brand-ink-soft"><%= link_to @diet.name, diet_path(@diet), class: "hover:underline" %></p>
       <h1 class="font-serif text-2xl font-bold text-brand-ink"><%= @diet_set.name %></h1>
     </div>
-    <%= button_to 'Usuń dzień', diet_set_path(@diet_set), method: :delete, data: { confirm: 'Usunąć ten dzień i wszystkie jego posiłki?' }, class: 'text-sm font-medium text-rose-600 hover:text-rose-700' %>
+    <%= button_to 'Usuń dzień', diet_set_path(@diet_set), method: :delete, form: { data: { turbo_confirm: 'Usunąć ten dzień i wszystkie jego posiłki?' } }, class: 'text-sm font-medium text-rose-600 hover:text-rose-700' %>
   </div>
 
   <% totals = @diet_set.nutrition_totals %>
