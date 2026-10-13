@@ -44,7 +44,7 @@
                       <% if diet.pdf.attached? %>
                         <%= link_to 'Preview pdf', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                         |
-                        <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form_class: 'inline-block', form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL)? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
+                        <%= button_to 'Przeparsuj ponownie', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form_class: 'inline-block', form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL) ani informacji o stanie zdrowia? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
                         |
                       <% end %>
                       <%= link_to 'Edit', edit_diet_path(diet), class: 'text-brand-navy hover:text-brand-navy-strong transition-colors duration-200' %>
@@ -89,7 +89,7 @@
                   <%= link_to 'Edytuj', edit_diet_path(diet), class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
                   <% if diet.pdf.attached? %>
                     <%= link_to 'Podgląd PDF', url_for(diet.pdf), target: '_blank', class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
-                    <%= button_to 'Przeparsuj', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL)? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, form_class: 'inline-block', class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
+                    <%= button_to 'Przeparsuj', reparse_diet_path(diet), method: :post, params: { pii_confirmed: '1' }, form: { data: { turbo_confirm: 'Potwierdzasz, że PDF nie zawiera danych osobowych (imię i nazwisko, PESEL) ani informacji o stanie zdrowia? Obecne zestawy i posiłki zostaną usunięte i odtworzone z PDF.' } }, form_class: 'inline-block', class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
                   <% end %>
                   <%= button_to 'Usuń', diet_path(diet.id), method: :delete, data: { confirm: 'Are you sure?' }, form_class: 'inline-block ml-auto', class: 'text-rose-600 hover:text-rose-700 font-medium' %>
                 </div>
