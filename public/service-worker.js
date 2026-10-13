@@ -90,6 +90,8 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   // The outbox fetches a live page this way to renew a stale CSRF token: never answer it from cache.
   if (request.cache === "no-store") return;
+  // Range requests for media: let the browser stream them directly.
+  if (request.destination === "video" || request.destination === "audio") return;
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;

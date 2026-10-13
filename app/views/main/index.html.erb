@@ -63,10 +63,13 @@
     <div class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-accent">Jak to działa</div>
     <h2 class="max-w-3xl text-4xl font-black font-serif tracking-tight">Od PDF do koszyka zakupów w kilka minut.</h2>
     <p class="mt-4 mb-14 max-w-2xl text-lg leading-8 text-brand-soft-gray">Bez ręcznego wpisywania. Bez zgadywania. Plan Twojego dietetyka zamienia się w jasną, gotową do działania rutynę.</p>
-    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <div class="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+    <div class="grid gap-6 md:grid-cols-2">
       <% [["01","📄","Wgraj PDF diety","Dodaj plik PDF od dietetyka. AsystentDiety odczyta go automatycznie — niezależnie od formatu i układu."],["02","🍽️","Przeglądaj posiłki","Zobacz wszystkie posiłki poukładane wg dni i typów. Zamień na alternatywy sugerowane w planie jednym kliknięciem."],["03","📅","Zaplanuj tydzień","Wybierz posiłki na każdy dzień tygodnia. Mieszaj, powtarzaj albo trzymaj się dokładnie zaleceń dietetyka."],["04","🛒","Odbierz listę zakupów","Dokładna lista — ilości, kategorie, wszystko — gotowa do zabrania do sklepu lub udostępnienia w aplikacji dostawczej."]].each do |s| %>
         <div class="relative overflow-hidden rounded-3xl bg-brand-cream p-8 transition hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)]"><div class="absolute right-4 top-1 text-8xl font-black font-serif text-brand-sage/15"><%= s[0] %></div><div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-sage-dark text-2xl"><%= s[1] %></div><h3 class="mb-2 text-xl font-bold font-serif"><%= s[2] %></h3><p class="text-sm leading-6 text-brand-soft-gray"><%= s[3] %></p></div>
       <% end %>
+    </div>
+    <video src="/teaser.mp4" poster="/teaser-poster.jpg" controls muted playsinline preload="none" aria-label="Teaser AsystentDiety — od PDF do listy zakupów" class="order-first lg:order-last mx-auto w-full max-w-[300px] rounded-[32px] border-[8px] border-brand-charcoal bg-brand-warm-white shadow-[0_30px_80px_rgba(0,0,0,0.18)]"></video>
     </div>
   </section>
 
