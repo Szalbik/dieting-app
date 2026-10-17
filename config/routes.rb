@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     member do
       patch :toggle_active
       post :reparse
+      get :pdf
     end
   end
 

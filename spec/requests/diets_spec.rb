@@ -179,6 +179,40 @@ RSpec.describe 'Diets', type: :request do
       end
     end
 
+    context 'with a file that is not a real pdf' do
+      let(:fake_pdf) do
+        file = Tempfile.new(['not-a-pdf', '.pdf'])
+        file.write('hello, not a pdf')
+        file.rewind
+        Rack::Test::UploadedFile.new(file.path, 'application/pdf')
+      end
+
+      it 'rejects it by magic bytes before enqueueing or spending quota' do
+        login
+        expect do
+          post diets_path, params: { diet: { name: 'Fake', pdf: fake_pdf, **consents } }
+        end.not_to have_enqueued_job(DietBuilderJob)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('Plik musi być PDF-em o rozmiarze do 10 MB.')
+        expect(Diet.find_by(name: 'Fake')).to be_nil
+        expect(user.reload.ai_free_used_count.to_i).to eq(0)
+      end
+    end
+
+    it 'rejects a pdf above the byte cap' do
+      stub_const('ApplicationController::MAX_PDF_BYTES', 1000)
+      login
+      pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
+
+      expect do
+        post diets_path, params: { diet: { name: 'Huge', pdf: pdf, **consents } }
+      end.not_to have_enqueued_job(DietBuilderJob)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(Diet.find_by(name: 'Huge')).to be_nil
+    end
+
     it 'rejects a submit without a pdf when only pdf mode is enabled' do
       login
       expect do
@@ -299,6 +333,49 @@ RSpec.describe 'Diets', type: :request do
         4.times { |i| post diets_path, params: { diet: { name: "Lifetime AI diet #{i}", kcal_target: 1800 } } }
         expect(Diet.where(user: user).count).to eq(4)
       end
+    end
+  end
+
+  describe 'PATCH /diets/:id' do
+    it 'ignores a pdf sent with an update' do
+      diet = create(:diet, user: user, name: 'Old name')
+      pdf = fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf')
+      login
+
+      patch diet_path(diet), params: { diet: { name: 'New name', pdf: pdf } }
+
+      expect(diet.reload.name).to eq('New name')
+      expect(diet.pdf).not_to be_attached
+    end
+  end
+
+  describe 'GET /diets/:id/pdf' do
+    let!(:diet) { create(:diet, :with_pdf, user: user) }
+
+    it 'redirects when not authenticated' do
+      get pdf_diet_path(diet)
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it 'serves the owner their pdf' do
+      login
+      get pdf_diet_path(diet)
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq('application/pdf')
+      expect(response.body).to start_with('%PDF')
+    end
+
+    it 'returns 404 for another user diet' do
+      login(other_user)
+      get pdf_diet_path(diet)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'is what the index links to, instead of a permanent Active Storage url' do
+      login
+      get diets_path
+      expect(response.body).to include(pdf_diet_path(diet))
+      expect(response.body).not_to include('rails/active_storage')
     end
   end
 

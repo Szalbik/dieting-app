@@ -62,6 +62,7 @@ class DietsController < ApplicationController
     end
 
     if @diet.source == 'pdf'
+      @diet.errors.add(:base, 'Plik musi być PDF-em o rozmiarze do 10 MB.') unless pdf_upload?(diet_params[:pdf])
       unless params.dig(:diet, :pii_confirmed) == '1'
         @diet.errors.add(:base, 'Potwierdź, że plik nie zawiera danych osobowych. Wybierz plik ponownie.')
       end
@@ -131,11 +132,19 @@ class DietsController < ApplicationController
     @diet = Current.user.diets.find(params[:id])
   end
 
+  # Owner-checked on every hit, unlike the permanent signed Active Storage url.
+  def pdf
+    diet = Current.user.diets.find(params[:id])
+    return head :not_found unless diet.pdf.attached?
+
+    send_data diet.pdf.download, filename: diet.pdf.filename.to_s, type: 'application/pdf', disposition: 'inline'
+  end
+
   def update
     @diet = Current.user.diets.find(params[:id])
 
     respond_to do |format|
-      if @diet.update(diet_params)
+      if @diet.update(diet_params.except(:pdf)) # the file is only accepted through create (consents, quota, type check)
         format.html { redirect_to diets_path, notice: 'Diet was successfully updated.' }
       else
         format.html { render :edit, status: :unprocessable_entity }

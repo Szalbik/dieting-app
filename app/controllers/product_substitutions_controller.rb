@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ProductSubstitutionsController < ApplicationController
-  MAX_PDF_BYTES = 10.megabytes
-
   rate_limit to: 5, within: 3.minutes, only: %i[import_pdf expand_ai rematch],
              with: -> { redirect_to product_substitutions_path, alert: 'Zbyt wiele prób. Spróbuj ponownie za kilka minut.' }
 
@@ -97,13 +95,6 @@ class ProductSubstitutionsController < ApplicationController
   end
 
   private
-
-  # Magic bytes, not the client-declared content type.
-  def pdf_upload?(file)
-    return false unless file.respond_to?(:tempfile) && file.size.to_i.between?(1, MAX_PDF_BYTES)
-
-    Marcel::MimeType.for(file.tempfile, name: file.original_filename.to_s) == 'application/pdf'
-  end
 
   def import_rows(rows)
     inserted = 0
