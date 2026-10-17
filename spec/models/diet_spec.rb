@@ -53,6 +53,32 @@ RSpec.describe Diet, type: :model do
     end
   end
 
+  describe '#fail_generation!' do
+    let(:user) { create(:user, ai_free_used_count: 1) }
+    let(:diet) { create(:diet, user: user, source: 'pdf', status: 'generating') }
+
+    it 'does not refund the quota when the failure comes from the user content' do
+      diet.fail_generation!(RuntimeError.new('Parser nie znalazł dni diety w PDF.'))
+
+      expect(diet.reload.status).to eq('failed')
+      expect(user.reload.ai_free_used_count).to eq(1)
+    end
+
+    it 'refunds the quota when the provider failed' do
+      diet.fail_generation!(Faraday::ServerError.new('503'))
+
+      expect(diet.reload.status).to eq('failed')
+      expect(user.reload.ai_free_used_count).to eq(0)
+    end
+
+    it 'never refunds twice for the same diet' do
+      diet.fail_generation!(Faraday::ServerError.new('503'))
+      diet.fail_generation!(Faraday::ServerError.new('503'))
+
+      expect(user.reload.ai_free_used_count).to eq(0)
+    end
+  end
+
   describe '#parse_pdf_content_with_chat!' do
     it 'saves parsed_json returned by the parser service' do
       diet = create(:diet, :with_pdf)

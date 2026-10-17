@@ -21,14 +21,23 @@ RSpec.describe DietBuilderJob, type: :job do
       expect(user.reload.ai_free_used_count).to eq(1)
     end
 
-    it 'marks the diet failed, refunds the quota and re-raises when parsing errors' do
-      allow(parser).to receive(:call).and_raise('OpenAI API error: boom')
+    it 'marks the diet failed, keeps the quota spent and re-raises when the content cannot be parsed' do
+      allow(parser).to receive(:call).and_raise('Parser nie znalazł dni diety w PDF.')
 
-      expect { described_class.new.perform(diet.id) }.to raise_error('OpenAI API error: boom')
+      expect { described_class.new.perform(diet.id) }.to raise_error('Parser nie znalazł dni diety w PDF.')
 
       diet.reload
       expect(diet.status).to eq('failed')
-      expect(diet.generation_error).to eq('OpenAI API error: boom')
+      expect(diet.generation_error).to eq('Parser nie znalazł dni diety w PDF.')
+      expect(user.reload.ai_free_used_count).to eq(1)
+    end
+
+    it 'refunds the quota when the provider failed' do
+      allow(parser).to receive(:call).and_raise(Faraday::TimeoutError.new('timeout'))
+
+      expect { described_class.new.perform(diet.id) }.to raise_error(Faraday::TimeoutError)
+
+      expect(diet.reload.status).to eq('failed')
       expect(user.reload.ai_free_used_count).to eq(0)
     end
 
@@ -51,7 +60,7 @@ RSpec.describe DietBuilderJob, type: :job do
       end.not_to have_enqueued_job(PopulateDietFromJsonJob)
 
       expect(diet.reload.status).to eq('failed')
-      expect(user.reload.ai_free_used_count).to eq(0)
+      expect(user.reload.ai_free_used_count).to eq(1)
     end
   end
 end

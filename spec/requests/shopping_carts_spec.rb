@@ -20,6 +20,12 @@ RSpec.describe 'Shopping carts', type: :request do
       get shopping_cart_path
       expect(response).to have_http_status(:success)
     end
+
+    it 'subscribes to the live cart through the member-checked channel' do
+      login
+      get shopping_cart_path
+      expect(response.body).to include('channel="ShoppingCartChannel"')
+    end
   end
 
   describe 'GET /shopping_cart drag and drop markup' do

@@ -19,6 +19,15 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: 'Access denied.'
   end
 
+  def ai_quota_exhausted_alert
+    if Current.user.subscribed?
+      "Wykorzystałeś #{helpers.ai_operations(User::AI_QUOTA_LIMITS.fetch(:pro))} w tym miesiącu. " \
+        'Limit odnowi się 1. dnia przyszłego miesiąca.'
+    else
+      'Wykorzystałeś darmową operację AI. Przejdź na Pro, aby kontynuować.'
+    end
+  end
+
   # Todoist token lives in the session for 30 minutes (set in TodoistController#receive_code).
   def todoist_token
     token = session[:todoist_token]&.stringify_keys

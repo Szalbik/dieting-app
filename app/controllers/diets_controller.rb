@@ -89,7 +89,10 @@ class DietsController < ApplicationController
       return
     end
 
-    if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
+    # Reserve (check + consume in one UPDATE) before anything is enqueued, so
+    # parallel submissions cannot all pass a check and then each spend.
+    ai_operation = %w[pdf generated].include?(@diet.source)
+    if ai_operation && !Current.user.reserve_ai_quota!
       redirect_to new_diet_path, alert: ai_quota_exhausted_alert
       return
     end
@@ -101,7 +104,6 @@ class DietsController < ApplicationController
         when 'generated' then GenerateDietJob.perform_later(@diet.id)
         end
 
-        Current.user.consume_ai_quota! if %w[pdf generated].include?(@diet.source)
         if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
           Current.user.record_consent!(:parse_disclaimer)
         end
@@ -118,6 +120,7 @@ class DietsController < ApplicationController
         format.html { redirect_to diets_path, notice: notice }
         format.json { render :new, status: :created, location: diets_path }
       else
+        Current.user.refund_ai_quota! if ai_operation
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @diet.errors, status: :unprocessable_entity }
       end
@@ -184,27 +187,27 @@ class DietsController < ApplicationController
       return
     end
 
-    unless Current.user.ai_quota_available?
+    unless Current.user.reserve_ai_quota!
       redirect_to diets_path, alert: ai_quota_exhausted_alert
       return
     end
 
-    @diet.update!(status: 'generating', generation_error: nil, pii_confirmed_at: Time.current)
+    # Conditional flip: a concurrent reparse of the same diet gets 0 rows and its reservation back.
+    now = Time.current
+    flipped = Diet.where(id: @diet.id)
+      .where('status != ? OR updated_at < ?', 'generating', Diet::STUCK_GENERATING_AFTER.ago)
+      .update_all(status: 'generating', generation_error: nil, pii_confirmed_at: now, updated_at: now) # rubocop:disable Rails/SkipsModelValidations
+    if flipped.zero?
+      Current.user.refund_ai_quota!
+      redirect_to diets_path, alert: 'Ta dieta jest właśnie wczytywana. Poczekaj, aż się zakończy.'
+      return
+    end
+
     DietBuilderJob.perform_later(@diet.id)
-    Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'
   end
 
   private
-
-  def ai_quota_exhausted_alert
-    if Current.user.subscribed?
-      "Wykorzystałeś #{helpers.ai_operations(User::AI_QUOTA_LIMITS.fetch(:pro))} w tym miesiącu. " \
-        'Limit odnowi się 1. dnia przyszłego miesiąca.'
-    else
-      'Wykorzystałeś darmową operację AI. Przejdź na Pro, aby kontynuować.'
-    end
-  end
 
   def search_params
     params.require(:diet).permit(diet_set_ids: [])

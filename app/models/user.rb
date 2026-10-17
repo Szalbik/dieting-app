@@ -139,6 +139,23 @@ class User < ApplicationRecord
     increment!(:ai_quota_used_count)
   end
 
+  # Check-and-consume in one conditional UPDATE, so parallel requests cannot all
+  # pass ai_quota_available? and then each consume. Returns false when exhausted.
+  def reserve_ai_quota!
+    return true if subscription_lifetime?
+
+    if subscribed?
+      reset_ai_quota_period_if_stale!
+      column, limit = :ai_quota_used_count, AI_QUOTA_LIMITS.fetch(:pro)
+    else
+      column, limit = :ai_free_used_count, AI_QUOTA_LIMITS.fetch(:free)
+    end
+
+    reserved = User.where(id: id).where("#{column} < ?", limit).update_all("#{column} = #{column} + 1").positive? # rubocop:disable Rails/SkipsModelValidations
+    reload if reserved
+    reserved
+  end
+
   # Inverse of consume_ai_quota! — called when the enqueued AI job fails, so a
   # user isn't charged a parse for our parsing error.
   def refund_ai_quota!
@@ -178,11 +195,7 @@ class User < ApplicationRecord
   # abort (better no deletion than charges for an account that is gone); the customer record is
   # removed last, best effort — a failure there must not leave a half-deleted account.
   def close_account!
-    if stripe_customer_id?
-      Stripe::Subscription.list(customer: stripe_customer_id, status: 'all').auto_paging_each do |sub|
-        Stripe::Subscription.cancel(sub.id) if LIVE_STRIPE_STATUSES.include?(sub.status)
-      end
-    end
+    cancel_live_stripe_subscriptions
     transaction do
       update_columns(subscription: :inactive, subscription_end_date: nil) # lets ensure_no_active_subscription pass
       destroy!
@@ -191,6 +204,18 @@ class User < ApplicationRecord
   end
 
   private
+
+  # A customer id from another Stripe env (sandbox → live) or deleted in the dashboard has no
+  # subscriptions to cancel — it must not block deletion forever.
+  def cancel_live_stripe_subscriptions
+    return unless stripe_customer_id?
+
+    Stripe::Subscription.list(customer: stripe_customer_id, status: 'all').auto_paging_each do |sub|
+      Stripe::Subscription.cancel(sub.id) if LIVE_STRIPE_STATUSES.include?(sub.status)
+    end
+  rescue Stripe::InvalidRequestError => e
+    raise unless e.code == 'resource_missing'
+  end
 
   def delete_stripe_customer
     Stripe::Customer.delete(stripe_customer_id) if stripe_customer_id?

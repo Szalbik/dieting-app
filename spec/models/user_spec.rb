@@ -170,6 +170,32 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#reserve_ai_quota!' do
+    it 'reserves one operation atomically: a stale copy of the same user cannot reserve past the limit' do
+      user = create(:user)
+      stale = User.find(user.id)
+
+      expect(user.reserve_ai_quota!).to be(true)
+      expect(stale.reserve_ai_quota!).to be(false)
+      expect(user.reload.ai_free_used_count).to eq(1)
+    end
+
+    it 'uses the monthly counter for a Pro user and resets a stale period first' do
+      user = create(:user, subscription: :active, ai_quota_used_count: 5,
+                           ai_quota_period_started_at: 2.months.ago.beginning_of_month)
+
+      expect(user.reserve_ai_quota!).to be(true)
+      expect(user.reload.ai_quota_used_count).to eq(1)
+    end
+
+    it 'always succeeds for a lifetime user without counting' do
+      user = create(:user, subscription: :lifetime, ai_free_used_count: 99)
+
+      expect(user.reserve_ai_quota!).to be(true)
+      expect(user.reload.ai_free_used_count).to eq(99)
+    end
+  end
+
   describe '#consume_ai_quota!' do
     it 'increments the lifetime counter for a free user' do
       user = create(:user)

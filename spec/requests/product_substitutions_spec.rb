@@ -110,12 +110,72 @@ RSpec.describe 'Product substitutions', type: :request do
   end
 
   describe 'POST /product_substitutions/expand_ai' do
-    it 'enqueues ExpandSubstitutionsWithAiJob' do
+    it 'enqueues ExpandSubstitutionsWithAiJob and spends one AI operation' do
       login
       expect do
         post expand_ai_product_substitutions_path
       end.to have_enqueued_job(ExpandSubstitutionsWithAiJob)
       expect(response).to redirect_to(product_substitutions_path)
+      expect(user.reload.ai_free_used_count).to eq(1)
+    end
+
+    it 'refuses when the AI quota is spent' do
+      login
+      user.update!(ai_free_used_count: 1)
+      expect do
+        post expand_ai_product_substitutions_path
+      end.not_to have_enqueued_job(ExpandSubstitutionsWithAiJob)
+      expect(response).to redirect_to(product_substitutions_path)
+      expect(flash[:alert]).to include('Pro')
+    end
+  end
+
+  describe 'POST /product_substitutions/import_pdf' do
+    let(:pdf) { fixture_file_upload(Rails.root.join('spec/fixtures/files/diet_for_one_week.pdf'), 'application/pdf') }
+    let(:consents) { { pii_confirmed: '1', health_data: '1' } }
+
+    it 'imports rows and spends one AI operation' do
+      login
+      parser = instance_double(Chat::ProductSubstitutionParserService,
+                               call: [{ 'source' => 'jajka', 'replacements' => ['tofu'] }])
+      allow(Chat::ProductSubstitutionParserService).to receive(:new).and_return(parser)
+
+      expect do
+        post import_pdf_product_substitutions_path, params: { pdf: pdf, **consents }
+      end.to change { user.product_substitutions.count }.by(1)
+      expect(user.reload.ai_free_used_count).to eq(1)
+    end
+
+    it 'refuses when the AI quota is spent, without calling OpenAI' do
+      login
+      user.update!(ai_free_used_count: 1)
+      expect(Chat::ProductSubstitutionParserService).not_to receive(:new)
+
+      post import_pdf_product_substitutions_path, params: { pdf: pdf, **consents }
+
+      expect(response).to redirect_to(product_substitutions_path)
+      expect(flash[:alert]).to include('Pro')
+    end
+
+    it 'rejects a file that is not a PDF, without spending quota' do
+      login
+      expect(Chat::ProductSubstitutionParserService).not_to receive(:new)
+      fake = Rack::Test::UploadedFile.new(StringIO.new('<html>nope</html>'), 'application/pdf', original_filename: 'x.pdf')
+
+      post import_pdf_product_substitutions_path, params: { pdf: fake, **consents }
+
+      expect(flash[:alert]).to include('PDF')
+      expect(user.reload.ai_free_used_count).to eq(0)
+    end
+
+    it 'does not leak the exception message when parsing fails' do
+      login
+      allow(Chat::ProductSubstitutionParserService).to receive(:new).and_raise(RuntimeError, 'secret internals')
+
+      post import_pdf_product_substitutions_path, params: { pdf: pdf, **consents }
+
+      expect(flash[:alert]).not_to include('secret internals')
+      expect(user.reload.ai_free_used_count).to eq(1)
     end
   end
 end

@@ -51,6 +51,18 @@ class Diet < ApplicationRecord
   # "generating" diet is assumed orphaned by a dead worker and may be reparsed.
   STUCK_GENERATING_AFTER = 30.minutes
 
+  # Failures we pay for but the user did not cause: provider down, timeouts,
+  # rate limits. Anything else (no days found, bad content) keeps the quota
+  # spent — otherwise a guaranteed-failing PDF is a free, unbounded OpenAI loop.
+  REFUNDABLE_ERRORS = [
+    Faraday::ServerError, Faraday::TooManyRequestsError, Faraday::TimeoutError, Faraday::ConnectionFailed,
+    Timeout::Error, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, Errno::ECONNREFUSED, SocketError
+  ].freeze
+
+  def self.refundable_error?(error)
+    REFUNDABLE_ERRORS.any? { |klass| error.is_a?(klass) }
+  end
+
   def generating?
     status == 'generating'
   end
@@ -59,7 +71,7 @@ class Diet < ApplicationRecord
   # mark failed and give the AI op back — only on the generating→failed
   # transition, so a manual job retry can't refund twice.
   def fail_generation!(error)
-    refund = generating?
+    refund = generating? && Diet.refundable_error?(error)
     update!(status: 'failed', generation_error: error.message.to_s.truncate(1000))
     user&.refund_ai_quota! if refund
   end
