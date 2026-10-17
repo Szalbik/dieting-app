@@ -29,12 +29,43 @@ RSpec.describe 'Shopping cart invitations', type: :request do
       expect(invitation.invitee).to eq(invitee)
     end
 
-    it 'redirects with alert when the email is unknown' do
+    let(:uniform_notice) { 'Jeśli konto o tym adresie istnieje, zaproszenie zostało wysłane.' }
+
+    it 'answers with the same notice when the invitation was created' do
       login(inviter)
-      post shopping_cart_invitations_path, params: { email_address: 'nobody@example.com' }
+      post shopping_cart_invitations_path, params: { email_address: invitee.email_address }
+      expect(flash[:notice]).to eq(uniform_notice)
+      expect(flash[:alert]).to be_nil
+    end
+
+    it 'answers an unknown email exactly like a known one' do
+      login(inviter)
+      expect do
+        post shopping_cart_invitations_path, params: { email_address: 'nobody@example.com' }
+      end.not_to change(ShoppingCartInvitation, :count)
       expect(response).to redirect_to(profile_path)
-      follow_redirect!
-      expect(response.body).to include('Nie znaleziono uzytkownika')
+      expect(flash[:notice]).to eq(uniform_notice)
+      expect(flash[:alert]).to be_nil
+    end
+
+    it 'does not reveal that the invitee already shares a list with someone else' do
+      create(:shopping_cart_invitation, invitee: invitee, status: :accepted)
+      login(inviter)
+      expect do
+        post shopping_cart_invitations_path, params: { email_address: invitee.email_address }
+      end.not_to change(ShoppingCartInvitation, :count)
+      expect(flash[:notice]).to eq(uniform_notice)
+      expect(flash[:alert]).to be_nil
+    end
+
+    it 'throttles repeated invitations from one user' do
+      login(inviter)
+      allow(Rails.cache).to receive(:increment).and_return(11)
+      expect do
+        post shopping_cart_invitations_path, params: { email_address: invitee.email_address }
+      end.not_to change(ShoppingCartInvitation, :count)
+      expect(response).to redirect_to(profile_path)
+      expect(flash[:alert]).to eq('Try again later.')
     end
   end
 

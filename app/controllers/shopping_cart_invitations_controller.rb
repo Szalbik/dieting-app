@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 class ShoppingCartInvitationsController < ApplicationController
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to profile_url, alert: 'Try again later.' }
+
+  # One answer whatever happened: the form must not tell whether an address has an
+  # account or whether that person already shares a list with someone.
   def create
     invitee = User.find_by(email_address: params[:email_address].to_s.strip.downcase)
+    Current.user.sent_shopping_cart_invitations.create(invitee: invitee) if invitee
 
-    unless invitee
-      redirect_to profile_path, alert: 'Nie znaleziono uzytkownika o podanym adresie e-mail.'
-      return
-    end
-
-    invitation = Current.user.sent_shopping_cart_invitations.new(invitee: invitee)
-
-    if invitation.save
-      redirect_to profile_path, notice: 'Zaproszenie do wspolnej listy zakupow zostalo wyslane.'
-    else
-      redirect_to profile_path, alert: invitation.errors.full_messages.to_sentence
-    end
+    redirect_to profile_path, notice: 'Jeśli konto o tym adresie istnieje, zaproszenie zostało wysłane.'
   end
 
   def accept
