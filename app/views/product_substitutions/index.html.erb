@@ -8,11 +8,20 @@
 
   <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200">
     <h2 class="mb-3 text-lg font-semibold">Import PDF</h2>
-    <%= form_with url: import_pdf_product_substitutions_path, method: :post, multipart: true, class: "flex flex-col gap-3 sm:flex-row sm:items-end" do |f| %>
-      <div class="flex-1">
-        <%= file_field_tag :pdf, accept: "application/pdf", class: "w-full text-sm" %>
+    <%= form_with url: import_pdf_product_substitutions_path, method: :post, multipart: true, class: "flex flex-col gap-3" do |f| %>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div class="flex-1">
+          <%= file_field_tag :pdf, accept: "application/pdf", class: "w-full text-sm" %>
+        </div>
+        <%= f.submit "Importuj zamienniki", class: "px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-500" %>
       </div>
-      <%= f.submit "Importuj zamienniki", class: "px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-500" %>
+      <label class="flex items-start gap-2 text-sm text-gray-900">
+        <%= check_box_tag :pii_confirmed, "1", false, class: "mt-1" %>
+        <span>Oświadczam, że usunąłem z pliku dane osobowe (imię i nazwisko, PESEL, adres, dane kontaktowe) oraz informacje o stanie zdrowia. Plik jest przetwarzany przez zewnętrznego dostawcę AI (OpenAI).</span>
+      </label>
+      <% unless Current.user.consented?(:health_data) %>
+        <%= render "shared/health_data_consent", field: :health_data, checked: false %>
+      <% end %>
     <% end %>
   </section>
 

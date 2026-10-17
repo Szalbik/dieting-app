@@ -108,6 +108,7 @@ class Chat::Diet::Strategies::NativePdf
         ]
         }],
         text: { format: { type: 'json_schema', name: name, strict: true, schema: schema } },
+        store: false, # Privacy policy: OpenAI keeps no response objects; the uploaded file is deleted after parsing
         **X.responses_params(model: @model, reasoning_effort: @reasoning_effort),
       })
     end

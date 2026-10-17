@@ -3,10 +3,17 @@
 class User < ApplicationRecord
   enum :subscription, { inactive: 0, active: 1, lifetime: 2 }, prefix: true
 
-  AI_QUOTA_LIMITS = { free: 3, pro: 20 }.freeze # free = lifetime total, pro = per month
+  AI_QUOTA_LIMITS = { free: 1, pro: 3 }.freeze # free = lifetime total, pro = per month
+  # Shown everywhere via ApplicationHelper#pro_price; each must match its Stripe Price
+  # (credentials stripe.monthly_price_id / stripe.yearly_price_id).
+  PRO_PRICES_PLN = { monthly: BigDecimal('19.90'), yearly: BigDecimal('199') }.freeze
   FREE_PLANNING_WINDOW = 3.days # free plan: plan days within today ± this
+  LIVE_STRIPE_STATUSES = %w[active trialing past_due unpaid incomplete paused].freeze # cancelled on account deletion
 
   after_create :create_owned_shopping_cart
+  # Declared above the associations so they run (guard first) before dependent: :destroy deletes the owned cart.
+  # No prepend: true — it would reverse the pair and release carts before the guard.
+  before_destroy :ensure_no_active_subscription, :release_shopping_carts
 
   belongs_to :active_shopping_cart, class_name: 'ShoppingCart', optional: true, inverse_of: :active_users
   has_one :owned_shopping_cart, class_name: 'ShoppingCart', dependent: :destroy, inverse_of: :user
@@ -21,12 +28,13 @@ class User < ApplicationRecord
            dependent: :destroy,
            inverse_of: :invitee
 
-  has_many :diets, dependent: :nullify
+  has_many :diets, dependent: :destroy
   has_many :recipes, dependent: :destroy
   has_many :canonical_products, dependent: :destroy
   has_many :product_substitutions, dependent: :destroy
   has_many :meal_plan_product_substitutions, dependent: :destroy
   has_many :substitution_product_matches, dependent: :destroy
+  has_many :product_name_suggestions, dependent: :destroy
   has_many :diet_set_plans, through: :diets
   has_many :products, through: :diets
   has_many :audit_logs, through: :diets
@@ -40,6 +48,15 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, if: -> { new_record? || changes[:password_digest] }
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+
+  # Admin panel filters only; never expose password_digest, consents or Stripe ids.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[admin created_at email_address first_name id subscription]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    []
+  end
 
   # scope :active_diets, -> { diets.where(active: true) }
 
@@ -122,6 +139,23 @@ class User < ApplicationRecord
     increment!(:ai_quota_used_count)
   end
 
+  # Check-and-consume in one conditional UPDATE, so parallel requests cannot all
+  # pass ai_quota_available? and then each consume. Returns false when exhausted.
+  def reserve_ai_quota!
+    return true if subscription_lifetime?
+
+    if subscribed?
+      reset_ai_quota_period_if_stale!
+      column, limit = :ai_quota_used_count, AI_QUOTA_LIMITS.fetch(:pro)
+    else
+      column, limit = :ai_free_used_count, AI_QUOTA_LIMITS.fetch(:free)
+    end
+
+    reserved = User.where(id: id).where("#{column} < ?", limit).update_all("#{column} = #{column} + 1").positive? # rubocop:disable Rails/SkipsModelValidations
+    reload if reserved
+    reserved
+  end
+
   # Inverse of consume_ai_quota! — called when the enqueued AI job fails, so a
   # user isn't charged a parse for our parsing error.
   def refund_ai_quota!
@@ -157,7 +191,37 @@ class User < ApplicationRecord
     update_column(:consents, record_consent(key)) # rubocop:disable Rails/SkipsModelValidations
   end
 
+  # Self-service deletion (RODO art. 17, Regulamin §9). Cancel billing first and let a Stripe error
+  # abort (better no deletion than charges for an account that is gone); the customer record is
+  # removed last, best effort — a failure there must not leave a half-deleted account.
+  def close_account!
+    cancel_live_stripe_subscriptions
+    transaction do
+      update_columns(subscription: :inactive, subscription_end_date: nil) # lets ensure_no_active_subscription pass
+      destroy!
+    end
+    delete_stripe_customer
+  end
+
   private
+
+  # A customer id from another Stripe env (sandbox → live) or deleted in the dashboard has no
+  # subscriptions to cancel — it must not block deletion forever.
+  def cancel_live_stripe_subscriptions
+    return unless stripe_customer_id?
+
+    Stripe::Subscription.list(customer: stripe_customer_id, status: 'all').auto_paging_each do |sub|
+      Stripe::Subscription.cancel(sub.id) if LIVE_STRIPE_STATUSES.include?(sub.status)
+    end
+  rescue Stripe::InvalidRequestError => e
+    raise unless e.code == 'resource_missing'
+  end
+
+  def delete_stripe_customer
+    Stripe::Customer.delete(stripe_customer_id) if stripe_customer_id?
+  rescue Stripe::StripeError => e
+    Honeybadger.notify(e, context: { stripe_customer_id: stripe_customer_id }) if defined?(Honeybadger)
+  end
 
   def reset_ai_quota_period_if_stale!
     return if ai_quota_period_started_at.present? && ai_quota_period_started_at >= Time.current.beginning_of_month
@@ -168,5 +232,25 @@ class User < ApplicationRecord
   def create_owned_shopping_cart
     cart = ShoppingCart.create!(user: self)
     update_column(:active_shopping_cart_id, cart.id)
+  end
+
+  def ensure_no_active_subscription
+    return unless subscription_active?
+
+    errors.add(:base, 'Użytkownik ma aktywną subskrypcję — najpierw anuluj ją w Stripe.')
+    throw :abort
+  end
+
+  # Un-share accepted carts so partners fall back to their own cart, then drop our pointer
+  # to the owned cart that dependent: :destroy is about to delete.
+  def release_shopping_carts
+    ShoppingCartInvitation.accepted.involving(self).find_each do |invitation|
+      ShoppingCartSharingService.new(invitation).revoke!(actor: self)
+    end
+    # Any pointer left without an accepted invite would still block the cart delete.
+    User.where(active_shopping_cart_id: owned_shopping_cart&.id).where.not(id: id).find_each do |other|
+      other.update_column(:active_shopping_cart_id, other.owned_shopping_cart&.id)
+    end
+    update_column(:active_shopping_cart_id, nil)
   end
 end

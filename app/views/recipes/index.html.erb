@@ -22,7 +22,7 @@
             </div>
             <div class="flex shrink-0 flex-col items-end gap-1 text-sm">
               <%= link_to 'Edytuj', edit_recipe_path(recipe), class: 'text-brand-navy hover:text-brand-navy-strong font-medium' %>
-              <%= button_to 'Usuń', recipe_path(recipe), method: :delete, data: { confirm: 'Usunąć przepis?' }, class: 'text-rose-600 hover:text-rose-700 font-medium' %>
+              <%= button_to 'Usuń', recipe_path(recipe), method: :delete, form: { data: { turbo_confirm: 'Usunąć przepis?' } }, class: 'text-rose-600 hover:text-rose-700 font-medium' %>
             </div>
           </div>
         <% end %>

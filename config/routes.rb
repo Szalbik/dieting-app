@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     member do
       patch :toggle_active
       post :reparse
+      get :pdf
     end
   end
 
@@ -104,8 +105,11 @@ Rails.application.routes.draw do
   get 'receive_code', to: 'todoist#receive_code', as: 'todoist_receive_code'
 
   get 'profile', to: 'profile#show', as: 'profile'
+  resource :health_data_consent, only: %i[create destroy]
+  resource :account, only: :destroy
 
   get 'upgrade', to: 'subscriptions#new', as: :upgrade
+  post 'upgrade', to: 'subscriptions#create'
   post 'billing_portal', to: 'subscriptions#billing_portal', as: :billing_portal
   mount StripeEvent::Engine, at: '/stripe_webhooks'
 end

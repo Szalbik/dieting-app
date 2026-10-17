@@ -1,0 +1,16 @@
+<h1>Zmieniamy Regulamin i Politykę prywatności</h1>
+
+<p>Przed uruchomieniem płatnego Planu Pro uporządkowaliśmy dokumenty AsystentDiety. Nowe wersje obowiązują Twoje konto od <strong><%= @effective_on %></strong>.</p>
+
+<p>Najważniejsze zmiany:</p>
+<ul>
+  <li>Plan Pro: jasne zasady prawa odstąpienia od umowy w 14 dni (z opłatą tylko za wykorzystany okres) i wzór formularza odstąpienia; zmiana ceny wymaga Twojej zgody.</li>
+  <li>Dane dotyczące zdrowia: o wyraźną zgodę zapytamy przy najbliższym wczytaniu pliku PDF; możesz ją wycofać w profilu.</li>
+  <li>Pełna lista dostawców, którym powierzamy dane (m.in. OpenAI, Stripe, DigitalOcean, Resend), i zasady przekazywania danych poza EOG.</li>
+  <li>Konto możesz teraz samodzielnie usunąć w profilu — usuwamy wtedy także wczytane pliki PDF.</li>
+  <li>Reklamacje rozpatrujemy w 14 dni; brak odpowiedzi oznacza uznanie reklamacji.</li>
+</ul>
+
+<p>Dokumenty: <%= link_to "Regulamin", terms_url %> · <%= link_to "Polityka prywatności", privacy_url %> · <%= link_to "Polityka cookies", cookies_policy_url %></p>
+
+<p>Jeśli nie akceptujesz zmian, możesz przed <%= @effective_on %> wypowiedzieć umowę, usuwając konto w profilu (<%= link_to profile_url, profile_url %>). W razie pytań: kontakt@asystentdiet.pl.</p>

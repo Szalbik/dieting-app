@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  # Polish money format (comma decimals, whole złoty without ",00") from User::PRO_PRICES_PLN,
+  # the single source of the Pro price.
+  # per_month: true divides the yearly price by 12 for comparison ("16,58 zł").
+  def pro_price(interval, per_month: false)
+    amount = User::PRO_PRICES_PLN.fetch(interval)
+    amount = (amount / 12).round(2) if per_month
+    number_to_currency(amount, unit: 'zł', format: '%n %u', separator: ',', delimiter: ' ',
+                               precision: amount.frac.zero? ? 0 : 2)
+  end
+
+  # "1 operację AI", "3 operacje AI", "5 operacji AI" (accusative) — limits come from User::AI_QUOTA_LIMITS.
+  def ai_operations(count, capitalize: false)
+    word = 'operacji'
+    word = 'operacje' if (2..4).cover?(count % 10) && !(12..14).cover?(count % 100)
+    word = 'operację' if count == 1
+    "#{count} #{capitalize ? word.capitalize : word} AI"
+  end
+
   # Unit strings from DB can include variants like "łyżka (10ml)". I18n keys use only the base name.
   def unit_key_for_i18n(unit_str)
     return '' if unit_str.blank?

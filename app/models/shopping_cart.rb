@@ -2,7 +2,9 @@
 
 class ShoppingCart < ApplicationRecord
   belongs_to :user
-  has_many :shopping_cart_items, dependent: :destroy
+  # Items are paranoid: dependent: :destroy would only soft-delete them and the FK would block the cart delete.
+  has_many :shopping_cart_items
+  before_destroy { ShoppingCartItem.with_deleted.where(shopping_cart_id: id).delete_all }
   has_many :custom_cart_items, dependent: :destroy
   has_many :active_users, class_name: 'User', foreign_key: :active_shopping_cart_id, inverse_of: :active_shopping_cart
 

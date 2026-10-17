@@ -2,8 +2,24 @@
 
 class SendToTodoistJob < ApplicationJob
   queue_as :default
+  self.log_arguments = false # the sealed token still must not reach the logs
 
-  def perform(project_id, diet_set_ids, diet_set_quantities, token, user_id)
+  # The Todoist OAuth token lives only in the admin's session; the queue row
+  # gets it encrypted under secret_key_base (same trust level as the cookie).
+  def self.seal(token)
+    encryptor.encrypt_and_sign(token.to_s, expires_in: 1.hour)
+  end
+
+  def self.unseal(sealed_token)
+    { 'token' => encryptor.decrypt_and_verify(sealed_token) }
+  end
+
+  def self.encryptor
+    @_encryptor ||= ActiveSupport::MessageEncryptor.new(Rails.application.key_generator.generate_key('todoist-job', 32))
+  end
+
+  def perform(project_id, diet_set_ids, diet_set_quantities, sealed_token, user_id)
+    token = self.class.unseal(sealed_token)
     # Step 1: Filter products based on selected diet sets
     selected_diet_set_ids = diet_set_ids.reject(&:empty?) rescue []
     user = User.find(user_id)

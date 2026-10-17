@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Todoist OAuth callback', type: :request do
+  include ActiveJob::TestHelper
+
   let(:user) { create(:user, admin: true, password: 'password123', password_confirmation: 'password123') }
 
   before { post session_path, params: { email_address: user.email_address, password: 'password123' } }
@@ -31,7 +33,7 @@ RSpec.describe 'Todoist OAuth callback', type: :request do
     include ActiveSupport::Testing::TimeHelpers
 
     let(:token_response) do
-      instance_double(HTTParty::Response, code: 200, parsed_response: { 'access_token' => 'tok' })
+      instance_double(HTTParty::Response, code: 200, parsed_response: { 'access_token' => 'raw-oauth-secret-9f8e7' })
     end
 
     before do
@@ -71,6 +73,15 @@ RSpec.describe 'Todoist OAuth callback', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Zakupy')
+    end
+
+    it 'enqueues the shopping list job without the raw OAuth token in its arguments' do
+      authorize_todoist
+
+      post todoist_create_path, params: { diet: { project_id: '42', diet_set_ids: ['1'] } }
+
+      expect(enqueued_jobs.last['job_class']).to eq('SendToTodoistJob')
+      expect(enqueued_jobs.last['arguments'].inspect).not_to include('raw-oauth-secret')
     end
 
     it 'treats the token as gone after 30 minutes' do

@@ -1,7 +1,7 @@
 <% content_for :marketing_page, true %>
 <% content_for :title, "AsystentDiety — Twój plan dietetyczny, w końcu bez wysiłku" %>
 <% content_for :head do %>
-  <meta name="description" content="Wgraj PDF od dietetyka, a AsystentDiety zbuduje harmonogram posiłków i listę zakupów automatycznie. Załóż darmowe konto — 3 operacje AI gratis.">
+  <meta name="description" content="Wgraj PDF od dietetyka, a AsystentDiety zbuduje harmonogram posiłków i listę zakupów automatycznie. Załóż darmowe konto — 1 operacja AI gratis.">
   <meta property="og:title" content="AsystentDiety — Twój plan dietetyczny, w końcu bez wysiłku">
   <meta property="og:description" content="Wgraj PDF od dietetyka, a AsystentDiety zbuduje harmonogram posiłków i listę zakupów automatycznie.">
   <meta property="og:type" content="website">
@@ -131,7 +131,7 @@
         <div class="text-6xl font-black font-serif leading-none">0 zł</div>
         <div class="mb-6 mt-2 text-sm opacity-50">na zawsze za darmo</div>
         <ul class="mb-8 space-y-2 text-sm">
-          <li>✓ 3 darmowe operacje AI (PDF lub kreator AI)</li>
+          <li>✓ 1 darmowa operacja AI (PDF lub kreator AI)</li>
           <li>✓ Planowanie tygodnia</li>
           <li>✓ Lista zakupów</li>
           <li>✓ Progresywna aplikacja (PWA)</li>
@@ -141,10 +141,10 @@
       <div class="relative rounded-3xl border border-brand-sage-dark bg-brand-sage-dark p-8 text-white transition hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-accent px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em]">Najpopularniejszy</div>
         <div class="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-brand-sage-light">Pro</div>
-        <div class="text-6xl font-black font-serif leading-none">20 zł</div>
-        <div class="mb-6 mt-2 text-sm opacity-70">miesięcznie</div>
+        <div class="text-6xl font-black font-serif leading-none"><%= pro_price(:monthly) %></div>
+        <div class="mb-6 mt-2 text-sm opacity-70">miesięcznie lub <%= pro_price(:yearly) %> rocznie</div>
         <ul class="mb-8 space-y-2 text-sm">
-          <li>✓ 20 operacji AI / miesiąc (PDF + kreator diet)</li>
+          <li>✓ 3 operacje AI / miesiąc (PDF + kreator diet)</li>
           <li>✓ Planowanie na wiele tygodni</li>
           <li>✓ Inteligentna lista zakupów</li>
           <li>✓ Pełne śledzenie wartości odżywczych</li>
@@ -178,7 +178,7 @@
     </div>
     <div class="mx-auto max-w-3xl space-y-4">
       <% [
-        ["Co dokładnie obejmuje darmowy plan?", "Darmowe konto daje 3 operacje AI na start — możesz wgrać PDF od dietetyka albo wygenerować dietę kreatorem AI. Darmowy limit się nie odnawia. Plan Pro (20 zł/mies.) daje 20 operacji AI w miesiącu, odnawianych pierwszego dnia każdego miesiąca."],
+        ["Co dokładnie obejmuje darmowy plan?", "Darmowe konto daje 1 operację AI na start — możesz wgrać PDF od dietetyka albo wygenerować dietę kreatorem AI. Darmowy limit się nie odnawia. Plan Pro (#{pro_price(:monthly)}/mies. lub #{pro_price(:yearly)}/rok) daje 3 operacje AI w miesiącu, odnawiane pierwszego dnia każdego miesiąca."],
         ["Czy mogę anulować subskrypcję Pro w każdej chwili?", "Tak. Zarządzasz subskrypcją przez bezpieczny panel Stripe dostępny w ustawieniach konta — możesz anulować w dowolnym momencie, dostęp Pro trwa do końca opłaconego okresu."],
         ["Jak działa parsowanie PDF?", "Wgrywasz plik PDF od dietetyka, a AI odczytuje posiłki, porcje i wartości odżywcze — niezależnie od formatu i układu dokumentu."],
         ["Czy płatności są bezpieczne?", "Płatności obsługuje Stripe — AsystentDiety nigdy nie przechowuje danych Twojej karty."],
@@ -192,7 +192,7 @@
     </div>
   </section>
 
-  <section id="cta" class="relative overflow-hidden bg-brand-charcoal px-6 py-24 text-center text-white lg:px-16"><div class="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(124,158,126,0.15)_0%,transparent_65%)]"></div><div class="relative mx-auto max-w-3xl"><h2 class="mb-4 text-5xl font-black font-serif tracking-tight">Zacznij za darmo<br><em class="text-brand-sage-light">— 3 operacje AI</em> gratis.</h2><p class="mb-10 text-lg text-white/50">Pacjenci mogą założyć konto już dziś. Dietetycy mogą aplikować o dostęp do bety — zaprosimy wybrane zespoły po rozmowie demo.</p><div class="mx-auto flex max-w-2xl flex-wrap justify-center gap-3"><%= link_to "Załóż darmowe konto", new_registration_path, class: "rounded-full bg-brand-sage px-7 py-3 text-sm font-medium text-white hover:-translate-y-px hover:bg-brand-accent" %><%= link_to "Dołącz do listy oczekujących", new_dietitian_waitlist_entry_path, class: "rounded-full border border-white/20 px-7 py-3 text-sm font-medium text-white hover:border-brand-sage-light hover:text-brand-sage-light" %></div><p class="mt-4 text-sm text-white/60">Masz już konto? <%= link_to "Zaloguj się", new_session_path, class: "text-brand-sage-light hover:text-white" %></p></div></section>
+  <section id="cta" class="relative overflow-hidden bg-brand-charcoal px-6 py-24 text-center text-white lg:px-16"><div class="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(124,158,126,0.15)_0%,transparent_65%)]"></div><div class="relative mx-auto max-w-3xl"><h2 class="mb-4 text-5xl font-black font-serif tracking-tight">Zacznij za darmo<br><em class="text-brand-sage-light">— 1 operacja AI</em> gratis.</h2><p class="mb-10 text-lg text-white/50">Pacjenci mogą założyć konto już dziś. Dietetycy mogą aplikować o dostęp do bety — zaprosimy wybrane zespoły po rozmowie demo.</p><div class="mx-auto flex max-w-2xl flex-wrap justify-center gap-3"><%= link_to "Załóż darmowe konto", new_registration_path, class: "rounded-full bg-brand-sage px-7 py-3 text-sm font-medium text-white hover:-translate-y-px hover:bg-brand-accent" %><%= link_to "Dołącz do listy oczekujących", new_dietitian_waitlist_entry_path, class: "rounded-full border border-white/20 px-7 py-3 text-sm font-medium text-white hover:border-brand-sage-light hover:text-brand-sage-light" %></div><p class="mt-4 text-sm text-white/60">Masz już konto? <%= link_to "Zaloguj się", new_session_path, class: "text-brand-sage-light hover:text-white" %></p></div></section>
 
   <footer class="flex flex-col gap-3 border-t border-brand-charcoal/10 px-6 py-10 text-center text-sm text-brand-soft-gray lg:flex-row lg:items-center lg:justify-between lg:px-16"><div class="logo text-lg font-bold font-serif text-brand-sage-dark">Asystent<span class="text-brand-accent">Diety</span></div><span>© 2026 AsystentDiety. Wszelkie prawa zastrzeżone.</span><div class="flex justify-center gap-6"><%= link_to "Prywatność", privacy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Regulamin", terms_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %><%= link_to "Cookies", cookies_policy_path, class: "text-brand-soft-gray no-underline hover:text-brand-sage-dark" %></div></footer>
 </div>

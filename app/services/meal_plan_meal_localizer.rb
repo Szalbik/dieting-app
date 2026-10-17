@@ -38,7 +38,6 @@ class MealPlanMealLocalizer
       meal_plan.meal.products.includes(:ingredient_measures, :product_category).order(:id).each do |source_product|
         duplicated_product = duplicated_meal.products.create!(
           name: source_product.name,
-          diet_set: meal_plan.diet_set_plan.diet_set,
           base_product_name: source_product.base_product_name,
           canonical_product: source_product.canonical_product,
           base_canonical_product: source_product.base_canonical_product

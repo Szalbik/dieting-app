@@ -1,0 +1,138 @@
+<%# Regulamin body — rendered on /regulamin and as the attachment of the purchase confirmation mail (SubscriptionMailer). %>
+<%# Uses *_url helpers so links work outside the site. Limits and prices come from User constants. %>
+<% link_class = "font-semibold text-brand-sage-dark hover:text-brand-accent" %>
+<% contact = mail_to("kontakt@asystentdiet.pl", "kontakt@asystentdiet.pl", class: link_class) %>
+<div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§1. Postanowienia ogólne</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Niniejszy regulamin (dalej „Regulamin”) określa zasady świadczenia drogą elektroniczną usług w serwisie AsystentDiety, w tym usługi płatnej w modelu subskrypcyjnym, a także prawa i obowiązki Usługodawcy i Użytkowników. Regulamin jest regulaminem, o którym mowa w art. 8 ustawy z dnia 18 lipca 2002 r. o świadczeniu usług drogą elektroniczną.</li>
+      <li>Usługodawcą jest Damian Szalbierz, prowadzący jednoosobową działalność gospodarczą, ul. Tadeusza Mikke 12a/11, 60-461 Poznań, NIP 7812072186, e-mail: <%= contact %>.</li>
+      <li>Regulamin jest udostępniany nieodpłatnie pod adresem <%= link_to terms_url, terms_url, class: link_class %> w sposób umożliwiający jego pobranie, utrwalenie i wydrukowanie. Po zakupie Planu Pro Użytkownik otrzymuje Regulamin także w wiadomości e-mail potwierdzającej zawarcie umowy.</li>
+      <li>Z Serwisu mogą korzystać wyłącznie osoby, które ukończyły 18 lat i mają pełną zdolność do czynności prawnych.</li>
+      <li>Umowa o świadczenie usług drogą elektroniczną (prowadzenie Konta) zostaje zawarta z chwilą rejestracji Konta, na czas nieokreślony. Umowa o Plan Pro zostaje zawarta z chwilą opłacenia pierwszego okresu rozliczeniowego.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§2. Definicje</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li><strong>Usługodawca</strong> — podmiot wskazany w §1 ust. 2.</li>
+      <li><strong>Serwis</strong> — serwis internetowy pod adresem asystentdiet.pl, służący do wczytywania i zarządzania planami dietetycznymi, planowania posiłków oraz tworzenia list zakupów.</li>
+      <li><strong>Użytkownik</strong> — osoba fizyczna, która zarejestrowała Konto.</li>
+      <li><strong>Konsument</strong> — Użytkownik będący konsumentem w rozumieniu art. 22<sup>1</sup> Kodeksu cywilnego.</li>
+      <li><strong>Przedsiębiorca na prawach konsumenta</strong> — osoba fizyczna prowadząca działalność gospodarczą, zawierająca umowę bezpośrednio związaną z jej działalnością, gdy z treści umowy wynika, że nie ma ona dla niej charakteru zawodowego, wynikającego w szczególności z przedmiotu jej działalności udostępnionego na podstawie przepisów o CEIDG. Postanowienia Regulaminu dotyczące Konsumentów, w tym §6–§8 oraz ochrona przed postanowieniami niedozwolonymi, stosuje się do niej odpowiednio (art. 7aa ustawy o prawach konsumenta, art. 385<sup>5</sup> Kodeksu cywilnego).</li>
+      <li><strong>Konto</strong> — indywidualne konto Użytkownika w Serwisie, zakładane z użyciem adresu e-mail i hasła.</li>
+      <li><strong>Operacja AI</strong> — wczytanie planu diety z pliku PDF z użyciem sztucznej inteligencji (dostawca: OpenAI) albo ponowne przetworzenie wczytanego pliku.</li>
+      <li><strong>Plan Darmowy</strong> — nieodpłatny dostęp do Serwisu obejmujący łącznie <%= ai_operations(User::AI_QUOTA_LIMITS.fetch(:free)) %> (limit jednorazowy, nieodnawialny) oraz ręczne tworzenie diet i list zakupów.</li>
+      <li><strong>Plan Pro</strong> — odpłatny dostęp do pełnej funkcjonalności Serwisu, obejmujący <%= ai_operations(User::AI_QUOTA_LIMITS.fetch(:pro)) %> w każdym miesiącu kalendarzowym, w okresie rozliczeniowym miesięcznym albo rocznym, według wyboru Użytkownika.</li>
+      <li><strong>Usługa</strong> — usługa cyfrowa świadczona przez Usługodawcę w ramach Planu Darmowego lub Planu Pro.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§3. Warunki świadczenia Usług i charakter treści</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>
+        Do korzystania z Serwisu niezbędne są: urządzenie z dostępem do Internetu, aktualna wersja popularnej przeglądarki (np. Chrome, Firefox, Safari, Edge) z włączoną obsługą JavaScript i plików cookies, aktywny adres e-mail, a w przypadku wczytywania planów diet — plik w formacie PDF.
+      </li>
+      <li>Rejestracja i korzystanie z Planu Darmowego są nieodpłatne. Rejestracja wymaga akceptacji Regulaminu i zapoznania się z <%= link_to "Polityką prywatności", privacy_url, class: link_class %>.</li>
+      <li>W ramach Planu Darmowego Użytkownik może wykonać łącznie <%= ai_operations(User::AI_QUOTA_LIMITS.fetch(:free)) %>. W ramach Planu Pro limit wynosi <%= ai_operations(User::AI_QUOTA_LIMITS.fetch(:pro)) %> w miesiącu kalendarzowym i odnawia się pierwszego dnia każdego miesiąca; niewykorzystane Operacje AI nie przechodzą na kolejny miesiąc.</li>
+      <li><strong>Serwis nie świadczy usług medycznych ani dietetycznych.</strong> Treści w Serwisie, w tym plany diet odczytane z plików PDF, mają charakter informacyjny i organizacyjny i nie stanowią porady lekarskiej ani dietetycznej. Serwis nie weryfikuje, czy plan diety jest odpowiedni dla stanu zdrowia Użytkownika.</li>
+      <li>Przed zastosowaniem planu żywieniowego, a w szczególności w przypadku ciąży lub karmienia piersią, zaburzeń odżywiania (obecnie lub w przeszłości), chorób przewlekłych (np. cukrzycy, chorób nerek, wątroby, serca), alergii i nietolerancji pokarmowych lub przyjmowania leków, należy skonsultować się z lekarzem lub dietetykiem. W razie wystąpienia niepożądanych objawów należy przerwać stosowanie planu i skontaktować się z lekarzem.</li>
+      <li>Usługodawca nie odpowiada za decyzje żywieniowe podjęte przez Użytkownika bez konsultacji, o której mowa w ust. 5, ani za treść planu diety przygotowanego przez osobę trzecią (np. dietetyka), z zastrzeżeniem odpowiedzialności wynikającej z bezwzględnie obowiązujących przepisów prawa, w tym za szkodę na osobie oraz szkodę wyrządzoną umyślnie.</li>
+      <li>Usługodawca może przeprowadzać prace techniczne. Planowane prace, które mogą ograniczyć dostęp do Serwisu, są w miarę możliwości zapowiadane w Serwisie z wyprzedzeniem i przeprowadzane w godzinach nocnych, a ich łączny czas nie przekracza 24 godzin w miesiącu kalendarzowym. Prace techniczne nie wyłączają odpowiedzialności Usługodawcy za zgodność Usługi z umową (§7).</li>
+      <li>Użytkownik korzysta z Serwisu zgodnie z prawem, Regulaminem i dobrymi obyczajami.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§4. Plan Pro i płatności</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Umowa o Plan Pro jest zawierana na czas nieokreślony, z okresem rozliczeniowym jednego miesiąca albo jednego roku, według wyboru Użytkownika. Opłata jest pobierana z góry za każdy okres rozliczeniowy.</li>
+      <li>Cena Planu Pro wynosi <strong><%= pro_price(:monthly) %> brutto</strong> za miesiąc albo <strong><%= pro_price(:yearly) %> brutto</strong> za rok. Cena jest podawana przed złożeniem zamówienia.</li>
+      <li>Płatności obsługuje operator płatności Stripe Payments Europe, Ltd. (Irlandia). Dostępne metody to karta płatnicza, BLIK (płatności cykliczne BLIK w bankach obsługujących tę usługę) i inne metody wskazane na stronie płatności. Usługodawca nie przechowuje danych kart płatniczych.</li>
+      <li>Plan Pro odnawia się automatycznie na kolejny okres rozliczeniowy, chyba że Użytkownik anuluje go przed końcem bieżącego okresu w panelu zarządzania subskrypcją dostępnym w profilu. Anulowanie wywołuje skutek na koniec opłaconego okresu; do tego czasu dostęp do Planu Pro jest utrzymany. Jeżeli pobranie opłaty za kolejny okres się nie powiedzie, operator płatności ponawia próbę; w tym czasie dostęp do Planu Pro jest utrzymany, a wygasa, jeśli opłata ostatecznie nie zostanie pobrana.</li>
+      <li>Usługodawca może zmienić cenę Planu Pro z ważnych przyczyn: zmiany przepisów prawa lub stawek podatku, istotnego wzrostu kosztów świadczenia Usługi (w szczególności opłat dostawców usług AI, hostingu lub operatora płatności) albo rozszerzenia zakresu Usługi. O zmianie ceny Użytkownik zostanie poinformowany e-mailem co najmniej 30 dni przed końcem bieżącego okresu rozliczeniowego. <strong>Nowa cena obowiązuje od kolejnego okresu rozliczeniowego wyłącznie po wyrażeniu przez Użytkownika zgody</strong>; w braku zgody Plan Pro nie odnawia się i wygasa z końcem opłaconego okresu, bez żadnych opłat.</li>
+      <li>Na żądanie Użytkownika, zgłoszone na adres e-mail Usługodawcy w terminie 3 miesięcy od końca miesiąca, w którym wykonano usługę lub otrzymano zapłatę, Usługodawca wystawia fakturę.</li>
+      <li>Usługodawca może przyznać wybranym Użytkownikom nieodpłatny dostęp do funkcjonalności Planu Pro; do takiego dostępu nie stosuje się postanowień o płatnościach.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§5. Treści Użytkownika, pliki PDF i zasady korzystania</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Usługodawcy przysługują prawa do Serwisu, jego oprogramowania, układu i elementów graficznych. Użytkownik otrzymuje niewyłączną licencję na korzystanie z Serwisu na własny użytek, zgodnie z jego przeznaczeniem, na czas trwania umowy.</li>
+      <li>Użytkownik wczytuje do Serwisu pliki PDF z planami diet na własny użytek i oświadcza, że jest uprawniony do korzystania z tych treści. Wczytane treści są przetwarzane wyłącznie w celu świadczenia Usługi i nie są udostępniane innym Użytkownikom (z wyjątkiem list zakupów współdzielonych przez Użytkownika z wybraną osobą).</li>
+      <li>Przed wczytaniem pliku PDF Użytkownik powinien usunąć z niego dane identyfikujące (np. imię i nazwisko, PESEL, adres, dane kontaktowe) oraz informacje o stanie zdrowia niepotrzebne do odczytu jadłospisu (rozpoznania, wyniki badań, pomiary ciała). Plik jest przekazywany do analizy dostawcy usług AI (OpenAI) i usuwany u tego dostawcy po zakończeniu odczytu; w Serwisie plik jest przechowywany do usunięcia diety lub Konta. Zasady przetwarzania danych, w tym danych dotyczących zdrowia, określa Polityka prywatności.</li>
+      <li>Plany diet są odczytywane z plików PDF automatycznie, z użyciem sztucznej inteligencji. Dokładność odczytu zależy od jakości i układu pliku; wynik może zawierać błędy (np. pominięte lub błędnie odczytane posiłki, produkty, gramatury). Użytkownik powinien porównać wczytane dane z oryginalnym planem przed ich zastosowaniem.</li>
+      <li>
+        <strong>Zabronione jest w szczególności:</strong>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>udostępnianie danych logowania do Konta osobom trzecim,</li>
+          <li>odsprzedaż lub komercyjne udostępnianie funkcjonalności Serwisu osobom trzecim,</li>
+          <li>wczytywanie treści bezprawnych lub naruszających prawa osób trzecich,</li>
+          <li>działania zakłócające działanie Serwisu, w tym automatyczne pobieranie danych lub obchodzenie limitów Operacji AI.</li>
+        </ul>
+      </li>
+      <li>W razie naruszenia zakazów z ust. 5 Usługodawca wzywa Użytkownika e-mailem do zaprzestania naruszeń, wyznaczając termin nie krótszy niż 7 dni, a po jego bezskutecznym upływie może zablokować Konto i wypowiedzieć umowę ze skutkiem natychmiastowym. Bez uprzedniego wezwania Usługodawca może czasowo zablokować Konto tylko wtedy, gdy jest to konieczne dla bezpieczeństwa Serwisu lub innych Użytkowników albo z uwagi na bezprawny charakter działań. W razie wypowiedzenia umowy Usługodawca zwraca opłatę za niewykorzystaną część okresu rozliczeniowego, proporcjonalnie do liczby pozostałych dni. Od zablokowania Konta przysługuje reklamacja (§8).</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§6. Prawo odstąpienia od umowy</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Konsument może odstąpić od umowy o Plan Pro w terminie <strong>14 dni od dnia jej zawarcia</strong>, bez podawania przyczyny i bez ponoszenia kosztów, z wyjątkiem kosztów określonych w ust. 4.</li>
+      <li>Aby odstąpić od umowy, wystarczy przed upływem terminu wysłać oświadczenie o odstąpieniu na adres <%= contact %> (lub pocztą na adres Usługodawcy). Można skorzystać ze wzoru formularza stanowiącego Załącznik do Regulaminu, nie jest to jednak obowiązkowe. Usługodawca niezwłocznie potwierdzi otrzymanie oświadczenia e-mailem.</li>
+      <li>Przy zakupie Planu Pro Konsument może zażądać rozpoczęcia świadczenia Usługi przed upływem terminu do odstąpienia od umowy. Bez takiego żądania zakup nie jest możliwy, ponieważ Plan Pro jest udostępniany natychmiast po płatności. Żądanie to nie pozbawia Konsumenta prawa odstąpienia od umowy.</li>
+      <li>Konsument, który odstępuje od umowy po zgłoszeniu żądania z ust. 3, płaci za Usługę świadczoną do chwili odstąpienia — kwotę proporcjonalną do liczby dni korzystania z Planu Pro w stosunku do liczby dni okresu rozliczeniowego (art. 35 ustawy o prawach konsumenta). Przykład: przy planie miesięcznym w cenie <%= pro_price(:monthly) %> i 30-dniowym okresie odstąpienie 7. dnia oznacza zapłatę za 7 dni, a zwrot pozostałej części ceny.</li>
+      <li>Usługodawca zwraca należną kwotę niezwłocznie, nie później niż w terminie 14 dni od dnia otrzymania oświadczenia o odstąpieniu, przy użyciu takiego samego sposobu zapłaty, jakiego użył Konsument, chyba że Konsument zgodzi się na inny sposób niewiążący się dla niego z kosztami. Z chwilą odstąpienia Plan Pro wygasa.</li>
+      <li>Plan Darmowy można wypowiedzieć w każdej chwili, usuwając Konto (§9).</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§7. Zgodność Usługi z umową, aktualizacje i zmiany Usługi</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Usługodawca odpowiada wobec Konsumenta za brak zgodności Usługi z umową, który wystąpił lub ujawnił się w czasie, w którym zgodnie z umową Usługa miała być świadczona, na zasadach rozdziału 5b ustawy o prawach konsumenta.</li>
+      <li>Usługodawca dostarcza aktualizacje, w tym aktualizacje zabezpieczeń, niezbędne do zachowania zgodności Usługi z umową, przez cały okres świadczenia Usługi. Aktualizacje są wprowadzane automatycznie, bez udziału Użytkownika.</li>
+      <li>W razie braku zgodności Konsument może żądać doprowadzenia Usługi do zgodności z umową. Jeżeli doprowadzenie do zgodności jest niemożliwe, wymaga nadmiernych kosztów, nie nastąpiło w rozsądnym czasie lub brak zgodności występuje nadal albo jest tak istotny, że uzasadnia to bez uprzedniego żądania naprawy, Konsument może, według swojego wyboru, złożyć oświadczenie o obniżeniu ceny albo — gdy brak zgodności nie jest nieistotny — o odstąpieniu od umowy. Usługodawca zwraca należną kwotę w terminie 14 dni od otrzymania oświadczenia.</li>
+      <li>Usługodawca może zmienić Usługę (w tym funkcjonalności i limity Operacji AI) wyłącznie z ważnych przyczyn: zmiany przepisów prawa, konieczności zapewnienia bezpieczeństwa, zmian po stronie dostawców usług AI, hostingu lub operatora płatności, wprowadzenia nowych lub ulepszenia istniejących funkcjonalności. Zmiana nie może wiązać się z kosztami dla Konsumenta, a Usługodawca informuje o niej w Serwisie lub e-mailem.</li>
+      <li>Jeżeli zmiana istotnie i negatywnie wpływa na dostęp do Usługi lub korzystanie z niej, Usługodawca informuje o niej e-mailem z co najmniej 14-dniowym wyprzedzeniem, a Konsument może wypowiedzieć umowę bez kosztów w terminie 30 dni od wprowadzenia zmiany albo od poinformowania o niej, jeżeli nastąpiło później; w takim przypadku Usługodawca zwraca opłatę za niewykorzystaną część okresu rozliczeniowego.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§8. Reklamacje</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Reklamacje dotyczące Usługi, w tym braku zgodności z umową (§7), rozliczeń lub zablokowania Konta, można składać na adres <%= contact %> albo pocztą na adres Usługodawcy.</li>
+      <li>Reklamacja powinna zawierać adres e-mail Konta oraz opis problemu i żądanie; brak tych informacji nie powoduje odrzucenia reklamacji — Usługodawca może poprosić o ich uzupełnienie.</li>
+      <li>Usługodawca odpowiada na reklamację w terminie <strong>14 dni od dnia jej otrzymania</strong>, e-mailem. Brak odpowiedzi w tym terminie oznacza, że reklamacja została uznana.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§9. Rozwiązanie umowy i usunięcie Konta</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>Użytkownik może w każdej chwili usunąć Konto w profilu, co jest równoznaczne z wypowiedzeniem umowy ze skutkiem natychmiastowym. Usunięcie Konta usuwa diety, wczytane pliki PDF i pozostałe dane Użytkownika, z zastrzeżeniem danych, które Usługodawca musi przechowywać na podstawie przepisów prawa (Polityka prywatności).</li>
+      <li>Usunięcie Konta z aktywnym Planem Pro anuluje subskrypcję natychmiast, bez zwrotu opłaty za bieżący okres rozliczeniowy, z zastrzeżeniem prawa odstąpienia od umowy (§6) — w terminie 14 dni od zakupu należy przed usunięciem Konta złożyć oświadczenie o odstąpieniu, aby otrzymać zwrot.</li>
+      <li>Usługodawca może wypowiedzieć umowę o prowadzenie Konta z ważnych przyczyn (np. zakończenie prowadzenia Serwisu) z zachowaniem 30-dniowego okresu wypowiedzenia, informując o tym e-mailem, oraz zwraca opłatę za niewykorzystaną część opłaconego okresu Planu Pro. Wypowiedzenie ze skutkiem natychmiastowym jest możliwe wyłącznie w przypadkach określonych w §5 ust. 6.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-xl font-bold font-serif">§10. Postanowienia końcowe</h2>
+    <ol class="list-decimal space-y-1 pl-5">
+      <li>W sprawach nieuregulowanych stosuje się prawo polskie, w szczególności Kodeks cywilny, ustawę o świadczeniu usług drogą elektroniczną i ustawę o prawach konsumenta. Wybór prawa polskiego nie pozbawia Konsumenta ochrony przyznanej mu przez bezwzględnie obowiązujące przepisy państwa jego zwykłego pobytu. Spory z Konsumentami rozstrzygają sądy właściwe według przepisów ogólnych.</li>
+      <li>Konsument może skorzystać z pozasądowych sposobów rozpatrywania reklamacji i dochodzenia roszczeń, w szczególności z pomocy miejskiego lub powiatowego rzecznika konsumentów oraz wojewódzkiego inspektoratu Inspekcji Handlowej. Informacje są dostępne na stronie <%= link_to "UOKiK", "https://uokik.gov.pl", class: link_class %>.</li>
+      <li>Usługodawca może zmienić Regulamin wyłącznie z ważnych przyczyn: zmiany przepisów prawa lub orzecznictwa, decyzji organów, zmian Usługi dopuszczalnych zgodnie z §7 ust. 4, zmian dostawców lub operatora płatności, poprawy bezpieczeństwa albo konieczności usunięcia niejasności lub błędów redakcyjnych. O zmianie Użytkownik zostanie poinformowany e-mailem co najmniej 14 dni przed jej wejściem w życie. Użytkownik, który nie akceptuje zmian, może przed ich wejściem w życie wypowiedzieć umowę, usuwając Konto. Zmiany nie wpływają na opłacony okres rozliczeniowy Planu Pro, który jest realizowany na dotychczasowych zasadach. Zmiany ceny Planu Pro reguluje §4 ust. 5.</li>
+      <li>Dane osobowe są przetwarzane zgodnie z <%= link_to "Polityką prywatności", privacy_url, class: link_class %>, a pliki cookies — zgodnie z <%= link_to "Polityką cookies", cookies_policy_url, class: link_class %>.</li>
+    </ol>
+  </section>
+
+  <section id="formularz-odstapienia">
+    <h2 class="mb-2 text-xl font-bold font-serif">Załącznik — wzór formularza odstąpienia od umowy</h2>
+    <p class="mb-2 text-xs">(formularz należy wypełnić i odesłać tylko w przypadku chęci odstąpienia od umowy)</p>
+    <%= render "main/withdrawal_form" %>
+  </section>
+</div>

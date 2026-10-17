@@ -1,0 +1,44 @@
+<% content_for :title, 'Plan Pro' %>
+<div class="mx-auto max-w-xl px-4 py-10">
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h1 class="font-serif text-2xl font-bold text-brand-ink">Plan Pro</h1>
+    <ul class="mt-4 space-y-1 text-sm text-gray-700">
+      <li>✓ <%= User::AI_QUOTA_LIMITS.fetch(:pro) %> operacje AI miesięcznie (PDF lub kreator AI)</li>
+      <li>✓ Planowanie posiłków na wiele tygodni do przodu</li>
+    </ul>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+      <div class="rounded-xl border border-gray-200 p-4">
+        <p class="text-sm font-semibold text-brand-ink">Miesięcznie</p>
+        <p class="mt-1 font-serif text-2xl font-bold text-brand-ink"><%= pro_price(:monthly) %></p>
+        <p class="text-xs text-gray-500">co miesiąc</p>
+        <%= button_to 'Wybieram miesięczny', upgrade_path, method: :post, params: { interval: 'monthly' },
+                      form: { data: { turbo: false } },
+                      class: 'mt-4 w-full rounded-full border border-brand-navy px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-navy hover:text-white' %>
+      </div>
+      <div class="rounded-xl border-2 border-brand-navy p-4">
+        <p class="text-sm font-semibold text-brand-ink">Rocznie</p>
+        <p class="mt-1 font-serif text-2xl font-bold text-brand-ink"><%= pro_price(:yearly) %></p>
+        <p class="text-xs text-gray-500">ok. <%= pro_price(:yearly, per_month: true) %> / mies.</p>
+        <%= button_to 'Wybieram roczny', upgrade_path, method: :post, params: { interval: 'yearly' },
+                      form: { data: { turbo: false } },
+                      class: 'mt-4 w-full rounded-full bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach' %>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-xl bg-brand-paper p-4 text-sm text-gray-700">
+      <h2 class="font-semibold text-brand-ink">Warunki płatności</h2>
+      <p class="mt-2">
+        Subskrypcja odnawia się automatycznie — <%= pro_price(:monthly) %> co miesiąc albo <%= pro_price(:yearly) %> co rok,
+        pobierane z góry za cały okres, aż anulujesz ją w panelu subskrypcji w profilu. Po anulowaniu Pro działa do końca opłaconego okresu.
+      </p>
+      <p class="mt-2">
+        Płatność kartą lub BLIK. Cykliczny BLIK działa w bankach: Alior, Credit Agricole, ING, Millennium, mBank,
+        Nest Bank, PKO BP, Santander i banki spółdzielcze SGB. W innych bankach zapłać kartą.
+      </p>
+      <p class="mt-2">
+        Szczegóły w <%= link_to 'Regulaminie', terms_path, class: 'underline hover:text-brand-navy' %>.
+      </p>
+    </div>
+  </div>
+</div>

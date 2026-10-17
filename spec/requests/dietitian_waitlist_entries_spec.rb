@@ -55,14 +55,27 @@ RSpec.describe 'Dietitian waitlist entries', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it 'rejects duplicate email addresses' do
+    it 'answers a duplicate email exactly like a new one, without creating a second entry' do
       create(:dietitian_waitlist_entry, email_address: valid_params[:dietitian_waitlist_entry][:email_address])
 
       expect do
         post dietitian_waitlist_entries_path, params: valid_params
       end.not_to change(DietitianWaitlistEntry, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to redirect_to(new_dietitian_waitlist_entry_path)
+      expect(flash[:notice]).to include('Thanks.')
+      expect(flash[:alert]).to be_nil
+    end
+
+    it 'throttles repeated submissions from one client' do
+      allow(Rails.cache).to receive(:increment).and_return(6)
+
+      expect do
+        post dietitian_waitlist_entries_path, params: valid_params
+      end.not_to change(DietitianWaitlistEntry, :count)
+
+      expect(response).to redirect_to(new_dietitian_waitlist_entry_path)
+      expect(flash[:alert]).to eq('Try again later.')
     end
   end
 end

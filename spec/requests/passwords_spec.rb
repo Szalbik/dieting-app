@@ -28,6 +28,17 @@ RSpec.describe 'Password Reset', type: :request do
       post passwords_path, params: { email_address: 'notfound@example.com' }
       expect(response).to redirect_to(new_session_path)
     end
+
+    it 'throttles repeated reset requests from one client without sending mail' do
+      allow(Rails.cache).to receive(:increment).and_return(6)
+
+      expect do
+        post passwords_path, params: { email_address: user.email_address }
+      end.not_to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+      expect(response).to redirect_to(new_password_path)
+      expect(flash[:alert]).to eq('Try again later.')
+    end
   end
 
   describe 'PATCH /passwords/:token' do
@@ -38,9 +49,15 @@ RSpec.describe 'Password Reset', type: :request do
       expect(response).to redirect_to(new_password_path)
     end
 
-    # To test valid token, you would need to generate a real token for the user
-    it 'skips valid token reset (integration test needed)' do
-      skip 'Integration test for valid token reset not implemented here.'
+    it 'resets the password and revokes every existing session' do
+      stolen = user.sessions.create!(user_agent: 'attacker', ip_address: '10.0.0.1')
+
+      patch password_path(user.password_reset_token), params: { password: 'newpass123', password_confirmation: 'newpass123' }
+
+      expect(response).to redirect_to(new_session_path)
+      expect(user.reload.authenticate('newpass123')).to be_truthy
+      expect(Session.exists?(stolen.id)).to be(false)
+      expect(user.sessions.count).to eq(0)
     end
   end
 end

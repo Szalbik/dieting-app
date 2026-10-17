@@ -11,7 +11,7 @@ class TodoistController < ApplicationController
         params[:diet][:project_id],
         params[:diet][:diet_set_ids],
         diet_set_quantities_params[:diet_set_quantities],
-        todoist_token,
+        SendToTodoistJob.seal(todoist_token['token']),
         Current.user.id
       )
       redirect_to diets_path, notice: 'Products sent to Todoist'

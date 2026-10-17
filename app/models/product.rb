@@ -17,6 +17,8 @@ class Product < ApplicationRecord
 
   # products without category
   scope :uncategorized, -> { includes(:product_category).where(product_categories: { id: nil }) }
+  # Left behind by a deleted diet (Meal/DietSet nullify) until DataRetentionJob removes them.
+  scope :orphaned, -> { where(meal_id: nil, diet_set_id: nil) }
 
   before_validation :sync_canonical_products!
 

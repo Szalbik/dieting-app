@@ -10,6 +10,13 @@ export default class extends Controller {
   connect() {
     const selected = this.pillTargets.find(p => p.getAttribute("aria-selected") === "true")
     if (selected) this.apply(selected.dataset.tabValue)
+    // A Turbo morph resets aria-selected/hidden to the server markup; put the user's tab back.
+    this.reapply = () => { if (this.current) this.apply(this.current) }
+    document.addEventListener("turbo:morph", this.reapply)
+  }
+
+  disconnect() {
+    document.removeEventListener("turbo:morph", this.reapply)
   }
 
   select(event) {
@@ -17,6 +24,7 @@ export default class extends Controller {
   }
 
   apply(value) {
+    this.current = value
     this.pillTargets.forEach(p =>
       p.setAttribute("aria-selected", String(p.dataset.tabValue === value))
     )

@@ -62,6 +62,7 @@ class DietsController < ApplicationController
     end
 
     if @diet.source == 'pdf'
+      @diet.errors.add(:base, 'Plik musi być PDF-em o rozmiarze do 10 MB.') unless pdf_upload?(diet_params[:pdf])
       unless params.dig(:diet, :pii_confirmed) == '1'
         @diet.errors.add(:base, 'Potwierdź, że plik nie zawiera danych osobowych. Wybierz plik ponownie.')
       end
@@ -78,7 +79,21 @@ class DietsController < ApplicationController
       @diet.pii_confirmed_at = Time.current
     end
 
-    if %w[pdf generated].include?(@diet.source) && !Current.user.ai_quota_available?
+    # Art. 9 RODO: every AI operation needs the explicit health-data consent (wizard included, if re-enabled).
+    if %w[pdf generated].include?(@diet.source) &&
+       !(Current.user.consented?(:health_data) || params.dig(:diet, :health_data) == '1')
+      @diet.errors.add(:base, 'Wyraź zgodę na przetwarzanie danych dotyczących zdrowia, aby wczytać dietę.')
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @diet.errors, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    # Reserve (check + consume in one UPDATE) before anything is enqueued, so
+    # parallel submissions cannot all pass a check and then each spend.
+    ai_operation = %w[pdf generated].include?(@diet.source)
+    if ai_operation && !Current.user.reserve_ai_quota!
       redirect_to new_diet_path, alert: ai_quota_exhausted_alert
       return
     end
@@ -90,9 +105,11 @@ class DietsController < ApplicationController
         when 'generated' then GenerateDietJob.perform_later(@diet.id)
         end
 
-        Current.user.consume_ai_quota! if %w[pdf generated].include?(@diet.source)
         if @diet.source == 'pdf' && !Current.user.consented?(:parse_disclaimer)
           Current.user.record_consent!(:parse_disclaimer)
+        end
+        if %w[pdf generated].include?(@diet.source) && !Current.user.consented?(:health_data)
+          Current.user.record_consent!(:health_data)
         end
 
         notice = {
@@ -104,6 +121,7 @@ class DietsController < ApplicationController
         format.html { redirect_to diets_path, notice: notice }
         format.json { render :new, status: :created, location: diets_path }
       else
+        Current.user.refund_ai_quota! if ai_operation
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @diet.errors, status: :unprocessable_entity }
       end
@@ -114,11 +132,19 @@ class DietsController < ApplicationController
     @diet = Current.user.diets.find(params[:id])
   end
 
+  # Owner-checked on every hit, unlike the permanent signed Active Storage url.
+  def pdf
+    diet = Current.user.diets.find(params[:id])
+    return head :not_found unless diet.pdf.attached?
+
+    send_data diet.pdf.download, filename: diet.pdf.filename.to_s, type: 'application/pdf', disposition: 'inline'
+  end
+
   def update
     @diet = Current.user.diets.find(params[:id])
 
     respond_to do |format|
-      if @diet.update(diet_params)
+      if @diet.update(diet_params.except(:pdf)) # the file is only accepted through create (consents, quota, type check)
         format.html { redirect_to diets_path, notice: 'Diet was successfully updated.' }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -138,23 +164,23 @@ class DietsController < ApplicationController
   end
 
   def toggle_active
-    @diet = Current.user.diets.find(params[:id])
-    @diet.update(active: !@diet.active)
-    @diet.reload
+    diet = Current.user.diets.find(params[:id])
+    diet.update(active: !diet.active)
 
-    respond_to do |format|
-      format.html { redirect_to diets_path, notice: @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.' }
-      format.turbo_stream do
-        flash.now[:notice] = @diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.'
-        render :toggle_active
-      end
-    end
+    # Plain redirect for Turbo too: back to the same page it's a refresh, which the index morphs in place.
+    redirect_to diets_path, status: :see_other,
+                            notice: diet.active? ? 'Dieta została aktywowana.' : 'Dieta została dezaktywowana.'
   end
 
   def reparse
     @diet = Current.user.diets.find(params[:id])
     unless @diet.pdf.attached?
       redirect_to diets_path, alert: 'Brak załączonego PDF. Nie można przeparsować diety.'
+      return
+    end
+
+    unless Current.user.consented?(:health_data)
+      redirect_to profile_path, alert: 'Aby przetworzyć dietę, wyraź zgodę na przetwarzanie danych dotyczących zdrowia.'
       return
     end
 
@@ -170,26 +196,27 @@ class DietsController < ApplicationController
       return
     end
 
-    unless Current.user.ai_quota_available?
+    unless Current.user.reserve_ai_quota!
       redirect_to diets_path, alert: ai_quota_exhausted_alert
       return
     end
 
-    @diet.update!(status: 'generating', generation_error: nil, pii_confirmed_at: Time.current)
+    # Conditional flip: a concurrent reparse of the same diet gets 0 rows and its reservation back.
+    now = Time.current
+    flipped = Diet.where(id: @diet.id)
+      .where('status != ? OR updated_at < ?', 'generating', Diet::STUCK_GENERATING_AFTER.ago)
+      .update_all(status: 'generating', generation_error: nil, pii_confirmed_at: now, updated_at: now) # rubocop:disable Rails/SkipsModelValidations
+    if flipped.zero?
+      Current.user.refund_ai_quota!
+      redirect_to diets_path, alert: 'Ta dieta jest właśnie wczytywana. Poczekaj, aż się zakończy.'
+      return
+    end
+
     DietBuilderJob.perform_later(@diet.id)
-    Current.user.consume_ai_quota!
     redirect_to diets_path, notice: 'Przeparsowanie diety zostało uruchomione. Zestawy i posiłki zostaną odtworzone z PDF (przetwarzanie w tle).'
   end
 
   private
-
-  def ai_quota_exhausted_alert
-    if Current.user.subscribed?
-      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:pro)} operacji AI w tym miesiącu. Limit odnowi się 1. dnia przyszłego miesiąca."
-    else
-      "Wykorzystałeś #{User::AI_QUOTA_LIMITS.fetch(:free)} darmowe operacje AI. Przejdź na Pro, aby kontynuować."
-    end
-  end
 
   def search_params
     params.require(:diet).permit(diet_set_ids: [])

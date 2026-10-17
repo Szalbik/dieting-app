@@ -1,0 +1,3 @@
+<p>Cześć<%= @user.first_name.present? ? " #{@user.first_name}" : "" %>,</p>
+<p>adres e-mail Twojego konta w Asystent Diet został zmieniony z <strong><%= @old_email %></strong> na <strong><%= @user.email_address %></strong>. Pozostałe sesje zostały wylogowane.</p>
+<p>Jeśli to nie Ty, napisz od razu na <a href="mailto:kontakt@asystentdiet.pl">kontakt@asystentdiet.pl</a> — przywrócimy poprzedni adres.</p>

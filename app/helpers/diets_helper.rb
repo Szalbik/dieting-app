@@ -26,7 +26,7 @@ module DietsHelper
       render(Ui::BadgeComponent.new(label: pdf ? 'Błąd wczytywania PDF' : 'Błąd generowania', variant: :danger,
                                     classes: 'cursor-help', title: diet.generation_error))
     else
-      "#{diet.diet_sets.count} zestawów"
+      t('diets.sets_count', count: diet.diet_sets.count)
     end
   end
 end

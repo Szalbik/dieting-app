@@ -42,6 +42,16 @@ RSpec.describe 'DietSets', type: :request do
       expect(response).to have_http_status(:success)
     end
 
+    it 'asks for confirmation before deleting the day' do
+      diet_set = create(:diet_set, diet: create(:diet, user: user, source: 'manual'))
+      login
+
+      get diet_set_path(diet_set)
+
+      expect(response.body).to include('data-turbo-confirm="Usunąć ten dzień i wszystkie jego posiłki?"')
+      expect(response.body).not_to include('data-confirm=')
+    end
+
     it 'returns 404 for a pdf diet' do
       diet_set = create(:diet_set, diet: create(:diet, user: user, source: 'pdf'))
       login

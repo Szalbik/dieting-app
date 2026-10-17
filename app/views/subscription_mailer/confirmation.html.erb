@@ -1,0 +1,23 @@
+<% price = number_to_currency(@amount, unit: 'zł', format: '%n %u', separator: ',', delimiter: ' ', precision: @amount.frac.zero? ? 0 : 2) %>
+<h1>Dziękujemy za zakup Planu Pro</h1>
+
+<p>Potwierdzamy zawarcie umowy o świadczenie usługi cyfrowej <strong>Plan Pro</strong> w serwisie AsystentDiety.</p>
+
+<ul>
+  <li><strong>Sprzedawca:</strong> Damian Szalbierz, prowadzący jednoosobową działalność gospodarczą, ul. Tadeusza Mikke 12a/11, 60-461 Poznań, NIP 7812072186, kontakt@asystentdiet.pl</li>
+  <li><strong>Usługa:</strong> Plan Pro<%= " — okres rozliczeniowy #{@interval_label}" if @interval_label %>: pełna funkcjonalność Serwisu i <%= ai_operations(User::AI_QUOTA_LIMITS.fetch(:pro)) %> w miesiącu kalendarzowym.</li>
+  <li><strong>Cena:</strong> <%= price %> brutto za okres rozliczeniowy, płatne z góry.</li>
+  <li><strong>Odnowienie:</strong> subskrypcja odnawia się automatycznie na kolejny okres, dopóki jej nie anulujesz w profilu (<%= link_to profile_url, profile_url %>). Anulowanie działa na koniec opłaconego okresu.</li>
+  <li><strong>Reklamacje:</strong> kontakt@asystentdiet.pl — odpowiadamy w 14 dni (Regulamin §8).</li>
+</ul>
+
+<h2>Twoje żądanie rozpoczęcia świadczenia</h2>
+<p>Przy zakupie złożyłeś żądanie rozpoczęcia świadczenia usługi przed upływem 14-dniowego terminu na odstąpienie od umowy. Plan Pro jest aktywny od teraz.</p>
+
+<h2>Prawo odstąpienia od umowy</h2>
+<p>Możesz odstąpić od umowy w terminie <strong>14 dni</strong> od jej zawarcia, bez podawania przyczyny — wystarczy wysłać oświadczenie na kontakt@asystentdiet.pl (możesz użyć wzoru formularza odstąpienia poniżej). Ponieważ zażądałeś rozpoczęcia świadczenia, w razie odstąpienia zapłacisz za okres korzystania do chwili odstąpienia, proporcjonalnie do liczby dni okresu rozliczeniowego; pozostałą część ceny zwrócimy w ciągu 14 dni tą samą metodą płatności (art. 35 ustawy o prawach konsumenta).</p>
+
+<h3>Wzór formularza odstąpienia od umowy</h3>
+<%= render "main/withdrawal_form" %>
+
+<p>Regulamin w wersji obowiązującej w chwili zakupu znajdziesz w załączniku do tej wiadomości oraz pod adresem <%= link_to terms_url, terms_url %>. Zasady przetwarzania danych: <%= link_to privacy_url, privacy_url %>.</p>

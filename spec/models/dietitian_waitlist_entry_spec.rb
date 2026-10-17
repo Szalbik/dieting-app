@@ -12,6 +12,9 @@ RSpec.describe DietitianWaitlistEntry, type: :model do
     it { is_expected.to validate_presence_of(:email_address) }
     it { is_expected.to allow_value('dietitian@example.com').for(:email_address) }
     it { is_expected.not_to allow_value('invalid_email').for(:email_address) }
+    it { is_expected.to validate_length_of(:first_name).is_at_most(100) }
+    it { is_expected.to validate_length_of(:company_name).is_at_most(200) }
+    it { is_expected.to validate_length_of(:email_address).is_at_most(255) }
 
     it 'validates email uniqueness case insensitively' do
       create(:dietitian_waitlist_entry, email_address: 'dietitian@example.com')

@@ -1,129 +1,137 @@
 <% content_for :marketing_page, true %>
 <% content_for :title, "Polityka prywatności — AsystentDiety" %>
+<% link_class = "font-semibold text-brand-sage-dark hover:text-brand-accent" %>
+<% contact = mail_to("kontakt@asystentdiet.pl", "kontakt@asystentdiet.pl", class: link_class) %>
+<% th = "border-b border-brand-sage/30 px-3 py-2 font-semibold" %>
 <div class="bg-brand-warm-white text-brand-charcoal">
   <div class="mx-auto max-w-3xl px-6 py-16">
     <%= link_to "← Wróć na stronę główną", root_path, class: "text-sm text-brand-sage-dark hover:text-brand-accent" %>
 
     <h1 class="mt-6 mb-2 text-4xl font-black font-serif tracking-tight">Polityka prywatności AsystentDiety</h1>
-    <p class="mb-10 text-sm text-brand-soft-gray">Ostatnia aktualizacja: 13.10.2026</p>
+    <%= render "main/legal_version" %>
 
     <div class="space-y-8 text-sm leading-7 text-brand-charcoal/90">
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">1. Postanowienia ogólne i Administrator Danych Osobowych</h2>
-        <p>Niniejsza Polityka prywatności określa zasady przetwarzania danych osobowych Użytkowników korzystających z serwisu internetowego <strong>AsystentDiety</strong> dostępnego pod adresem asystentdiet.pl (zwanego dalej „Serwisem").</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">1. Administrator danych</h2>
+        <p>Polityka określa zasady przetwarzania danych osobowych w serwisie <strong>AsystentDiety</strong> (asystentdiet.pl, dalej „Serwis”).</p>
         <div class="my-3 rounded-2xl border border-brand-sage/30 bg-white p-4">
-          <p class="font-semibold">Administrator Danych Osobowych:</p>
+          <p class="font-semibold">Administrator danych osobowych:</p>
           <p>Damian Szalbierz, prowadzący jednoosobową działalność gospodarczą<br>
-          Adres: ul. Tadeusza Mikke 12a/11, 60-461 Poznań<br>
-          NIP: 7812072186</p>
-          <p class="mt-2"><strong>Kontakt w sprawach ochrony danych:</strong> <a href="mailto:kontakt@asystentdiet.pl" class="font-semibold text-brand-sage-dark hover:text-brand-accent">kontakt@asystentdiet.pl</a></p>
+          ul. Tadeusza Mikke 12a/11, 60-461 Poznań, NIP 7812072186</p>
+          <p class="mt-2"><strong>Kontakt w sprawach danych osobowych:</strong> <%= contact %></p>
         </div>
-        <p>Dane osobowe są przetwarzane zgodnie z przepisami Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (RODO) oraz polskimi przepisami w zakresie ochrony danych osobowych.</p>
+        <p>Administrator nie wyznaczył inspektora ochrony danych. Dane są przetwarzane zgodnie z rozporządzeniem (UE) 2016/679 (RODO).</p>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">2. Cele i podstawy prawne przetwarzania danych</h2>
-        <p class="mb-3">Podstawy prawne oraz cele przetwarzania danych są zależne od rodzaju Usług, z których korzystasz:</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">2. Cele i podstawy prawne przetwarzania</h2>
         <div class="overflow-x-auto">
           <table class="w-full border border-brand-sage/30 bg-white text-left text-xs leading-5">
             <thead>
               <tr class="bg-brand-sage/10">
-                <th class="border-b border-brand-sage/30 px-3 py-2 font-semibold">Usługa</th>
-                <th class="border-b border-brand-sage/30 px-3 py-2 font-semibold">Podstawa prawna</th>
-                <th class="border-b border-brand-sage/30 px-3 py-2 font-semibold">Cel przetwarzania</th>
-                <th class="border-b border-brand-sage/30 px-3 py-2 font-semibold">Okres przechowywania</th>
+                <th class="<%= th %>">Cel</th>
+                <th class="<%= th %>">Podstawa prawna</th>
+                <th class="<%= th %>">Okres przechowywania</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-brand-sage/20 align-top">
               <tr>
-                <td class="px-3 py-2 font-semibold">Rejestracja i prowadzenie Konta</td>
-                <td class="px-3 py-2">Art. 6 ust. 1 lit. b RODO (przetwarzanie niezbędne do wykonania umowy) oraz art. 6 ust. 1 lit. c RODO (wykonanie obowiązku prawnego) w zw. z art. 18 ustawy o świadczeniu usług drogą elektroniczną.</td>
-                <td class="px-3 py-2">Realizacja umowy o świadczenie usług drogą elektroniczną: wczytywanie i generowanie planów diet, planowanie posiłków, listy zakupów.</td>
-                <td class="px-3 py-2">Do czasu trwałej likwidacji Konta Użytkownika.</td>
+                <td class="px-3 py-2"><strong>Prowadzenie Konta i świadczenie Usługi</strong> — diety, planowanie posiłków, listy zakupów, współdzielenie listy</td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. b RODO (umowa)</td>
+                <td class="px-3 py-2">Do usunięcia Konta (dane konkretnej diety — do usunięcia diety)</td>
               </tr>
               <tr>
-                <td class="px-3 py-2 font-semibold">Płatny abonament (Plan Pro)</td>
-                <td class="px-3 py-2">Art. 6 ust. 1 lit. b RODO (przetwarzanie w celu realizacji umowy pomiędzy Użytkownikiem a Usługodawcą).</td>
-                <td class="px-3 py-2">Realizacja zawartej umowy subskrypcji, przyjęcie płatności, wystawianie faktur VAT.</td>
-                <td class="px-3 py-2">Do czasu trwałej likwidacji Konta, a następnie przez okres 6 lat w celu dochodzenia ewentualnych roszczeń oraz dla celów podatkowych.</td>
+                <td class="px-3 py-2"><strong>Wczytywanie planów diet z PDF z użyciem AI</strong> — w tym dane mogące dotyczyć zdrowia</td>
+                <td class="px-3 py-2">Art. 9 ust. 2 lit. a RODO (wyraźna zgoda) oraz art. 6 ust. 1 lit. b RODO</td>
+                <td class="px-3 py-2">Do usunięcia diety lub Konta. Po wycofaniu zgody nie przetwarzamy nowych plików; wczytane diety usuniesz sam lub na Twoje żądanie usuniemy je my</td>
               </tr>
               <tr>
-                <td class="px-3 py-2 font-semibold">Odpowiedzi na zapytania/reklamacje</td>
-                <td class="px-3 py-2">Art. 6 ust. 1 lit. b RODO (przetwarzanie danych w celu realizacji umowy) oraz art. 6 ust. 1 lit. c RODO (realizacja obowiązków nałożonych na Usługodawcę).</td>
-                <td class="px-3 py-2">Udzielanie odpowiedzi na pytania oraz rozpatrywanie reklamacji Użytkowników.</td>
-                <td class="px-3 py-2">Po rozpatrzeniu zapytania lub reklamacji przez okres nieprzekraczający dwóch lat, chyba że charakter zapytania wymaga dłuższego okresu przechowywania danych.</td>
+                <td class="px-3 py-2"><strong>Plan Pro i płatności</strong> — zawarcie i wykonanie umowy, rozliczenia, faktury</td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. b i c RODO (umowa, obowiązki podatkowe i rachunkowe)</td>
+                <td class="px-3 py-2">Dokumenty rozliczeniowe — 5 lat od końca roku, w którym upłynął termin płatności podatku</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2"><strong>Reklamacje, odstąpienia, zapytania</strong></td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. b i c RODO</td>
+                <td class="px-3 py-2">Do 2 lat od zakończenia sprawy</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2"><strong>Bezpieczeństwo i monitorowanie błędów</strong> — logi sesji (adres IP, przeglądarka), raporty błędów</td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes: bezpieczeństwo i stabilność Serwisu)</td>
+                <td class="px-3 py-2">Sesje — do 12 miesięcy od zalogowania; raporty błędów — przez okres przechowywania u dostawcy monitoringu</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2"><strong>Ustalenie, dochodzenie i obrona roszczeń</strong></td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. f RODO</td>
+                <td class="px-3 py-2">Do upływu terminu przedawnienia roszczeń</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2"><strong>Lista oczekujących dla dietetyków</strong> — imię, e-mail, nazwa firmy, uwagi z formularza</td>
+                <td class="px-3 py-2">Art. 6 ust. 1 lit. f RODO (odpowiedź na zgłoszenie i kontakt w sprawie oferty)</td>
+                <td class="px-3 py-2">Do 2 lat od zgłoszenia albo do wniesienia sprzeciwu</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="mt-3 rounded-2xl border border-brand-sage/30 bg-brand-cream/40 p-4">
-          <p><strong>Dane dotyczące zdrowia:</strong> dane o preferencjach żywieniowych i planach diet mogą stanowić dane dotyczące zdrowia. Przetwarzamy je wyłącznie w celu świadczenia Usługi, na podstawie Twojej wyraźnej zgody wyrażonej przez dobrowolne wprowadzenie tych danych do Serwisu (art. 9 ust. 2 lit. a RODO). Możesz je usunąć w każdej chwili, usuwając dietę lub Konto.</p>
+          <p><strong>Dane dotyczące zdrowia.</strong> Plan diety, cel żywieniowy, preferencje i wykluczenia (np. alergie) oraz informacja o zjedzonych posiłkach mogą ujawniać informacje o Twoim zdrowiu. Przetwarzamy je wyłącznie w celu świadczenia Usługi, na podstawie Twojej <strong>wyraźnej zgody</strong>, o którą prosimy osobnym polem przed pierwszym wczytaniem pliku PDF. Zgoda jest dobrowolna, ale bez niej nie można korzystać z Operacji AI. Możesz ją w każdej chwili wycofać w profilu — nie wpływa to na zgodność z prawem przetwarzania przed wycofaniem. Przed wczytaniem pliku usuń z niego dane identyfikujące i informacje o zdrowiu niepotrzebne do odczytu jadłospisu (Regulamin §5 ust. 3).</p>
         </div>
+        <p class="mt-3">Podanie adresu e-mail i hasła jest warunkiem założenia Konta, a podanie danych płatniczych — warunkiem zakupu Planu Pro. Pozostałe dane podajesz dobrowolnie. Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu, które wywoływałyby skutki prawne.</p>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">3. Zakres przetwarzanych danych i okres ich przechowywania</h2>
+        <h2 class="mb-2 text-xl font-bold font-serif">3. Jakie dane przetwarzamy</h2>
         <ul class="list-disc space-y-1 pl-5">
-          <li><strong>Dane rejestracyjne:</strong> adres e-mail, hasło (przechowywane wyłącznie w postaci zaszyfrowanej — bcrypt) — przechowywane przez okres prowadzenia Konta.</li>
-          <li><strong>Treści Użytkownika:</strong> wczytane pliki PDF z planami diet, dane posiłków i produktów, listy zakupów, preferencje żywieniowe podane w kreatorze AI — przechowywane do czasu ich usunięcia lub likwidacji Konta.</li>
-          <li><strong>Dane o stanie zdrowia:</strong> Serwis nie jest przeznaczony do przetwarzania danych o stanie zdrowia (art. 9 RODO) i nie zbiera ich celowo. Przed wczytaniem pliku PDF Użytkownik zobowiązany jest usunąć z niego informacje o stanie zdrowia (rozpoznania, wyniki badań, waga, wymiary ciała) (§5 Regulaminu).</li>
-          <li><strong>Dane płatności:</strong> identyfikator klienta i status subskrypcji w systemie Stripe; faktury i dane płatności — 5 lat od końca roku obrotowego. Nie przechowujemy numerów kart płatniczych.</li>
-          <li><strong>Dane archiwalne:</strong> minimalne dane niezbędne do obrony roszczeń — przez okres przedawnienia.</li>
-          <li><strong>Dane techniczne:</strong> adres IP i identyfikator przeglądarki powiązane z sesją logowania — do 12 miesięcy.</li>
+          <li><strong>Konto:</strong> adres e-mail, hasło (wyłącznie skrót bcrypt), imię (jeśli je podasz), daty akceptacji Regulaminu i udzielonych zgód, liczniki Operacji AI.</li>
+          <li><strong>Treści:</strong> wczytane pliki PDF i ich nazwy, odczytane plany diet, posiłki i produkty, przepisy, zamienniki produktów, plany tygodniowe i informacja o zjedzonych posiłkach, listy zakupów.</li>
+          <li><strong>Współdzielenie listy zakupów:</strong> jeśli zaprosisz inną osobę lub przyjmiesz zaproszenie, druga strona widzi Twój adres e-mail i wspólną listę zakupów.</li>
+          <li><strong>Płatności:</strong> identyfikator klienta i status subskrypcji w Stripe, informacja o żądaniu rozpoczęcia świadczenia przy zakupie. Nie przechowujemy danych kart płatniczych.</li>
+          <li><strong>Dane techniczne:</strong> adres IP i identyfikator przeglądarki zapisane przy logowaniu.</li>
         </ul>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">4. Odbiorcy danych</h2>
-        <p class="mb-2">Dane osobowe Użytkowników mogą być przekazywane następującym kategoriom podmiotów (podmiotom przetwarzającym, z którymi Administrator ma zawarte stosowne umowy powierzenia):</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">4. Odbiorcy danych i przekazywanie poza EOG</h2>
+        <p class="mb-2">Dane powierzamy podmiotom przetwarzającym na podstawie umów powierzenia (art. 28 RODO) albo przekazujemy odrębnym administratorom, gdy wynika to z charakteru usługi:</p>
         <ul class="list-disc space-y-1 pl-5">
-          <li><strong>Operatorzy płatności:</strong> Stripe, Inc. — obsługa transakcji i płatności cyklicznych za subskrypcję.</li>
-          <li><strong>Dostawcy usług AI:</strong> OpenAI — przetwarzanie treści planów diet (cały wczytany plik PDF, preferencje żywieniowe) w celu ich analizy i generowania diet. Plik PDF przekazywany jest w całości, dlatego Użytkownik zobowiązany jest usunąć z niego dane osobowe przed wczytaniem (§5 Regulaminu). Dane Konta (adres e-mail) nie są przekazywane.</li>
-          <li><strong>Todoist (Doist Inc.)</strong> — wyłącznie jeśli Użytkownik połączy konto Todoist, w celu eksportu list zakupów.</li>
-          <li><strong>Honeybadger Industries LLC</strong> — monitorowanie błędów aplikacji.</li>
-          <li><strong>Dostawcy usług IT i hostingu</strong> — firmy, w których systemach dane są przechowywane i przetwarzane w celu świadczenia usług.</li>
-          <li><strong>Usługi księgowe i prawne</strong> — podmioty świadczące usługi księgowe i prawne na rzecz Administratora.</li>
+          <li><strong>DigitalOcean, LLC</strong> (USA) — hosting serwera, na którym przechowywane są dane Serwisu i pliki PDF (podmiot przetwarzający).</li>
+          <li><strong>OpenAI Ireland Ltd</strong> (Irlandia) — analiza wczytanych plików PDF (plany diet i listy zamienników), kategoryzacja nazw produktów, szacowanie wartości odżywczych posiłków i przepisów na podstawie ich nazw i składników oraz dopasowanie zamienników (podmiot przetwarzający); dalsze przetwarzanie przez OpenAI OpCo, LLC (USA). Przekazujemy cały plik PDF, bez Twojego adresu e-mail ani innych danych Konta. Plik jest usuwany u OpenAI po zakończeniu odczytu, a odpowiedzi nie są u OpenAI przechowywane; OpenAI może przechowywać dane wejściowe i wyjściowe do 30 dni wyłącznie w celu wykrywania nadużyć. Dane nie są wykorzystywane do trenowania modeli.</li>
+          <li><strong>Stripe Payments Europe, Ltd.</strong> (Irlandia) — obsługa płatności i subskrypcji. Stripe jest podmiotem przetwarzającym w zakresie obsługi płatności oraz odrębnym administratorem w zakresie zapobiegania oszustwom i obowiązków regulacyjnych (<%= link_to "stripe.com/privacy", "https://stripe.com/privacy", class: link_class %>).</li>
+          <li><strong>Resend</strong> (USA) — wysyłka wiadomości e-mail (reset hasła, potwierdzenie zakupu, informacje o zmianach) (podmiot przetwarzający).</li>
+          <li><strong>Honeybadger Industries LLC</strong> (USA) — monitorowanie błędów aplikacji; raport błędu może zawierać adres IP, przeglądarkę i parametry żądania (podmiot przetwarzający).</li>
+          <li><strong>Todoist (Doist Inc.)</strong> — tylko jeśli połączysz konto Todoist i zlecisz eksport listy zakupów; Doist przetwarza dane jako odrębny administrator, na Twoje polecenie.</li>
+          <li><strong>Inni Użytkownicy</strong> — w zakresie współdzielonej listy zakupów (pkt 3).</li>
+          <li><strong>Biuro rachunkowe i doradcy prawni</strong> — w zakresie niezbędnym do rozliczeń i obrony roszczeń.</li>
         </ul>
         <div class="mt-3 rounded-2xl border border-brand-sage/30 bg-brand-cream/40 p-4">
-          <p>W przypadku przekazywania danych poza Europejski Obszar Gospodarczy (EOG) — np. Stripe, OpenAI, Honeybadger (USA) — Administrator stosuje standardowe klauzule umowne zatwierdzone przez Komisję Europejską oraz inne zabezpieczenia prawne wymagane przez RODO.</p>
+          <p>Przy przekazywaniu danych do USA korzystamy z decyzji Komisji Europejskiej stwierdzającej odpowiedni stopień ochrony (EU–US Data Privacy Framework) — wobec podmiotów certyfikowanych — albo ze standardowych klauzul umownych zatwierdzonych przez Komisję Europejską (art. 46 ust. 2 lit. c RODO). Kopię zabezpieczeń możesz otrzymać, pisząc na <%= contact %>.</p>
         </div>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">5. Prawa osób, których dane dotyczą</h2>
-        <p class="mb-2">Każdemu Użytkownikowi przysługuje, z zastrzeżeniem ograniczeń wynikających z RODO, prawo do:</p>
+        <h2 class="mb-2 text-xl font-bold font-serif">5. Twoje prawa</h2>
+        <p class="mb-2">Masz prawo do:</p>
         <ul class="list-disc space-y-1 pl-5">
-          <li><strong>dostępu</strong> do swoich danych oraz otrzymania ich kopii,</li>
-          <li><strong>sprostowania</strong> (poprawiania) swoich danych osobowych,</li>
-          <li><strong>usunięcia</strong> danych („prawo do bycia zapomnianym") w określonych sytuacjach,</li>
-          <li><strong>ograniczenia</strong> przetwarzania danych,</li>
-          <li><strong>przenoszenia</strong> danych do innego podmiotu,</li>
-          <li><strong>sprzeciwu</strong> wobec przetwarzania na podstawie uzasadnionego interesu.</li>
+          <li><strong>dostępu</strong> do danych i otrzymania ich kopii,</li>
+          <li><strong>sprostowania</strong> danych,</li>
+          <li><strong>usunięcia</strong> danych — możesz samodzielnie usunąć dietę albo całe Konto w profilu,</li>
+          <li><strong>ograniczenia</strong> przetwarzania,</li>
+          <li><strong>przenoszenia</strong> danych przetwarzanych na podstawie umowy lub zgody,</li>
+          <li><strong>sprzeciwu</strong> wobec przetwarzania na podstawie prawnie uzasadnionego interesu,</li>
+          <li><strong>wycofania zgody</strong> w dowolnym momencie (zgodę na dane dotyczące zdrowia wycofasz w profilu),</li>
+          <li><strong>wniesienia skargi</strong> do Prezesa Urzędu Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa, <%= link_to "uodo.gov.pl", "https://uodo.gov.pl/", class: link_class %>).</li>
         </ul>
-        <ol class="mt-3 list-decimal space-y-2 pl-5">
-          <li><strong>Jak skorzystać z praw?</strong> Z uprawnień określonych powyżej można skorzystać, pisząc na adres: <a href="mailto:kontakt@asystentdiet.pl" class="font-semibold text-brand-sage-dark hover:text-brand-accent">kontakt@asystentdiet.pl</a>.</li>
-          <li><strong>Weryfikacja bezpieczeństwa.</strong> W celu zapewnienia bezpieczeństwa poprosimy o podanie określonych znanych nam informacji, aby zweryfikować, czy faktycznie chodzi o osobę, której dane dotyczą.</li>
-          <li><strong>Skargi i nadzór.</strong> W związku z przetwarzaniem danych osobowych Użytkownikowi przysługuje prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (PUODO: ul. Stawki 2, 00-193 Warszawa, <a href="https://uodo.gov.pl/" target="_blank" class="text-brand-sage-dark hover:text-brand-accent underline">https://uodo.gov.pl/</a>).</li>
-          <li><strong>Cofanie zgody.</strong> Użytkownik ma prawo w każdej chwili cofnąć zgodę na przetwarzanie danych osobowych przetwarzanych na podstawie wyrażonej zgody. Cofnięcie zgody nie wpływa na zgodność z prawem przetwarzania, którego dokonano przed jej wycofaniem.</li>
-        </ol>
+        <p class="mt-2">Pozostałe żądania zgłoś na <%= contact %>. Odpowiemy w ciągu miesiąca. Możemy poprosić o potwierdzenie, że żądanie pochodzi od właściciela Konta.</p>
       </section>
 
       <section>
-        <h2 class="mb-2 text-xl font-bold font-serif">6. Pliki cookies i dane eksploatacyjne</h2>
-        <p>Serwis wykorzystuje pliki cookies (tzw. „ciasteczka") — niewielkie pliki tekstowe wysyłane przez Serwis i przechowywane na urządzeniu Użytkownika. Cookies wykorzystywane są w celu:</p>
-        <ul class="list-disc space-y-1 pl-5">
-          <li><strong>utrzymania sesji Użytkownika</strong> po zalogowaniu do Serwisu,</li>
-          <li><strong>zabezpieczenia formularzy</strong> przed atakami typu CSRF,</li>
-          <li><strong>realizacji płatności</strong> przez Stripe.</li>
-        </ul>
-        <div class="mt-3 rounded-2xl border border-brand-sage/30 bg-brand-cream/40 p-4">
-          <p class="font-semibold">Serwis AsystentDiety NIE używa:</p>
-          <ul class="list-disc space-y-1 pl-5">
-            <li>cookies analitycznych (statystyki, śledzenie),</li>
-            <li>cookies marketingowych (reklamy, personalizacja).</li>
-          </ul>
-          <p class="mt-2">Używamy wyłącznie plików cookies niezbędnych do działania Serwisu, które <strong>nie wymagają zgody</strong> i nie mogą być wyłączone bez utraty funkcjonalności Serwisu. Szczegółowe informacje znajdują się w <%= link_to "Polityce cookies", cookies_policy_path, class: "font-semibold text-brand-sage-dark hover:text-brand-accent underline" %>.</p>
-        </div>
+        <h2 class="mb-2 text-xl font-bold font-serif">6. Pliki cookies i pamięć przeglądarki</h2>
+        <p>Serwis używa wyłącznie plików cookies i mechanizmów pamięci przeglądarki niezbędnych do działania Serwisu (sesja, zabezpieczenie formularzy, praca offline). Nie używamy cookies analitycznych ani marketingowych i nie ładujemy zasobów z zewnętrznych serwerów (poza stroną płatności Stripe). Szczegóły: <%= link_to "Polityka cookies", cookies_policy_path, class: link_class %>.</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 text-xl font-bold font-serif">7. Bezpieczeństwo i zmiany polityki</h2>
+        <p>Stosujemy szyfrowane połączenie (HTTPS), hashowanie haseł, kontrolę dostępu do danych i kopie zapasowe serwera. Usunięte dane znikają z kopii zapasowych wraz z ich rotacją, nie później niż po 30 dniach. O zmianach Polityki prywatności informujemy e-mailem z co najmniej 14-dniowym wyprzedzeniem.</p>
       </section>
     </div>
   </div>

@@ -30,6 +30,12 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 pl:
+  diets:
+    sets_count:
+      one: "%{count} zestaw"
+      few: "%{count} zestawy"
+      many: "%{count} zestawów"
+      other: "%{count} zestawu"
   time:
     formats:
       long: "%Y-%m-%d %H:%M"

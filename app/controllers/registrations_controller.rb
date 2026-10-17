@@ -20,17 +20,20 @@ class RegistrationsController < ApplicationController
     @user = User.new(safe_params)
 
     unless params[:terms] == '1'
-      flash.now[:alert] = 'Musisz zaakceptować Regulamin i Politykę prywatności.'
+      flash.now[:alert] = 'Musisz potwierdzić, że masz ukończone 18 lat, i zaakceptować Regulamin oraz Politykę prywatności.'
       render :new, status: :unprocessable_entity
       return
     end
 
     @user.record_consent(:terms)
+    @user.consents = @user.consents.merge('terms_version' => LegalDocuments::VERSION)
 
     if @user.save
       start_new_session_for @user
       redirect_to(params[:plan] == 'pro' ? upgrade_path : after_authentication_url, notice: 'Welcome!')
     else
+      # Never confirm that an address already has an account (the generic flash covers it).
+      @user.errors.delete(:email_address, :taken)
       flash[:alert] = 'Email or password confirmation invalid.'
       render :new, status: :unprocessable_entity
     end

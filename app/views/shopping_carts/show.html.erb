@@ -1,5 +1,5 @@
 <% content_for :head do %><%= turbo_refreshes_with method: :morph, scroll: :preserve %><% end %>
-<%= turbo_stream_from @shopping_cart %>
+<%= turbo_stream_from @shopping_cart, channel: ShoppingCartChannel %>
 
 <!-- Header -->
 <div class="mb-3.5 flex items-center gap-3">

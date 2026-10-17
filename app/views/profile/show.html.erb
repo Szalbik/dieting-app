@@ -26,18 +26,37 @@
           <% else %>
             <p class="mt-2 text-sm text-gray-700">Plan: <span class="font-semibold">Darmowy</span></p>
             <p class="mt-1 text-sm text-gray-500">
-              Pozostało <%= Current.user.ai_free_remaining %> z <%= User::AI_QUOTA_LIMITS.fetch(:free) %> darmowych operacji AI (wgranie PDF lub kreator AI).
+              Pozostało <%= Current.user.ai_free_remaining %> z <%= User::AI_QUOTA_LIMITS.fetch(:free) %> darmowej operacji AI (wgranie PDF lub kreator AI).
             </p>
           <% end %>
         </div>
         <% if Current.user.subscription_lifetime? %>
           <!-- brak Stripe dla planu dożywotniego -->
-        <% elsif Current.user.stripe_customer_id.present? %>
-          <%= button_to "Zarządzaj subskrypcją", billing_portal_path, method: :post, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
+        <% elsif Current.user.subscribed? %>
+          <%# Redirects off-site to Stripe: a Turbo fetch would hit CORS. %>
+          <%= button_to "Zarządzaj subskrypcją", billing_portal_path, method: :post, form: { data: { turbo: false } }, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
         <% elsif payments_enabled? %>
-          <%= link_to "Przejdź na Pro — 20 zł/mies.", upgrade_path, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
+          <%= link_to "Przejdź na Pro — #{pro_price(:monthly)}/mies.", upgrade_path, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
         <% else %>
           <span class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-500">Plan Pro — wkrótce</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="p-6 mb-8 bg-white border border-gray-200 shadow-sm rounded-2xl">
+      <h3 class="text-base font-semibold text-gray-900">Prywatność</h3>
+      <div class="flex flex-col gap-4 mt-2 lg:flex-row lg:items-center lg:justify-between">
+        <div class="max-w-2xl text-sm text-gray-700">
+          <% if Current.user.consented?(:health_data) %>
+            <p>Zgoda na przetwarzanie danych dotyczących zdrowia (art. 9 RODO) — <span class="font-semibold">udzielona</span>. Po jej wycofaniu wczytywanie diet z PDF będzie niedostępne; istniejące diety możesz usunąć osobno.</p>
+          <% else %>
+            <p>Zgoda na przetwarzanie danych dotyczących zdrowia (art. 9 RODO) — <span class="font-semibold">brak</span>. Jest potrzebna do wczytywania diet z PDF (dane trafiają do analizy OpenAI). <%= link_to "Polityka prywatności", privacy_path, class: "font-semibold underline" %></p>
+          <% end %>
+        </div>
+        <% if Current.user.consented?(:health_data) %>
+          <%= button_to "Wycofaj zgodę", health_data_consent_path, method: :delete, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50" %>
+        <% else %>
+          <%= button_to "Wyrażam zgodę", health_data_consent_path, method: :post, class: "rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-peach" %>
         <% end %>
       </div>
     </div>
@@ -154,6 +173,13 @@
                         <%= f.email_field :email_address, class: 'block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'  %>
                       </div>
                     </div>
+
+                    <div class="sm:col-span-4">
+                      <label for="current_password" class="block text-sm font-medium leading-6 text-gray-900">Aktualne hasło (wymagane przy zmianie adresu e-mail)</label>
+                      <div class="mt-2">
+                        <%= password_field_tag :current_password, nil, autocomplete: "current-password", class: 'block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' %>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="flex items-center justify-end mt-6 gap-x-6">
@@ -167,5 +193,18 @@
         </div>  
       </div>  
     </div>   
+    <div class="p-6 mb-8 bg-white border border-red-200 shadow-sm rounded-2xl">
+      <h3 class="text-base font-semibold text-gray-900">Usuń konto</h3>
+      <p class="mt-2 max-w-2xl text-sm text-gray-700">Usunięcie konta jest nieodwracalne: usuniemy diety, wczytane pliki PDF, plany i listy zakupów. <% if Current.user.subscribed? && !Current.user.subscription_lifetime? %>Aktywna subskrypcja Pro zostanie anulowana od razu, bez zwrotu za bieżący okres — jeśli od zakupu minęło mniej niż 14 dni, najpierw <%= link_to "odstąp od umowy", terms_path(anchor: "formularz-odstapienia"), class: "font-semibold underline" %> (napisz na kontakt@asystentdiet.pl), aby otrzymać zwrot.<% end %></p>
+      <%# Redirects to another page on success: turbo off per lessons.md (no turbo_stream redirect surprises). %>
+      <%= form_with url: account_path, method: :delete, data: { turbo: false }, class: "flex flex-col gap-3 mt-4 sm:flex-row sm:items-end" do %>
+        <div>
+          <%= label_tag :account_password, "Hasło", class: "block text-sm font-medium text-gray-900" %>
+          <%= password_field_tag :password, nil, id: "account_password", required: true, autocomplete: "current-password", class: "mt-1 block rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+        </div>
+        <%= submit_tag "Usuń konto na zawsze", class: "rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500" %>
+      <% end %>
+    </div>
+
   </main>
 </div>
