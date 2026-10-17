@@ -9,8 +9,8 @@ RSpec.describe 'Account deletion', type: :request do
     post session_path, params: { email_address: as.email_address, password: 'password123' }
   end
 
-  def json(body)
-    { status: 200, body: body.to_json, headers: { 'Content-Type' => 'application/json' } }
+  def json(status: 200, **body)
+    { status:, body: body.to_json, headers: { 'Content-Type' => 'application/json' } }
   end
 
   it 'offers the deletion form in the profile' do
@@ -69,6 +69,18 @@ RSpec.describe 'Account deletion', type: :request do
       login
       delete account_path, params: { password: 'password123' }
 
+      expect(User.exists?(user.id)).to be(false)
+    end
+
+    it 'still deletes the account when the Stripe customer no longer exists (other env or removed in dashboard)' do
+      missing = json(status: 404, error: { type: 'invalid_request_error', code: 'resource_missing',
+                                           message: 'No such customer: cus_1' })
+      stub_request(:get, %r{api.stripe.com/v1/subscriptions\?.*customer=cus_1}).to_return(missing)
+      stub_request(:delete, 'https://api.stripe.com/v1/customers/cus_1').to_return(missing)
+      login
+      delete account_path, params: { password: 'password123' }
+
+      expect(cancel).not_to have_been_requested
       expect(User.exists?(user.id)).to be(false)
     end
 
