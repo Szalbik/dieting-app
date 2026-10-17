@@ -32,6 +32,8 @@ class RegistrationsController < ApplicationController
       start_new_session_for @user
       redirect_to(params[:plan] == 'pro' ? upgrade_path : after_authentication_url, notice: 'Welcome!')
     else
+      # Never confirm that an address already has an account (the generic flash covers it).
+      @user.errors.delete(:email_address, :taken)
       flash[:alert] = 'Email or password confirmation invalid.'
       render :new, status: :unprocessable_entity
     end

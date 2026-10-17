@@ -82,9 +82,17 @@ RSpec.describe 'User Registration', type: :request do
 
     it 'does not register with duplicate email' do
       FactoryBot.create(:user, email_address: valid_params[:user][:email_address])
-      post registrations_path, params: valid_params
+      expect do
+        post registrations_path, params: valid_params
+      end.not_to change(User, :count)
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.body).to include('invalid')
+    end
+
+    it 'does not reveal that the email is already registered' do
+      FactoryBot.create(:user, email_address: valid_params[:user][:email_address])
+      post registrations_path, params: valid_params
+      expect(response.body).not_to include('zajęte', 'already been taken')
+      expect(response.body).to include('Email or password confirmation invalid')
     end
   end
 end
