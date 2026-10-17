@@ -28,6 +28,17 @@ RSpec.describe 'Password Reset', type: :request do
       post passwords_path, params: { email_address: 'notfound@example.com' }
       expect(response).to redirect_to(new_session_path)
     end
+
+    it 'throttles repeated reset requests from one client without sending mail' do
+      allow(Rails.cache).to receive(:increment).and_return(6)
+
+      expect do
+        post passwords_path, params: { email_address: user.email_address }
+      end.not_to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+      expect(response).to redirect_to(new_password_path)
+      expect(flash[:alert]).to eq('Try again later.')
+    end
   end
 
   describe 'PATCH /passwords/:token' do
