@@ -6,14 +6,16 @@ class DietitianWaitlistEntry < ApplicationRecord
     demo_scheduled: 1,
     demo_completed: 2,
     approved: 3,
-    rejected: 4
+    rejected: 4,
   }, default: :pending
 
   normalizes :email_address, with: ->(email) { email.strip.downcase }
 
-  validates :first_name, :company_name, presence: true
+  validates :first_name, presence: true, length: { maximum: 100 }
+  validates :company_name, presence: true, length: { maximum: 200 }
   validates :email_address,
             presence: true,
+            length: { maximum: 255 },
             format: { with: URI::MailTo::EMAIL_REGEXP },
             uniqueness: { case_sensitive: false }
 
